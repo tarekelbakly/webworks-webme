@@ -4,4 +4,4 @@ $time_start=microtime(true);
 include_once('common.php');
 if(!isset($DBVARS['version']) || $DBVARS['version']<1)redirect('upgrades/upgrade.php');
 // }
-echo 'ok... tune in for tomorrow\'s exciting episode!';
+echo 'ok... tune in for the next exciting episode!';
