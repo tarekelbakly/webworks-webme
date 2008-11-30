@@ -6,7 +6,7 @@ require 'header.php';
 <p>There are not many steps to complete. Here they are:</p>
 <ol>
 	<li><a href="step1.php">Install database</a></li>
+	<li>Create an admin account</a></li>
 </ol>
-<p>Yup - that's it. Once that's done, your WebME installation is complete.</p>
 <?php
 require 'footer.php';
