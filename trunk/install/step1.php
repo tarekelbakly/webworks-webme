@@ -19,19 +19,21 @@ if(isset($_REQUEST['action'])){
 		'db_name'  => $_REQUEST['db_name'],
 		'passed'   => 0
 	);
-	$mysqli = mysqli_connect($_REQUEST['hostname'], $_REQUEST['username'], $_REQUEST['password'], $_REQUEST['db_name']);
-	if(!$mysqli){
-		printf("Connect failed: %s\n", mysqli_connect_error());
+	$mysql = mysql_connect($_SESSION['db_vars']['hostname'], $_SESSION['db_vars']['username'], $_SESSION['db_vars']['password']);
+	if(!$mysql){
+		printf("Connect failed: %s\n", mysql_error());
 		echo '<p>Please check your values and try again.</p>';
 	}
-	else if(!$_REQUEST['db_name']){
-		echo '<p>Please provide a database name.</p>';
-	}
 	else{
-		$_SESSION['db_vars']['passed']=1;
-		echo '<script type="text/javascript">document.location="/install/step2.php";</script>';
-		echo '<p>Thank you. Please <a href="step2.php">click here to proceed</a>.</p>';
-		exit;
+		if(!mysql_select_db($_SESSION['db_vars']['db_name'])){
+			echo '<p>Please provide a database name.</p>';
+		}
+		else{
+			$_SESSION['db_vars']['passed']=1;
+			echo '<script type="text/javascript">document.location="/install/step2.php";</script>';
+			echo '<p>Thank you. Please <a href="step2.php">click here to proceed</a>.</p>';
+			exit;
+		}
 	}
 }
 

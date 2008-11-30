@@ -6,23 +6,44 @@ if(!$_SESSION['db_vars']['db_installed']){ // user shouldn't be here
 	exit;
 }
 
-if(!is_dir('../.private')){ // create config directory
-	mkdir('../.private');
-	if(!is_dir('../.private')){
-		echo '<p><strong>Couldn\'t create /.private directory.</strong> Please either make the web root writable for the web server, or create the /.private directory and make it writable to the web server (then reload this page).</p>';
+$_SESSION['admin_created']=0;
+if(isset($_REQUEST['action'])){
+	$ok=1;
+	$_SESSION['user']=array(
+		'email'    => $_REQUEST['email'],
+		'password' => $_REQUEST['password'],
+		'name'     => $_REQUEST['name']
+	);
+	if($_REQUEST['password']!=$_REQUEST['password2'] || $_REQUEST['password']==''){
+		echo '<p>Passwords do not match or are empty.</p>';
+		$ok=0;
+	}
+	if(!filter_var($_REQUEST['email'],FILTER_VALIDATE_EMAIL)){
+		echo '<p>Email not valid. Please try again.</p>';
+		$ok=0;
+	}
+	if($ok){
+		mysql_connect($_SESSION['db_vars']['hostname'], $_SESSION['db_vars']['username'], $_SESSION['db_vars']['password']);
+		mysql_select_db($_SESSION['db_vars']['db_name']);
+		$pass=md5($_REQUEST['password']);
+		$name=addslashes($_REQUEST['name']);
+		$email=$_REQUEST['email'];
+		mysql_query("insert into user_accounts (id,email,password,name,active) values(1,'$email','$pass','$name',1)");
+		mysql_query("insert into groups (id,name) values(1,'administrators')");
+		mysql_query("insert into users_groups values(1,1)");
+		$_SESSION['admin_created']=1;
+		echo '<script type="text/javascript">setTimeout(function(){document.location="/install/step4.php"},1000);</script>';
+		echo '<p>Administrator created. Please <a href="step4.php">click here to proceed</a>.</p>';
 		exit;
 	}
 }
 
-$config='<'."?php\n\$DBVARS=array(\n\t'username' => '".addslashes($_SESSION['db_vars']['username'])."',\n\t'password' => '".addslashes($_SESSION['db_vars']['password'])."',\n\t'hostname' => '".addslashes($_SESSION['db_vars']['hostname'])."',\n\t'db_name'  => '".addslashes($_SESSION['db_vars']['db_name'])."'\n);";
+echo '<form method="post"><table>';
+echo '<tr><th>Email</th><td><input type="text" name="email" value="'.htmlspecialchars($_SESSION['user']['email']).'" /></td><td>You will log in with this. Please ensure it is correct. If you forget your password, it can be sent to this address.</td></tr>';
+echo '<tr><th>Password</th><td><input type="password" name="password" value="" /></td></tr>';
+echo '<tr><th>Repeat Password</th><td><input type="password" name="password2" value="" /></td></tr>';
+echo '<tr><th>Name</th><td><input type="text" name="name" value="'.htmlspecialchars($_SESSION['user']['name']).'" /></td></tr>';
+echo '</table><input name="action" type="submit" value="Create Admin" /></form>';
 
-file_put_contents('../.private/config.php',$config);
-
-if(!file_exists('../.private/config.php')){
-	echo '<p><strong>Could not create /.private/config.php</strong>. Please make /.private/ writable for the web server, then reload this page.</p>';
-	exit;
-}
-
-echo '<p><strong>Success!</strong> Your WebME installation is complete. Please <a href="/">click here</a> to go to the root of the site.</p>';
 
 require 'footer.php';
