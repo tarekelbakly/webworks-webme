@@ -31,6 +31,10 @@ if($version==0){ // missing user accounts and groups
 	echo '<p>Database upgraded - you will need to create an admin by inserting appropriate values into the tables user_accounts, groups and users_groups (use 1 as the primary key for each). Future upgrades should not require any manual action at all.</p>';
 	$version=1;
 }
+if($version==1){ // add .private/.htaccess
+	if(file_put_contents('../.private/.htaccess',"order allow,deny\ndeny from all"))$version=2;
+	else echo '<p>Error: could not create <code>.private/.htaccess</code>. Please make sure the <code>.private</code> directory is writable by the server.</p>';
+}
 
 $config='<'."?php
 \$DBVARS=array(
