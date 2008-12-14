@@ -1,0 +1,8 @@
+form.os_add_multiple{display:inline}
+form.os_add_multiple input[name=amount]{width:40px}
+table.os_basket{border:solid #ddd;border-width:1px 0 0 1px;border-spacing:0}
+table.os_basket td,table.os_basket th{border:solid #ddd;border-width:0 1px 1px 0}
+tr.os_basket_itemTitle th{text-align:left;font-style:italic}
+tr.os_basket_titles th{background:#ddd}
+
+.os_basket .title{display:block}
