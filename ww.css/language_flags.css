@@ -1,0 +1,14 @@
+.language-flags a{margin:0 5px;display:block;width:26px;height:18px;float:left;border:1px solid transparent;background-repeat:no-repeat}
+.language-select span{margin:0 5px;position:relative;display:block;float:left;width:26px;height:18px;border:1px solid transparent;background-repeat:no-repeat}
+.language-flags .selected{border:1px solid blue}
+.language-flags-cz{background:url(/i/flags/cz.gif);font-size:0}
+.language-flags-de{background:url(/i/flags/de.gif);font-size:0}
+.language-flags-en{background:url(/i/flags/en.gif);font-size:0}
+.language-flags-es{background:url(/i/flags/es.gif);font-size:0}
+.language-flags-fr{background:url(/i/flags/fr.gif);font-size:0}
+.language-flags-ga{background:url(/i/flags/ga.gif);font-size:0}
+.language-flags-it{background:url(/i/flags/it.gif);font-size:0}
+.language-flags-pl{background:url(/i/flags/pl.gif);font-size:0}
+.language-flags-pt{background:url(/i/flags/pt.gif);font-size:0}
+.language-flags-ru{background:url(/i/flags/ru.gif);font-size:0}
+.language-flags-se{background:url(/i/flags/se.gif);font-size:0}
