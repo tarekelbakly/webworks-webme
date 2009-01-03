@@ -35,6 +35,25 @@ if($version==1){ // add .private/.htaccess
 	if(file_put_contents('../.private/.htaccess',"order allow,deny\ndeny from all"))$version=2;
 	else echo '<p>Error: could not create <code>.private/.htaccess</code>. Please make sure the <code>.private</code> directory is writable by the server.</p>';
 }
+if($version==2){ // admin vars
+	mysql_query('CREATE TABLE `admin_vars` ( `admin_id` int(11) default 0, `varname` text, `varvalue` text) ENGINE=MyISAM DEFAULT CHARSET=utf8');
+	$version=3;
+}
+if($version==3){ // pages
+	mysql_query('CREATE TABLE `pages` ( `id` int(11) NOT NULL auto_increment, `name` text, `body` mediumtext, `parent` int(11) default 0, `ord` int(11) NOT NULL default 0,
+		`cdate` datetime NOT NULL default "0000-00-00 00:00:00", `special` bigint(20) default NULL, `edate` datetime default NULL, `assocDate` date default NULL, `title` text,
+		`htmlheader` text, `template` text, `type` smallint(6) default 0, `keywords` text, `description` text, `category` text NOT NULL, `importance` float default 0.5,
+		PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8');
+	$version=4;
+}
+if($version==4){ // page_vars
+	mysql_query('CREATE TABLE `page_vars` (`page_id` int(11) default NULL,`name` text,`value` text) ENGINE=MyISAM DEFAULT CHARSET=utf8');
+	$version=5;
+}
+if($version==5){ // site_vars
+	mysql_query('CREATE TABLE `site_vars` ( `name` text, `value` text) ENGINE=MyISAM DEFAULT CHARSET=utf8');
+	$version=6;
+}
 
 $config='<'."?php
 \$DBVARS=array(

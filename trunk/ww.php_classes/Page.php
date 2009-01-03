@@ -20,7 +20,7 @@ class Page{
 		if(!count($r))return false;
 		foreach ($r as $k=>$v) $this->{$k}=$v;
 		$this->urlname=$r['name'];
-		if($_SESSION['translation'] && $_SESSION['viewing_language']!='en'){
+		if(isset($_SESSION['translation']) && $_SESSION['viewing_language']!='en'){
 			$rs=dbAll("SELECT * FROM translations WHERE object_type='page' AND object_id=".$this->id." AND lang='".$_SESSION['viewing_language']."'");
 			foreach ($rs as $r) $this->{$r['name']}=$r['value'];
 		}
@@ -32,7 +32,7 @@ class Page{
 		$this->vars=array();
 		$pvq=dbAll("select * from page_vars where page_id=".$this->id);
 		foreach($pvq as $pvr)$this->vars[$pvr['name']]=$pvr['value'];
-		if($_SESSION['os_country'] && $this->vars['banned_countries'] && strpos($this->vars['banned_countries'],$_SESSION['os_country'])!==false)$this->banned=true;
+		if(isset($_SESSION['os_country']) && $_SESSION['os_country'] && isset($this->vars['banned_countries']) && $this->vars['banned_countries'] && strpos($this->vars['banned_countries'],$_SESSION['os_country'])!==false)$this->banned=true;
 	}
 	function getInstance($id=0,$fromRow=false){
 		if (!is_numeric($id)) return false;
@@ -62,6 +62,11 @@ class Page{
 		if(!is_numeric($id))return false;
 		if(!@array_key_exists($id,$instancesByProductType)){
 			$page_id=dbOne('select page_id from page_vars where name="product_type" and value="'.$id.'"','page_id',0);
+			if(!$page_id){
+				dbQuery('insert into pages (ord,name,type,parent,cdate,edate,body,special) values(1000,"_product_page",8,0,now(),now(),"",2)');
+				$page_id=dbOne('select last_insert_id() as id','id');
+				dbQuery('insert into page_vars values('.$page_id.',"product_type",'.$id.')');
+			}
 			$instancesByProductType[$id]=& self::getInstance($page_id);
 		}
 		return $instancesByProductType[$id];

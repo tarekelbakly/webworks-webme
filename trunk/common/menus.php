@@ -1,0 +1,109 @@
+<?php
+$cached_menus=array();
+function menu_containsPage($needle,$haystack){
+	$r=Page::getInstance($needle);
+	if($r->parent==0)return 0;
+	if($r->parent==$haystack)return 1;
+	return menu_containsPage($r->parent,$haystack);
+}
+function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$search_options=0){
+	global $cached_menus;
+	if(isset($cached_menus[$parentid]))return $cached_menus[$parentid];
+	$pageParentFound=0;
+	$PARENTDATA=Page::getInstance($parentid);
+	$filter=$isadmin?'':'&& !(special&2)';
+	$rs=dbAll("select id as subid,id,name,type,(select count(id) from pages where parent=subid $filter) as numchildren from pages where parent='".$parentid."' $filter order by ord,name");
+	$menuitems=array();
+	foreach($rs as $k=>$r){
+		$PAGEDATA=Page::getInstance($r['id']);
+		if(isset($PAGEDATA->banned) && $PAGEDATA->banned)continue;
+		$c=array();
+		$c[]=($parentid==$topParent)?'menuItemTop':'menuItem';
+		if($r['numchildren'])$c[]='ajaxmenu_hasChildren';
+		if(($search_options&1) && $PAGEDATA->type==8)$c[]='ajaxmenu_hasChildren';
+		if($r['id']==$currentpage){
+			$c[]='ajaxmenu_currentPage';
+			$pageParentFound=1;
+		}
+		else if($r['numchildren']&&!$pageParentFound&&menu_containsPage($currentpage,$r['id'])){ # does this page contain the current page
+			$c[]='ajaxmenu_containsCurrentPage';
+			$pageParentFound=1;
+		}
+		$rs[$k]['classes']=join(' ',$c);
+		$rs[$k]['link']=$PAGEDATA->getRelativeURL();
+		$rs[$k]['name']=$PAGEDATA->name;
+		$rs[$k]['parent']=$parentid;
+		$menuitems[]=$rs[$k];
+	}
+	if(isset($PARENTDATA->type) && $PARENTDATA->type==8 && ($search_options&1)){
+		$PARENTDATA->vars=array();
+		$pvq=dbAll("select * from page_vars where page_id='".$parentid."'");
+		foreach($pvq as $pvr)$PARENTDATA->vars[$pvr['name']]=$pvr['value'];
+		if(isset($PARENTDATA->vars['property_type']) && $PARENTDATA->vars['property_type'])$filter=" where product_type_id='".$PARENTDATA->vars['property_type']."'";
+		else $filter="";
+		$rs2=dbAll("select id,name from products".$filter);
+		foreach($rs2 as $r2){
+			$rs[]=array('link'=>$PARENTDATA->getRelativeURL().'&product_id='.$r2['id'],'name'=>$r2['name'],'parent'=>$parentid);
+		}
+	}
+	$cached_menus[$parentid]=$menuitems;
+	return $menuitems;
+}
+function ww_menuDisplay($b){
+	global $PAGEDATA,$plugins_to_load;
+	if(!$PAGEDATA->id)return '';
+	$arr=explode('|',$b);
+	$b=$arr[0];
+	$vals=array();
+	$d=split(',',$arr[1]);
+	foreach($d as $e){
+		$f=split('=',$e);
+		$vals[$f[0]]=$f[1];
+	}
+	$c='';
+	$align=($b=='vertical')?'Left':'Top';
+	$parent=0;
+	$classes='';
+	if(isset($vals['mode'])){
+		if($vals['mode']=='accordian' || $vals['mode']=='accordion'){
+			$classes.=' click_required accordian';
+		}
+		else if($vals['mode']=='two-tier'){
+			$classes.=' two-tier';
+		}
+	}
+	if(isset($vals['close']) && $vals['close']=='no'){
+		$classes.=' noclose';
+	}
+	if(isset($vals['parent'])){
+		$r=Page::getInstanceByName($vals['parent']);
+		if($r)$parent=$r->id;
+	}
+	$search_options=0;
+	if(isset($vals['products'])){
+		$classes.=' products';
+		$search_options+=1;
+	}
+	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.' ajaxmenu'.$classes.' parent'.$parent.'">';
+	$rs=menu_getChildren($parent,$PAGEDATA->id,0,$parent,$search_options);
+	if(count($rs))foreach($rs as $r){
+		$page=Page::getInstance($r['id']);
+		$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'.$page->getRelativeURL().'"><span class="l"></span>'.htmlspecialchars($page->name).'<span class="r"></span></a>';
+	}
+	$c.='<a class="menuItemTop nojs" href="'.$PAGEDATA->getRelativeURL().'&amp;webmespecial=sitemap">'.__('Site Map').'</a>';
+	$c.='</div>';
+	if($vals['mode']=='two-tier'){
+		$pid=$PAGEDATA->getTopParentId();
+		if($pid!=2 && $pid!=3 && $pid!=17 && $pid!=32 && $pid!=33 && $pid!=34)$pid=2;
+		$rs=menu_getChildren($pid,$PAGEDATA->id,0,$parent,$search_options);
+		$c.='<div id="ajaxmenu'.$pid.'" class="menu tier-two">';
+		if(count($rs))foreach($rs as $r){
+			$page=Page::getInstance($r['id']);
+			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'.$page->getRelativeURL().'"><span class="l"></span>'.htmlspecialchars($page->name).'<span class="r"></span></a>';
+		}
+		else $c.='<a><span class="l"></span>&nbsp;<span class="r"></span></a>';
+		$c.='</div>';
+	}
+	$plugins_to_load[]='"ajaxmenu":1';
+	return $c;
+}
