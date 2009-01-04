@@ -44,4 +44,4 @@ echo '<tr><th>HostName</th><td><input type="text" name="hostname" value="'.htmls
 echo '<tr><th>Database Name</th><td><input type="text" name="db_name" value="'.htmlspecialchars($_SESSION['db_vars']['db_name']).'" /></td></tr>';
 echo '</table><input name="action" type="submit" value="Configure Database" /></form>';
 
-require 'footer';
+require 'footer.php';
