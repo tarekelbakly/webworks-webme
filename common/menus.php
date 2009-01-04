@@ -49,19 +49,43 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 	$cached_menus[$parentid]=$menuitems;
 	return $menuitems;
 }
+function menu_setup_main_menu($template){
+	$a=array("\n","\r");
+	$b=array('WWNLRT','WWNLRT');
+	$template=str_replace($a,$b,$template);
+	do{
+		$change=0;
+		if(ereg('%MENU{[^}]*}%',$template)){
+			$tmp=preg_replace('/.*%MENU{(.*?)}%.*/','\1',$template);
+			$old='%MENU{'.$tmp.'}%';
+			$new=str_replace($a,$b,menuDisplay($tmp));
+			$template=str_replace($old,$new,$template);
+			$change++;
+		}
+	}while($change);
+	$template=str_replace('WWNLRT',"\n",$template);
+	return $template;
+}
 function ww_menuDisplay($b){
 	global $PAGEDATA,$plugins_to_load;
 	if(!$PAGEDATA->id)return '';
-	$arr=explode('|',$b);
-	$b=$arr[0];
-	$vals=array();
-	$d=split(',',$arr[1]);
-	foreach($d as $e){
-		$f=split('=',$e);
-		$vals[$f[0]]=$f[1];
+	if(is_array($b)){
+		$align=(isset($b['direction']) && $b['direction']=='vertical')?'Left':'Top';
+		$vals=$b;
 	}
-	$c='';
-	$align=($b=='vertical')?'Left':'Top';
+	else{
+		$arr=explode('|',$b);
+		$b=$arr[0];
+		$vals=array();
+		if(count($arr)>1)$d=split(',',$arr[1]);
+		else $d=array();
+		foreach($d as $e){
+			$f=split('=',$e);
+			$vals[$f[0]]=$f[1];
+		}
+		$c='';
+		$align=($b=='vertical')?'Left':'Top';
+	}
 	$parent=0;
 	$classes='';
 	if(isset($vals['mode'])){
@@ -72,6 +96,7 @@ function ww_menuDisplay($b){
 			$classes.=' two-tier';
 		}
 	}
+	else $vals['mode']='default';
 	if(isset($vals['close']) && $vals['close']=='no'){
 		$classes.=' noclose';
 	}

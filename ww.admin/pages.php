@@ -26,28 +26,29 @@ $pagetypes=array(
 	array(10,__('online store checkout'),0)
 );
 include('pages/pages.funcs.php');
-# actions
-if($action=='delete' || $action==__('Insert Page Details') || $action==__('Update Page Details')){
-	switch($action){
-		case 'delete':                  include('pages/pages.action.delete.php'); break;
-		case __('Insert Page Details'): include('pages/pages.action.new.php');    break;
-		case __('Update Page Details'): include('pages/pages.action.edit.php');   break;
+if(has_access_permissions(ACL_PAGES)){
+	# actions
+	if($action=='delete' || $action==__('Insert Page Details') || $action==__('Update Page Details')){
+		switch($action){
+			case 'delete':                  include('pages/pages.action.delete.php'); break;
+			case __('Insert Page Details'): include('pages/pages.action.new.php');    break;
+			case __('Update Page Details'): include('pages/pages.action.edit.php');   break;
+		}
+		include_once('../common/funcs.blogs.php');
+		rebuild_parent_rsses($id);
 	}
-	include_once('../common/funcs.blogs.php');
-	rebuild_parent_rsses($id);
+	$edit=($action==__('Insert Page Details') || $action==__('Update Page Details') || $action=='edit')?1:0;
+	if($id&&$edit)setAdminVar('pages_viewing',$id);
+	else if(!$action){
+		$id=getAdminVar('pages_viewing');
+		if(!$id)$id=0;
+		if($id)$edit=1;
+	}
+	include('pages/pages.menu.php');
+	echo '<div id="pages_main">';
+	include('pages/pages.forms.php');
+	echo '</div>';
+}else{
+	echo '<p>'.__('You have no permissions for this page').'</p>';
 }
-$edit=($action==__('Insert Page Details') || $action==__('Update Page Details') || $action=='edit')?1:0;
-if(isset($_REQUEST['id']) && $_REQUEST['id'] && $edit){
-	$id=$_REQUEST['id'];
-	setAdminVar('pages_viewing',$id);
-}
-else if(!$action){
-	$id=getAdminVar('pages_viewing');
-	if(!$id)$id=0;
-	if($id)$edit=1;
-}
-include('pages/pages.menu.php');
-echo '<div id="pages_main">';
-include('pages/pages.forms.php');
-echo '</div>';
 include_once('footer.php');

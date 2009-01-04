@@ -66,8 +66,10 @@ else{
 		{ # type
 			echo '<tr><th>'.__('type').'</th><td><select name="type">';
 			foreach($pagetypes as $a){
-				$tmp=($a[0]==$page['type'])?' selected="selected"':'';
-				echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
+				if(has_page_permissions($a[2]) || !$a[2]){
+					$tmp=($a[0]==$page['type'])?' selected="selected"':'';
+					echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
+				}
 			}
 			echo '</select></td>';
 		}
