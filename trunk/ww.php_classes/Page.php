@@ -20,6 +20,7 @@ class Page{
 		if(!count($r))return false;
 		foreach ($r as $k=>$v) $this->{$k}=$v;
 		$this->urlname=$r['name'];
+		if(!isset($_SESSION['viewing_language']))$_SESSION['viewing_language']='en';
 		if(isset($_SESSION['translation']) && $_SESSION['viewing_language']!='en'){
 			$rs=dbAll("SELECT * FROM translations WHERE object_type='page' AND object_id=".$this->id." AND lang='".$_SESSION['viewing_language']."'");
 			foreach ($rs as $r) $this->{$r['name']}=$r['value'];

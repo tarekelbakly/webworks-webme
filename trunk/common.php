@@ -102,6 +102,9 @@ function html_fixImageResizes($src){
 
 	return $src;
 }
+function inc_common($f) {
+	include_once BASEDIR . 'common/' . $f;
+}
 function redirect($addr){
 	echo '<html><head><script type="text/javascript">setTimeout(function(){document.location="'.$addr.'";},10);</script></head><body><noscript>you need javascript to use this site</noscript></body></html>';
 	exit;
@@ -123,6 +126,7 @@ if (!file_exists(BASEDIR . '.private/config.php')) {
 	exit;
 }
 require BASEDIR . '.private/config.php';
+require BASEDIR . 'common/webme_specific.php';
 define('FCKEDITOR','fckeditor-2.6.3');
 define('WORKDIR_IMAGERESIZES', BASEDIR.'f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
@@ -140,6 +144,12 @@ $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 // }
 $is_admin = 0;
 $sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
+// { quick-build similar functions
+	$arr = array(array('eventCalendarDisplay', 'funcs.events.php', 'ww_eventCalendarDisplay'), array('panelDisplay', 'funcs.panels.php', 'ww_panelDisplay'), array('imageDisplay', 'funcs.image.display.php', 'func_image_display'), array('menuDisplay', 'menus.php', 'ww_menuDisplay'), array('scrollingEventsDisplay', 'funcs.events.php', 'ww_scrollingEventsDisplay'), array('scrollingNewsDisplay', 'funcs.news.php', 'ww_scrollingNewsDisplay'), array('show404', '404.php', 'ww_show404'), array('showNews', 'funcs.news.php', 'ww_showNews'), array('showProductListing', 'products.php', 'ww_showProductListing'), array('showSearchResults', 'funcs.search.php', 'ww_showSearchResults'), array('sitemap', 'sitemap.php', 'ww_showSitemap'), array('webmeParse', 'funcs.textfilter.php', 'textObjectsFilter'));
+	foreach ($arr as $a) {
+		eval('function ' . $a[0] . '($a=0){inc_common("' . $a[1] . '");return ' . $a[2] . '($a);}');
+	}
+// }
 // { user authentication
 if(!isset($_SESSION['userdata'])){
 	if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){

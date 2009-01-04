@@ -2,17 +2,17 @@
 header('Content-type: text/html; Charset=utf-8');
 require '../common.php';
 // { if not logged in, show login page
-if (!isset($_SESSION['userdata']) || !isset($_SESSION['userdata']['groups']['administrators'])) {
+if (!is_admin()) {
 	include BASEDIR . 'ww.admin/login.php';
 	exit;
 }
 // }
 require 'admin_libs.php';
 require BASEDIR.'j/'.FCKEDITOR.'/fckeditor.php';
-$action=isset($_REQUEST['action'])?$_REQUEST['action']:'';
-$id    =isset($_REQUEST['id'])?$_REQUEST['id']:0;
 $admin_vars=array();
 // { common variables
+	foreach(array('action','resize') as $v)$$v=getVar($v);
+	foreach(array('id','show_items','start') as $v)$$v=getVar($v,0);
 	$plugins_to_load=array('"showhide":1','"tabs":1','"vkfade":1'); // to be used by javascript
 // }
 ?>

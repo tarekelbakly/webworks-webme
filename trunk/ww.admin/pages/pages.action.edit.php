@@ -72,13 +72,13 @@ if(allowedToEditPage($id)){
 		}
 	}
 	$q.=',parent='.$pid;
-	$q.=',special='.$special;
+	if(has_page_permissions(128))$q.=',special='.$special;
 	$q.=' where id='.$id;
 	dbQuery($q);
-	// { panels
-	dbQuery('delete from pagePanels where pageid='.$id);
-	if(isset($panels))foreach($panels as $i=>$j)foreach($j as $k=>$l)dbQuery('insert into pagePanels set pageid='.$id.',panelid='.$l.',align='.$i);
-	// }
+	if(has_page_permissions(32)){ # panels
+		dbQuery('delete from pagePanels where pageid='.$id);
+		if(isset($panels))foreach($panels as $i=>$j)foreach($j as $k=>$l)dbQuery('insert into pagePanels set pageid='.$id.',panelid='.$l.',align='.$i);
+	}
 	{ # page_vars
 		dbQuery('delete from page_vars where page_id="'.$id.'"');
 		$pagevars=$_REQUEST['page_vars'];

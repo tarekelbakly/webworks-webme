@@ -18,6 +18,8 @@ for($i=0;$i<count($rs);++$i){
 	$c.='<a class="deletepage" href="pages.php?action=delete&amp;id='.$r['id'].'" class="pagemenu_delete" onclick="return confirm(\''.__('are you sure you want to delete this?').'\');">[x]</a>';
 	$c.='</td></tr>';
 }
-$c.='<tr><td colspan="4" class="bottom"><a href="'.$_SERVER['PHP_SELF'].'?action=new" class="newtoppage">'.__('CLICK HERE FOR A NEW TOP-LEVEL PAGE').'</a></td></tr>';
+if(has_page_permissions(1024)){ # admin can create top-level pages
+	$c.='<tr><td colspan="4" class="bottom"><a href="'.$_SERVER['PHP_SELF'].'?action=new" class="newtoppage">'.__('CLICK HERE FOR A NEW TOP-LEVEL PAGE').'</a></td></tr>';
+}
 $c.='</table>';
 echo $c;

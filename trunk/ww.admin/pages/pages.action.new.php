@@ -42,9 +42,10 @@ if(allowedToEditPage($parent)){
 	}
 	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$_POST['title'].'",body="'.addslashes(sanitise_html(getVar('body'))).'",type="'.$type.'"';
 	$q.=',parent='.$pid;
-	$q.=',special='.$special;
+	if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
 	dbQuery($q);
 	$id=dbOne('select last_insert_id() as id','id');
+	dbQuery('insert into permissions set id="'.$id.'", type=1, value="'.get_userid().'=7'."\n\n4".'"');
 	rebuild_parent_rsses($id);
 	dbQuery('update blog_indexes set rss=""');
 	echo '<em>'.__('An item has been added to the database.').'</em>';

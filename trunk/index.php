@@ -1,6 +1,169 @@
 <?php
 // { common variables and functions
 include_once('common.php');
-if(!isset($DBVARS['version']) || $DBVARS['version']<6)redirect('upgrades/upgrade.php');
+if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
+	$server=str_replace('www.','',$_SERVER['HTTP_HOST']);
+	if($server=='inkjet.ie')header('Location: https://'.$server.'/');
+	else header('Location: https://www.'.$server.'/');
+	exit;
+}
+if(!isset($DBVARS['version']) || $DBVARS['version']<8)redirect('upgrades/upgrade.php');
+$id=getVar('pageid',0);
+$plugins_to_load=array(); // to be used by javascript
+if(is_admin())$plugins_to_load[]='"frontend_admin":1';
 // }
-echo 'ok... tune in for the next exciting episode!';
+// { wwSpecial
+if(isset($_GET['wwSpecial'])){
+	switch($_GET['wwSpecial']){
+		case 'productsearch':{
+			if(isset($_POST['producttype'])&&$_POST['producttype']){
+				$r=dbRow("select id from product_types where name='".addslashes($_POST['producttype'])."'");
+				if(count($r)){
+					$r2=dbRow("select page_id from page_vars where name='product_type' and value='".$r['id']."'");
+					if(count($r2))$id=$r2['page_id'];
+				}
+			}
+			else{
+				$r2=dbRow("select page_id from page_vars where name='product_type' and value='0'");
+				if(count($r2))$id=$r2['page_id'];
+			}
+			if(!$id){
+				$r=Page::getInstanceByType(8);
+				if($r)$id=$r->id;
+			}
+			break;
+		}
+		default:{
+			echo 'unknown wwSpecial';
+			exit;
+		}
+	}
+}
+// }
+// { get current page id
+if(!$id){
+	$page=getVar('page');
+	if($page){
+		if(ereg('&',$page))$page=preg_replace('/&.*/','',$page);
+		$r=Page::getInstanceByName($page);
+		if($r)$id=$r->id;
+	}
+	if(!$id){
+		$special=1;
+		if(isset($_GET['special'])&&$_GET['special'])$special=$_GET['special'];
+		if(!$page){
+			$r=Page::getInstanceBySpecial($special);
+			if($r)$id=$r->id;
+		}
+	}
+}
+// }
+// { load page data
+if($id){
+    $PAGEDATA=Page::getInstance($id);
+}
+else $PAGEDATA=array('id'=>0,'special'=>0,'title'=>'','name'=>'','keywords'=>'','description'=>'','type'=>0,'template'=>'','htmlheader'=>'','body'=>'','vars'=>array());
+// }
+// { main content
+$c='';
+$permissions=array();
+$p=dbRow("select value from permissions where type=1 and id='".$PAGEDATA->id."'");
+if(count($p)){
+	$allowed=0;
+	$lines=explode("\n",$p['value']);
+	if($lines[2]&4)$allowed=1;
+	else{ # usergroups
+		$g=explode(',',$lines[1]);
+		foreach($g as $p){
+			$p=explode('=',$p);
+			if(isset($USERGROUPS[$p[0]]) && $p[1]&4)$allowed=1;
+		}
+	}
+}else $allowed=1;
+if(!$allowed){
+	$c.='<h2>Permission Denied</h2><p>This is a protected document. To view it, you must first log in.</p>';
+	$p=Page::getInstanceByType(3);
+	if($p)$c.='<p>Click <a href="'.$p->getRelativeURL().'">here</a> to log in.</p>';
+}
+else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
+else{
+	if($PAGEDATA->htmlheader!='')$c.=$PAGEDATA->htmlheader;
+	switch($PAGEDATA->type){
+		case 0: { # normal page
+			$c.=webmeParse($PAGEDATA->body);
+			break;
+		}
+		case 2: { # events
+			$c.='<div id="events_'.$PAGEDATA->id.'" class="events">please wait - loading...</div>';
+			$plugins_to_load[]='"eventcalendar":1';
+			break;
+		}
+		case 3: { # user registration
+			include_once(BASEDIR.'common/user.login.and.registration.php');
+			$c.=webmeParse($PAGEDATA->body.userloginandregistrationDisplay());
+			break;
+		}
+		case 4: { # blog index
+			include_once(BASEDIR.'common/funcs.blogs.php');
+			$c.=displayBlogExcerpts($PAGEDATA->id);
+			break;
+		}
+		case 5: { # search results
+			$c.=webmeParse($PAGEDATA->body.showSearchResults());
+			break;
+		}
+		case 7: { # news
+			$c.=showNews($PAGEDATA->id);
+			break;
+		}
+		case 8: { # product listing
+			$c.=webmeParse(showProductListing($PAGEDATA->id));
+			break;
+		}
+		case 9: { # table of contents
+			$kids=Pages::getInstancesByParent($PAGEDATA->id);
+			$c.=webmeParse($PAGEDATA->body);
+			if(!count($kids->pages))$c.='<em>no sub-pages</em>';
+			else{
+				$c.='<ul class="subpages">';
+				foreach($kids->pages as $kid){
+					$c.='<li><a href="'.$kid->getRelativeURL().'">'.htmlspecialchars($kid->name).'</a></li>';
+				}
+				$c.='</ul>';
+			}
+			break;
+		}
+		case 10: // { online store checkout
+			require_once 'common/online_stores.php';
+			$c.=webmeParse($PAGEDATA->body);
+			$c.=osCheckoutDisplay();
+			break;
+		// }
+		default: { # unknown
+			$c.='<em>this page type ('.$PAGEDATA->type.') not handled yet</em>'.webmeParse($PAGEDATA->body);
+			break;
+		}
+	}
+	if($c==''&&!$id)$c=show404(str_replace('/',' ',$_SERVER['REQUEST_URI']));
+}
+if($PAGEDATA->special&64)$c.='<div id="webmeComments"></div>';
+// { show any error messages that turned up
+if(isset($_SESSION['msgs_errors'])){
+	$c.='<script type="text/javascript">alert('.json_encode($_SESSION['msgs_errors']).'.join("\n"));</script>';
+	unset($_SESSION['msgs_errors']);
+}
+// }
+$pagecontent=$c;
+// }
+// { load page template
+if(file_exists($PAGEDATA->template))$template=$PAGEDATA->template;
+else{
+	$ex='ls '.BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
+	$d=`$ex`;
+	$d=explode("\n",$d);
+	$template=$d[0];
+}
+if($template=='')die('no template created. please create a template first');
+// }
+require BASEDIR . 'common/templates.php';
+show_page($template,$pagecontent,$PAGEDATA,$plugins_to_load);

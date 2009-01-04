@@ -75,7 +75,7 @@ function drawMenu($menuArray){
 }
 function getAdminVar($name,$default=''){
 	if(isset($GLOBALS['admin_vars'][$name]))return $GLOBALS['admin_vars'][$name];
-	$r=dbRow('select varvalue from admin_vars where varname=\''.$name.'\' and admin_id='.$_SESSION['userdata']['id']);
+	$r=dbRow('select varvalue from admin_vars where varname=\''.$name.'\' and admin_id='.get_userid());
 	if(count($r)){
 		$GLOBALS['admin_vars'][$name]=$r['varvalue'];
 		return $r['varvalue'];
@@ -83,8 +83,8 @@ function getAdminVar($name,$default=''){
 	return $default;
 }
 function setAdminVar($name,$value){
-	dbQuery("delete from admin_vars where varname='".$name."' and admin_id=".$_SESSION['userdata']['id']);
-	dbQuery("insert into admin_vars (varname,varvalue,admin_id) values('".addslashes($name)."','".addslashes($value)."',".$_SESSION['userdata']['id'].")");
+	dbQuery("delete from admin_vars where varname='".$name."' and admin_id=".get_userid());
+	dbQuery("insert into admin_vars (varname,varvalue,admin_id) values('".addslashes($name)."','".addslashes($value)."',".get_userid().")");
 	$GLOBALS['admin_vars'][$name]=$value;
 }
 function fckeditor($name,$value='',$fullpage=false,$css=''){
