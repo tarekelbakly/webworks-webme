@@ -9,9 +9,7 @@ class Page{
 	public $vals;
 	function __construct($v,$byField=0,$fromRow=0){
 		# byField: 0=ID; 1=Name
-		if (!$byField && is_numeric($v)) {
-			$r=$fromRow?$fromRow:dbRow("select * from pages where id=$v limit 1");
-		}
+		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:dbRow("select * from pages where id=$v limit 1");
 		else if ($byField == 1) $r=dbRow("select * from pages where name like '".addslashes(str_replace('-','_',$v))."' limit 1");
 		else if ($byField == 2 && is_numeric($v)) $r=dbRow("select * from pages where type=$v limit 1");
 		else if ($byField == 3 && is_numeric($v)) $r=dbRow("select * from pages where special&$v limit 1");
@@ -78,7 +76,7 @@ class Page{
 		return $instancesBySpecial[$sp];
 	}
 	function getInstanceByType($type=0){
-		if (!@array_key_exists($type,self::$instancesByType)) $instancesByType[$type] = new Page($type,2);
+		if (!@array_key_exists($type,self::$instancesByType)) self::$instancesByType[$type] = new Page($type,2);
 		return self::$instancesByType[$type];
 	}
 	function getInstanceByNameAndParent($name,$parent){

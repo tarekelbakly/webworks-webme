@@ -53,7 +53,7 @@ if(!$id){
 		if(isset($_GET['special'])&&$_GET['special'])$special=$_GET['special'];
 		if(!$page){
 			$r=Page::getInstanceBySpecial($special);
-			if($r)$id=$r->id;
+			if($r && isset($r->id))$id=$r->id;
 		}
 	}
 }
@@ -62,7 +62,10 @@ if(!$id){
 if($id){
     $PAGEDATA=Page::getInstance($id);
 }
-else $PAGEDATA=array('id'=>0,'special'=>0,'title'=>'','name'=>'','keywords'=>'','description'=>'','type'=>0,'template'=>'','htmlheader'=>'','body'=>'','vars'=>array());
+else{
+	echo 'no page loaded. If this is a new site, then please <a href="/ww.admin/">log into the admin area</a> and create your first page.';
+	exit;
+}
 // }
 // { main content
 $c='';
