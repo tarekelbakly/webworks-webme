@@ -20,7 +20,7 @@ function template_get_metadata($template,$PAGEDATA,$plugins_to_load){
 	$c.='<script type="text/javascript" src="/js_lang/'.$_SESSION['webme_language'].'/'.$modified.'"></script>';
 	$c.='<script type="text/javascript">var pagedata={id:'.$PAGEDATA->id.',url:"'.$PAGEDATA->getRelativeURL().'",country:"'.(isset($_SESSION['os_country'])?$_SESSION['os_country']:'').'"},';
 	$c.='userdata={isAdmin:'.(is_admin()?1:0);
-	if(isset($_SESSION['userdata']) && is_array($_SESSION['userdata']))$c.=',discount:'.$_SESSION['userdata']['discount'];
+	if(isset($_SESSION['userdata']) && is_array($_SESSION['userdata']))$c.=',discount:'.(int)$_SESSION['userdata']['discount'];
 	$c.='},';
 	$c.='plugins_to_load={'.join(',',$plugins_to_load).'};';
 	$c.='document.write("<"+"style type=\'text/css\'>.nojs{display:none}<"+"/style>");';
@@ -29,7 +29,6 @@ function template_get_metadata($template,$PAGEDATA,$plugins_to_load){
 	$c.='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 	if($PAGEDATA->keywords)$c.='<meta http-equiv="keywords" content="'.$PAGEDATA->keywords.'" />';
 	if($PAGEDATA->description)$c.='<meta http-equiv="description" content="'.$PAGEDATA->description.'" />';
-	if($PAGEDATA->type==4)$c.='<link rel="alternate" type="application/rss+xml" title="'.htmlspecialchars($title).'" href="'.$PAGEDATA->getRelativeURL().'.rss" />';
 	$c.='<style type="text/css">.loggedin{display:'.(is_logged_in()?'block':'none').'} .loggedinCell{display:'.(is_logged_in()?'table-cell':'none').'}</style>';
 	return $c;
 }
