@@ -1,4 +1,5 @@
 <?php
+$existing_accounts=dbOne('select count(id) as ids from user_accounts','ids');
 if(isset($_REQUEST['action']) && $_REQUEST['action']==__('remind')){
 	$email=$_REQUEST['email'];
 	if(filter_var($email,FILTER_VALIDATE_EMAIL)){
@@ -10,6 +11,17 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('remind')){
 			mail($email,'['.$sitedomain.'] admin password reset','Your new password is "'.$passwd.'". Please log into the admin area and change it to something else.',"Reply-to: $email\nFrom: $email");
 			echo 'sent';
 		}
+	}
+}
+if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password'])){
+	$email=$_REQUEST['email'];
+	$password=md5($_REQUEST['password']);
+	if(!filter_var($email,FILTER_VALIDATE_EMAIL))$message=__('Please make sure to use a valid email address');
+	else{
+		dbQuery("insert into user_accounts (id,email,name,password,active,parent) values(1,'".addslashes($email)."','Administrator','$password',1,0)");
+		dbQuery("insert into groups values(1,'administrators',0)");
+		dbQuery("insert into users_groups values(1,1)");
+		$message='User account created. Please login now (press F5 and choose to resubmit the login data)';
 	}
 }
 ?>
@@ -28,7 +40,13 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('remind')){
 	<div id="mainContent">
 	<div class="paragraph">
 		<p>
-		<?php echo __('To access the administrative features of your website, you will need to enter the username and password below and click "login".'); ?>
+<?php
+if(!$existing_accounts){
+	echo '<em><strong>No user accounts exist yet</strong>. Please log in using your email address and a password of your choice. This will become the first admin user account.</em>';
+}
+else echo __('To access the administrative features of your website, you will need to enter the username and password below and click "login".');
+if(isset($message) && $message!='')echo '<br /><br /><strong>'.$message.'</strong>';
+?>
 		</p>
 	</div>
 	<div class="tabs" style="width:400px;text-align:left;margin:0 auto">
@@ -53,7 +71,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('remind')){
 	   	</form>
 		</div>
 	</div>
-
 	</div>
  </body>
 </html>
