@@ -14,3 +14,6 @@ function has_page_permissions($val){
 function has_access_permissions($val){
 	return true;
 }
+function admin_can_create_top_pages(){
+	return has_page_permissions(1024);
+}

@@ -46,8 +46,6 @@ if(allowedToEditPage($parent)){
 	dbQuery($q);
 	$id=dbOne('select last_insert_id() as id','id');
 	dbQuery('insert into permissions set id="'.$id.'", type=1, value="'.get_userid().'=7'."\n\n4".'"');
-	rebuild_parent_rsses($id);
-	dbQuery('update blog_indexes set rss=""');
 	echo '<em>'.__('An item has been added to the database.').'</em>';
 }
 else{

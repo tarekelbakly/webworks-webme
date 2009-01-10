@@ -44,153 +44,145 @@ else{
 	echo '<div class="tabs" style="clear:right">';
 	// { Common Details
 	echo '<div class="tabPage"><h2>'.__('Common Details').'</h2><table style="clear:right">';
-	{ # name, title, url
-		echo '<tr>';
-		{ # name
-			echo '<th width="10%">'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
-		}
-		{ # title
-			echo '<th width="10%">'.__('title').'</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
-		}
-		{ # url 
-			if($edit){
-				$u='/'.str_replace(' ','-',$page['name']);
-				$u='<a href="'.$u.'">'.urldecode($u).'</a>';
-			}
-			else $u=__('not available yet');
-			echo '<th width="10%">'.__('URL').'</th><td width="23%">'.$u.'</td>';
-		}
-		echo '</tr>';
+	// { name, title, url
+	echo '<tr>';
+	// { name
+	echo '<th width="10%">'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
+	// }
+	// { title
+	echo '<th width="10%">'.__('title').'</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
+	// }
+	// { url 
+	if($edit){
+		$u='/'.str_replace(' ','-',$page['name']);
+		$u='<a href="'.$u.'">'.urldecode($u).'</a>';
 	}
-	{ # page type and parent 
-		{ # type
-			echo '<tr><th>'.__('type').'</th><td><select name="type">';
-			foreach($pagetypes as $a){
-				if(has_page_permissions($a[2]) || !$a[2]){
-					$tmp=($a[0]==$page['type'])?' selected="selected"':'';
-					echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
-				}
-			}
-			echo '</select></td>';
-		}
-		{ # parent
-			echo '<th>'.__('parent').'</th><td><select name="parent">';
-			$tmp=($page['parent']==0)?' selected="selected"':'';
-			echo '<option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
-			selectkiddies(0,0,$page['parent'],$id);
-			echo '</select></td>';
-		}
-		{ # template
-			echo '<th>'.__('template').'</th><td>';
-			$ex='ls '.BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
-			$d=`$ex`;
-			$d=explode("\n",$d);array_pop($d);
-			if(count($d)>1){
-				echo '<select name="template">';
-				foreach($d as $f){
-					$f=preg_replace('/^\.\.\/|\n|\r|$/','',$f);
-					echo '<option value="'.$f.'"';
-					if($f==$page['template'])echo ' selected="selected"';
-					echo '>'.preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$f).'</option>';
-				}
-				echo '</select>';
-			}else echo htmlspecialchars(preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$d[0]));
-			echo '</td></tr>';
+	else $u=__('not available yet');
+	echo '<th width="10%">'.__('URL').'</th><td width="23%">'.$u.'</td>';
+	// }
+	echo '</tr>';
+	// }
+	// { page type and parent 
+	// { type
+	echo '<tr><th>'.__('type').'</th><td><select name="type">';
+	$pagetypes=array(
+		array(0,__('normal'),0),
+		array(2,__('events calendar'),512),
+		array(3,__('user login/registration'),0),
+		array(5,__('search results'),0),
+		array(7,__('news'),512),
+		array(8,__('products'),16384),
+		array(9,__('table of contents'),0),
+		array(10,__('online store checkout'),0)
+	);
+	foreach($pagetypes as $a){
+		if(has_page_permissions($a[2]) || !$a[2]){
+			$tmp=($a[0]==$page['type'])?' selected="selected"':'';
+			echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
 		}
 	}
+	echo '</select></td>';
+	// }
+	// { parent
+	echo '<th>'.__('parent').'</th><td><select name="parent">';
+	$tmp=($page['parent']==0)?' selected="selected"':'';
+	echo '<option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
+	selectkiddies(0,0,$page['parent'],$id);
+	echo '</select></td>';
+	// }
+	// { template
+	echo '<th>'.__('template').'</th><td>';
+	$ex='ls '.BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
+	$d=`$ex`;
+	$d=explode("\n",$d);array_pop($d);
+	if(count($d)>1){
+		echo '<select name="template">';
+		foreach($d as $f){
+			$f=preg_replace('/^\.\.\/|\n|\r|$/','',$f);
+			echo '<option value="'.$f.'"';
+			if($f==$page['template'])echo ' selected="selected"';
+			echo '>'.preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$f).'</option>';
+		}
+		echo '</select>';
+	}else echo htmlspecialchars(preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$d[0]));
+	echo '</td></tr>';
+	// }
+	// }
 	// { page-type-specific data
 	// { generate FCKeditor CSS
 	$cssurl=fckeditor_generateCSS($page['id']);
 	// }
 	switch($page['type']){
-		case 2: { # events 
-			echo '<tr><td colspan="6" style="height:290px" class="eventsAdmin" id="eventsAdmin">'.__('please wait - loading...').'</td></tr>';
-			$plugins_to_load[]='"eventsAdmin":1';
-			break;
+		case 2: // { events 
+		echo '<tr><td colspan="6" style="height:290px" class="eventsAdmin" id="eventsAdmin">'.__('please wait - loading...').'</td></tr>';
+		$plugins_to_load[]='"eventsAdmin":1';
+		break;
+		// }
+		case 3: // { user login 
+		echo '<tr><th>'.__('Visibility').'</th><td>'.wInput('page_vars[userlogin_visibility]','select',array(
+			'3'=>__('Login and Register forms'),
+			'1'=>__('Login form'),
+			'2'=>__('Register form')
+		),$page_vars['userlogin_visibility']).'</td>';
+		echo '<th colspan="3">'.__('On login, redirect to:').'</th><td>';
+		echo '<select name="page_vars[userlogin_redirect_to]">';
+		$tmp=(!$page_vars['userlogin_redirect_to'])?' selected="selected"':'';
+		echo '<option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
+		selectkiddies(0,0,$page_vars['userlogin_redirect_to'],$id);
+		echo '</select></td>';
+		echo '</td></tr>';
+		echo '<tr><th>'.__('body').'</th><td colspan="5">';
+		echo fckeditor('body',$page['body'],false,$cssurl);
+		echo '</td></tr>';
+		break;
+		// }
+		case 7: // { news 
+		echo '<tr><td colspan="6" style="height:290px" class="newsAdmin" id="newsAdmin">'.__('please wait - loading...').'</td></tr>';
+		$plugins_to_load[]='"newsAdmin":1';
+		break;
+		// }
+		case 8: // { products
+		echo '<tr><th>'.__('content header').'</th><td colspan="4">';
+		echo fckeditor('page_vars[content_header]',$page_vars['content_header'],false,$cssurl);
+		echo '</textarea></td>';
+		echo '<td>';
+		// { specify a product category
+		echo __('category to show').'<br /><select name="page_vars[category_to_show]"><option value="0">'.__('all categories').'</option>';
+		$r3=dbAll('select id,name from product_category order by name');
+		foreach($r3 as $r2){
+			echo '<option value="'.$r2['id'].'"';
+			if($r2['id']==$page_vars['category_to_show'])echo' selected="selected"';
+			echo '>'.htmlspecialchars($r2['name']).'</option>';
 		}
-		case 3: { # user login 
-			echo '<tr><th>'.__('Visibility').'</th><td>'.wInput('page_vars[userlogin_visibility]','select',array(
-				'3'=>__('Login and Register forms'),
-				'1'=>__('Login form'),
-				'2'=>__('Register form')
-			),$page_vars['userlogin_visibility']).'</td>';
-			echo '<th colspan="3">'.__('On login, redirect to:').'</th><td>';
-			echo '<select name="page_vars[userlogin_redirect_to]">';
-			$tmp=(!$page_vars['userlogin_redirect_to'])?' selected="selected"':'';
-			echo '<option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
-			selectkiddies(0,0,$page_vars['userlogin_redirect_to'],$id);
-			echo '</select></td>';
-			echo '</td></tr>';
-			echo '<tr><th>'.__('body').'</th><td colspan="5">';
-			echo fckeditor('body',$page['body'],false,$cssurl);
-			echo '</td></tr>';
-			break;
+		echo '</select>';
+		// }
+		// { specify a product
+		echo __('product to show').'<br /><select name="page_vars[product_to_show]"><option value="0">'.__('all products').'</option>';
+		$r3=dbAll('select id,name from products order by name');
+		foreach($r3 as $r2){
+			echo '<option value="'.$r2['id'].'"';
+			if($r2['id']==$page_vars['product_to_show'])echo' selected="selected"';
+			echo '>'.htmlspecialchars($r2['name']).'</option>';
 		}
-		case 4: { # blog indexes 
-			$tmp=($page['parent']==0)?' selected="selected"':'';
-			echo '<tr><th>'.__('index blogs from').'</th><td><select name="blog_parent"><option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
-			$r2=dbRow('select parent,amount_to_show from blog_indexes where pageid="'.$id.'"');
-			if(count($r2)){
-				$blog_pageid=$r2['parent'];
-			}else $blog_pageid=$id;
-			selectkiddies(0,0,$blog_pageid,-1);
-			echo '</select></td><th>'.__('Amount To Show').'</th><td><select name="blog_amount_to_show">';
-			$arr=array(__('300 Characters, plain text'),__('600 Characters, plain text'),__('Everything, including formats'));
-			foreach($arr as $k=>$v){
-				echo '<option value="'.$k.'"';
-				if(count($r2)&&$k==$r2['amount_to_show'])echo ' selected="selected"';
-				echo '>'.htmlspecialchars($v).'</option>';
-			}
-			echo '</select></td></tr>';
-			break;
+		echo '</select>';
+		// }
+		// { product template
+		echo __('product template').'<br /><select name="page_vars[product_type]"><option value="0">'.__('all types').'</option>';
+		$r3=dbAll('select id,name from product_types order by name');
+		foreach($r3 as $r2){
+			echo '<option value="'.$r2['id'].'"';
+			if($r2['id']==$page_vars['product_type'])echo' selected="selected"';
+			echo '>'.htmlspecialchars($r2['name']).'</option>';
 		}
-		case 7: { # news 
-			echo '<tr><td colspan="6" style="height:290px" class="newsAdmin" id="newsAdmin">'.__('please wait - loading...').'</td></tr>';
-			$plugins_to_load[]='"newsAdmin":1';
-			break;
-		}
-		case 8: { # products
-			echo '<tr><th>'.__('content header').'</th><td colspan="4">';
-			echo fckeditor('page_vars[content_header]',$page_vars['content_header'],false,$cssurl);
-			echo '</textarea></td>';
-			echo '<td>';
-			// { specify a product category
-			echo __('category to show').'<br /><select name="page_vars[category_to_show]"><option value="0">'.__('all categories').'</option>';
-			$r3=dbAll('select id,name from product_category order by name');
-			foreach($r3 as $r2){
-				echo '<option value="'.$r2['id'].'"';
-				if($r2['id']==$page_vars['category_to_show'])echo' selected="selected"';
-				echo '>'.htmlspecialchars($r2['name']).'</option>';
-			}
-			echo '</select>';
-			// }
-			// { specify a product
-			echo __('product to show').'<br /><select name="page_vars[product_to_show]"><option value="0">'.__('all products').'</option>';
-			$r3=dbAll('select id,name from products order by name');
-			foreach($r3 as $r2){
-				echo '<option value="'.$r2['id'].'"';
-				if($r2['id']==$page_vars['product_to_show'])echo' selected="selected"';
-				echo '>'.htmlspecialchars($r2['name']).'</option>';
-			}
-			echo '</select>';
-			// }
-			// { product template
-			echo __('product template').'<br /><select name="page_vars[product_type]"><option value="0">'.__('all types').'</option>';
-			$r3=dbAll('select id,name from product_types order by name');
-			foreach($r3 as $r2){
-				echo '<option value="'.$r2['id'].'"';
-				if($r2['id']==$page_vars['product_type'])echo' selected="selected"';
-				echo '>'.htmlspecialchars($r2['name']).'</option>';
-			}
-			echo '</select>';
-			// }
-			echo '</td></tr>';
-			break;
-		}
+		echo '</select>';
+		// }
+		echo '</td></tr>';
+		break;
+		// }
 		default: // { body
-			echo '<tr><th>'.__('body').'</th><td colspan="5">';
-			echo fckeditor('body',$page['body'],0,$cssurl);
-			echo '</td></tr>';
+		echo '<tr><th>'.__('body').'</th><td colspan="5">';
+		echo fckeditor('body',$page['body'],0,$cssurl);
+		echo '</td></tr>';
 		// }
 	}
 	// }
@@ -205,7 +197,7 @@ else{
 	echo '<tr><th>'.__('keywords').'</th><td>'.wInput('keywords','',htmlspecialchars($page['keywords'])).'</td></tr>';
 	echo '<tr><th>'.__('description').'</th><td>'.wInput('description','',htmlspecialchars($page['description'])).'</td></tr>';
 	echo '<tr title="'.__('used by Google. importance of page relative to other pages on site. values 0.0 to 1.0').'"><th>importance</th><td>'.wInput('importance','',htmlspecialchars($page['importance'])).'</td></tr>';
-	echo '<tr><th title="'.__('This is especially useful for large sites or blogs').'">category</th><td>';
+	echo '<tr><th title="'.__('This is especially useful for large sites').'">category</th><td>';
 	$categories=dbAll('select distinct category from pages where category!="" order by category desc');
 	if(count($categories)){
 		$arr=array();
@@ -222,7 +214,7 @@ else{
 	echo '</td><td width="33%">';
 	// { special
 	echo '<h4>'.__('Special').'</h4>';
-	$specials=array(__('Is Home Page'),__('Does not appear in navigation'),'','','',__('Not indexed by blogs'),__('Allow public comments'));
+	$specials=array(__('Is Home Page'),__('Does not appear in navigation'),'','','','',__('Allow public comments'));
 	for($i=0;$i<count($specials);++$i){
 		if($specials[$i]!=''){
 			echo wInput('special['.$i.']','checkbox',($page['special']&pow(2,$i))?1:0).$specials[$i].'<br />';

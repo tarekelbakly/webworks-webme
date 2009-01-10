@@ -7,7 +7,7 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	else header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<8)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<10)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 if(is_admin())$plugins_to_load[]='"frontend_admin":1';
@@ -101,11 +101,6 @@ else{
 		case 3: { # user registration
 			include_once(BASEDIR.'common/user.login.and.registration.php');
 			$c.=webmeParse($PAGEDATA->body.userloginandregistrationDisplay());
-			break;
-		}
-		case 4: { # blog index
-			include_once(BASEDIR.'common/funcs.blogs.php');
-			$c.=displayBlogExcerpts($PAGEDATA->id);
 			break;
 		}
 		case 5: { # search results

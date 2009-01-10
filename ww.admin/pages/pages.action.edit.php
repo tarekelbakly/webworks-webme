@@ -60,25 +60,10 @@ if(allowedToEditPage($id)){
 		recordTranslation('body',$body);
 		recordTranslation('name',$name);
 	}
-	switch($_POST['type']){
-		case 4: { # blog index
-			$blog_parent=getVar('blog_parent');
-			$blog_amount_to_show=getVar('blog_amount_to_show');
-			dbQuery('delete from blog_indexes where pageid="'.$id.'"');
-			dbQuery('insert into blog_indexes set pageid="'.$id.'",parent="'.$blog_parent.'",amount_to_show="'.$blog_amount_to_show.'",rss=""');
-			include_once('../common/funcs.blogs.php');
-			displayBlogExcerpts($id);
-			break;
-		}
-	}
 	$q.=',parent='.$pid;
 	if(has_page_permissions(128))$q.=',special='.$special;
 	$q.=' where id='.$id;
 	dbQuery($q);
-	if(has_page_permissions(32)){ # panels
-		dbQuery('delete from pagePanels where pageid='.$id);
-		if(isset($panels))foreach($panels as $i=>$j)foreach($j as $k=>$l)dbQuery('insert into pagePanels set pageid='.$id.',panelid='.$l.',align='.$i);
-	}
 	{ # page_vars
 		dbQuery('delete from page_vars where page_id="'.$id.'"');
 		$pagevars=$_REQUEST['page_vars'];
@@ -87,7 +72,6 @@ if(allowedToEditPage($id)){
 		}
 		if(is_array($pagevars))foreach($pagevars as $k=>$v)dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
 	}
-	rebuild_parent_rsses($id);
 	echo '<em>'.__('An item\'s details have been updated.').'</em>';
 }
 else{

@@ -1,6 +1,6 @@
 <?php
 function allowedToEditPage($id){
-	if(!$id && !has_page_permissions(1024))return 0;
+	if(!$id && !admin_can_create_top_pages())return 0;
 	$r=dbRow('select value from permissions where id="'.$id.'" and type=1');
 	if(count($r)){
 		$lines=explode(',',$r['value']);
@@ -45,7 +45,4 @@ function showshortcuts($id,$parent){
 		}
 		echo '</ul>';
 	}
-}
-function rebuild_parent_rsses($id){
-	dbQuery('update blog_indexes set rss=""');
 }

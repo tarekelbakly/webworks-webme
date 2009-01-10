@@ -62,6 +62,14 @@ if($version==7){ // blog indexes
 	mysql_query('CREATE TABLE `blog_indexes` ( `pageid` int(11) default NULL, `parent` int(11) default NULL, `rss` text, `amount_to_show` int(11) default 0) ENGINE=MyISAM DEFAULT CHARSET=utf8');
 	$version=8;
 }
+if($version==8){ // remove blog indexes - will rewrite this section at a later date
+	mysql_query('DROP TABLE `blog_indexes`');
+	$version=9;
+}
+if($version==9){ // comments
+	mysql_query('CREATE TABLE `comments` ( `id` int(11) NOT NULL auto_increment, `objectid` int(11) default 0, `name` text, `email` text, `homepage` text, `comment` text, `cdate` datetime default NULL, `isvalid` smallint(6) default 0, `verificationhash` char(28) default NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8');
+	$version=10;
+}
 
 $config='<'."?php
 \$DBVARS=array(
