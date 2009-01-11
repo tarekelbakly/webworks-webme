@@ -98,7 +98,7 @@ if($version==12){ // tmp files directory
 	if(!is_dir($dir)){
 		echo '<p>Creating <code>f/.files</code> directory.</p>';
 		mkdir($dir);
-		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.BASEDIR.'/f</code> is writable by the server.</p>';
+		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.BASEDIR.'f</code> is writable by the server.</p>';
 	}
 	if(is_dir($dir)){
 		touch($dir.'/test.txt');

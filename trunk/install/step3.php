@@ -37,6 +37,7 @@ if(isset($_REQUEST['action'])){
 		exit;
 	}
 }
+if(!isset($_SESSION['user']))$_SESSION['user']=array('email'=>'','password'=>'','name'=>'');
 
 echo '<form method="post"><table>';
 echo '<tr><th>Email</th><td><input type="text" name="email" value="'.htmlspecialchars($_SESSION['user']['email']).'" /></td><td>You will log in with this. Please ensure it is correct. If you forget your password, it can be sent to this address.</td></tr>';
