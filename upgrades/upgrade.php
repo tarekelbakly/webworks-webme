@@ -2,6 +2,7 @@
 $version=0;
 require '../common.php';
 if(isset($DBVARS['version']))$version=(int)$DBVARS['version'];
+echo '<strong>upgrades detected. running upgrade script.</strong>';
 if($version==0){ // missing user accounts and groups
 	// { user_accounts
 	mysql_query('create table user_accounts(
@@ -74,8 +75,44 @@ if($version==10){ // set default theme
 	$DBVARS['theme']='.default';
 	$version=11;
 }
+if($version==11){ // smarty template_c directory
+	$dir=BASEDIR . 'templates_c';
+	if(!is_dir($dir)){
+		echo '<p>Creating <code>templates_c</code> directory.</p>';
+		mkdir($dir);
+		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.BASEDIR.'</code> is writable by the server.</p>';
+	}
+	if(is_dir($dir)){
+		touch($dir.'/test.txt');
+		if(!file_exists($dir.'/test.txt')){
+			echo '<p>Error: could not create test file <code>'.$dir.'/test.txt</code>. Please make sure that <code>'.$dir.'</code> is writable by the server.</p>';
+		}
+		else{
+			unlink($dir.'/test.txt');
+			$version=12;
+		}
+	}
+}
+if($version==12){ // tmp files directory
+	$dir=BASEDIR . 'f/.files';
+	if(!is_dir($dir)){
+		echo '<p>Creating <code>f/.files</code> directory.</p>';
+		mkdir($dir);
+		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.BASEDIR.'/f</code> is writable by the server.</p>';
+	}
+	if(is_dir($dir)){
+		touch($dir.'/test.txt');
+		if(!file_exists($dir.'/test.txt')){
+			echo '<p>Error: could not create test file <code>'.$dir.'/test.txt</code>. Please make sure that <code>'.$dir.'</code> is writable by the server.</p>';
+		}
+		else{
+			unlink($dir.'/test.txt');
+			$version=13;
+		}
+	}
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
 
-echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the site.</p><script type="text/javascript">setTimeout(function(){document.location="/";},3000);</script>';
+echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the site.</p>';
