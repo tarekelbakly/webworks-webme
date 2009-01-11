@@ -15,10 +15,12 @@ RewriteRule ^css$ /ww.css/all.php [L]
 RewriteRule ^js_lang/([^/]*)/(.*)$ /j/lang.php [L]
 RewriteRule ^js/(.*)$ /j/js.php [L]
 RewriteRule ^kfmget/(.*)$ /j/fckeditor-2.6.3/editor/plugins/kfm/get.php?id=$1 [L]
+RewriteRule ^(.*)\.css$ /common/css_parser.php?css=$1.css [L]
 RewriteRule ^([^./]*).rss$ /p/rss.php?page=$1 [L]
 RewriteRule ^sitemap.xml /p/sitemap.php [L]
-RewriteRule ^([^./]{3}[^.&]*)\&(.*)$ /index.php?page=$1&$2 [L]
-RewriteRule ^([^./]{3}[^.]*)$ /index.php?page=$1 [QSA,L]
+RewriteRule ^([^./]{3}[^.]*)\?(.*)$ /index.php?page=$1&$2 [L]
+RewriteRule ^([^./]{3}[^.\&]*)\&(.*)$ /index.php?page=$1&$2 [L]
+RewriteRule ^([^./]{3}[^.]*)$ /index.php?page=$1 [L]
 
 ErrorDocument 404 /p/404.php
 

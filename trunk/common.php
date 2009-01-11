@@ -11,6 +11,19 @@ function __() {
 function __autoload($name) {
 	require_once BASEDIR . '/ww.php_classes/' . $name . '.php';
 } 
+function config_rewrite(){
+	global $DBVARS;
+	$config='<'."?php
+\$DBVARS=array(
+	'username' => '".addslashes($DBVARS['username'])."',
+	'password' => '".addslashes($DBVARS['password'])."',
+	'hostname' => '".addslashes($DBVARS['hostname'])."',
+	'db_name'  => '".addslashes($DBVARS['db_name'])."',
+	'theme'    => '".addslashes($DBVARS['theme'])."',
+	'version'  => ".((int)$DBVARS['version'])."
+);";
+	file_put_contents(BASEDIR . '.private/config.php',$config);
+}
 function dbAll($query,$key='') {
 	global $db;
 	$q = $db->query($query);
@@ -249,10 +262,13 @@ if(getVar('__skin') && getVar('__skin')!=''){
 	}
 }
 else if(!isset($_SESSION['viewing_skin']) || $_SESSION['viewing_skin']==''){
-	$ex='ls '.BASEDIR.'ww.skins/';
-	$d=`$ex`;
-	$d=explode("\n",$d);
-	if(count($d) && $d[0]!='')$_SESSION['viewing_skin']=$d[0];
-	else $_SESSION['viewing_skin']='.default';
+	if(is_dir(BASEDIR . 'ww.skins/' . $DBVARS['theme']))$_SESSION['viewing_skin']=$DBVARS['theme'];
+	else{
+		$ex='ls '.BASEDIR.'ww.skins/';
+		$d=`$ex`;
+		$d=explode("\n",$d);
+		if(count($d) && $d[0]!='')$_SESSION['viewing_skin']=$d[0];
+		else $_SESSION['viewing_skin']='.default';
+	}
 }
 // }
