@@ -111,6 +111,11 @@ if($version==12){ // tmp files directory
 		}
 	}
 }
+if($version==13){ // set default theme
+	$DBVARS['site_title']='Site Title';
+	$DBVARS['site_subtitle']='Website\'s Subtitle';
+	$version=14;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();

@@ -1,10 +1,13 @@
 <?php
 function show_page($template,$pagecontent,$PAGEDATA,$plugins_to_load){
 	include BASEDIR . 'common/Smarty/Smarty.class.php';
+	global $DBVARS;
 	$smarty = new Smarty;
 
 	// { some straight replaces
 	$smarty->assign('PAGECONTENT','<div id="__webmePageContent">'.$pagecontent.'</div>');
+	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
+	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
 //	$pagename=($PAGEDATA->title=='')?$PAGEDATA->name:$PAGEDATA->title;
 //	$template=str_replace('%PAGENAME%',htmlspecialchars($pagename),$template);
 //	$template=str_replace('%PAGEID%','page'.$PAGEDATA->id,$template);
