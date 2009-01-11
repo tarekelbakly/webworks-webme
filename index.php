@@ -42,8 +42,8 @@ if(isset($_GET['wwSpecial'])){
 }
 else if($page=='' && isset($_GET['search'])){
 	$p=Page::getInstanceByType(5);
-	if(!$p){
-		dbQuery('insert into pages set cdate=now(),edate=now(),name="__search",body="",type="5"');
+	if(!$p || !isset($p->id)){
+		dbQuery('insert into pages set cdate=now(),edate=now(),name="__search",body="",type=5,special=2,ord=5000');
 		$p=Page::getInstanceByType(5);
 	}
 	$id=$p->id;

@@ -76,7 +76,7 @@ class Page{
 		return $instancesBySpecial[$sp];
 	}
 	function getInstanceByType($type=0){
-		if (!@array_key_exists($type,self::$instancesByType)) self::$instancesByType[$type] = new Page($type,2);
+		if (!@array_key_exists($type,self::$instancesByType)) new Page($type,2);
 		return self::$instancesByType[$type];
 	}
 	function getInstanceByNameAndParent($name,$parent){
