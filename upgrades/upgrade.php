@@ -70,16 +70,12 @@ if($version==9){ // comments
 	mysql_query('CREATE TABLE `comments` ( `id` int(11) NOT NULL auto_increment, `objectid` int(11) default 0, `name` text, `email` text, `homepage` text, `comment` text, `cdate` datetime default NULL, `isvalid` smallint(6) default 0, `verificationhash` char(28) default NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8');
 	$version=10;
 }
+if($version==10){ // set default theme
+	$DBVARS['theme']='.default';
+	$version=11;
+}
 
-$config='<'."?php
-\$DBVARS=array(
-	'username' => '".addslashes($DBVARS['username'])."',
-	'password' => '".addslashes($DBVARS['password'])."',
-	'hostname' => '".addslashes($DBVARS['hostname'])."',
-	'db_name'  => '".addslashes($DBVARS['db_name'])."',
-	'version'  => $version
-);";
+$DBVARS['version']=$version;
+config_rewrite();
 
-file_put_contents('../.private/config.php',$config);
-
-echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the site.</p>';
+echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the site.</p><script type="text/javascript">setTimeout(function(){document.location="/";},3000);</script>';

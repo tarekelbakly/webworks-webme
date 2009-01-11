@@ -7,12 +7,13 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	else header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<10)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<11)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 if(is_admin())$plugins_to_load[]='"frontend_admin":1';
+$page=getVar('page');
 // }
-// { wwSpecial
+// { specials
 if(isset($_GET['wwSpecial'])){
 	switch($_GET['wwSpecial']){
 		case 'productsearch':{
@@ -39,10 +40,17 @@ if(isset($_GET['wwSpecial'])){
 		}
 	}
 }
+else if($page=='' && isset($_GET['search'])){
+	$p=Page::getInstanceByType(5);
+	if(!$p){
+		dbQuery('insert into pages set cdate=now(),edate=now(),name="__search",body="",type="5"');
+		$p=Page::getInstanceByType(5);
+	}
+	$id=$p->id;
+}
 // }
 // { get current page id
 if(!$id){
-	$page=getVar('page');
 	if($page){
 		if(ereg('&',$page))$page=preg_replace('/&.*/','',$page);
 		$r=Page::getInstanceByName($page);

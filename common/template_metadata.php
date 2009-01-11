@@ -20,10 +20,10 @@ function template_get_metadata($template,$PAGEDATA,$plugins_to_load){
 	$c.='<script type="text/javascript" src="/js_lang/'.$_SESSION['webme_language'].'/'.$modified.'"></script>';
 	$c.='<script type="text/javascript">var pagedata={id:'.$PAGEDATA->id.',url:"'.$PAGEDATA->getRelativeURL().'",country:"'.(isset($_SESSION['os_country'])?$_SESSION['os_country']:'').'"},';
 	$c.='userdata={isAdmin:'.(is_admin()?1:0);
-	if(isset($_SESSION['userdata']) && is_array($_SESSION['userdata']))$c.=',discount:'.(int)$_SESSION['userdata']['discount'];
+	if(isset($_SESSION['userdata']) && isset($_SESSION['userdata']['discount']))$c.=',discount:'.(int)$_SESSION['userdata']['discount'];
 	$c.='},';
 	$c.='plugins_to_load={'.join(',',$plugins_to_load).'};';
-	$c.='document.write("<"+"style type=\'text/css\'>.nojs{display:none}<"+"/style>");';
+	$c.='document.write("<"+"style type=\'text/css\'>a.nojs{display:none !important}<"+"/style>");';
 	$c.='</script>';
 	$c.='<style type="text/css">@import "/css";</style>';
 	$c.='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';

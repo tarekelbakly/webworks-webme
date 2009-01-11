@@ -111,9 +111,12 @@ function ww_menuDisplay($b){
 	}
 	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.' ajaxmenu'.$classes.' parent'.$parent.'">';
 	$rs=menu_getChildren($parent,$PAGEDATA->id,0,$parent,$search_options);
+	$links=0;
 	if(count($rs))foreach($rs as $r){
 		$page=Page::getInstance($r['id']);
+		if(!$links)$r['classes'].=' first';
 		$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'.$page->getRelativeURL().'"><span class="l"></span>'.htmlspecialchars($page->name).'<span class="r"></span></a>';
+		$links++;
 	}
 	$c.='<a class="menuItemTop nojs" href="'.$PAGEDATA->getRelativeURL().'&amp;webmespecial=sitemap">'.__('Site Map').'</a>';
 	$c.='</div>';
