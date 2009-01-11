@@ -16,12 +16,14 @@ function config_rewrite(){
 	global $DBVARS;
 	$config='<'."?php
 \$DBVARS=array(
-	'username' => '".addslashes($DBVARS['username'])."',
-	'password' => '".addslashes($DBVARS['password'])."',
-	'hostname' => '".addslashes($DBVARS['hostname'])."',
-	'db_name'  => '".addslashes($DBVARS['db_name'])."',
-	'theme'    => '".addslashes($DBVARS['theme'])."',
-	'version'  => ".((int)$DBVARS['version'])."
+	'username'     => '".addslashes($DBVARS['username'])."',
+	'password'     => '".addslashes($DBVARS['password'])."',
+	'hostname'     => '".addslashes($DBVARS['hostname'])."',
+	'db_name'      => '".addslashes($DBVARS['db_name'])."',
+	'theme'        => '".addslashes($DBVARS['theme'])."',
+	'site_title'   => '".addslashes($DBVARS['site_title'])."',
+	'site_subtitle'=> '".addslashes($DBVARS['site_subtitle'])."',
+	'version'      => ".((int)$DBVARS['version'])."
 );";
 	file_put_contents(BASEDIR . '.private/config.php',$config);
 }
