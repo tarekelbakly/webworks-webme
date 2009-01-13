@@ -3,8 +3,11 @@
 require '../common.php';
 
 if(!isset($_REQUEST['filename']))exit;
-$file=BASEDIR.'f/'.$_REQUEST['filename'];
-if(strpos($file,'..')!==false || strpos($file,'/.')!==false)exit;
+$file=USERBASE.'f/'.$_REQUEST['filename'];
+if(
+	strpos($file,'..')!==false ||
+	( strpos($file,'/.')!==false && strpos(preg_replace('#/\.files/#','/',$file),'/.')!==false )
+)exit;
 
 if(!file_exists($file) || !is_file($file))exit;
 

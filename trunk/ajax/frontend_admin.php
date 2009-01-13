@@ -1,6 +1,6 @@
 <?php
 require_once('../common.php');
-require_once(BASEDIR.'common/kaejax.php');
+require_once(SCRIPTBASE.'common/kaejax.php');
 if(!is_admin()){
 	echo 'no stairway - denied!';
 	exit;

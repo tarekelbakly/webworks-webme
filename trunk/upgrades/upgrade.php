@@ -76,11 +76,11 @@ if($version==10){ // set default theme
 	$version=11;
 }
 if($version==11){ // smarty template_c directory
-	$dir=BASEDIR . 'templates_c';
+	$dir=SCRIPTBASE . 'templates_c';
 	if(!is_dir($dir)){
 		echo '<p>Creating <code>templates_c</code> directory.</p>';
 		mkdir($dir);
-		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.BASEDIR.'</code> is writable by the server.</p>';
+		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.SCRIPTBASE.'</code> is writable by the server.</p>';
 	}
 	if(is_dir($dir)){
 		touch($dir.'/test.txt');
@@ -94,11 +94,11 @@ if($version==11){ // smarty template_c directory
 	}
 }
 if($version==12){ // tmp files directory
-	$dir=BASEDIR . 'f/.files';
+	$dir=SCRIPTBASE . 'f/.files';
 	if(!is_dir($dir)){
 		echo '<p>Creating <code>f/.files</code> directory.</p>';
 		mkdir($dir);
-		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.BASEDIR.'f</code> is writable by the server.</p>';
+		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.SCRIPTBASE.'f</code> is writable by the server.</p>';
 	}
 	if(is_dir($dir)){
 		touch($dir.'/test.txt');
@@ -115,6 +115,10 @@ if($version==13){ // set default theme
 	$DBVARS['site_title']='Site Title';
 	$DBVARS['site_subtitle']='Website\'s Subtitle';
 	$version=14;
+}
+if($version==14){ // set USERBASE define
+	$DBVARS['userbase']=SCRIPTBASE;
+	$version=15;
 }
 
 $DBVARS['version']=$version;

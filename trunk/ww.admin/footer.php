@@ -5,11 +5,11 @@
 			<div class="languages">
 <?php // {
 $p=$_SERVER['PHP_SELF'];
-if ($handle = opendir(BASEDIR.'ww.lang')) {
+if ($handle = opendir(SCRIPTBASE.'ww.lang')) {
 	$files = array('en');
 	while(false!==($file = readdir($handle))){
 		if(substr($file,0,1)=='.')continue;
-		if (is_dir(BASEDIR.'ww.lang/'.$file))$files[] = $file;
+		if (is_dir(SCRIPTBASE.'ww.lang/'.$file))$files[] = $file;
 	}
 	closedir($handle);
 	sort($files);
