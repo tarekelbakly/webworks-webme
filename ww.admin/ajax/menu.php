@@ -1,8 +1,8 @@
 <?php
 require '../../common.php';
-require BASEDIR.'ww.admin/admin_libs.php';
-require BASEDIR.'common/menus.php';
-require BASEDIR.'common/kaejax.php';
+require SCRIPTBASE.'ww.admin/admin_libs.php';
+require SCRIPTBASE.'common/menus.php';
+require SCRIPTBASE.'common/kaejax.php';
 function ajaxmenu_getChildren($parentid,$currentpage=0){
 	global $USERDATA;
 	$r=array();

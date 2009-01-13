@@ -3,12 +3,12 @@ header('Content-type: text/html; Charset=utf-8');
 require '../common.php';
 // { if not logged in, show login page
 if (!is_admin()) {
-	include BASEDIR . 'ww.admin/login.php';
+	include SCRIPTBASE . 'ww.admin/login.php';
 	exit;
 }
 // }
 require 'admin_libs.php';
-require BASEDIR.'j/'.FCKEDITOR.'/fckeditor.php';
+require SCRIPTBASE.'j/'.FCKEDITOR.'/fckeditor.php';
 $admin_vars=array();
 // { common variables
 	foreach(array('action','resize') as $v)$$v=getVar($v);

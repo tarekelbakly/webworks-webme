@@ -10,7 +10,7 @@ function __() {
 	return $str;  
 }
 function __autoload($name) {
-	require_once BASEDIR . '/ww.php_classes/' . $name . '.php';
+	require_once SCRIPTBASE . '/ww.php_classes/' . $name . '.php';
 } 
 function config_rewrite(){
 	global $DBVARS;
@@ -23,9 +23,10 @@ function config_rewrite(){
 	'theme'        => '".addslashes($DBVARS['theme'])."',
 	'site_title'   => '".addslashes($DBVARS['site_title'])."',
 	'site_subtitle'=> '".addslashes($DBVARS['site_subtitle'])."',
-	'version'      => ".((int)$DBVARS['version'])."
+	'version'      => ".((int)$DBVARS['version']).",
+	'userbase'     => '".addslashes($DBVARS['userbase'])."'
 );";
-	file_put_contents(BASEDIR . '.private/config.php',$config);
+	file_put_contents(SCRIPTBASE . '.private/config.php',$config);
 }
 function dbAll($query,$key='') {
 	global $db;
@@ -119,7 +120,7 @@ function html_fixImageResizes($src){
 	return $src;
 }
 function inc_common($f) {
-	include_once BASEDIR . 'common/' . $f;
+	include_once SCRIPTBASE . 'common/' . $f;
 }
 function redirect($addr){
 	echo '<html><head><script type="text/javascript">setTimeout(function(){document.location="'.$addr.'";},10);</script></head><body><noscript>you need javascript to use this site</noscript></body></html>';
@@ -133,18 +134,20 @@ function sanitise_html($html) {
 	return $html;
 }
 // { load config, or go into setup if it's not set
-define('BASEDIR', dirname(__FILE__) . '/');
-if (!file_exists(BASEDIR . '.private/config.php')) {
+define('SCRIPTBASE', dirname(__FILE__) . '/');
+if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>No configuration file found</p>';
 	if(file_exists('install/index.php'))echo '<p><a href="/install/index.php">Click here to install</a></p>';
 	else echo '<p><strong>Installation script also missing...</strong> please contact kae@webworks.ie if you think there\'s a problem.</p>';
 	echo '</body></html>';
 	exit;
 }
-require BASEDIR . '.private/config.php';
-require BASEDIR . 'common/webme_specific.php';
+require SCRIPTBASE . '.private/config.php';
+if(isset($DBVARS['userbase']))define('USERBASE', $DBVARS['userbase']);
+else define('USERBASE', SCRIPTBASE);
+require SCRIPTBASE . 'common/webme_specific.php';
 define('FCKEDITOR','fckeditor-2.6.3');
-define('WORKDIR_IMAGERESIZES', BASEDIR.'f/.files/image_resizes/');
+define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
 // }
 // { connect to database
@@ -213,11 +216,11 @@ if(getVar('__webme_language')){
 	$_SESSION['webme_language']=addslashes(getVar('__webme_language'));
 }
 if(!isset($_SESSION['webme_language']) || strpos($_SESSION['webme_language'],'_'!==false)){
-	if ($handle = opendir(BASEDIR.'ww.lang')) {
+	if ($handle = opendir(SCRIPTBASE.'ww.lang')) {
 		$files = array('en');
 			while(false!==($file = readdir($handle))){
 				if(substr($file,0,1)=='.')continue;
-				if (is_dir(BASEDIR.'ww.lang/'.$file))$files[] = $file;
+				if (is_dir(SCRIPTBASE.'ww.lang/'.$file))$files[] = $file;
 			}
 		closedir($handle);
 		sort($files);
@@ -250,7 +253,7 @@ function __setLocale($locale){
 		setLocale(LC_ALL,$_SESSION['webme_language']);
 		if(strpos($_SESSION['webme_language'],'_')!==false)$_SESSION['webme_language']=preg_replace('/_.*/','',$_SESSION['webme_language']);
 	}
-	bindtextdomain('default',BASEDIR.'ww.lang/');
+	bindtextdomain('default',SCRIPTBASE.'ww.lang/');
 	textdomain('default');
 }
 __setLocale($_SESSION['webme_language']);
@@ -259,15 +262,15 @@ __setLocale($_SESSION['webme_language']);
 if(getVar('__skin') && getVar('__skin')!=''){
 	if(!ereg('/[^a-zA-Z0-9 ,\._]/',$skin)){
 		$skin=getVar('__skin');
-		if(is_dir(BASEDIR.'ww.skins/'.$skin.'/h')){
+		if(is_dir(USERBASE.'ww.skins/'.$skin.'/h')){
 			$_SESSION['viewing_skin']=addslashes(getVar('__skin'));
 		}
 	}
 }
 else if(!isset($_SESSION['viewing_skin']) || $_SESSION['viewing_skin']==''){
-	if(is_dir(BASEDIR . 'ww.skins/' . $DBVARS['theme']))$_SESSION['viewing_skin']=$DBVARS['theme'];
+	if(is_dir(USERBASE . 'ww.skins/' . $DBVARS['theme']))$_SESSION['viewing_skin']=$DBVARS['theme'];
 	else{
-		$ex='ls '.BASEDIR.'ww.skins/';
+		$ex='ls '.USERBASE.'ww.skins/';
 		$d=`$ex`;
 		$d=explode("\n",$d);
 		if(count($d) && $d[0]!='')$_SESSION['viewing_skin']=$d[0];

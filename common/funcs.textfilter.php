@@ -73,7 +73,7 @@ function textObjectsFilter($d){
 		do{
 			$a=$d;
 			if(ereg($code.'{[^}^<^>]*}',$d)){
-				if(isset($include_files[$code]))require_once(BASEDIR.$include_files[$code]);
+				if(isset($include_files[$code]))require_once(SCRIPTBASE.$include_files[$code]);
 				$b=preg_replace('/.*'.$code.'{([^}^<^>]*)}.*/','\1',$d);
 				$c=$function($b);
 				$d=str_replace('%'.$code.'{'.$b.'}%',$c,$d,$count);

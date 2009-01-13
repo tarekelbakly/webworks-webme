@@ -14,7 +14,7 @@ function template_get_metadata($template,$PAGEDATA){
 	if(strpos($template,'class="scrollingEvents"')!==false)$plugins_to_load[]='"scrollingEvents":1';
 	if(strpos($template,'class="scrollingNews"')!==false)$plugins_to_load[]='"scrollingNews":1';
 	// }
-	$dir=BASEDIR.'j';
+	$dir=SCRIPTBASE.'j';
 	$modified=md5(`ls -l $dir`);
 	$c.='<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>';
 	$c.='<script type="text/javascript" src="/js/'.$modified.'"></script>';

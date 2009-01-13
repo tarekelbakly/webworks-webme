@@ -1,5 +1,5 @@
 <?php
-require_once(BASEDIR.'common/menus.php');
+require_once(SCRIPTBASE.'common/menus.php');
 $rs=menu_getChildren(0,$id,1);
 $c='<script type="text/javascript">var ajaxmenu_expandable_currentPage='.$id.';</script><table class="pagesContents ajaxmenu_expandable ajax_sortabletable" cellspacing="0" id="ajaxmenu_expandable">';
 for($i=0;$i<count($rs);++$i){

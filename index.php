@@ -7,7 +7,7 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	else header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<14)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<15)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 if(is_admin())$plugins_to_load[]='"frontend_admin":1';
@@ -110,7 +110,7 @@ else{
 			break;
 		}
 		case 3: { # user registration
-			include_once(BASEDIR.'common/user.login.and.registration.php');
+			include_once(SCRIPTBASE.'common/user.login.and.registration.php');
 			$c.=webmeParse($PAGEDATA->body.userloginandregistrationDisplay());
 			break;
 		}
@@ -162,16 +162,16 @@ if(isset($_SESSION['msgs_errors'])){
 $pagecontent=$c;
 // }
 // { load page template
-if(file_exists(BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html')){
-	$template=BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html';
+if(file_exists(USERBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html')){
+	$template=USERBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html';
 }
 else{
-	$ex='ls '.BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
+	$ex='ls '.USERBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
 	$d=`$ex`;
 	$d=explode("\n",$d);
 	$template=$d[0];
 }
 if($template=='')die('no template created. please create a template first');
 // }
-require BASEDIR . 'common/templates.php';
+require SCRIPTBASE . 'common/templates.php';
 show_page($template,$pagecontent,$PAGEDATA);

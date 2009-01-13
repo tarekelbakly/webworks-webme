@@ -1,6 +1,6 @@
 <?php
 function show_page($template,$pagecontent,$PAGEDATA,$plugins_to_load){
-	include BASEDIR . 'common/Smarty/Smarty.class.php';
+	include SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 	global $DBVARS;
 	$smarty = new Smarty;
 
@@ -22,7 +22,7 @@ function show_page($template,$pagecontent,$PAGEDATA,$plugins_to_load){
 		require_once('common/menus.php');
 		$template=menu_setup_main_menu($template);
 	} */
-	require_once BASEDIR . 'common/template_metadata.php';
+	require_once SCRIPTBASE . 'common/template_metadata.php';
 	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA,$plugins_to_load));
 	// { display the document
 	header('Content-type: text/html; Charset=utf-8');

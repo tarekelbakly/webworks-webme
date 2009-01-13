@@ -92,7 +92,7 @@ else{
 	// }
 	// { template
 	echo '<th>'.__('template').'</th><td>';
-	$ex='ls '.BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
+	$ex='ls '.USERBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
 	$d=`$ex`;
 	$d=explode("\n",$d);array_pop($d);
 	if(count($d)>1){
