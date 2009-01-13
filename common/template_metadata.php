@@ -1,5 +1,6 @@
 <?php
-function template_get_metadata($template,$PAGEDATA,$plugins_to_load){
+function template_get_metadata($template,$PAGEDATA){
+	global $plugins_to_load;
 	$title=($PAGEDATA->title!='')?$PAGEDATA->title:str_replace('www.','',$_SERVER['HTTP_HOST']).' > '.$PAGEDATA->name;
 	$c='<title>'.htmlspecialchars($title).'</title>';
 	// { generate plugins list for those that were not already figured out (this should be optimised as soon as possible)

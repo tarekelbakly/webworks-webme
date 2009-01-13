@@ -35,7 +35,7 @@ function textObjectsFilter($d){
 		'LOGIN_BOX'           => 'loginBox',
 		'SITE_SKINS'          => 'siteSkinThumbs',
 		'OS_BASKET'           => 'osBasketDisplay',
-    'OS_LIST_ALL_PRODUCTS'=> 'osListAllProducts',
+    'OS_LIST_ALL_PRODUCTS'=> 'products_list',
 		'OS_QUICKFIND'        => 'osQuickFindDisplay',
 		'PANEL'               => 'panelDisplay',
 		'SCROLLINGNEWS'       => 'scrollingNewsDisplay',
@@ -58,7 +58,7 @@ function textObjectsFilter($d){
 		'FORM'                => 'common/funcs.forms.php',
 		'GALLERY'             => 'common/funcs.image.gallery.php',
 		'OS_BASKET'           => 'common/online_stores.php',
-    'OS_LIST_ALL_PRODUCTS'=> 'common/online_stores.php',
+    'OS_LIST_ALL_PRODUCTS'=> 'common/products.php',
 		'OS_QUICKFIND'        => 'common/online_stores.php'
 	);
 	do{ 

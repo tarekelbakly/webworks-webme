@@ -162,7 +162,9 @@ if(isset($_SESSION['msgs_errors'])){
 $pagecontent=$c;
 // }
 // { load page template
-if(file_exists($PAGEDATA->template))$template=$PAGEDATA->template;
+if(file_exists(BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html')){
+	$template=BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html';
+}
 else{
 	$ex='ls '.BASEDIR.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
 	$d=`$ex`;
@@ -172,4 +174,4 @@ else{
 if($template=='')die('no template created. please create a template first');
 // }
 require BASEDIR . 'common/templates.php';
-show_page($template,$pagecontent,$PAGEDATA,$plugins_to_load);
+show_page($template,$pagecontent,$PAGEDATA);
