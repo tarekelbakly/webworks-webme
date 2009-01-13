@@ -7,7 +7,7 @@ class Page{
 	static $instancesBySpecial	 = array();
 	static $instancesByType		= array();
 	public $vals;
-	function __construct($v,$byField=0,$fromRow=0){
+	function __construct($v,$byField=0,$fromRow=0,$pvq=0){
 		# byField: 0=ID; 1=Name
 		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:dbRow("select * from pages where id=$v limit 1");
 		else if ($byField == 1) $r=dbRow("select * from pages where name like '".addslashes(str_replace('-','_',$v))."' limit 1");
@@ -29,13 +29,13 @@ class Page{
 		self::$instancesBySpecial[$this->special] =& $this;
 		self::$instancesByType[$this->type] =& $this;
 		$this->vars=array();
-		$pvq=dbAll("select * from page_vars where page_id=".$this->id);
+		$pvq=$pvq?$pvq:dbAll("select * from page_vars where page_id=".$this->id);
 		foreach($pvq as $pvr)$this->vars[$pvr['name']]=$pvr['value'];
 		if(isset($_SESSION['os_country']) && $_SESSION['os_country'] && isset($this->vars['banned_countries']) && $this->vars['banned_countries'] && strpos($this->vars['banned_countries'],$_SESSION['os_country'])!==false)$this->banned=true;
 	}
-	function getInstance($id=0,$fromRow=false){
+	function getInstance($id=0,$fromRow=false,$pvq=false){
 		if (!is_numeric($id)) return false;
-		if (!@array_key_exists($id,self::$instances)) self::$instances[$id]=new Page($id,0,$fromRow);
+		if (!@array_key_exists($id,self::$instances)) self::$instances[$id]=new Page($id,0,$fromRow,$pvq);
 		return self::$instances[$id];
 	}
 	function getInstanceByName($name=''){

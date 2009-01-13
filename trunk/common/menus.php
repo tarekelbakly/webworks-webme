@@ -14,6 +14,11 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 	$filter=$isadmin?'':'&& !(special&2)';
 	$rs=dbAll("select id as subid,id,name,type,(select count(id) from pages where parent=subid $filter) as numchildren from pages where parent='".$parentid."' $filter order by ord,name");
 	$menuitems=array();
+	// { optimise db retrieval of pages
+	$ids=array();
+	foreach($rs as $r)if(!isset(Page::$instances[$r['id']]))$ids[]=$r['id'];
+	Pages::precache($ids);
+	// }
 	foreach($rs as $k=>$r){
 		$PAGEDATA=Page::getInstance($r['id']);
 		if(isset($PAGEDATA->banned) && $PAGEDATA->banned)continue;
@@ -41,7 +46,7 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 		foreach($pvq as $pvr)$PARENTDATA->vars[$pvr['name']]=$pvr['value'];
 		if(isset($PARENTDATA->vars['property_type']) && $PARENTDATA->vars['property_type'])$filter=" where product_type_id='".$PARENTDATA->vars['property_type']."'";
 		else $filter="";
-		$rs2=dbAll("select id,name from products".$filter);
+		$rs2=dbAll("select id,name from products $filter order by name");
 		foreach($rs2 as $r2){
 			$rs[]=array('link'=>$PARENTDATA->getRelativeURL().'&product_id='.$r2['id'],'name'=>$r2['name'],'parent'=>$parentid);
 		}

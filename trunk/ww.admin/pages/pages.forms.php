@@ -99,9 +99,10 @@ else{
 		echo '<select name="template">';
 		foreach($d as $f){
 			$f=preg_replace('/^\.\.\/|\n|\r|$/','',$f);
-			echo '<option value="'.$f.'"';
-			if($f==$page['template'])echo ' selected="selected"';
-			echo '>'.preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$f).'</option>';
+			$name=preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$f);
+			echo '<option ';
+			if($name==$page['template'])echo ' selected="selected"';
+			echo '>'.$name.'</option>';
 		}
 		echo '</select>';
 	}else echo htmlspecialchars(preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$d[0]));
@@ -223,7 +224,11 @@ else{
 	// }
 	// { other
 	echo '<h4>'.__('Other').'</h4>';
-	echo '<table><tr><th>'.__('Page Order').'</th><td><select name="page_order"><option value="-1">'.__('end of navigation').'</option><option value="0">'.__('start of navigation').'</option></select></td></tr></table>';
+	echo '<table>';
+	echo '<tr><td width="30%"></td><td width="50%"></td><td></td></tr>';
+	echo '<tr><th>'.__('Page Order').'</th><td colspan="2"><select name="page_order"><option value="-1">'.__('end of navigation').'</option><option value="0">'.__('start of navigation').'</option></select></td></tr>';
+	echo '<tr><th colspan="2">'.__('Recursively update page templates').'</th><td><input type="checkbox" name="recursively_update_page_templates" /></td></tr>';
+	echo '</table>';
 	// }
 	echo '</td><td width="34%">';
 	// { page not visible in
