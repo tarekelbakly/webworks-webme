@@ -11,26 +11,9 @@ function __() {
 }
 function __autoload($name) {
 	require_once SCRIPTBASE . '/ww.php_classes/' . $name . '.php';
-} 
-function config_rewrite(){
-	global $DBVARS;
-	$config='<'."?php
-\$DBVARS=array(
-	'username'     => '".addslashes($DBVARS['username'])."',
-	'password'     => '".addslashes($DBVARS['password'])."',
-	'hostname'     => '".addslashes($DBVARS['hostname'])."',
-	'db_name'      => '".addslashes($DBVARS['db_name'])."',
-	'theme'        => '".addslashes($DBVARS['theme'])."',
-	'site_title'   => '".addslashes($DBVARS['site_title'])."',
-	'site_subtitle'=> '".addslashes($DBVARS['site_subtitle'])."',
-	'version'      => ".((int)$DBVARS['version']).",
-	'userbase'     => '".addslashes($DBVARS['userbase'])."'
-);";
-	file_put_contents(SCRIPTBASE . '.private/config.php',$config);
 }
 function dbAll($query,$key='') {
-	global $db;
-	$q = $db->query($query);
+	$q = dbQuery($query);
 	if(PEAR::isError($q)){
 		echo 'dbAll: '.$q->getMessage();
 		exit;
@@ -55,8 +38,7 @@ function dbQuery($query){
 	return $q;
 }
 function dbRow($query) {
-	global $db;
-	$q = $db->query($query);
+	$q = dbQuery($query);
 	if(PEAR::isError($q)){
 		echo 'dbRow:: '.$q->getMessage();
 		exit;
@@ -148,7 +130,7 @@ else define('USERBASE', SCRIPTBASE);
 require SCRIPTBASE . 'common/webme_specific.php';
 define('FCKEDITOR','fckeditor-2.6.3');
 define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
-define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
+define('WORKURL_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
 // }
 // { connect to database
 require_once 'MDB2.php';
@@ -278,3 +260,19 @@ else if(!isset($_SESSION['viewing_skin']) || $_SESSION['viewing_skin']==''){
 	}
 }
 // }
+function config_rewrite(){
+	global $DBVARS;
+	$config='<'."?php
+\$DBVARS=array(
+	'username'     => '".addslashes($DBVARS['username'])."',
+	'password'     => '".addslashes($DBVARS['password'])."',
+	'hostname'     => '".addslashes($DBVARS['hostname'])."',
+	'db_name'      => '".addslashes($DBVARS['db_name'])."',
+	'theme'        => '".addslashes($DBVARS['theme'])."',
+	'site_title'   => '".addslashes($DBVARS['site_title'])."',
+	'site_subtitle'=> '".addslashes($DBVARS['site_subtitle'])."',
+	'version'      => ".((int)$DBVARS['version']).",
+	'userbase'     => '".addslashes($DBVARS['userbase'])."'
+);";
+	file_put_contents(SCRIPTBASE . '.private/config.php',$config);
+}
