@@ -34,4 +34,4 @@ function has_access_permissions($val){
 	return true;
 }
 if(isset($DBVARS['userbase']))define('USERBASE', $DBVARS['userbase']);
-else define('USERBASE', SCRIPTBASE);
+else define('USERBASE', $_SERVER['DOCUMENT_ROOT']);

@@ -1,7 +1,7 @@
 <?php
-function show_page($template,$pagecontent,$PAGEDATA,$plugins_to_load){
+function show_page($template,$pagecontent,$PAGEDATA){
 	include SCRIPTBASE . 'common/Smarty/Smarty.class.php';
-	global $DBVARS;
+	global $DBVARS,$plugins_to_load;
 	$smarty = new Smarty;
 
 	// { some straight replaces
