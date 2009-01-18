@@ -27,15 +27,23 @@ class ProductCategory{
 		$this->childProductsRows=dbAll("select * from products,product_category_product where enabled and product_id=id and category_id='$this->id' $filter order by name");
 		return $this->childProductsRows;
 	}
+	function getChildProducts($enabled=true){
+		if(isset($this->childProducts))return $this->childProducts;
+		$this->childProducts=array();
+		$rs=$this->getChildProductsRows($enabled);
+		foreach($rs as $r)$this->childProducts[]=Product::getInstance($r['id'],$r);
+		return $this->childProducts;
+	}
 	function getRelativeURL(){
 		if(isset($this->page_id) && $this->page_id)return Page::getInstance($this->page_id)->getRelativeURL();
 		$id=$this->id;
-		$pid=dbOne("select page_id from page_vars where name='category_to_show' and value=$id",'page_id');
+		$r=PageVars::getByNameAndValue('category_to_show',$id,true);
+		$pid=$r?$r['page_id']:0;
 		if($pid){
 			$this->page_id=$pid;
-			return Page::getInstance($this->page_id)->getRelativeURL();
+			return Page::getInstance($this->page_id,$r)->getRelativeURL();
 		}
-		return 'NO_PAGE_FOUND';
+		return 'NO_PAGE_FOUND ('.$id.')';
 	}
 	function getChildCategories($enabled=true){
 		if(isset($this->childCategories))return $this->childCategories;

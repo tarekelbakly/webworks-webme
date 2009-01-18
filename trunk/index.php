@@ -18,9 +18,9 @@ if(isset($_GET['wwSpecial'])){
 	switch($_GET['wwSpecial']){
 		case 'productsearch':{
 			if(isset($_POST['producttype'])&&$_POST['producttype']){
-				$r=dbRow("select id from product_types where name='".addslashes($_POST['producttype'])."'");
-				if(count($r)){
-					$r2=dbRow("select page_id from page_vars where name='product_type' and value='".$r['id']."'");
+				$r=ProductType::getInstanceByName($_POST['producttype']);
+				if($r){
+					$r2=dbRow("select page_id from page_vars where name='product_type' and value='".$r->id."'");
 					if(count($r2))$id=$r2['page_id'];
 				}
 			}
@@ -68,7 +68,7 @@ if(!$id){
 // }
 // { load page data
 if($id){
-    $PAGEDATA=Page::getInstance($id);
+    $PAGEDATA=Page::getInstance($id)->initValues();
 }
 else{
 	echo 'no page loaded. If this is a new site, then please <a href="/ww.admin/">log into the admin area</a> and create your first page.';

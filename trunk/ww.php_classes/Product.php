@@ -1,7 +1,7 @@
 <?php
 class Product{
 	static $instances = array();
-	function __construct($v,$r=false,$enabled=false){
+	function __construct($v,$r=false,$values=false,$enabled=true){
 		$v=(int)$v;
 		if(!$v)return;
 		$filter=$enabled?' and enabled ':'';
@@ -9,8 +9,10 @@ class Product{
 		if(!count($r))return false;
 		foreach ($r as $k=>$val) $this->{$k}=$val;
 		$this->dbVals=$r;
-		$pDataVars=dbAll("SELECT * FROM products_values WHERE product_id=$v");
-		foreach($pDataVars as $pdv)$this->{$pdv['varname']}=$pdv['varvalue'];
+		// { set up values if they are supplied. otherwise, "lazy load" them
+		$this->__hasValues=false;
+		if($values)$this->initValues($values);
+		// }
 		self::$instances[$this->id] =& $this;
 	}
 	function getImage($size){
@@ -28,9 +30,9 @@ class Product{
 		}
 		else return ImageNotFound::getInstance($size)->getRelativeURL();
 	}
-	function getInstance($id=0,$r=false){
+	function getInstance($id=0,$r=false,$vals=false,$enabled=true){
 		if (!is_numeric($id)) return false;
-		if (!@array_key_exists($id,self::$instances)) new Product($id,$r);
+		if (!@array_key_exists($id,self::$instances)) new Product($id,$r,$vals,$enabled);
 		return self::$instances[$id];
 	}
 	function getRelativeURL(){
@@ -49,5 +51,18 @@ class Product{
 		}
 		$this->relativeURL=$basehref.'?product_id='.$this->id;
 		return $this->relativeURL;
+	}
+	function initValues($values=false){
+		if($this->__hasValues)return $this;
+		$values=$values?$values:dbAll("SELECT * FROM products_values WHERE product_id=$this->id");
+		foreach($values as $pdv)$this->{$pdv['varname']}=$pdv['varvalue'];
+		$this->__values=array();
+		foreach($values as $pdv)$this->__values[$pdv['varname']]=$pdv['varvalue'];
+		$this->__hasValues=true;
+		return $this;
+	}
+	function set($name,$value){
+		dbQuery('update products set '.addslashes($name).'="'.addslashes($value).'" where id='.$this->id);
+		$this->{$name}=$value;
 	}
 }
