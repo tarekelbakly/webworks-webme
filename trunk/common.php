@@ -140,6 +140,7 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 require SCRIPTBASE . '.private/config.php';
 require SCRIPTBASE . 'common/webme_specific.php';
 require 'MDB2.php';
+if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
 define('FCKEDITOR','fckeditor-2.6.3');
 define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');

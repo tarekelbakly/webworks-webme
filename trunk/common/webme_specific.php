@@ -16,7 +16,7 @@ function config_rewrite(){
 	'version'      => ".((int)$DBVARS['version']).",
 	'userbase'     => '".addslashes($DBVARS['userbase'])."'
 );";
-	file_put_contents(SCRIPTBASE . '.private/config.php',$config);
+	file_put_contents(CONFIG_FILE,$config);
 }
 function is_admin(){
 	return (isset($_SESSION['userdata']) && isset($_SESSION['userdata']['groups']['administrators']));
