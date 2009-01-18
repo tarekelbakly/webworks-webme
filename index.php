@@ -162,11 +162,11 @@ if(isset($_SESSION['msgs_errors'])){
 $pagecontent=$c;
 // }
 // { load page template
-if(file_exists(USERBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html')){
-	$template=USERBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html';
+if(file_exists(SCRIPTBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html')){
+	$template=SCRIPTBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/'.$PAGEDATA->template.'.html';
 }
 else{
-	$ex='ls '.USERBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
+	$ex='ls '.SCRIPTBASE.'ww.skins/'.$_SESSION['viewing_skin'].'/h/*html';
 	$d=`$ex`;
 	$d=explode("\n",$d);
 	$template=$d[0];
