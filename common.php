@@ -1,5 +1,4 @@
 <?php
-error_reporting(0);
 session_start();
 function __() {
 	$str = gettext(func_get_arg(0));
@@ -24,12 +23,26 @@ function dbAll($query,$key='') {
 	foreach($results as $r)$arr[$r[$key]]=$r;
 	return $arr;
 }
+function dbInit(){
+	if(isset($GLOBALS['db']))return $GLOBALS['db'];
+	global $DBVARS;
+	$dsn = 'mysql://' . $DBVARS['username'] . ':' . $DBVARS['password'] . '@' . $DBVARS['hostname'] . '/' . $DBVARS['db_name'];
+	$db = &MDB2::connect($dsn);
+	if(Pear::isError($db)){
+		echo '<p>Error connecting to database.</p><p>Please make sure the access details are correct, and that the server has the Pear packages MDB2 and MDB2_Driver_mysql installed.</p>';
+		exit;
+	}
+	$db->setCharset('utf8');
+	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+	$GLOBALS['db']=$db;
+	return $db;
+}
 function dbOne($query, $field='') {
 	$r = dbRow($query);
 	return $r[$field];
 }
 function dbQuery($query){
-	global $db;
+	$db=dbInit();
 	$q = $db->query($query);
 	if(PEAR::isError($q)){
 		echo 'dbQuery:: '.$q->getMessage();
@@ -125,23 +138,11 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	exit;
 }
 require SCRIPTBASE . '.private/config.php';
-if(isset($DBVARS['userbase']))define('USERBASE', $DBVARS['userbase']);
-else define('USERBASE', SCRIPTBASE);
 require SCRIPTBASE . 'common/webme_specific.php';
+require 'MDB2.php';
 define('FCKEDITOR','fckeditor-2.6.3');
 define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
-// }
-// { connect to database
-require_once 'MDB2.php';
-$dsn = 'mysql://' . $DBVARS['username'] . ':' . $DBVARS['password'] . '@' . $DBVARS['hostname'] . '/' . $DBVARS['db_name'];
-$db = &MDB2::connect($dsn);
-if(Pear::isError($db)){
-	echo '<p>Error connecting to database.</p><p>Please make sure the access details are correct, and that the server has the Pear packages MDB2 and MDB2_Driver_mysql installed.</p>';
-	exit;
-}
-$db->setCharset('utf8');
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
 // }
 $is_admin = 0;
 $sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
@@ -260,19 +261,3 @@ else if(!isset($_SESSION['viewing_skin']) || $_SESSION['viewing_skin']==''){
 	}
 }
 // }
-function config_rewrite(){
-	global $DBVARS;
-	$config='<'."?php
-\$DBVARS=array(
-	'username'     => '".addslashes($DBVARS['username'])."',
-	'password'     => '".addslashes($DBVARS['password'])."',
-	'hostname'     => '".addslashes($DBVARS['hostname'])."',
-	'db_name'      => '".addslashes($DBVARS['db_name'])."',
-	'theme'        => '".addslashes($DBVARS['theme'])."',
-	'site_title'   => '".addslashes($DBVARS['site_title'])."',
-	'site_subtitle'=> '".addslashes($DBVARS['site_subtitle'])."',
-	'version'      => ".((int)$DBVARS['version']).",
-	'userbase'     => '".addslashes($DBVARS['userbase'])."'
-);";
-	file_put_contents(SCRIPTBASE . '.private/config.php',$config);
-}

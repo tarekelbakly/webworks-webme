@@ -9,11 +9,12 @@ function ww_showSearchResults(){
 		$c='';
 	// }
 	// { pages
-		$q=dbAll('select id,name,body from pages where (name like "%'.$search.'%" or body like "%'.$search.'%")');
+		$q=dbAll('select * from pages where (name like "%'.$search.'%" or body like "%'.$search.'%") order by edate desc limit '.$start.',20');
 		$n=count($q);
 		if($n>0){
 			$totalfound+=$n;
-			$q=dbAll('select id,name,title,body from pages where (name like "%'.$search.'%" or body like "%'.$search.'%") order by edate desc limit '.$start.',20');
+			foreach($q as $p)Page::getInstance($p['id'],$p);
+			$q=array_slice($q,$start,20);
 			$c.='<h2>'.__('Page Search Results').'</h2><em id="searchResultsTitle">';
 			if($n==1)$c.=__('1 result found');
 			else $c.=__('%1 results found',$n);

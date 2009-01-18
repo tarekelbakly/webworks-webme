@@ -76,7 +76,7 @@ else{
 		array(10,__('online store checkout'),0)
 	);
 	foreach($pagetypes as $a){
-		if(has_page_permissions($a[2]) || !$a[2]){
+		if(has_access_permissions($a[2]) || !$a[2]){
 			$tmp=($a[0]==$page['type'])?' selected="selected"':'';
 			echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
 		}
@@ -149,21 +149,21 @@ else{
 		echo '<td>';
 		// { specify a product category
 		echo __('category to show').'<br /><select name="page_vars[category_to_show]"><option value="0">'.__('all categories').'</option>';
-		$r3=dbAll('select id,name from product_category order by name');
+		$r3=ProductCategories::getAll();
 		foreach($r3 as $r2){
-			echo '<option value="'.$r2['id'].'"';
-			if($r2['id']==$page_vars['category_to_show'])echo' selected="selected"';
-			echo '>'.htmlspecialchars($r2['name']).'</option>';
+			echo '<option value="'.$r2->id.'"';
+			if($r2->id==$page_vars['category_to_show'])echo' selected="selected"';
+			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
 		echo '</select>';
 		// }
 		// { specify a product
 		echo __('product to show').'<br /><select name="page_vars[product_to_show]"><option value="0">'.__('all products').'</option>';
-		$r3=dbAll('select id,name from products order by name');
+		$r3=Products::getAll(false);
 		foreach($r3 as $r2){
-			echo '<option value="'.$r2['id'].'"';
-			if($r2['id']==$page_vars['product_to_show'])echo' selected="selected"';
-			echo '>'.htmlspecialchars($r2['name']).'</option>';
+			echo '<option value="'.$r2->id.'"';
+			if($r2->id==$page_vars['product_to_show'])echo' selected="selected"';
+			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
 		echo '</select>';
 		// }

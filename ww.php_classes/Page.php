@@ -28,10 +28,10 @@ class Page{
 		self::$instancesByName[preg_replace('/[^a-z0-9]/','-',strtolower($this->urlname))] =& $this;
 		self::$instancesBySpecial[$this->special] =& $this;
 		self::$instancesByType[$this->type] =& $this;
-		$this->vars=array();
-		$pvq=$pvq?$pvq:dbAll("select * from page_vars where page_id=".$this->id);
-		foreach($pvq as $pvr)$this->vars[$pvr['name']]=$pvr['value'];
-		if(isset($_SESSION['os_country']) && $_SESSION['os_country'] && isset($this->vars['banned_countries']) && $this->vars['banned_countries'] && strpos($this->vars['banned_countries'],$_SESSION['os_country'])!==false)$this->banned=true;
+		// { set up values if supplied. otherwise, delay it 'til required
+		$this->__valuesLoaded=false;
+		if($pvq)$this->initValues($pvq);
+		// }
 	}
 	function getInstance($id=0,$fromRow=false,$pvq=false){
 		if (!is_numeric($id)) return false;
@@ -109,5 +109,12 @@ class Page{
 		$r=preg_replace('/[^a-zA-Z0-9,-]/','-',$r);
 		$this->getURLSafeName=$r;
 		return $r;
+	}
+	function initValues($pvq=false){
+		$this->vars=array();
+		$pvq=$pvq?$pvq:dbAll("select * from page_vars where page_id=".$this->id);
+		foreach($pvq as $pvr)$this->vars[$pvr['name']]=$pvr['value'];
+		if(isset($_SESSION['os_country']) && $_SESSION['os_country'] && isset($this->vars['banned_countries']) && $this->vars['banned_countries'] && strpos($this->vars['banned_countries'],$_SESSION['os_country'])!==false)$this->banned=true;
+		return $this;
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/.private/config.php');
-$kfm_userfiles_address=$DBVARS['userbase'].'/f/';
 include_once($_SERVER['DOCUMENT_ROOT'].'/common/webme_specific.php');
+$kfm_userfiles_address=$DBVARS['userbase'].'/f/';
 if(!session_id()){
 	if(isset($_GET['cms_session']))session_id($_GET['cms_session']);
 	session_start();
