@@ -7,11 +7,11 @@ header('Content-type: text/javascript; charset=utf-8');
 
 session_start();
 
+require '../.private/config.php';
 require '../common/jslibs.php';
 require '../common/webme_specific.php';
 $name=md5_of_dir('./');
-if(!is_dir('../f/.files/j'))mkdir('../f/.files/j');
-//if(!isset($_GET['admin']) && file_exists('../f/.files/j/'.$name))readfile('../f/.files/j/'.$name);
+if(!is_dir(USERBASE . 'f/.files/j'))mkdir(USERBASE . 'f/.files/j');
 else{
 	$js=file_get_contents('mootools.v1.11.js');
 	$js.=file_get_contents('jquery.accordion.js').';';
