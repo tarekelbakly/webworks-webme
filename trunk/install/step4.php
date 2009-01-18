@@ -1,35 +1,30 @@
 <?php
 require 'header.php';
+// get the user directory
 
 if(!$_SESSION['admin_created']){ // user shouldn't be here
 	header('Location: /install/step3.php');
 	exit;
 }
 
-if(!is_dir('../.private')){ // create config directory
-	mkdir('../.private');
-	if(!is_dir('../.private')){
-		echo '<p><strong>Couldn\'t create /.private directory.</strong> Please either make the web root writable for the web server, or create the /.private directory and make it writable to the web server (then reload this page).</p>';
-		exit;
+if(isset($_REQUEST['userbase']) && $_REQUEST['userbase']){
+	$_REQUEST['userbase']=str_replace('//','/',$_REQUEST['userbase'].'/');
+	$d=$_REQUEST['userbase'];
+	$hd=htmlspecialchars($d);
+	$_SESSION['userbase']=$_REQUEST['userbase'];
+	if(!is_dir($d))echo "<em><strong><code>$hd</code></strong> is not a directory or does not exist.</em>";
+	else{
+		if(!is_writable($d))echo "<em><strong><code>$hd</code></strong> is not writable by the web server.</em>";
+		else{
+			$_SESSION['userbase_created']=true;
+			header('Location: /install/step5.php');
+		}
 	}
 }
 
-$config='<'."?php
-\$DBVARS=array(
-	'username' => '".addslashes($_SESSION['db_vars']['username'])."',
-	'password' => '".addslashes($_SESSION['db_vars']['password'])."',
-	'hostname' => '".addslashes($_SESSION['db_vars']['hostname'])."',
-	'db_name'  => '".addslashes($_SESSION['db_vars']['db_name'])."',
-	'version'  => 1
-);";
-
-file_put_contents('../.private/config.php',$config);
-
-if(!file_exists('../.private/config.php')){
-	echo '<p><strong>Could not create /.private/config.php</strong>. Please make /.private/ writable for the web server, then reload this page.</p>';
-	exit;
-}
-
-echo '<p><strong>Success!</strong> Your WebME installation is complete. Please <a href="/">click here</a> to go to the root of the site.</p>';
+if(!isset($_SESSION['userbase']) || !$_SESSION['userbase'])$_SESSION['userbase']=$_SERVER['DOCUMENT_ROOT'];
+echo '<form method="post"><p>Please type the address of the directory you want to use for your user files.</p>
+	<input name="userbase" value="'.htmlspecialchars($_SESSION['userbase']).'" style="width:90%" /><br /><input type="submit" /></form>';
+echo '<p>It is a good idea to place this directory outside the web-accessible part of the server.</p>';
 
 require 'footer.php';

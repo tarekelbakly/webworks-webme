@@ -1,5 +1,6 @@
 <?php
 require 'header.php';
+// install basic db tables
 
 if(!$_SESSION['db_vars']['passed']){ // user shouldn't be here
 	header('Location: /install/step1.php');

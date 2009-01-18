@@ -1,5 +1,6 @@
 <?php
 require 'header.php';
+// create an admin
 
 if(!$_SESSION['db_vars']['db_installed']){ // user shouldn't be here
 	header('Location: /install/step2.php');

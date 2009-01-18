@@ -1,5 +1,6 @@
 <?php
 require 'header.php';
+// get db variables
 
 if(!isset($_SESSION['db_vars'])){ // set up dummy values
 	$_SESSION['db_vars']=array(

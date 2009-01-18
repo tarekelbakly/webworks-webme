@@ -3,6 +3,11 @@ $version=0;
 require '../common.php';
 if(isset($DBVARS['version']))$version=(int)$DBVARS['version'];
 echo '<strong>upgrades detected. running upgrade script.</strong>';
+// {
+	$db=dbInit();
+	if(isset($DBVARS['userbase']))$userbase=$DBVARS['userbase'];
+	else $userbase=SCRIPTBASE;
+// }
 if($version==0){ // missing user accounts and groups
 	// { user_accounts
 	mysql_query('create table user_accounts(
@@ -76,11 +81,11 @@ if($version==10){ // set default theme
 	$version=11;
 }
 if($version==11){ // smarty template_c directory
-	$dir=SCRIPTBASE . 'templates_c';
+	$dir=$userbase. 'templates_c';
 	if(!is_dir($dir)){
 		echo '<p>Creating <code>templates_c</code> directory.</p>';
 		mkdir($dir);
-		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.SCRIPTBASE.'</code> is writable by the server.</p>';
+		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.$userbase.'</code> is writable by the server.</p>';
 	}
 	if(is_dir($dir)){
 		touch($dir.'/test.txt');
@@ -94,20 +99,26 @@ if($version==11){ // smarty template_c directory
 	}
 }
 if($version==12){ // tmp files directory
-	$dir=SCRIPTBASE . 'f/.files';
+	$dir=$userbase . 'f';
 	if(!is_dir($dir)){
-		echo '<p>Creating <code>f/.files</code> directory.</p>';
 		mkdir($dir);
-		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.SCRIPTBASE.'f</code> is writable by the server.</p>';
+		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.$userbase.'</code> is writable by the server.</p>';
 	}
 	if(is_dir($dir)){
-		touch($dir.'/test.txt');
-		if(!file_exists($dir.'/test.txt')){
-			echo '<p>Error: could not create test file <code>'.$dir.'/test.txt</code>. Please make sure that <code>'.$dir.'</code> is writable by the server.</p>';
+		$dir=$dir.'/.files';
+		if(!is_dir($dir)){
+			mkdir($dir);
+			if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.$userbase.'f/</code> is writable by the server.</p>';
 		}
-		else{
-			unlink($dir.'/test.txt');
-			$version=13;
+		if(is_dir($dir)){
+			touch($dir.'/test.txt');
+			if(!file_exists($dir.'/test.txt')){
+				echo '<p>Error: could not create test file <code>'.$dir.'/test.txt</code>. Please make sure that <code>'.$dir.'</code> is writable by the server.</p>';
+			}
+			else{
+				unlink($dir.'/test.txt');
+				$version=13;
+			}
 		}
 	}
 }
@@ -117,7 +128,7 @@ if($version==13){ // set default theme
 	$version=14;
 }
 if($version==14){ // set USERBASE define
-	$DBVARS['userbase']=SCRIPTBASE;
+	if(!isset($DBVARS['userbase']))$DBVARS['userbase']=SCRIPTBASE;
 	$version=15;
 }
 
