@@ -4,7 +4,6 @@ echo '<h2>'.__('Themes').'</h2>';
 if($action=='set_theme'){
 	if(is_dir(SCRIPTBASE. 'ww.skins/' . $_REQUEST['theme'])){
 		$DBVARS['theme']=$_REQUEST['theme'];
-		$_SESSION['viewing_skin']=$DBVARS['theme'];
 		config_rewrite();
 	}
 }

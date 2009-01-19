@@ -72,7 +72,7 @@ function comments_submit(){
 }
 function comments_submitted(ret){
 	if($type(ret)!='array')return alert(ret);
-	if(!ret[1])alert('Please check your email\nYour comment has been held pending verification of your email');
+	if(!ret[1])alert('An email has been sent to your address to verify it.\nYour comment has been held pending verification of your email');
 	if(ret[0].length)comments_showAll(ret[0]);
 }
 function comments_parseComment(comment){

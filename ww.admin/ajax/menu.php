@@ -11,10 +11,11 @@ function ajaxmenu_getChildren($parentid,$currentpage=0){
 			switch($parentid){
 				case 'am_top':{ # top level menu
 					if(has_access_permissions(ACL_PAGES))$r[]=array('id'=>'am_pages','name'=>_('pages'),'link'=>'pages.php');
-					if(has_access_permissions((ACL_PANELS+ACL_FORMS+ACL_MATRICES)))$r[]=array('id'=>'am_misc','name'=>_('misc.'),'link'=>'#','numchildren'=>1);
-					if(has_access_permissions(ACL_PRODUCTS))$r[]=array('id'=>'am_products','name'=>_('products'),'link'=>'#','numchildren'=>1);
-					if(has_access_permissions((ACL_SMS+ACL_EZINES+ACL_FORMS)))$r[]=array('id'=>'am_communication','name'=>_('communication'),'link'=>'#','numchildren'=>1);
-					if(has_access_permissions(ACL_USERS))$r[]=array('id'=>'am_users_and_admins','name'=>_('users and admins'),'link'=>'#','numchildren'=>1);
+//					if(has_access_permissions((ACL_PANELS+ACL_FORMS+ACL_MATRICES)))$r[]=array('id'=>'am_misc','name'=>_('misc.'),'link'=>'#','numchildren'=>1);
+//					if(has_access_permissions(ACL_PRODUCTS))$r[]=array('id'=>'am_products','name'=>_('products'),'link'=>'#','numchildren'=>1);
+//					if(has_access_permissions((ACL_SMS+ACL_EZINES+ACL_FORMS)))$r[]=array('id'=>'am_communication','name'=>_('communication'),'link'=>'#','numchildren'=>1);
+//					if(has_access_permissions(ACL_USERS))$r[]=array('id'=>'am_users_and_admins','name'=>_('users and admins'),'link'=>'#','numchildren'=>1);
+					$r[]=array('id'=>'am_siteoptions','name'=>_('site options'),'link'=>'siteoptions.php');
 					break;
 				}
 				case 'am_misc':{
@@ -36,7 +37,6 @@ function ajaxmenu_getChildren($parentid,$currentpage=0){
 					if(has_access_permissions(ACL_USERS))$r[]=array('id'=>'am_user_accounts','name'=>_('user accounts'),'link'=>'users-accounts.php');
 					if(has_access_permissions(ACL_USERS))$r[]=array('id'=>'am_user_groups','name'=>_('user groups'),'link'=>'users-groups.php');
 					if(has_access_permissions(ACL_USERS))$r[]=array('id'=>'am_admins','name'=>_('admins'),'link'=>'users-admins.php');
-					$r[]=array('id'=>'am_siteoptions','name'=>_('site options'),'link'=>'siteoptions.php');
 					break;
 				}
 				case 'am_communication':{

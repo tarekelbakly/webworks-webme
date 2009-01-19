@@ -90,7 +90,7 @@ function textObjectsFilter($d){
 		}
 	}
 	$d=str_replace('%LANGUAGE%',$_SESSION['webme_language'],$d);
-	$d=str_replace('%SKIN%',$_SESSION['viewing_skin'],$d);
+	$d=str_replace('%SKIN%',THEME,$d);
 	if(isset($_SESSION['os_country']))$d=str_replace('%COUNTRY%',$_SESSION['os_country'],$d);
 	$d=str_replace('%CURRENCY%',isset($_SESSION['os_currency'])?$_SESSION['os_currency']:'NO_CURRENCY_SET',$d);
 	$d=str_replace('%DOMAIN%',str_replace('www.','',$_SERVER['HTTP_HOST']),$d);
