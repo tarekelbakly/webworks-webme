@@ -243,22 +243,5 @@ function __setLocale($locale){
 __setLocale($_SESSION['webme_language']);
 // }
 // { set/get skin settings
-if(getVar('__skin') && getVar('__skin')!=''){
-	if(!ereg('/[^a-zA-Z0-9 ,\._]/',$skin)){
-		$skin=getVar('__skin');
-		if(is_dir(SCRIPTBASE.'ww.skins/'.$skin.'/h')){
-			$_SESSION['viewing_skin']=addslashes(getVar('__skin'));
-		}
-	}
-}
-else if(!isset($_SESSION['viewing_skin']) || $_SESSION['viewing_skin']==''){
-	if(is_dir(SCRIPTBASE.'ww.skins/' . $DBVARS['theme']))$_SESSION['viewing_skin']=$DBVARS['theme'];
-	else{
-		$ex='ls '.SCRIPTBASE.'ww.skins/';
-		$d=`$ex`;
-		$d=explode("\n",$d);
-		if(count($d) && $d[0]!='')$_SESSION['viewing_skin']=$d[0];
-		else $_SESSION['viewing_skin']='.default';
-	}
-}
+define('THEME',$DBVARS['theme']);
 // }
