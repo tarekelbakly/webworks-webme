@@ -10,7 +10,7 @@ if(!$_SESSION['userbase_created']){ // user shouldn't be here
 if(!is_dir('../.private')){ // create config directory
 	mkdir('../.private');
 	if(!is_dir('../.private')){
-		echo '<p><strong>Couldn\'t create /.private directory.</strong> Please either make the web root writable for the web server, or create the /.private directory and make it writable to the web server (then reload this page).</p>';
+		echo '<p><strong>Couldn\'t create <code>'.$_SERVER['DOCUMENT_ROOT'].'/.private</code> directory.</strong> Please either:</p><ul><li>make the web root <code>'.$_SERVER['DOCUMENT_ROOT'].'</code> writable for the web server</li><li>or create the <code>.private</code> directory yourself and make it writable to the web server</li></ul><p>Then reload this page.</p>';
 		exit;
 	}
 }
