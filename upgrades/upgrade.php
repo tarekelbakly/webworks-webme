@@ -50,7 +50,7 @@ if($version==3){ // pages
 		`cdate` datetime NOT NULL default "0000-00-00 00:00:00", `special` bigint(20) default NULL, `edate` datetime default NULL, `assocDate` date default NULL, `title` text,
 		`htmlheader` text, `template` text, `type` smallint(6) default 0, `keywords` text, `description` text, `category` text NOT NULL, `importance` float default 0.5,
 		PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8');
-	mysql_query("INSERT INTO `pages` VALUES (1,'Home','<h1>Welcome</h1>\\r\\n<p>This is your new website. To administer it, please go to <a href=\\\"/ww.admin/\\\">/ww.admin</a> and log in using your email address and password. If you have forgotten your password, please use the reminder form to have a new password sent to you.</p>\\r\\n<p>We are in the process of converting the engine for this site into a free CMS which you can download and run on your own server if you wish.</p>\\r\\n<p>As the process is not yet complete, there are items in the administration area which do not yet work. At the moment, it is quicker to tell you what works (Pages, Users And Admins &gt; Site Options) than what doesn\\'t.</p>\\r\\n<p>If you don\\'t like the default theme, please choose a different one in the Site Options page.</p>\\r\\n<p>To keep uptodate with new developments in the CMS, please bookmark <a href=\\\"http://webme.eu/whats-new\\\">http://webme.eu/whats-new</a>.</p>',0,1,now(),1,now(),NULL,'',NULL,'',0,'','','',0.5)");
+	mysql_query("INSERT INTO `pages` VALUES (1,'Home','<h1>Welcome</h1>\\r\\n<p>This is your new website. To administer it, please go to <a href=\\\"/ww.admin/\\\">/ww.admin</a> and log in using your email address and password. If you have forgotten your password, please use the reminder form to have a new password sent to you.</p>\\r\\n<p>If you don\\'t like the default theme, please choose a different one in the Site Options page.</p>\\r\\n<p>To keep uptodate with new developments in the CMS, please bookmark <a href=\\\"http://webme.eu/whats-new\\\">http://webme.eu/whats-new</a>.</p>',0,1,now(),1,now(),NULL,'',NULL,'',0,'','','',0.5)");
 	$version=4;
 }
 if($version==4){ // page_vars
@@ -84,7 +84,6 @@ if($version==10){ // set default theme
 if($version==11){ // smarty template_c directory
 	$dir=$userbase. 'templates_c';
 	if(!is_dir($dir)){
-		echo '<p>Creating <code>templates_c</code> directory.</p>';
 		mkdir($dir);
 		if(!is_dir($dir))echo '<p>Error: could not create directory <code>'.$dir.'</code>. Please make sure that <code>'.$userbase.'</code> is writable by the server.</p>';
 	}
