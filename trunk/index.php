@@ -174,4 +174,5 @@ else{
 if($template=='')die('no template created. please create a template first');
 // }
 require SCRIPTBASE . 'common/templates.php';
+header('X-Peak-Memory-Used: '.memory_get_peak_usage());
 show_page($template,$pagecontent,$PAGEDATA);
