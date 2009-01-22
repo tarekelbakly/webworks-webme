@@ -38,7 +38,7 @@ if($version==0){ // missing user accounts and groups
 	$version=1;
 }
 if($version==1){ // add .private/.htaccess
-	if(file_put_contents('../.private/.htaccess',"order allow,deny\ndeny from all"))$version=2;
+	if(file_exists('../.private/.htaccess') || file_put_contents('../.private/.htaccess',"order allow,deny\ndeny from all"))$version=2;
 	else echo '<p>Error: could not create <code>.private/.htaccess</code>. Please make sure the <code>.private</code> directory is writable by the server.</p>';
 }
 if($version==2){ // admin vars
