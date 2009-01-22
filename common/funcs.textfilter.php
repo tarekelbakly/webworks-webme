@@ -33,7 +33,6 @@ function textObjectsFilter($d){
 		'IMG'                 => 'imageDisplay',
 		'LANGUAGE_FLAGS'      => 'languageFlagsDisplay',
 		'LOGIN_BOX'           => 'loginBox',
-		'SITE_SKINS'          => 'siteSkinThumbs',
 		'OS_BASKET'           => 'osBasketDisplay',
 		'OS_BEST_SELLERS'     => 'os_bestsellers',
     'OS_LIST_ALL_PRODUCTS'=> 'products_list',
@@ -41,6 +40,7 @@ function textObjectsFilter($d){
 		'PANEL'               => 'panelDisplay',
 		'SCROLLINGNEWS'       => 'scrollingNewsDisplay',
 		'SCROLLINGEVENTS'     => 'scrollingEventsDisplay',
+		'SITE_SKINS'          => 'siteSkinThumbs',
 		'SMS_SUBSCRIBE'       => 'smsSubscribeDisplay',
 		'GALLERY'             => 'imageGalleryDisplay'
 	);
@@ -52,16 +52,16 @@ function textObjectsFilter($d){
 		'EZINE_SUBSCRIPTION'  => 'common/ezine.subscription.php',
 		'LANGUAGE_FLAGS'      => 'common/languages.php',
 		'LOGIN_BOX'           => 'common/user.login.and.registration.php',
-		'SMS_SUBSCRIBE'       => 'common/sms_subscribe.php',
 		'EZINE_SUBSCRIBE'     => 'common/ezine_subscribe.php',
 		'EZINE_SUBSCRIBE_PERMISSION'=>'common/ezine_subscribe.php',
-		'SITE_SKINS'          => 'common/site.skins.php',
 		'FORM'                => 'common/funcs.forms.php',
 		'GALLERY'             => 'common/funcs.image.gallery.php',
 		'OS_BASKET'           => 'common/online_stores.php',
 		'OS_BEST_SELLERS'      => 'common/online_stores.php',
     'OS_LIST_ALL_PRODUCTS'=> 'common/products.php',
-		'OS_QUICKFIND'        => 'common/online_stores.php'
+		'OS_QUICKFIND'        => 'common/online_stores.php',
+		'SITE_SKINS'          => 'common/site.skins.php',
+		'SMS_SUBSCRIBE'       => 'common/sms_subscribe.php'
 	);
 	do{ 
 		$a=$d; 
