@@ -243,5 +243,16 @@ function __setLocale($locale){
 __setLocale($_SESSION['webme_language']);
 // }
 // { set/get skin settings
-define('THEME',$DBVARS['theme']);
+if($DBVARS['theme'])define('THEME',$DBVARS['theme']);
+else{
+	$dir=new DirectoryIterator(SCRIPTBASE. 'ww.skins');
+	$themes_found=0;
+	$DBVARS['theme']='.default';
+	foreach($dir as $file){
+		if(strpos($file,'.')===0)continue;
+		$DBVARS['theme']=$file;
+		break;
+	}
+	define('THEME',$DBVARS['theme']);
+}
 // }
