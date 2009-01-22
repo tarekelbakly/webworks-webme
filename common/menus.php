@@ -71,7 +71,7 @@ function menu_setup_main_menu($template){
 	return $template;
 }
 function ww_menuDisplay($b){
-	global $PAGEDATA,$plugins_to_load;
+	global $PAGEDATA;
 	if(!$PAGEDATA->id)return '';
 	if(is_array($b)){
 		$align=(isset($b['direction']) && $b['direction']=='vertical')?'Left':'Top';
@@ -136,6 +136,6 @@ function ww_menuDisplay($b){
 		else $c.='<a><span class="l"></span>&nbsp;<span class="r"></span></a>';
 		$c.='</div>';
 	}
-	$plugins_to_load[]='"ajaxmenu":1';
+	$c.='<script type="text/javascript">plugins_to_load.ajaxmenu=1;</script>';
 	return $c;
 }
