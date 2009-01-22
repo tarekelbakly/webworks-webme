@@ -179,10 +179,10 @@ if(!isset($_SESSION['userdata'])){
 			// }
 			// { redirect if applicable
 			$redirect_url='';
-			if($_POST['login_referer'] && strpos($_POST['login_referer'],'/')===0){
+			if(isset($_POST['login_referer']) && strpos($_POST['login_referer'],'/')===0){
 				$redirect_url=$_POST['login_referer'];
 			}
-			else if($PAGEDATA->vars['userlogin_redirect_to']){
+			else if(isset($PAGEDATA) && $PAGEDATA->vars['userlogin_redirect_to']){
 				$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
 				$redirect_url=$p->getRelativeUrl();
 			}
