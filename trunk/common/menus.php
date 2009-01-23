@@ -85,7 +85,8 @@ function ww_menuDisplay($b){
 		else $d=array();
 		foreach($d as $e){
 			$f=split('=',$e);
-			$vals[$f[0]]=$f[1];
+			if(count($f)>1)$vals[$f[0]]=$f[1];
+			else $vals[$f[0]]=1;
 		}
 		$c='';
 		$align=($b=='vertical')?'Left':'Top';
@@ -94,13 +95,14 @@ function ww_menuDisplay($b){
 	$classes='';
 	if(isset($vals['mode'])){
 		if($vals['mode']=='accordian' || $vals['mode']=='accordion'){
-			$classes.=' click_required accordian';
+			$classes.=' click_required accordion';
 		}
 		else if($vals['mode']=='two-tier'){
 			$classes.=' two-tier';
 		}
 	}
 	else $vals['mode']='default';
+	if(isset($vals['preopen_menu']))$classes.=' preopen_menu';
 	if(isset($vals['close']) && $vals['close']=='no'){
 		$classes.=' noclose';
 	}
