@@ -15,7 +15,7 @@ function template_get_metadata($template,$PAGEDATA){
 	// }
 	$dir=SCRIPTBASE.'j';
 	$modified=md5(`ls -l $dir`);
-	$c.='<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>';
+	$c.='<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>';
 	$c.='<script type="text/javascript" src="/js/'.$modified.'"></script>';
 	$c.='<script type="text/javascript" src="/js_lang/'.$_SESSION['webme_language'].'/'.$modified.'"></script>';
 	$c.='<script type="text/javascript">var pagedata={id:'.$PAGEDATA->id.',url:"'.$PAGEDATA->getRelativeURL().'",country:"'.(isset($_SESSION['os_country'])?$_SESSION['os_country']:'').'"},';
