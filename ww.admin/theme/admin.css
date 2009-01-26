@@ -98,13 +98,18 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 #footer{position:fixed;bottom:0;left:0;right:0;clear:both;background:#ccc;border-top:1px solid #666;height:20px}
 #footer .maintainer{float:right}
 
-.ajaxmenu_expandable_item   {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -48px;width:32px;height:16px;float:left;display:block}
-.ajaxmenu_expandable_closed {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -64px;width:32px;height:16px;float:left;display:block}
-.ajaxmenu_expandable_opened {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -80px;width:32px;height:16px;float:left;display:block}
-.ajaxmenu_expandable_line   {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -96px;width:16px;height:16px;float:left;display:block}
-.ajaxmenu_expandable_enditem{background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -112px;width:32px;height:16px;float:left;display:block}
+.ajaxmenu_expandable_item   {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -48px;width:32px !important;height:16px;float:left;display:block}
+.ajaxmenu_expandable_closed {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -64px;width:32px !important;height:16px;float:left;display:block}
+.ajaxmenu_expandable_opened {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -80px;width:32px !important;height:16px;float:left;display:block}
+.ajaxmenu_expandable_line   {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -96px;width:16px !important;height:16px;float:left;display:block}
+.ajaxmenu_expandable_enditem{background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -112px;width:32px !important;height:16px;float:left;display:block}
 
-.ajaxmenu_menuname{overflow:hidden;height:16px;display:block}
+.ajaxmenu_menuname{height:16px;display:block}
+.ajaxmenu_menuname a{width:180px;overflow:hidden;display:block;position:relative;}
+.ajaxmenu_menuname a span{width:16px;repeat-y;background:url(/ww.admin/theme/faders.png);position:absolute;right:0;top:0;height:16px;width:16px;}
+.ajaxmenu_currentPage .ajaxmenu_menuname a span{background-position:-16px 0}
+.ajaxmenu_containsCurrentPage .ajaxmenu_menuname a span{background-position:-32px 0}
+
 .pagePermissions{background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -128px;width:16px;height:16px;float:right;display:block}
 
 .menu { background: url(/ww.admin/theme/submenu_BG.png) 0% 0% repeat-y #fff!important; border:1px solid #416BA7; border-top: 0;}

@@ -45,7 +45,7 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 		if(isset($PARENTDATA->property_type) && $PARENTDATA->property_type)$filter="where enabled and product_type_id='".$PARENTDATA->property_type."'";
 		else $filter="where enabled";
 		$rs2=dbAll("select id,name from products $filter order by name");
-		$rs2=Products::getByFilter($filter);
+		$rs2=Products::getByFilter($filter.' order by name');
 		foreach($rs2 as $r2){
 			$rs[]=array('link'=>$PARENTDATA->getRelativeURL().'&product_id='.$r2->id,'name'=>$r2->name,'parent'=>$parentid);
 		}

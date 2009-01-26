@@ -19,7 +19,7 @@ function ajaxmenu_expandable_open(id){
 	}
 	if(!ajaxmenu_expandable_menus[id])return x_ajaxmenu_expandable_getChildren(id,ajaxmenu_expandable_currentPage,ajaxmenu_expandable_open);
 	if(ajaxmenu_expandable_openmenus[id])ajaxmenu_expandable_close(id);
-	var caller=$M('ajaxmenu_expandable_row'+id),toOpen=0;
+	var caller=$M('ajaxmenu_expandable_row'+id),toOpen=0,link;
 	if(caller){
 		var rowStart=parseInt(caller.rowIndex)+1,indent=caller.indent?caller.indent+1:1,table=caller.parentNode.parentNode;
 	}
@@ -51,11 +51,7 @@ function ajaxmenu_expandable_open(id){
 		{ // name and edit link
 			var name=r.name;
 			if(!name)name='****NO NAME****';
-			var link=(new Element('a',{
-				'href':'pages.php?action=edit&id='+r.id,
-				'class':'fck_droppable navlink'
-			})).appendText(name);
-			cell.appendChild(link);
+			$('<a href="pages.php?action=edit&id='+r.id+'" class="fck_droppable navlink"><span>&nbsp;</span>'+name+'</a>').appendTo(cell);
 		}
 		cell=row.insertCell(1);
 		cell.appendChild(newLink('pages.php?action=new&id='+r.id,'[n]',0,'newsubpage'));

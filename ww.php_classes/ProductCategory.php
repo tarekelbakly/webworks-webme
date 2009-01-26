@@ -48,7 +48,7 @@ class ProductCategory{
 	function getChildCategories($enabled=true){
 		if(isset($this->childCategories))return $this->childCategories;
 		$filter=$enabled?' AND enabled ':'';
-		$r=dbAll("SELECT * FROM product_category WHERE parent_id='$this->id' $filter");
+		$r=dbAll("SELECT * FROM product_category WHERE parent_id='$this->id' $filter ORDER BY name");
 		$this->childCategories=array();
 		foreach($r as $c)$this->childCategories[]=ProductCategory::getInstance($c['id'],$c);
 		return $this->childCategories;

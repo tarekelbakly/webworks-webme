@@ -14,7 +14,7 @@ class Products{
 	}
 	function getByFilter($filter=''){
 		if(array_key_exists($filter,self::$instancesByFilter))return self::$instancesByFilter[$filter];
-		$rs=dbAll("select * from products $filter order by name");
+		$rs=dbAll("select * from products $filter");
 		self::$instancesByFilter[$filter]=array();
 		foreach($rs as $r)self::$instancesByFilter[$filter][]=Product::getInstance($r['id'],$r);
 		return self::$instancesByFilter[$filter];

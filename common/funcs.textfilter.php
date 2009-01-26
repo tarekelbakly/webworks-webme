@@ -84,10 +84,14 @@ function textObjectsFilter($d){
 			}
 		}while($a!=$d);
 	}
-	foreach($parseHL as $HL){
-		if($HL!=''){
-			$d=preg_replace('/(>(|[^<]*[^a-zA-Z]))('.addslashes($HL).')([^a-zA-Z][^<]*)/i',"$1<span class=\"hl\">$3</span>$4",$d);
+	if(count($parseHL)){
+		$c=$d;
+		foreach($parseHL as $HL){
+			if($HL!=''){
+				$d=preg_replace('/(>(|[^<]*[^a-zA-Z]))('.addslashes($HL).')([^a-zA-Z][^<]*)/i','$1<span class="hl">$3</span>$4',$d);
+			}
 		}
+		if($c!=$d)$d=preg_replace('/(<[^>]*)<[^>]*>([^<]*)<[^>]*>/','$1$2',$d);
 	}
 	$d=str_replace('%LANGUAGE%',$_SESSION['webme_language'],$d);
 	$d=str_replace('%SKIN%',THEME,$d);
