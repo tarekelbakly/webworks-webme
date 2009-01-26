@@ -155,7 +155,7 @@ else{
 			if($r2->id==$page_vars['category_to_show'])echo' selected="selected"';
 			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
-		echo '</select>';
+		echo '</select><br />';
 		// }
 		// { specify a product
 		echo __('product to show').'<br /><select name="page_vars[product_to_show]"><option value="0">'.__('all products').'</option>';
@@ -165,15 +165,15 @@ else{
 			if($r2->id==$page_vars['product_to_show'])echo' selected="selected"';
 			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
-		echo '</select>';
+		echo '</select><br />';
 		// }
 		// { product template
 		echo __('product template').'<br /><select name="page_vars[product_type]"><option value="0">'.__('all types').'</option>';
-		$r3=dbAll('select id,name from product_types order by name');
+		$r3=ProductTypes::getAll();
 		foreach($r3 as $r2){
-			echo '<option value="'.$r2['id'].'"';
-			if($r2['id']==$page_vars['product_type'])echo' selected="selected"';
-			echo '>'.htmlspecialchars($r2['name']).'</option>';
+			echo '<option value="'.$r2->id.'"';
+			if($r2->id==$page_vars['product_type'])echo' selected="selected"';
+			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
 		echo '</select>';
 		// }

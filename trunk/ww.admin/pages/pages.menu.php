@@ -8,7 +8,7 @@ for($i=0;$i<count($rs);++$i){
 	if($r['numchildren'])$c.='<a id="ajaxmenu_expandable_opener'.$r['id'].'" href="javascript:ajaxmenu_expandable_open('.$r['id'].');" class="ajaxmenu_expandable_closed"></a>';
 	else if($i==count($rs)-1)$c.='<span class="ajaxmenu_expandable_enditem"></span>';
 	else $c.='<span class="ajaxmenu_expandable_item"></span>';
-	$c.='<a href="pages.php?action=edit&amp;id='.$r['id'].'" class="fck_droppable navlink">';
+	$c.='<a href="pages.php?action=edit&amp;id='.$r['id'].'" class="fck_droppable navlink"><span>&nbsp;</span>';
 	$name=$r['name'];
 	if($name=='')$name='*****NO NAME*****';
 	$c.=str_replace(' ','&nbsp;',htmlspecialchars($name));

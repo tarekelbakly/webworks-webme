@@ -119,7 +119,7 @@ function fckeditor_generateCSS($pageid){
 			$bodies=array();
 			preg_match_all('/html body{[^}]*}/',$file,$bodies);
 			$file=preg_replace('/html body{[^}]*}/','',$file);
-			$rules=array('margin'=>'0 !important','padding'=>'0 !important');
+			$rules=array('margin'=>'0 !important','padding'=>'0 !important','background-image'=>'none !important');
 			foreach($bodies[0] as $group){
 				$group=preg_replace('/.*{(.*)}/','$1',$group);
 				$lrules=explode(';',$group);
@@ -131,7 +131,7 @@ function fckeditor_generateCSS($pageid){
 					$valid=1;
 					switch($name){
 						case '':case 'padding':case 'padding-left':case 'padding-top':case 'padding-bottom':case 'padding-right':
-						case 'border':case 'border-left':case 'border-top':case 'border-bottom':case 'border-right':
+						case 'border':case 'border-left':case 'border-top':case 'border-bottom':case 'border-right':case 'background':
 						case 'margin':case 'margin-left':case 'margin-top':case 'margin-bottom':case 'margin-right': // {
 							$valid=0;
 							break;

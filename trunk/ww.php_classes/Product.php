@@ -54,7 +54,7 @@ class Product{
 	}
 	function initValues($values=false){
 		if($this->__hasValues)return $this;
-		$values=$values?$values:dbAll("SELECT * FROM products_values WHERE product_id=$this->id");
+		$values=is_array($values)?$values:dbAll("SELECT * FROM products_values WHERE product_id=$this->id");
 		foreach($values as $pdv)$this->{$pdv['varname']}=$pdv['varvalue'];
 		$this->__values=array();
 		foreach($values as $pdv)$this->__values[$pdv['varname']]=$pdv['varvalue'];
