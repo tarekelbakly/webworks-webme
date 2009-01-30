@@ -81,8 +81,8 @@ function sn_setActive(el,a){
 	while(!el.id && el)el=el.parentNode;
 	sn_Active[el.id.replace(/.*_/,'')]=a;
 }
-{ //  variables 
-	var sn_Active=[],sn_PauseStage=[],sn_ScrolledAmount=[],sn_POffset=[];
-	var sn_PauseAmount=500,sn_Speed=50;
-}
+// {  variables 
+var sn_Active=[],sn_PauseStage=[],sn_ScrolledAmount=[],sn_POffset=[];
+var sn_PauseAmount=2000,sn_Speed=25;
+// }
 sn_Init();
