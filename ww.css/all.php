@@ -11,3 +11,4 @@ echo file_get_contents('forms.css');
 echo file_get_contents('comments.css');
 echo file_get_contents('os_basket.css');
 echo file_get_contents('contextmenu.css');
+echo file_get_contents('lightbox.css');

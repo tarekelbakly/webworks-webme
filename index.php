@@ -7,7 +7,7 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	else header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<15)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<16)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 if(is_admin())$plugins_to_load[]='"frontend_admin":1';
@@ -100,33 +100,38 @@ else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
 else{
 	if($PAGEDATA->htmlheader!='')$c.=$PAGEDATA->htmlheader;
 	switch($PAGEDATA->type){
-		case 0: { # normal page
+		case 0: // { normal page
 			$c.=webmeParse($PAGEDATA->body);
 			break;
-		}
-		case 2: { # events
+		// }
+		case 2: // { events
 			$c.='<div id="events_'.$PAGEDATA->id.'" class="events">please wait - loading...</div>';
 			$plugins_to_load[]='"eventcalendar":1';
 			break;
-		}
-		case 3: { # user registration
+		// }
+		case 3: // { user registration
 			include_once(SCRIPTBASE.'common/user.login.and.registration.php');
 			$c.=webmeParse($PAGEDATA->body.userloginandregistrationDisplay());
 			break;
-		}
-		case 5: { # search results
+		// }
+		case 4: // { sub-page summaries
+			include_once('common/page.summaries.php');
+			$c.=displayPageSummaries($PAGEDATA->id);
+			break;
+		// }
+		case 5: // { search results
 			$c.=webmeParse($PAGEDATA->body.showSearchResults());
 			break;
-		}
-		case 7: { # news
+		// }
+		case 7: // { news
 			$c.=showNews($PAGEDATA->id);
 			break;
-		}
-		case 8: { # product listing
+		// }
+		case 8: // { product listing
 			$c.=webmeParse(showProductListing($PAGEDATA->id));
 			break;
-		}
-		case 9: { # table of contents
+		// }
+		case 9: // { table of contents
 			$kids=Pages::getInstancesByParent($PAGEDATA->id);
 			$c.=webmeParse($PAGEDATA->body);
 			if(!count($kids->pages))$c.='<em>no sub-pages</em>';
@@ -138,7 +143,7 @@ else{
 				$c.='</ul>';
 			}
 			break;
-		}
+		// }
 		case 10: // { online store checkout
 			require_once 'common/online_stores.php';
 			$c.=webmeParse($PAGEDATA->body);

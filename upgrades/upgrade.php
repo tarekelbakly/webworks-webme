@@ -131,6 +131,10 @@ if($version==14){ // set USERBASE define
 	if(!isset($DBVARS['userbase']))$DBVARS['userbase']=SCRIPTBASE;
 	$version=15;
 }
+if($version==15){ // page summaries
+	mysql_query('create table page_summaries(page_id int default 0,parent_id int default 0,rss text,amount_to_show int default 0)default charset=utf8');
+	$version=16;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();

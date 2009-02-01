@@ -91,6 +91,7 @@ function fckeditor($name,$value='',$fullpage=false,$css=''){
 	$oFCKeditor = new FCKeditor($name);
 	$oFCKeditor->BasePath = '/j/'.FCKEDITOR.'/';
 	$oFCKeditor->Value                   = $value;
+	$oFCKeditor->Height                  = 250;
 	$oFCKeditor->Config['FullPage']      = $fullpage;
 	if($css)$oFCKeditor->Config['EditorAreaCSS'] = $css;
 	$oFCKeditor->Create();

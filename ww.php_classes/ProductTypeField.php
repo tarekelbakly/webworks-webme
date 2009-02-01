@@ -9,7 +9,7 @@ class ProductTypeField{
 		foreach ($r as $k=>$val) $this->{$k}=$val;
 		self::$instances[$pid][$name] = &$this;
 	}
-	function getInstance($pid,$name,$r=false){
+	static function getInstance($pid,$name,$r=false){
 		if (!is_numeric($pid)) return false;
 		if(!array_key_exists($pid,self::$instances))self::$instances[$pid]=array();
 		if(!array_key_exists($name,self::$instances[$pid]))new ProductTypeField($pid,$name,$r);

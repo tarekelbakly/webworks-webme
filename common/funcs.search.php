@@ -18,7 +18,7 @@ function ww_showSearchResults(){
 			$c.='<h2>'.__('Page Search Results').'</h2><em id="searchResultsTitle">';
 			if($n==1)$c.=__('1 result found');
 			else $c.=__('%1 results found',$n);
-			$c.='</em> <div class="showhide">';
+			$c.='</em> <div>';
 			if($start>0)$c.='[<a href="'.$PAGEDATA->getRelativeURL().'?search='.urlencode($search).'&amp;start='.($start-20).'">previous 20</a>] ';
 			if($start+20<$n)$c.='[<a href="'.$PAGEDATA->getRelativeURL().'?search='.urlencode($search).'&amp;start='.($start+20).'">next 20</a>] ';
 			$c.='<ol start="'.($start+1).'" id="searchResults">';
@@ -30,6 +30,17 @@ function ww_showSearchResults(){
 			}
 			$c.='</ol></div>';
 		}
+	// }
+	// { products
+	$rs=Products::getBySearch($search);
+	if(count($rs)){
+		$totalfound+=count($rs);
+		$c.='<h2>Product Search Results</h2><em>'.count($rs).' results found</em> <div><ol>';
+		foreach($rs as $p){
+			$c.='<li><a href="'.$p->getRelativeURL().'&amp;search='.urlencode($search).'">'.htmlspecialchars($p->name).'</a></li>';
+		}
+		$c.='</ol></div>';
+	}
 	// }
 	if(!$totalfound){
 		$c.='<em id="searchResultsTitle">no results found</em>';

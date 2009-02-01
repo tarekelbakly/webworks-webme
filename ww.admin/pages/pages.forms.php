@@ -1,6 +1,5 @@
 <?php
 $translation=0;
-echo '<h3>'.($edit?__('Edit Page'):__('Create Page')).'</h3>';
 if(!allowedToEditPage($id)){
 	if($id)echo '<em>'.__('You do not have Edit rights for this page').'</em>';
 	else echo '<em>'.__('You cannot create a top-level page. Please choose a page to edit from the menu on the left.').'</em>';
@@ -47,7 +46,7 @@ else{
 	// { name, title, url
 	echo '<tr>';
 	// { name
-	echo '<th width="10%">'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
+	echo '<th width="5%">'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
 	// }
 	// { title
 	echo '<th width="10%">'.__('title').'</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
@@ -67,13 +66,14 @@ else{
 	echo '<tr><th>'.__('type').'</th><td><select name="type">';
 	$pagetypes=array(
 		array(0,__('normal'),0),
-		array(2,__('events calendar'),512),
-		array(3,__('user login/registration'),0),
-		array(5,__('search results'),0),
-		array(7,__('news'),512),
-		array(8,__('products'),16384),
-		array(9,__('table of contents'),0),
-		array(10,__('online store checkout'),0)
+//		array(2,__('events calendar'),512),
+//		array(3,__('user login/registration'),0),
+		array(4,__('page summaries'),0),
+		array(5,__('search results'),0)
+//		array(7,__('news'),512),
+//		array(8,__('products'),16384),
+//		array(9,__('table of contents'),0),
+//		array(10,__('online store checkout'),0)
 	);
 	foreach($pagetypes as $a){
 		if(has_access_permissions($a[2]) || !$a[2]){
@@ -135,6 +135,20 @@ else{
 		echo '<tr><th>'.__('body').'</th><td colspan="5">';
 		echo fckeditor('body',$page['body'],false,$cssurl);
 		echo '</td></tr>';
+		break;
+		// }
+		case 4: // { page summaries
+		echo '<tr><th>pages summarised from</th><td><select name="page_summary_parent"><option value="0">--  none  --</option>';
+		$r2=dbRow('select parent_id from page_summaries where page_id="'.$id.'" limit 1');
+		if(count($r2)){
+			$page_summary_pageid=$r2['parent_id'];
+		}
+		else $page_summary_pageid=$id;
+		selectkiddies(0,0,$page_summary_pageid,-1);
+		echo '</select></td>'.
+		'<td colspan="4">Where do you want to start summarising your pages from? If you want this summary to list excerpts from all '.
+		'the pages on your site, then choose "<strong>none</strong>". Otherwise, choose the page which <strong>contains</strong> '.
+		'the pages you want summarised.</td></tr>';
 		break;
 		// }
 		case 7: // { news 

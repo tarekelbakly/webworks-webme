@@ -36,6 +36,7 @@ if(allowedToEditPage($id)){
 	if($importance<0)$importance=0;
 	if($importance>1)$importance=1;
 	$template=getVar('template');
+	$body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 	$body=str_replace(
 		array(
 			'<u />',"</ul>\r\n<ul>",'<u></u>',' align="center"','margin: 0cm 0cm 0pt;',
@@ -45,7 +46,7 @@ if(allowedToEditPage($id)){
 			'','','','','margin:0;',
 			'','','&nbsp;','','','',
 			'','style="background:','style="background:',''),
-		$_REQUEST['body']
+		$body
 	);
 	$body=preg_replace('#</?([ovw]|st1):[^>]*>#','',$body);
 	$body=sanitise_html($body);
@@ -84,6 +85,20 @@ if(allowedToEditPage($id)){
 	if(is_array($pagevars))foreach($pagevars as $k=>$v)dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
 	// }
 	if(isset($_REQUEST['recursively_update_page_templates']))recursively_update_page_templates($id,$template);
+	if($_POST['type']==4){
+		$q2=mysql_query('select * from page_summaries where page_id="'.$_POST['id'].'"');
+		$do=1;
+		if(mysql_num_rows($q2)){
+			$r2=mysql_fetch_array($q2);
+			if(isset($_POST['page_summary_parent']) && $r2['parent_id']!=$_POST['page_summary_parent']){
+				mysql_query('delete from page_summaries where page_id="'.$_POST['id'].'"');
+			}
+			else $do=0;
+		}
+		if($do)mysql_query('insert into page_summaries set page_id="'.$_POST['id'].'",parent_id="'.$_POST['page_summary_parent'].'",rss=""');
+		include_once(SCRIPTBASE.'/common/page.summaries.php');
+		displayPageSummaries($_POST['id']);
+	}
 	echo '<em>'.__('An item\'s details have been updated.').'</em>';
 }
 else{
