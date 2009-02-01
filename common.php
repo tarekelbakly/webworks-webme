@@ -163,46 +163,42 @@ $sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
 	}
 // }
 // { user authentication
-if(!isset($_SESSION['userdata'])){
-	if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
-		// { variables
-		$email=$_REQUEST['email'];
-		$password=$_REQUEST['password'];
+if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
+	// { variables
+	$email=$_REQUEST['email'];
+	$password=$_REQUEST['password'];
+	// }
+	$q=dbQuery('select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'")');
+	if($q->numRows()){
+		// { update session variables
+		$r=$q->fetchRow();
+		$r['password']=$password;
+		$_SESSION['userdata']=$r;
+		$r['password'] = $_SESSION['userdata']['password'];
+		$_SESSION['userdata'] = $r;
 		// }
-		$q=dbQuery('select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'")');
-		if($q->numRows()){
-			// { update session variables
-			$r=$q->fetchRow();
-			$r['password']=$password;
-			$_SESSION['userdata']=$r;
-			$r['password'] = $_SESSION['userdata']['password'];
-			$_SESSION['userdata'] = $r;
-			// }
-			// { groups
-			$USERGROUPS = array();
-			$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
-			if($rs)foreach($rs as $r){
-				$USERGROUPS[$r['name']] = 1;
-			}
-			$_SESSION['userdata']['groups']=$USERGROUPS;
-			// }
-			// { redirect if applicable
-			$redirect_url='';
-			if(isset($_POST['login_referer']) && strpos($_POST['login_referer'],'/')===0){
-				$redirect_url=$_POST['login_referer'];
-			}
-			else if(isset($PAGEDATA) && $PAGEDATA->vars['userlogin_redirect_to']){
-				$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
-				$redirect_url=$p->getRelativeUrl();
-			}
-			if($redirect_url!='')redirect($redirect_url);
-			// }
+		// { groups
+		$USERGROUPS = array();
+		$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
+		if($rs)foreach($rs as $r){
+			$USERGROUPS[$r['name']] = 1;
 		}
+		$_SESSION['userdata']['groups']=$USERGROUPS;
+		// }
+		// { redirect if applicable
+		$redirect_url='';
+		if(isset($_POST['login_referer']) && strpos($_POST['login_referer'],'/')===0){
+			$redirect_url=$_POST['login_referer'];
+		}
+		else if(isset($PAGEDATA) && $PAGEDATA->vars['userlogin_redirect_to']){
+			$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
+			$redirect_url=$p->getRelativeUrl();
+		}
+		if($redirect_url!='')redirect($redirect_url);
+		// }
 	}
 }
-else{
-	if(isset($_REQUEST['logout']))unset($_SESSION['userdata']);
-}
+if(isset($_REQUEST['logout']))unset($_SESSION['userdata']);
 // }
 // { set/get webme language settings
 if(getVar('__webme_language')){
