@@ -816,7 +816,7 @@ function X(d,s){
 	var showhideDivs=[],showhideNum=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 	var boxdropTracers=[],function_urls=[],sc_supplements=[];
 	var kaejax_timeouts=[],kaejax_xhrinstances=[],ms_select_defaults=[],ms_show_toplinks=true;
-	var FCKEDITOR='fckeditor-2.6.3';
+	var FCKEDITOR='fckeditor-2.6.4';
 }
 function html2dom(str,parent){
 	var codeprefixes=['SC_'],lastIndex=str.lastIndexOf('<')+1,obj,substr,indentlevel=charat=0,reg=/[ \/\>].*/;
