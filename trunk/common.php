@@ -11,6 +11,15 @@ function __() {
 function __autoload($name) {
 	require_once SCRIPTBASE . '/ww.php_classes/' . $name . '.php';
 }
+function date_m2h($d, $type = 'date') {
+	$date = preg_replace('/[- :]/', ' ', $d);
+	$date = explode(' ', $date);
+	if ($type == 'date') {
+		if( isset($_SESSION['__webme_language']) && $_SESSION['__webme_language'] == 'fr' )return $date[2].'.'.$date[1].'.'.$date[0];
+		return date('l jS F, Y', mktime(0, 0, 0, $date[1], $date[2], $date[0]));
+	}
+	return date(DATE_RFC822, mktime($date[5], $date[4], $date[3], $date[1], $date[2], $date[0]));
+}
 function dbAll($query,$key='') {
 	$q = dbQuery($query);
 	if(PEAR::isError($q)){
@@ -141,7 +150,7 @@ require SCRIPTBASE . '.private/config.php';
 require SCRIPTBASE . 'common/webme_specific.php';
 require 'MDB2.php';
 if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
-define('FCKEDITOR','fckeditor-2.6.3');
+define('FCKEDITOR','fckeditor-2.6.4');
 define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
 // }

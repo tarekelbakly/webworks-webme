@@ -12,7 +12,7 @@ class ProductCheckout{
 		$this->dbVals=$r;
 		self::$instances[$this->id] =& $this;
 	}
-	function getInstance($id=0){
+	static function getInstance($id=0){
 		if (!is_numeric($id)) return false;
 		if (!@array_key_exists($id,self::$instances)) new ProductCheckout($id);
 		return self::$instances[$id];

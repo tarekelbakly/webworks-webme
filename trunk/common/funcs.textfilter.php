@@ -30,7 +30,6 @@ function textObjectsFilter($d){
 		'EZINE_SUBSCRIBE'     => 'ezineSubscribeDisplay',
 		'EZINE_SUBSCRIBE_PERMISSION'=>'ezineSubscribePermissionDisplay',
 		'FORM'                => 'formDisplay',
-		'IMG'                 => 'imageDisplay',
 		'LANGUAGE_FLAGS'      => 'languageFlagsDisplay',
 		'LOGIN_BOX'           => 'loginBox',
 		'OS_BASKET'           => 'osBasketDisplay',

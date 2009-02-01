@@ -30,7 +30,7 @@ class Product{
 		}
 		else return ImageNotFound::getInstance($size)->getRelativeURL();
 	}
-	function getInstance($id=0,$r=false,$vals=false,$enabled=true){
+	static function getInstance($id=0,$r=false,$vals=false,$enabled=true){
 		if (!is_numeric($id)) return false;
 		if (!@array_key_exists($id,self::$instances)) new Product($id,$r,$vals,$enabled);
 		return self::$instances[$id];

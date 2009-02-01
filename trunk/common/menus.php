@@ -19,11 +19,13 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 	foreach($rs as $r)if(!isset(Page::$instances[$r['id']]))$ids[]=$r['id'];
 	Pages::precache($ids);
 	// }
+	$i=0;
 	foreach($rs as $k=>$r){
 		$PAGEDATA=Page::getInstance($r['id']);
 		if(isset($PAGEDATA->banned) && $PAGEDATA->banned)continue;
 		$c=array();
 		$c[]=($parentid==$topParent)?'menuItemTop':'menuItem';
+		if(!$i++)$c[]='first';
 		if($r['numchildren'])$c[]='ajaxmenu_hasChildren';
 		if(($search_options&1) && $PAGEDATA->type==8)$c[]='ajaxmenu_hasChildren';
 		if($r['id']==$currentpage){

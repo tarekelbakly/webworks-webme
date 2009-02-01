@@ -10,14 +10,14 @@ class ProductType{
 		foreach ($r as $k=>$val) $this->{$k}=$val;
 		$this->dbVals=$r;
 		self::$instances[$this->id] =& $this;
-		self::$instances[$this->name] =& $this;
+		self::$instancesByName[$this->name] =& $this;
 	}
-	function getInstance($id=0,$r=false){
+	static function getInstance($id=0,$r=false){
 		if (!is_numeric($id)) return false;
 		if (!@array_key_exists($id,self::$instances)) new ProductType($id,$r);
 		return self::$instances[$id];
 	}
-	function getInstanceByName($name){
+	static function getInstanceByName($name){
 		if(!$name) return false;
 		if(array_key_exists($name,self::$instancesByName))return self::$instancesByName[$name];
 		$r=dbRow("select id from product_types where name='".addslashes($name)."'");
