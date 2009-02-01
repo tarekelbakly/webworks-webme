@@ -135,8 +135,13 @@ if($version==15){ // page summaries
 	mysql_query('create table page_summaries(page_id int default 0,parent_id int default 0,rss text,amount_to_show int default 0)default charset=utf8');
 	$version=16;
 }
+if($version==16){ // skins directory
+	if(!isset($DBVARS['theme_dir']))$DBVARS['theme_dir']=$_SERVER['DOCUMENT_ROOT'].'/ww.skins';
+	$version=17;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
 
+header('Location: /');
 echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the site.</p>';

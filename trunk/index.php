@@ -7,7 +7,7 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	else header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<16)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<17)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 if(is_admin())$plugins_to_load[]='"frontend_admin":1';
@@ -167,11 +167,11 @@ if(isset($_SESSION['msgs_errors'])){
 $pagecontent=$c;
 // }
 // { load page template
-if(file_exists(SCRIPTBASE.'ww.skins/'.THEME.'/h/'.$PAGEDATA->template.'.html')){
-	$template=SCRIPTBASE.'ww.skins/'.THEME.'/h/'.$PAGEDATA->template.'.html';
+if(file_exists(THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html')){
+	$template=THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html';
 }
 else{
-	$ex='ls '.SCRIPTBASE.'ww.skins/'.THEME.'/h/*html';
+	$ex='ls '.THEME_DIR.'/'.THEME.'/h/*html';
 	$d=`$ex`;
 	$d=explode("\n",$d);
 	$template=$d[0];

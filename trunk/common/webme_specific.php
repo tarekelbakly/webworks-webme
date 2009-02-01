@@ -11,6 +11,7 @@ function config_rewrite(){
 	'hostname'     => '".addslashes($DBVARS['hostname'])."',
 	'db_name'      => '".addslashes($DBVARS['db_name'])."',
 	'theme'        => '".addslashes($DBVARS['theme'])."',
+	'theme_dir'    => '".addslashes($DBVARS['theme_dir'])."',
 	'site_title'   => '".addslashes($DBVARS['site_title'])."',
 	'site_subtitle'=> '".addslashes($DBVARS['site_subtitle'])."',
 	'version'      => ".((int)$DBVARS['version']).",

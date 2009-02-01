@@ -92,7 +92,7 @@ else{
 	// }
 	// { template
 	echo '<th>'.__('template').'</th><td>';
-	$ex='ls '.SCRIPTBASE.'ww.skins/'.THEME.'/h/*html';
+	$ex='ls '.THEME_DIR.'/'.THEME.'/h/*html';
 	$d=`$ex`;
 	$d=explode("\n",$d);array_pop($d);
 	if(count($d)>1){
