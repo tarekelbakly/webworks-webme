@@ -13,11 +13,12 @@ if($action=='set_theme'){
 	$themes_found=0;
 	foreach($dir as $file){
 		if(strpos($file,'.')===0)continue;
+		if(!file_exists(THEME_DIR.'/'.$file.'/screenshot.png'))continue;
 		$themes_found++;
 		echo '<div style="width:250px;text-align:center;border:1px solid #000;margin:5px;height:200px;float:left;';
 		if($file==$DBVARS['theme'])echo 'background:#ff0;';
 		echo '"><a href="siteoptions.php?page=themes&amp;action=set_theme&amp;theme='.htmlspecialchars($file).'">';
-		if(file_exists(THEME_DIR.'/'.$file.'/screenshot.png'))echo '<img src="/ww.skins/'.htmlspecialchars($file).'/screenshot.png" />';
+		echo '<img src="/ww.skins/'.htmlspecialchars($file).'/screenshot.png" />';
 		echo htmlspecialchars($file);
 		echo '</a></div>';
 	}
