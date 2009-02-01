@@ -2,14 +2,14 @@
 echo '<h2>'.__('Themes').'</h2>';
 // { handle actions
 if($action=='set_theme'){
-	if(is_dir(SCRIPTBASE. 'ww.skins/' . $_REQUEST['theme'])){
+	if(is_dir(THEME_DIR.'/'.$_REQUEST['theme'])){
 		$DBVARS['theme']=$_REQUEST['theme'];
 		config_rewrite();
 	}
 }
 // }
 // { samples
-	$dir=new DirectoryIterator(SCRIPTBASE. 'ww.skins');
+	$dir=new DirectoryIterator(THEME_DIR);
 	$themes_found=0;
 	foreach($dir as $file){
 		if(strpos($file,'.')===0)continue;
@@ -17,7 +17,7 @@ if($action=='set_theme'){
 		echo '<div style="width:250px;text-align:center;border:1px solid #000;margin:5px;height:200px;float:left;';
 		if($file==$DBVARS['theme'])echo 'background:#ff0;';
 		echo '"><a href="siteoptions.php?page=themes&amp;action=set_theme&amp;theme='.htmlspecialchars($file).'">';
-		if(file_exists(SCRIPTBASE. 'ww.skins/' . $file . '/screenshot.png'))echo '<img src="/ww.skins/'.htmlspecialchars($file).'/screenshot.png" />';
+		if(file_exists(THEME_DIR.'/'.$file.'/screenshot.png'))echo '<img src="/ww.skins/'.htmlspecialchars($file).'/screenshot.png" />';
 		echo htmlspecialchars($file);
 		echo '</a></div>';
 	}
