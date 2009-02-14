@@ -66,14 +66,14 @@ else{
 	echo '<tr><th>'.__('type').'</th><td><select name="type">';
 	$pagetypes=array(
 		array(0,__('normal'),0),
-//		array(2,__('events calendar'),512),
-//		array(3,__('user login/registration'),0),
+		array(2,__('events calendar'),512),
+		array(3,__('user login/registration'),0),
 		array(4,__('page summaries'),0),
-		array(5,__('search results'),0)
-//		array(7,__('news'),512),
-//		array(8,__('products'),16384),
-//		array(9,__('table of contents'),0),
-//		array(10,__('online store checkout'),0)
+		array(5,__('search results'),0),
+		array(7,__('news'),512),
+		array(8,__('products'),16384),
+		array(9,__('table of contents'),0),
+		array(10,__('online store checkout'),0)
 	);
 	foreach($pagetypes as $a){
 		if(has_access_permissions($a[2]) || !$a[2]){
@@ -125,7 +125,12 @@ else{
 			'1'=>__('Login form'),
 			'2'=>__('Register form')
 		),$page_vars['userlogin_visibility']).'</td>';
-		echo '<th colspan="3">'.__('On login, redirect to:').'</th><td>';
+		echo '<th>'.__('Registration type:').'</th><td><select name="page_vars[userlogin_registration_type]"><option>Moderated</option>';
+		echo '<option';
+		if($page_vars['userlogin_registration_type']=='Email-verified')echo ' selected="selected"';
+		echo '>Email-verified</option>';
+		echo '</select></td>';
+		echo '<th>'.__('redirect on login:').'</th><td>';
 		echo '<select name="page_vars[userlogin_redirect_to]">';
 		$tmp=(!$page_vars['userlogin_redirect_to'])?' selected="selected"':'';
 		echo '<option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
@@ -169,7 +174,9 @@ else{
 			if($r2->id==$page_vars['category_to_show'])echo' selected="selected"';
 			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
-		echo '</select><br />';
+		echo '</select><input type="checkbox" name="page_vars[searchable]" title="searchable"';
+		if($page_vars['category_to_show_searchable'])echo ' "checked="checked"';
+		echo '" /><br />';
 		// }
 		// { specify a product
 		echo __('product to show').'<br /><select name="page_vars[product_to_show]"><option value="0">'.__('all products').'</option>';

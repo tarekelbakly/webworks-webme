@@ -22,8 +22,9 @@ if (isset($_SERVER['REDIRECT_QUERY_STRING'])&&$_SERVER['REDIRECT_QUERY_STRING'])
 }
 // { rebuild $_GET (in case it's been mangled by something)
 $uri   = $_SERVER['REQUEST_URI'];
+if (strpos($uri,'?')===false) $uri=str_replace('/get.php/','/get.php?',$uri);
 $uri2  = explode('?', $uri);
-$parts = (count($uri2)>1)?explode('&', $uri2[1]):array();
+$parts = count($uri2)>1 ? explode('&', $uri2[1]) : array();
 foreach ($parts as $part) {
     $arr = explode('=', $part);
     if (!(count($arr)>1)) continue;
@@ -77,7 +78,7 @@ header('Content-Length: '.(string)(filesize($path)));
 if (isset($_GET['forcedownload'])) {
     header('Content-Type: force/download');
     header('Content-Disposition: attachment; filename="'.$name.'"');
-} else header('Content-Type: '.get_mimetype($extension));
+} else header('Content-Type: '.Mimetype::get($extension));
 header('Content-Transfer-Encoding: binary');
 // }
 if ($file = fopen($path, 'rb')) { // send file

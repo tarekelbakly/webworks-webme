@@ -12,7 +12,8 @@ require SCRIPTBASE.'j/'.FCKEDITOR.'/fckeditor.php';
 $admin_vars=array();
 // { common variables
 	foreach(array('action','resize') as $v)$$v=getVar($v);
-	foreach(array('id','show_items','start') as $v)$$v=getVar($v,0);
+	foreach(array('show_items','start') as $v)$$v=getVar($v,0);
+	$id=@$_REQUEST['id'];
 	$plugins_to_load=array('"showhide":1','"tabs":1','"vkfade":1'); // to be used by javascript
 // }
 ?>

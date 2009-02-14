@@ -10,3 +10,5 @@ if(($_SERVER['PHP_SELF']!='/j/fckeditor-2.6.4/editor/plugins/kfm/get.php') && (!
 	echo 'access denied!';
 	exit;
 }
+$kfm_api_auth_override=true;
+$kfm->defaultSetting('theme', 'default');

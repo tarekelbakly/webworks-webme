@@ -100,6 +100,8 @@ if(allowedToEditPage($id)){
 		displayPageSummaries($_POST['id']);
 	}
 	echo '<em>'.__('An item\'s details have been updated.').'</em>';
+	cache_clear('menus');
+	cache_clear('pages');
 }
 else{
 	echo '<em>'.__('No update rights.').'</em>';

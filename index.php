@@ -7,7 +7,7 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	else header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<17)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<18)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 if(is_admin())$plugins_to_load[]='"frontend_admin":1';
@@ -78,7 +78,11 @@ else{
 // { main content
 $c='';
 $permissions=array();
-$p=dbRow("select value from permissions where type=1 and id='".$PAGEDATA->id."'");
+$p=cache_load('pages','permissions_'.$PAGEDATA->id);
+if($p===false){
+	$p=dbRow("select value from permissions where type=1 and id='".$PAGEDATA->id."'");
+	cache_save('pages','permissions_'.$PAGEDATA->id,$p);
+}
 if(count($p)){
 	$allowed=0;
 	$lines=explode("\n",$p['value']);
@@ -109,9 +113,9 @@ else{
 			$plugins_to_load[]='"eventcalendar":1';
 			break;
 		// }
-		case 3: // { user registration
+		case 3: // { user login/registration
 			include_once(SCRIPTBASE.'common/user.login.and.registration.php');
-			$c.=webmeParse($PAGEDATA->body.userloginandregistrationDisplay());
+			$c.=userloginandregistrationDisplay();
 			break;
 		// }
 		case 4: // { sub-page summaries
@@ -179,5 +183,7 @@ else{
 if($template=='')die('no template created. please create a template first');
 // }
 require SCRIPTBASE . 'common/templates.php';
-header('X-Peak-Memory-Used: '.memory_get_peak_usage());
+
+ob_start();
 show_page($template,$pagecontent,$PAGEDATA);
+ob_show_and_log('page');

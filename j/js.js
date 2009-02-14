@@ -251,16 +251,18 @@ function kaejax_sendRequests(uri){
 // }
 function lightbox_createFrame(){
 	if($M('shader'))return $M('shader').imgSize;
+	var position=$.browser.msie6?'absolute':'fixed';
+	var background=$.browser.msie6?'url(/i/opacity.5.gif)':'#000 url(/i/ajax-loader.gif) no-repeat center center';
 	{ // shader
 		var shader=new Element('div',{
 			'id':'shader',
 			'styles':{
-				'position':'fixed',
+				'position':position,
 				'left':0,
 				'top':0,
 				'width':'100%',
 				'height':'100%',
-				'background':'#000 url(/i/ajax-loader.gif) no-repeat center center',
+				'background':background,
 				'opacity':.7,
 				'z-index':1
 			},
@@ -283,10 +285,12 @@ function lightbox_show(src,caption){
 	if(!caption)caption='';
 	imgSize=lightbox_createFrame();
 	if(/kfmget/.test(src))src+=',width='+imgSize.x+',height='+imgSize.y;
+	var position;
+	position=$.browser.msie6?'absolute':'fixed';
 	var lightboxdiv=new Element('div',{
 		'id':'lightboxdiv',
 		'styles':{
-			'position':'fixed',
+			'position':position,
 			'left':0,
 			'top':0,
 			'width':'100%',
@@ -780,6 +784,7 @@ function webme_start(){
 	var p=window.plugins_to_load;
 	if(p.adblock)            loadScript('/ajax/ads.php?pageid='+pagedata.id);
 	if(p.ajaxmenu)           loadAjaxMenu();
+	if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
 	if(p.dbase)              loadScript('/ajax/table.php?pageid='+pagedata.id);
 	if(p.eventcalendar)      loadScript('/ajax/events.php?pageid='+pagedata.id);
 	if(p.formvalidation)     loadFormValidation();
@@ -790,6 +795,7 @@ function webme_start(){
 	if(p.fontsize_controls)  loadScript('/j/fonts.js');
 	if(p.imagefader)         loadScript('/j/imagefader.js');
 	if(p.inputdate)          loadDateClass();
+	if(p.product_review)     loadScript('/ajax/product_review.php');
 	if(p.os_basket)          loadScript('/ajax/os_basket.php');
 	if(p.os_countries)       loadScript('/j/os_countries.js');
 	if(p.os_discount_codes)  loadScript('/j/os_discount_codes.js');

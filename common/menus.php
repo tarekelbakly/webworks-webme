@@ -1,5 +1,4 @@
 <?php
-$cached_menus=array();
 function menu_containsPage($needle,$haystack){
 	$r=Page::getInstance($needle);
 	if($r->parent==0)return 0;
@@ -7,8 +6,9 @@ function menu_containsPage($needle,$haystack){
 	return menu_containsPage($r->parent,$haystack);
 }
 function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$search_options=0){
-	global $cached_menus;
-	if(isset($cached_menus[$parentid]))return $cached_menus[$parentid];
+	$md5=md5($parentid.'|'.$currentpage.'|'.$isadmin.'|'.$topParent.'|'.$search_options);
+	$cache=cache_load('menus',$md5);
+	if($cache)return $cache;
 	$pageParentFound=0;
 	$PARENTDATA=Page::getInstance($parentid);
 	$filter=$isadmin?'':'&& !(special&2)';
@@ -52,7 +52,7 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 			$rs[]=array('link'=>$PARENTDATA->getRelativeURL().'&product_id='.$r2->id,'name'=>$r2->name,'parent'=>$parentid);
 		}
 	}
-	$cached_menus[$parentid]=$menuitems;
+	cache_save('menus',$md5,$menuitems);
 	return $menuitems;
 }
 function menu_setup_main_menu($template){
@@ -75,6 +75,9 @@ function menu_setup_main_menu($template){
 function ww_menuDisplay($b){
 	global $PAGEDATA;
 	if(!$PAGEDATA->id)return '';
+	$md5=md5('ww_menudisplay|'.$b);
+	$cache=cache_load('menus',$md5);
+	if($cache)return $cache;
 	if(is_array($b)){
 		$align=(isset($b['direction']) && $b['direction']=='vertical')?'Left':'Top';
 		$vals=$b;
@@ -117,7 +120,8 @@ function ww_menuDisplay($b){
 		$classes.=' products';
 		$search_options+=1;
 	}
-	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.' ajaxmenu'.$classes.' parent'.$parent.'">';
+	$ajaxmenu=@$vals['nodropdowns']?'':' ajaxmenu ';
+	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.$ajaxmenu.$classes.' parent'.$parent.'">';
 	$rs=menu_getChildren($parent,$PAGEDATA->id,0,$parent,$search_options);
 	$links=0;
 	if(count($rs))foreach($rs as $r){
@@ -141,5 +145,6 @@ function ww_menuDisplay($b){
 		$c.='</div>';
 	}
 	$c.='<script type="text/javascript">plugins_to_load.ajaxmenu=1;</script>';
+	cache_save('menus',$md5,$c);
 	return $c;
 }

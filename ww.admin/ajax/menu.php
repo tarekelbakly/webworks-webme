@@ -15,6 +15,7 @@ function ajaxmenu_getChildren($parentid,$currentpage=0){
 //					if(has_access_permissions(ACL_PRODUCTS))$r[]=array('id'=>'am_products','name'=>_('products'),'link'=>'#','numchildren'=>1);
 //					if(has_access_permissions((ACL_SMS+ACL_EZINES+ACL_FORMS)))$r[]=array('id'=>'am_communication','name'=>_('communication'),'link'=>'#','numchildren'=>1);
 //					if(has_access_permissions(ACL_USERS))$r[]=array('id'=>'am_users_and_admins','name'=>_('users and admins'),'link'=>'#','numchildren'=>1);
+					$r[]=array('id'=>'am_polls','name'=>_('polls'),'link'=>'polls.php');
 					$r[]=array('id'=>'am_siteoptions','name'=>_('site options'),'link'=>'siteoptions.php');
 					break;
 				}

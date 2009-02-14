@@ -1,1 +1,2 @@
-<? include('pages.php'); ?>
+<?php
+include('pages.php');

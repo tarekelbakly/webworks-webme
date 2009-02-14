@@ -1,0 +1,40 @@
+.tabs_page{
+	border:1px solid #cfcfcf;
+}
+.tabs_menu{
+	height:20px;
+}
+.tabs_menu_link{
+	border:0;
+	padding:0px 5px 2px 5px;
+	background:#fff;
+	position:relative;
+	display:inline-block;
+	height:20px;
+	top:-2px;
+	background:url(/i/tabs/gray_m.gif) repeat-x;
+	text-decoration:none;
+}
+.tabs_menu_link .l{
+	position:absolute;
+	left:0;
+	top:0;
+	width:6px;
+	bottom:0;
+	background:url(/i/tabs/gray_l.gif) no-repeat;
+}
+.tabs_menu_link .m{
+	line-height:20px;
+}
+.tabs_menu_link .r{
+	position:absolute;
+	right:0;
+	top:0;
+	width:6px;
+	bottom:0;
+	background:url(/i/tabs/gray_r.gif) no-repeat;
+}
+.tabs_menu_link.active{
+	top:-1px;
+	font-weight:bold;
+}

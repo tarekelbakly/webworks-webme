@@ -139,6 +139,12 @@ if($version==16){ // skins directory
 	if(!isset($DBVARS['theme_dir']))$DBVARS['theme_dir']=$_SERVER['DOCUMENT_ROOT'].'/ww.skins';
 	$version=17;
 }
+if($version==17){ // polls
+	mysql_query('create table if not exists poll(id int auto_increment not null primary key,name text,body text,enabled smallint default 1)default charset=utf8');
+	mysql_query('create table if not exists poll_answer (poll_id int, num int default 0, answer text)default charset=utf8');
+	mysql_query('create table if not exists poll_vote(poll_id int, num int default 0, ip text)');
+	$version=18;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
