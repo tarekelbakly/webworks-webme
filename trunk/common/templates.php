@@ -18,11 +18,7 @@ function show_page($template,$pagecontent,$PAGEDATA){
 	// }
 //	$template=webmeParse($template);
 	$smarty->register_function('MENU', 'menuDisplay');
-
-/*	if(ereg('%MENU{[^}]*}%',$template)){ // %MENU%
-		require_once('common/menus.php');
-		$template=menu_setup_main_menu($template);
-	} */
+	$smarty->register_function('POLL', 'pollDisplay');
 	require_once SCRIPTBASE . 'common/template_metadata.php';
 	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
 	// { display the document
