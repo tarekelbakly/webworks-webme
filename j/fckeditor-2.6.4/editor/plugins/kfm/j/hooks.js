@@ -190,9 +190,13 @@ function kfm_getDefaultOpener(files){
 		for(var i=0;i<hooks.length;++i){
 			if(hooks[i].name==plugin_name)return hooks[i];
 		}
-	}else if(kfm_vars.associations['all']){
+	}
+	if(kfm_vars.associations['all']){
 		var hooks=kfm_getLinks(files,true);
 		plugin_name=kfm_vars.associations['all'];
+		for(var i=0;i<hooks.length;++i){ // first, choose a plugin which is marked as "isDefault" if available
+			if(hooks[i].name==plugin_name && hooks[i].isDefault)return hooks[i];
+		}
 		for(var i=0;i<hooks.length;++i){
 			if(hooks[i].name==plugin_name)return hooks[i];
 		}
