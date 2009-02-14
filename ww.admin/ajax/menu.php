@@ -17,6 +17,7 @@ function ajaxmenu_getChildren($parentid,$currentpage=0){
 //					if(has_access_permissions(ACL_USERS))$r[]=array('id'=>'am_users_and_admins','name'=>_('users and admins'),'link'=>'#','numchildren'=>1);
 					$r[]=array('id'=>'am_polls','name'=>_('polls'),'link'=>'polls.php');
 					$r[]=array('id'=>'am_siteoptions','name'=>_('site options'),'link'=>'siteoptions.php');
+					$r[]=array('id'=>'am_stats','name'=>_('stats'),'link'=>'stats.php');
 					break;
 				}
 				case 'am_misc':{

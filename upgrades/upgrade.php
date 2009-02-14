@@ -145,6 +145,10 @@ if($version==17){ // polls
 	mysql_query('create table if not exists poll_vote(poll_id int, num int default 0, ip text)');
 	$version=18;
 }
+if($version==18){ // logs
+	mysql_query('create table logs( log_date datetime, log_type enum("page","menu"), ip_address char(15),type_data text,user_agent text,referer text,ram_used int,bandwidth int,time_to_render float,db_calls int)charset=utf8');
+	$version=19;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();

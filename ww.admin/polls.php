@@ -1,5 +1,5 @@
 <?php
-include('header.php');
+require 'header.php';
 echo '<h1>'.__('Polls').'</h1>';
 echo admin_menu(array(
 	'New'=>'polls.php?action=newPoll',
@@ -33,4 +33,4 @@ switch($action){
 	// }
 }
 echo '</div>';
-include('footer.php');
+require 'footer.php';
