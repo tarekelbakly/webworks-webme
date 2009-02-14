@@ -125,7 +125,12 @@ define('KFM_VERSION_DB', (int)trim($versions[1]));
 if (!isset($_SERVER['DOCUMENT_ROOT'])) { // fix for IIS
     $_SERVER['DOCUMENT_ROOT'] = preg_replace('/\/[^\/]*$/', '', str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']));
 }
-$rootdir = strpos($kfm_userfiles_address, './')===0?KFM_BASE_PATH.$kfm_userfiles_address:$kfm_userfiles_address.'/';
+// { API - for programmers only
+if (file_exists(KFM_BASE_PATH.'api/config.php')) require KFM_BASE_PATH.'api/config.php';
+if (file_exists(KFM_BASE_PATH.'api/cms_hooks.php')) require KFM_BASE_PATH.'api/cms_hooks.php';
+else require KFM_BASE_PATH.'api/cms_hooks.php.dist';
+// }
+$rootdir = strpos($kfm_userfiles_address, './')===0?KFM_BASE_PATH.$kfm_userfiles_address:$kfm_userfiles_address;
 
 if (!is_dir($rootdir))mkdir($rootdir, 0755);
 if (!is_dir($rootdir)) {
@@ -140,11 +145,6 @@ define('IMAGEMAGICK_PATH', isset($kfm_imagemagick_path)?$kfm_imagemagick_path:'/
 $cache_directories = array();
 $kfm_errors        = array();
 $kfm_messages      = array();
-// }
-// { API - for programmers only
-if (file_exists(KFM_BASE_PATH.'api/config.php')) require KFM_BASE_PATH.'api/config.php';
-if (file_exists(KFM_BASE_PATH.'api/cms_hooks.php')) require KFM_BASE_PATH.'api/cms_hooks.php';
-else require KFM_BASE_PATH.'api/cms_hooks.php.dist';
 // }
 // { work directory
 if ($kfm_workdirectory[0]=='/') {
