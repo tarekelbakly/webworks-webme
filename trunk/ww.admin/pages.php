@@ -1,5 +1,5 @@
 <?php
-include('header.php');
+require 'header.php';
 echo '<h1>'.__('Pages').'</h1>';
 /*
 	PAGES PERMISSIONS:
