@@ -4,7 +4,18 @@ class ProductType{
 	static $instancesByName=array();
 	function __construct($v,$r=false){
 		$v=(int)$v;
-		if(!$v)$r=array('name'=>'default template','short_template'=>'','long_template'=>'','id'=>0,'has_prices'=>0,'uses_stock_control'=>0);
+		if(!$v)$r=array(
+			'name'=>'default template',
+			'short_template'=>'',
+			'long_template'=>'',
+			'id'=>0,
+			'has_prices'=>0,
+			'uses_stock_control'=>0,
+			'longform_large_image_size'=>250,
+			'longform_thumb_image_size'=>64,
+			'shortform_thumb_size'=>128,
+			'products_per_page'=>10
+		);
 		else $r=$r?$r:dbRow("select * from product_types where id=$v limit 1");
 		if(!count($r))return false;
 		foreach ($r as $k=>$val) $this->{$k}=$val;

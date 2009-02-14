@@ -1,0 +1,16 @@
+.news_scroller_gradient_bottom{
+	position:absolute;
+	bottom:0;
+	left:0;
+	height:16px;
+	background:url(/i/gradient-fade-to-white-bottom.png) repeat-x;
+}
+.news_scroller_gradient_top{
+	position:absolute;
+	top:0;
+	left:0;
+	height:16px;
+	background:url(/i/gradient-fade-to-white-top.png) repeat-x;
+}
+* html .news_scroller_gradient_bottom{background-image:url(/i/gradient-fade-to-white-bottom.gif)}
+* html .news_scroller_gradient_top{background-image:url(/i/gradient-fade-to-white-top.gif)}

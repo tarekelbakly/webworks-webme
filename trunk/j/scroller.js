@@ -2,7 +2,7 @@ function sn_Init(){
 	var els=$ES('div.scrollingNews');
 	for(var j=0;els[j];++j){
 		var el=els[j];
-		if(parseFloat(el.getStyle('height'))!=parseInt(el.getStyle('height')))el.setStyle('height',100);
+		if(parseFloat(el.getStyle('height'))!=parseInt(el.getStyle('height')))el.setStyle('height',200);
 		{ //  variables 
 			sn_Active[j]=1;
 			sn_PauseStage[j]=0;
@@ -32,18 +32,8 @@ function sn_Init(){
 			el.addEvent('mouseover',sn_Deactivate);
 			el.addEvent('mouseout',sn_Activate);
 		}
-		var fade=new Element('div',{
-			'class' : 'news_scroller_gradient',
-			'styles': {
-				'position'   : 'absolute',
-				'bottom'     : 0,
-				'left'       : 0,
-				'width'      : el.offsetWidth,
-				'height'     : 16,
-				'background' : 'url(/i/gradient-fade-to-white.'+(window.ie6?'gif':'png')+') repeat-x'
-			}
-		});
-		el.appendChild(fade);
+		$('<div class="news_scroller_gradient_top" style="width:'+el.offsetWidth+'px">&nbsp;</div>').appendTo(el);
+		$('<div class="news_scroller_gradient_bottom" style="width:'+el.offsetWidth+'px">&nbsp;</div>').appendTo(el);
 	}
 	sn_Scroll();
 }

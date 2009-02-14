@@ -9,10 +9,32 @@ class Page{
 	public $vals;
 	function __construct($v,$byField=0,$fromRow=0,$pvq=0){
 		# byField: 0=ID; 1=Name
-		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:dbRow("select * from pages where id=$v limit 1");
-		else if ($byField == 1) $r=dbRow("select * from pages where name like '".addslashes(str_replace('-','_',$v))."' limit 1");
-		else if ($byField == 2 && is_numeric($v)) $r=dbRow("select * from pages where type=$v limit 1");
-		else if ($byField == 3 && is_numeric($v)) $r=dbRow("select * from pages where special&$v limit 1");
+		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:($v?dbRow("select * from pages where id=$v limit 1"):array());
+		else if ($byField == 1){ // by name
+			$name=strtolower(str_replace('-','_',$v));
+			$fname='page_by_name_'.md5($name);
+			$r=cache_load('pages',$fname);
+			if($r===false){
+				$r=dbRow("select * from pages where name like '".addslashes($name)."' limit 1");
+				if(count($r))cache_save('pages',$fname,$r);
+			}
+		}
+		else if ($byField == 2 && is_numeric($v)){ // by type
+			$fname='page_by_type_'.$v;
+			$r=cache_load('pages',$fname);
+			if(!$r){
+				$r=dbRow("select * from pages where type=$v limit 1");
+				cache_save('pages',$fname,$r);
+			}
+		}
+		else if ($byField == 3 && is_numeric($v)){ // by special
+			$fname='page_by_special_'.$v;
+			$r=cache_load('pages',$fname);
+			if(!$r){
+				$r=dbRow("select * from pages where special&$v limit 1");
+				cache_save('pages',$fname,$r);
+			}
+		}
 		else if ($byField == 4) $r=$v;
 		else return false;
 		if(!count($r))return false;
@@ -47,9 +69,7 @@ class Page{
 			$pid=0;
 			foreach($names as $n){
 				$p=self::getInstanceByNameAndParent($n,$pid);
-#echo '<!-- '.$n.'|'.$pid.' -->';
 				if(!$p)return false;
-#echo '<!-- '.$n." -->\n";
 				$pid=$p->id;
 			}
 			self::$instancesByName[$nameIndex]=$p;
@@ -112,7 +132,14 @@ class Page{
 	}
 	function initValues($pvq=false){
 		$this->vars=array();
-		$pvq=$pvq?$pvq:dbAll("select * from page_vars where page_id=".$this->id);
+		if(!$pvq){
+			$fname='page_vars_'.$this->id;
+			$pvq=cache_load('pages',$fname);
+			if($pvq===false){
+				$pvq=dbAll("select * from page_vars where page_id=".$this->id);
+				cache_save('pages',$fname,$pvq);
+			}
+		}
 		foreach($pvq as $pvr)$this->vars[$pvr['name']]=$pvr['value'];
 		if(isset($_SESSION['os_country']) && $_SESSION['os_country'] && isset($this->vars['banned_countries']) && $this->vars['banned_countries'] && strpos($this->vars['banned_countries'],$_SESSION['os_country'])!==false)$this->banned=true;
 		return $this;

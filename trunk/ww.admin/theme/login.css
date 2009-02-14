@@ -1,3 +1,4 @@
+@import "/css";
 body { 
 	background:#f7f7f7 url(/ww.admin/theme/body.png) 0% 100% repeat-x;margin: 5px; padding: 0; text-align:center;
 	font: 13px Tahoma, arial, sans-serif; color: #666; height: 100%;

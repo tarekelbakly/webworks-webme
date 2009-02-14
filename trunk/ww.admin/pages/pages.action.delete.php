@@ -12,6 +12,8 @@ if(allowedToEditPage($id)){
 			dbQuery('delete from pages where id="'.$id.'"');
 			dbQuery('update pages set parent="'.$r['parent'].'" where parent="'.$id.'"');
 			echo '<em>'.__('A page has been deleted.').'</em>';
+			cache_clear('menus');
+			cache_clear('pages');
 		}
 		else{
 			echo '<em>'.__('That page does not exist.').'</em>';

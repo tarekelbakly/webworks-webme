@@ -1,16 +1,6 @@
 <?php
-session_start();
-function __() {
-	$str = gettext(func_get_arg(0));
-	for($i = func_num_args()-1 ; $i ; --$i){
-		$s=func_get_arg($i);
-		$str=str_replace('%'.$i,$s,$str);
-	}
-	return $str;  
-}
-function __autoload($name) {
-	require_once SCRIPTBASE . '/ww.php_classes/' . $name . '.php';
-}
+require dirname(__FILE__).'/ww.incs/basics.php';
+require SCRIPTBASE.'ww.incs/db.php';
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
 	$date = explode(' ', $date);
@@ -19,53 +9,6 @@ function date_m2h($d, $type = 'date') {
 		return date('l jS F, Y', mktime(0, 0, 0, $date[1], $date[2], $date[0]));
 	}
 	return date(DATE_RFC822, mktime($date[5], $date[4], $date[3], $date[1], $date[2], $date[0]));
-}
-function dbAll($query,$key='') {
-	$q = dbQuery($query);
-	if(PEAR::isError($q)){
-		echo 'dbAll: '.$q->getMessage();
-		exit;
-	}
-	$results=$q->fetchAll();
-	if(!$key)return $results;
-	$arr=array();
-	foreach($results as $r)$arr[$r[$key]]=$r;
-	return $arr;
-}
-function dbInit(){
-	if(isset($GLOBALS['db']))return $GLOBALS['db'];
-	global $DBVARS;
-	$dsn = 'mysql://' . $DBVARS['username'] . ':' . $DBVARS['password'] . '@' . $DBVARS['hostname'] . '/' . $DBVARS['db_name'];
-	$db = &MDB2::connect($dsn);
-	if(Pear::isError($db)){
-		echo '<p>Error connecting to database.</p><p>Please make sure the access details are correct, and that the server has the Pear packages MDB2 and MDB2_Driver_mysql installed.</p>';
-		exit;
-	}
-	$db->setCharset('utf8');
-	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
-	$GLOBALS['db']=$db;
-	return $db;
-}
-function dbOne($query, $field='') {
-	$r = dbRow($query);
-	return $r[$field];
-}
-function dbQuery($query){
-	$db=dbInit();
-	$q = $db->query($query);
-	if(PEAR::isError($q)){
-		echo 'dbQuery:: '.$q->getMessage();
-		exit;
-	}
-	return $q;
-}
-function dbRow($query) {
-	$q = dbQuery($query);
-	if(PEAR::isError($q)){
-		echo 'dbRow:: '.$q->getMessage();
-		exit;
-	}
-	return $q->fetchRow();
 }
 function getVar($v, $d = '') {
 	if (isset($_GLOBAL[$v])) return $_GLOBAL[$v];
@@ -88,16 +31,16 @@ function html_fixImageResizes($src){
 	foreach($matches[0] as $match){
 		$width=0;
 		$height=0;
-		if(preg_match('/width="[0-9]*"/i',$match) && preg_match('/height="[0-9]*"/i',$match)){
-			$width=preg_replace('/.*width="([0-9]*)".*/i','\1',$match);
-			$height=preg_replace('/.*height="([0-9]*)".*/i','\1',$match);
+		if(preg_match('#width="[0-9]*"#i',$match) && preg_match('/height="[0-9]*"/i',$match)){
+			$width=preg_replace('#.*width="([0-9]*)".*#i','\1',$match);
+			$height=preg_replace('#.*height="([0-9]*)".*#i','\1',$match);
 		}
 		else if(preg_match('/style="[^"]*width: *[0-9]*px/i',$match) && preg_match('/style="[^"]*height: *[0-9]*px/i',$match)){
-			$width=preg_replace('/.*style="[^"]*width: *([0-9]*)px.*/i','\1',$match);
-			$height=preg_replace('/.*style="[^"]*height: *([0-9]*)px.*/i','\1',$match);
+			$width=preg_replace('#.*style="[^"]*width: *([0-9]*)px.*#i','\1',$match);
+			$height=preg_replace('#.*style="[^"]*height: *([0-9]*)px.*#i','\1',$match);
 		}
 		if(!$width || !$height)continue;
-		$imgsrc=preg_replace('/.*src="([^"]*)".*/i','\1',$match);
+		$imgsrc=preg_replace('#.*src="([^"]*)".*#i','\1',$match);
 
 		// get absolute address of img (naive, but will work for most cases)
 		if(!preg_match('/^http/i',$imgsrc))$imgsrc=preg_replace('#^/*#','http://'.$_SERVER['HTTP_HOST'].'/',$imgsrc);
@@ -127,6 +70,7 @@ function inc_common($f) {
 	include_once SCRIPTBASE . 'common/' . $f;
 }
 function redirect($addr){
+	header('Location: '.$addr);
 	echo '<html><head><script type="text/javascript">setTimeout(function(){document.location="'.$addr.'";},10);</script></head><body><noscript>you need javascript to use this site</noscript></body></html>';
 	exit;
 }
@@ -137,23 +81,6 @@ function sanitise_html($html) {
 	$html = html_fixImageResizes($html);
 	return $html;
 }
-// { load config, or go into setup if it's not set
-define('SCRIPTBASE', dirname(__FILE__) . '/');
-if (!file_exists(SCRIPTBASE . '.private/config.php')) {
-	echo '<html><body><p>No configuration file found</p>';
-	if(file_exists('install/index.php'))echo '<p><a href="/install/index.php">Click here to install</a></p>';
-	else echo '<p><strong>Installation script also missing...</strong> please contact kae@webworks.ie if you think there\'s a problem.</p>';
-	echo '</body></html>';
-	exit;
-}
-require SCRIPTBASE . '.private/config.php';
-require SCRIPTBASE . 'common/webme_specific.php';
-require 'MDB2.php';
-if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
-define('FCKEDITOR','fckeditor-2.6.4');
-define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
-define('WORKURL_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
-// }
 $is_admin = 0;
 $sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
 // { quick-build similar functions

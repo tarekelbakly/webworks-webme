@@ -25,7 +25,7 @@ function ajaxmenu_initialise(p){
 		for(var i=0;i<a.length;++i){
 			if(_am.accordion && a[i].numchildren>0)a[i].link='javascript:;';
 			var l=document.createElement('a');
-			l.href=a[i].link+(p && a[i].link!='javascript:;'?'#am_open='+p:'');
+			l.href=a[i].link+(p && _am.preopen_menu && a[i].link!='javascript:;'?'#am_open='+p:'');
 			l.id='ajaxmenu_link'+a[i].id;
 			l.className=a[i].classes;
 			l.innerHTML='<span class="l"></span>'+a[i].name+'<span class="r"></span>';

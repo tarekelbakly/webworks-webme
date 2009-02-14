@@ -12,9 +12,13 @@ function plugin_lightbox(){
 }
 kfm_addHook(new plugin_lightbox());
 kfm_addHook(new plugin_lightbox(),{mode:0,title:kfm.lang.ViewImage});
+function $(id){
+	return document.getElementById(id);
+}
 function kfm_img_startLightbox(id){
 	window.lightbox_oldCM=$('documents_body').contentMode;
 	$('documents_body').contentMode='lightbox';
+	window.title_before_lightbox=document.title;
 	if(id&&$type(id)=='array'){
 		if(id.length>1){
 			window.kfm_slideshow={ids:id,at:0};
@@ -25,44 +29,39 @@ function kfm_img_startLightbox(id){
 	}
 	if(!id){
 		window.kfm_slideshow.at++;
+		if(window.kfm_slideshow.at>window.kfm_slideshow.ids.length)window.kfm_slideshow.at-=kfm_slideshow.ids.length;
 		document.title='KFM Slideshow: '+window.kfm_slideshow.at;
 		id=window.kfm_slideshow.ids[window.kfm_slideshow.at%window.kfm_slideshow.ids.length];
 	}
-	var el,data=File_getInstance(id),ws=window.getSize().size,oldEl=$('kfm_lightboxImage'),wrapper=$('kfm_lightboxWrapper');
+	var el,data=File_getInstance(id),oldEl=$('kfm_lightboxImage'),wrapper=$('kfm_lightboxWrapper'),ws,win;
+	win=$j(window);
+	ws={x:win.width(),y:win.height()};
 	if(!wrapper){
-		wrapper=new Element('div',{
-			'id':'kfm_lightboxWrapper',
-			'styles':{
-				'position':'absolute',
-				'left':0,
-				'z-index':1,
-				'top':0,
-				'width':ws.x,
-				'height':ws.y
-			}
-		});
-		wrapper.addEvent('click',kfm_img_stopLightbox);
+		wrapper=document.createElement('div');
+		wrapper.id='kfm_lightboxWrapper';
+		wrapper.style.position='absolute';
+		wrapper.style.left=0;
+		wrapper.style.zIndex=1;
+		wrapper.style.top=0;
+		wrapper.style.width=ws.x+'px';
+		wrapper.style.height=ws.y+'px';
+		$j.event.add(wrapper,'click',kfm_img_stopLightbox);
 		document.body.appendChild(wrapper);
 		wrapper.focus();
 	}
+	wrapper.style.backgroundImage='url("themes/'+kfm_theme+'/large_loader.gif")';
 	if(!$('kfm_lightboxShader')){
-		el=new Element('div',{
-			'id':'kfm_lightboxShader',
-			'styles':{
-				'width':ws.x,
-				'height':ws.y,
-				'background':'#000',
-				'opacity':'.7'
-			}
-		});
+		el=document.createElement('div');
+		el.id='kfm_lightboxShader';
+		el.style.width=ws.x+'px';
+		el.style.height=ws.y+'px';
+		el.style.background='#000';
+		$j(el).css('opacity',0.7);
 		wrapper.appendChild(el);
 	}
-	if(oldEl)oldEl.remove();
+	if(oldEl)$j(oldEl).remove();
 	var w=data.width,h=data.height,url='get.php?id='+id,r=0;
-	if(!w||!h){
-		kfm_log(kfm.lang.NotAnImageOrImageDimensionsNotReported);
-		return kfm_img_stopLightbox();
-	}
+	if(!w||!h)return kfm_img_stopLightbox();
 	if(w>ws.x*.9||h>ws.y*.9){
 		if(w>ws.x*.9){
 			r=.9*ws.x/w;
@@ -76,19 +75,19 @@ function kfm_img_startLightbox(id){
 		}
 		url+='&width='+parseInt(w)+'&height='+parseInt(h);
 	}
-	el=new Element('img',{
-		'id':'kfm_lightboxImage',
-		'src':url,
-		'styles':{
-			'position':'absolute',
-			'left':parseInt((ws.x-w)/2),
-			'top':parseInt((ws.y-h)/2),
-			'z-index':2
-		}
+	el=document.createElement('img');
+	el.id='kfm_lightboxImage';
+	el.src=url;
+	$j.event.add(el,'load',function(){
+		wrapper.style.backgroundImage='url()';
 	});
+	el.style.position='absolute';
+	el.style.left=(+((ws.x-w)/2))+'px';
+	el.style.top=(+((ws.y-h)/2))+'px';
+	el.style.zIndex=2;
 	if(window.kfm_slideshow&&!window.kfm_slideshow_stopped){
-		el.addEvent('load',function(){
-			window.lightbox_slideshowTimer=setTimeout('kfm_img_startLightbox()',kfm_slideshow_delay);
+		$j.event.add(el,'load',function(){
+			window.lightbox_slideshowTimer=setTimeout('kfm_img_startLightbox()',lightbox_slideshow_delay);
 		});
 	}
 	wrapper.appendChild(el);
@@ -98,10 +97,10 @@ function kfm_img_startLightbox(id){
 function kfm_img_stopLightbox(e){
 	e=new Event(e);
 	if(e.rightClick)return;
-	var wrapper=$('kfm_lightboxWrapper');
-	if(wrapper)wrapper.remove();
+	$j("#kfm_lightboxWrapper").remove();
 	window.kfm_slideshow=window.kfm_slideshow_stopped=null;
 	if(window.lightbox_slideshowTimer)clearTimeout(window.lightbox_slideshowTimer);
+	document.title=window.title_before_lightbox;
 	$('documents_body').contentMode=window.lightbox_oldCM;
 	kfm_resizeHandler_remove('kfm_lightboxShader');
 	kfm_resizeHandler_remove('kfm_lightboxWrapper');

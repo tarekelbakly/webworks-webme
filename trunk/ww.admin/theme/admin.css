@@ -1,3 +1,4 @@
+@import "/css";
 *{font: 13px tahoma,sans-serif; color: #666; }
 
 a        {color: #369; text-decoration: underline; cursor:pointer}
@@ -35,6 +36,8 @@ input[disabled=disabled] { background: #ddd; color:#999; font-style:italic }
 table{ border-spacing:0;  margin: 10px; margin-left: 20px; font-size: 13px; empty-cells:show}
 td,th { vertical-align:top; padding: 3px; background: none; }
 textarea{font-size:1em;width:100%;height:200px;border-width:1px}
+input.small{width:50px}
+input.large{width:100%}
 textarea.small{width:200px;height:80px;font-size:10px !important}
 textarea.medium{width:100%;height:100px}
 th,.theader, td.th{ text-align: left;  color: #416BA7; }
@@ -325,23 +328,6 @@ input.invalid{color:#fff; background:#f66; }
 .pr_icon a:hover{opacity:1;-moz-opacity:1}
 .pr_default_image{background:#ff0;border:1px solid red}
 
-.tabs_page{
-		border:1px solid #000
-}
-.tabs_menu_link{
-		border:1px solid #000;
-			background:#eee;
-				padding:0 20px
-}
-.tabs_menu_link.active{
-		background:#fff;
-			position:relative;
-				top:1px;
-					border-bottom:none
-}
-.tabs_page{
-		padding:20px;overflow-x:auto
-}
 .showhide{display:none}
 .blockLinks a{display:block}
 .blockLinks a:hover{background:#fff}

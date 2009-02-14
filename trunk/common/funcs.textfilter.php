@@ -20,6 +20,7 @@ function textObjectsFilter($d){
 		else $d.='</div></div>';
 		$d=str_replace('%TABPAGE%','</div><div class="tabPage">',$d);
 	}
+	// { list of codes
 	$replacements=array(
 		'ADS'                 => 'adsDisplay',
 		'COUNTRIES'           => 'countriesDisplay',
@@ -33,16 +34,25 @@ function textObjectsFilter($d){
 		'LANGUAGE_FLAGS'      => 'languageFlagsDisplay',
 		'LOGIN_BOX'           => 'loginBox',
 		'OS_BASKET'           => 'osBasketDisplay',
+		'OS_BASKET_SMALL'     => 'os_basketDisplaySmall',
 		'OS_BEST_SELLERS'     => 'os_bestsellers',
+		'OS_CATEGORY_PRODUCTS'=> 'products_showCategoryContents',
     'OS_LIST_ALL_PRODUCTS'=> 'products_list',
+    'OS_NEW_PRODUCTS'     => 'products_newProducts',
+    'OS_PRODUCTS_BY_DISCOUNT'=> 'os_productsByDiscount',
 		'OS_QUICKFIND'        => 'osQuickFindDisplay',
+		'OS_WISHLIST_SMALL'   => 'os_showWishlist',
 		'PANEL'               => 'panelDisplay',
+		'POLL'                => 'poll_display',
+		'PRODUCT_CATEGORIES_SELECTBOX'=>'products_categories_selectbox',
 		'SCROLLINGNEWS'       => 'scrollingNewsDisplay',
 		'SCROLLINGEVENTS'     => 'scrollingEventsDisplay',
 		'SITE_SKINS'          => 'siteSkinThumbs',
 		'SMS_SUBSCRIBE'       => 'smsSubscribeDisplay',
 		'GALLERY'             => 'imageGalleryDisplay'
 	);
+	// }
+	// { files to include for those codes
 	$include_files=array(
 		'ADS'                 => 'common/ads.php',
 		'COUNTRIES'           => 'common/countries.php',
@@ -56,12 +66,20 @@ function textObjectsFilter($d){
 		'FORM'                => 'common/funcs.forms.php',
 		'GALLERY'             => 'common/funcs.image.gallery.php',
 		'OS_BASKET'           => 'common/online_stores.php',
-		'OS_BEST_SELLERS'      => 'common/online_stores.php',
+		'OS_BASKET_SMALL'     => 'common/online_stores.php',
+		'OS_BEST_SELLERS'     => 'common/online_stores.php',
+		'OS_CATEGORY_PRODUCTS'=> 'common/products.php',
     'OS_LIST_ALL_PRODUCTS'=> 'common/products.php',
+		'OS_NEW_PRODUCTS'     => 'common/products.php',
+		'OS_PRODUCTS_BY_DISCOUNT'=>'common/online_stores.php',
 		'OS_QUICKFIND'        => 'common/online_stores.php',
+		'OS_WISHLIST_SMALL'   => 'common/online_stores.php',
+		'POLL'                => 'common/polls.php',
+		'PRODUCT_CATEGORIES_SELECTBOX'=>'common/products.php',
 		'SITE_SKINS'          => 'common/site.skins.php',
 		'SMS_SUBSCRIBE'       => 'common/sms_subscribe.php'
 	);
+	// }
 	do{ 
 		$a=$d; 
 		if(preg_match('/%\([^\)]*\)%/',$d)){ 
@@ -72,16 +90,18 @@ function textObjectsFilter($d){
 	foreach($replacements as $code=>$function){
 		$d=preg_replace('#<p>'.$code.'{([^}^<^>]*)}</p>#',$code.'{\1}',$d);
 		do{
-			$a=$d;
+			$a=md5($d);
 			if(ereg($code.'{[^}^<^>]*}',$d)){
 				if(isset($include_files[$code]))require_once(SCRIPTBASE.$include_files[$code]);
 				$b=preg_replace('/.*'.$code.'{([^}^<^>]*)}.*/','\1',$d);
 				$c=$function($b);
 				$d=str_replace('%'.$code.'{'.$b.'}%',$c,$d,$count);
 				if(!$count)$d=str_replace($code.'{'.$b.'}',$c,$d);
+				unset($c);
 				$d=str_replace(array("\r","\n"),'%LINERETURN%',$d);
 			}
-		}while($a!=$d);
+		}while($a!=md5($d));
+
 	}
 	if(count($parseHL)){
 		$c=$d;

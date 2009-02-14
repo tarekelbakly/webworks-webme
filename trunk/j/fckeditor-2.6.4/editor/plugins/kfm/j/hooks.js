@@ -1,20 +1,30 @@
 /* begin core section */
 
 /* define the order of the categories */
-var HookCategories=["main", "view", "edit", "returning"];
-
+var HookCategories=["main", "view", "edit", "returning",'selection','kfm'];
+var show_category_headers=true;
+var context_categories={};
+for(i=0;i<HookCategories.length;i++){
+	var catname=HookCategories[i];
+	var cat=new kfm_context_category(catname);
+	context_categories[catname]=cat;
+}
 var kfm_imageExtensions=['jpg','png','gif'];
 /* initialize arrays */
 var HooksSingleReadonly={};
 var HooksSingleWritable={};
 var HooksMultiple={};
+var HooksFilePanel=[];
+var HooksDirectoryReadonly=[];
+var HooksDirectoryWritable=[];
+var HooksGlobal=[];
 function kfm_addHook(objoriginal, properties){
 	var obj=objoriginal;
 	/*Write properties to object, so they can be different for each call*/
 	if(properties){
 		if(typeof(properties.doFunction)!="undefined"){
 			if(typeof(properties.doFunction)=="function")obj.doFunction=properties.doFunction;
-			if(typeof(properties.doFunction)=="string")obj.doFunction=eval('obj.'+properties.doFunction+';');
+			if(typeof(properties.doFunction)=="string")obj.doFunction=obj[properties.doFunction];
 		}
 		if(typeof(properties.mode)!="undefined")obj.mode=properties.mode;
 		if(typeof(properties.title)!="undefined")obj.title=properties.title;
@@ -51,32 +61,40 @@ function kfm_addHook(objoriginal, properties){
 		/*selection of multiple files*/
 		kfm_addHookToArray(obj,"HooksMultiple");
 	}
+	if(obj.mode==3){ //file panel
+		HooksFilePanel.push(obj);
+	}
+	if(obj.mode==4){ // directories
+		if(obj.writable==0 || obj.writable==2) HooksDirectoryReadonly.push(obj);
+		if(obj.writable==1 || obj.writable==2) HooksDirectoryWritable.push(obj);
+	}
+	if(obj.mode==5)HooksGlobal.push(obj);
 }
 function kfm_addHookToArray(obj, HooksArray){
 	/* Add the hook object to the proper array */
 	if(!obj.extensions)return false;
 	if(typeof(obj.extensions)=="string" && obj.extensions.toLowerCase()=="all" || HooksArray=="HooksMultiple"){
 		ext="all";
-		if(eval("typeof("+HooksArray+'.'+ext+')=="undefined"'))kfm_addHookExtension(HooksArray, ext);
-		if(eval("typeof("+HooksArray+'.'+ext+'.'+obj.category+')=="undefined"'))kfm_addHookCategory(HooksArray, ext, obj.category);
-		eval(HooksArray+'.'+ext+'.'+obj.category+'.push(obj);');
+		if(typeof(window[HooksArray][ext])=="undefined")kfm_addHookExtension(HooksArray, ext);
+		if(typeof(window[HooksArray][ext][obj.category])=="undefined")kfm_addHookCategory(HooksArray, ext, obj.category);
+		window[HooksArray][ext][obj.category].push(obj);
 	}else{
 		for(var i=0;i<obj.extensions.length; i++){
 			ext=obj.extensions[i];
-			if(eval("typeof("+HooksArray+'.'+ext+')=="undefined"'))kfm_addHookExtension(HooksArray, ext);
-			if(eval("typeof("+HooksArray+'.'+ext+'.'+obj.category+')=="undefined"'))kfm_addHookCategory(HooksArray, ext, obj.category);
-			eval(HooksArray+'.'+ext+'.'+obj.category+'.push(obj);');
+			if(typeof(window[HooksArray][ext])=="undefined")kfm_addHookExtension(HooksArray, ext);
+			if(typeof(window[HooksArray][ext][obj.category])=="undefined")kfm_addHookCategory(HooksArray, ext, obj.category);
+			window[HooksArray][ext][obj.category].push(obj);
 		}
 	}
 }
 function kfm_addHookExtension(HooksArray, ext){
-	eval(HooksArray+'.'+ext+'={};');
+	window[HooksArray][ext]={};
 }
 function kfm_addHookCategory(HookArray,ext, newCategory){
 	/*Add a hook category and*/
-	eval(HookArray+'.'+ext+'.'+newCategory+'=[];');
+	window[HookArray][ext][newCategory]=[];
 }
-function kfm_getLinks(files){
+function kfm_getLinks(files,nocontext){
 	/**
 	 * initial return function 
 	 * category information is lost but order of category is maintained 
@@ -85,7 +103,7 @@ function kfm_getLinks(files){
 
 	/* multiple file section */
 	var cPlugins=[];
-	function addPlugin(plugin, fid){
+	function addPlugin(plugin, fid, category){
 		var add=true;
 		/* determine index and add plugin if is not present */
 		var index=-1;
@@ -104,13 +122,15 @@ function kfm_getLinks(files){
 	
 		/* Then add the file id to the doParameter */
 		cPlugins[index].doParameter.push(fid);
+		if(add && !nocontext)context_categories[category].add(cPlugins[index]);
 	}
 	if(files.length>1){
 		for(var i=0; i<files.length; i++){
 			var F=File_getInstance(files[i]);
-         var extension=F.name.replace(/.*\./,'').toLowerCase();
+         //var extension=F.name.replace(/.*\./,'').toLowerCase();
+			var extension=F.ext;
 			for(var k=0;k<HookCategories.length; k++){
-				if(eval('HooksMultiple.all.'+HookCategories[k]))plugins=eval('HooksMultiple.all.'+HookCategories[k]);
+				if(HooksMultiple.all[HookCategories[k]])plugins=HooksMultiple.all[HookCategories[k]];
 				else plugins=[];
 				for(var j=0; j<plugins.length; j++){ // loop over plugins
 					var plugin=plugins[j];
@@ -118,12 +138,12 @@ function kfm_getLinks(files){
 							(plugin.writable==1 || plugin.writable==2) && 
 							((typeof(plugin.extensions)=="string" && plugin.extensions=="all") || plugin.extensions.indexOf(extension)!=-1)
 						)
-						addPlugin(plugin,F.id);
+						addPlugin(plugin,F.id,HookCategories[k]);
 					else if(	!F.writable && 
 							(plugin.writable==0 || plugin.writable==2) && 
 							((typeof(plugin.extensions)=="string" && plugin.extensions=="all") || plugin.extensions.indexOf(extension)!=-1)
 						)
-						addPlugin(plugin,F.id);
+						addPlugin(plugin,F.id,HookCategories[k]);
 				}
 			}
 		}
@@ -140,21 +160,62 @@ function kfm_getLinks(files){
 	for(var j=0;j<HookCategories.length;j++){
 		category=HookCategories[j];
 		/* extend is a mootools function*/
-		if(typeof(eval(HooksArray+'.all.'+category))!='undefined')hookObjects.extend(eval(HooksArray+'.all.'+category));
-		try{
-			if(typeof(eval(HooksArray+'.'+ext+'.'+category))!='undefined')hookObjects.extend(eval(HooksArray+'.'+ext+'.'+category));
-		}
-		catch(e){ // unknown extension
-		}
+		if(typeof(window[HooksArray]['all'][category])!='undefined')hookObjects.extend(window[HooksArray]['all'][category]);
+		if(window[HooksArray][ext] && typeof(window[HooksArray][ext][category])!='undefined')hookObjects.extend(window[HooksArray][ext][category]);
 	}
-	hookObjects.forEach(function(item, index){
-		item.doParameter=[F.id];
-	});
+	if(!nocontext){
+		for(j=0;j<hookObjects.length;++j){
+			item=hookObjects[j];
+			if(kfm_vars.associations[F.ext] && kfm_vars.associations[F.ext]==item.name){ // Create an open object
+				context_categories['main'].add({
+					name:'open',
+					title:'open',
+					category:'main',
+					doFunction:item.doFunction,
+					doParameter:item.doParameter
+				},true);
+			}
+			item.doParameter=[F.id];
+			context_categories[item.category].add(item);
+		};
+	}
 	return hookObjects;
 }
-function kfm_getDefaultOpener(id){
-	var hooks=kfm_getLinks([id]);
-	for(var i=0;i<hooks.length;++i){
-		if(hooks[i].defaultOpener)return hooks[i];
+function kfm_getDefaultOpener(files){
+	var plugin_name;
+	var F=File_getInstance(files[0]);
+	if(kfm_vars.associations[F.ext]){
+		var hooks=kfm_getLinks(files,true);
+		plugin_name=kfm_vars.associations[F.ext];
+		for(var i=0;i<hooks.length;++i){
+			if(hooks[i].name==plugin_name)return hooks[i];
+		}
+	}else if(kfm_vars.associations['all']){
+		var hooks=kfm_getLinks(files,true);
+		plugin_name=kfm_vars.associations['all'];
+		for(var i=0;i<hooks.length;++i){
+			if(hooks[i].name==plugin_name)return hooks[i];
+		}
+	}
+	return false;
+}
+function kfm_context_category(name){
+	this.name=name;
+	this.title=this.name;
+	this.type='context_category';
+	this.items=[];
+	this.add=function(item,first){
+		if(typeof(item)=='array'){
+			for(var i=0;i<item.length;i++) this.add(item[i]);
+		}else{
+			if(first) this.items.unshift(item);
+			else this.items.push(item);
+		}
+	}
+	this.size=function(){
+		return this.items.length;
+	}
+	this.clear=function(){
+		this.items=[];
 	}
 }

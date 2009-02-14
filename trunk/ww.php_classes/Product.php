@@ -17,9 +17,9 @@ class Product{
 	}
 	function getImage($size){
 		$default_image=$this->default_image;
-		$imagedir=kfm_api_getDirectoryId('product_images/product'.$this->id);
-		$GLOBALS['kfm_session']->set('cwd_id',$imagedir);
-		if(!$default_image&&$imagedir){
+		if(!$default_image){
+			$imagedir=kfm_api_getDirectoryId('product_images/product'.$this->id);
+			$GLOBALS['kfm_session']->set('cwd_id',$imagedir);
 			$res=kfm_loadFiles($imagedir);
 			if(is_array($res)&&count($res['files'])){
 				$default_image=$res['files'][0]['id'];
@@ -36,21 +36,24 @@ class Product{
 		return self::$instances[$id];
 	}
 	function getRelativeURL(){
-		if(isset($this->relativeURL))return $this->relativeURL;
+		return '/common/redirector.php?type=product&id='.$this->id;
+	}
+	function getPageURL(){
+		if(isset($this->pageURL))return $this->pageURL;
 		$basehref='';
 		$id=$this->id;
 		$cid=dbOne("select category_id from product_category_product where product_id=$id limit 1",'category_id');
 		if($cid){
 			$p=ProductCategory::getInstance($cid);
-			$basehref=$p->getRelativeURL();
+			$basehref=$p->getPageURL();
 		}
-		else if($GLOBALS['PAGEDATA']->type==8)$basehref=$GLOBALS['PAGEDATA']->getRelativeURL();
+		else if($GLOBALS['PAGEDATA']->type==8)$basehref=$GLOBALS['PAGEDATA']->getPageURL();
 		else{
 			$r=Page::getInstanceByType(8);
-			if($r)$basehref=$r->getRelativeURL();
+			if($r)$basehref=$r->getPageURL();
 		}
-		$this->relativeURL=$basehref.'?product_id='.$this->id;
-		return $this->relativeURL;
+		$this->pageURL=$basehref.'?product_id='.$this->id;
+		return $this->pageURL;
 	}
 	function initValues($values=false){
 		if($this->__hasValues)return $this;

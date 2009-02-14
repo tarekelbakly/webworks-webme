@@ -1,4 +1,4 @@
-<?
+<?php
 require('../common.php');
 function comments_delete($id){
     if(!is_admin())exit('permission denied!');

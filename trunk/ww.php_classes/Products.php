@@ -1,9 +1,11 @@
 <?php
 class Products{
-	static $instancesByFilter = array();
-	static $instancesBySearch = array();
-	static $instancesOrderedByProductValue=array();
 	static $instances = array();
+	static $instancesByFilter = array();
+	static $instancesByIds    = array();
+	static $instancesBySearch = array();
+	static $instancesOrderedByCategory= array();
+	static $instancesOrderedByProductValue=array();
 	function __construct(){
 	}
 	static function getAll($enabled=true){
@@ -27,6 +29,12 @@ class Products{
 		$rs=dbAll("select * from products where id in ($ids)");
 		foreach($rs as $r)self::$instancesByIds[$ids][]=Product::getInstance($r['id'],$r);
 		return self::$instancesByIds[$ids];
+	}
+	static function getOrderedByCategory(){
+		if(count(self::$instancesOrderedByCategory))return self::$instancesOrderedByCategory;
+		$rs=dbAll("select *,product_category.name as varvalue from product_category_product,product_category,products where products.id=product_id and product_category.id=category_id order by product_category.name,products.name");
+		foreach($rs as $r)self::$instancesOrderedByCategory[]=Product::getInstance($r['id'],$r);
+		return self::$instancesOrderedByCategory;
 	}
 	static function getOrderedByProductValue($name){
 		if(array_key_exists($name,self::$instancesOrderedByProductValue))return self::$instancesOrderedByProductValue[$name];

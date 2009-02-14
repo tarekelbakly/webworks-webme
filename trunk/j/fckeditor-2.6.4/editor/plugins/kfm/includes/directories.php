@@ -1,10 +1,10 @@
 <?php
 function _createDirectory($parent,$name){
-	global $kfm_allow_directory_create;
-	if(!$kfm_allow_directory_create)return 'error: '.kfm_lang('permissionDeniedCreateDirectory');
+	global $kfm;
+	if(!$kfm->setting('allow_directory_create'))return 'error: '.kfm_lang('permissionDeniedCreateDirectory');
 	$dir=kfmDirectory::getInstance($parent);
 	$dir->createSubdir($name);
-#	if($dir->hasErrors()) return $dir->getErrors();
+	if($dir->hasErrors()) return;
 	return kfm_loadDirectories($parent);
 }
 function _deleteDirectory($id,$recursive=0){
@@ -34,11 +34,11 @@ function _getDirectoryParentsArr($dir,$path=array()){
 	return $path;
 }
 function _loadDirectories($pid,$oldpid=0){
-	global $kfmdb, $kfm_banned_folders;
+	global $kfmdb;
 	$dir=kfmDirectory::getInstance($pid);
 	$pdir=str_replace($GLOBALS['rootdir'],'',$dir->path);
 	$directories=array();
-	foreach($dir->getSubdirs() as $subDir)$directories[]=array($subDir->name,$subDir->hasSubdirs(),$subDir->id);
+	foreach($dir->getSubdirs() as $subDir)$directories[]=array($subDir->name,$subDir->hasSubdirs(),$subDir->id,$subDir->maxWidth,$subDir->maxHeight);
 	sort($directories);
 	return array(
 		'parent'=>$pid,
@@ -49,23 +49,26 @@ function _loadDirectories($pid,$oldpid=0){
 	);
 }
 function _moveDirectory($from,$to){
-	global $kfm_allow_directory_move;
-	if(!$kfm_allow_directory_move)return 'error: '.kfm_lang('permissionDeniedMoveDirectory');
+	global $kfm;
+	if(!$kfm->setting('allow_directory_move'))return 'error: '.kfm_lang('permissionDeniedMoveDirectory');
 	$dir=kfmDirectory::getInstance($from);
 	$dir->moveTo($to);
-	if($dir->hasErrors()) return $dir->getErrors();
+	if($dir->hasErrors()) return;
 	return _loadDirectories(1);
 }
 function _renameDirectory($fid,$newname){
-	global $kfm_allow_directory_edit;
-	if(!$kfm_allow_directory_edit)return 'error: '.kfm_lang('permissionDeniedEditDirectory');
+	global $kfm;
+	if(!$kfm->setting('allow_directory_edit'))return 'error: '.kfm_lang('permissionDeniedEditDirectory');
 	$dir=kfmDirectory::getInstance($fid);
-	if(!$dir)return;
 	$dir->rename($newname);
 	return _loadDirectories($dir->pid);
 }
 function _rmdir($pid){
 	return _deleteDirectory($pid);
+}
+function _setDirectoryMaxSizeImage($fid,$width,$height){
+	$dir=kfmDirectory::getInstance($fid);
+	$dir->setDirectoryMaxSizeImage($width,$height);
 }
 function kfm_rmMixed($files=array(), $directories=array()){
 	$filecount=0;
