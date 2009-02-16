@@ -36,6 +36,10 @@ function ob_show_and_log($type){
 	$length=ob_get_length();
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
 	switch($type){
+		case 'file': // {
+			$location=$_SERVER['REQUEST_URI'];
+			break;
+		// }
 		case 'menu': // {
 			$location='menu';
 			break;

@@ -74,7 +74,11 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 
 #ajaxmenu_linkam_pages{background:url(/ww.admin/theme/icons_48.png) 0 0 no-repeat; }
 #ajaxmenu_linkam_polls{ background: url(/ww.admin/theme/icons_48.png) no-repeat 0 -288px; }
+.menu #ajaxmenu_linkam_polls{ background: url(/ww.admin/theme/icons_polls.png) no-repeat 0 center; }
 #ajaxmenu_linkam_siteoptions{ background: url(/ww.admin/theme/icons_48.png) no-repeat 0 -240px; }
+.menu #ajaxmenu_linkam_siteoptions{ background: url(/ww.admin/theme/icons_siteoptions.png) no-repeat 0 center; }
+#ajaxmenu_linkam_stats{ background: url(/ww.admin/theme/icons_48.png) no-repeat 0 -336px; }
+.menu #ajaxmenu_linkam_stats{ background: url(/ww.admin/theme/icons_stats.png) no-repeat 0 center; }
 #ajaxmenu_linkam_misc{padding-left:59px !important;background:url(/ww.admin/theme/icons_48.png) 0 -96px no-repeat;}
 #ajaxmenu_linkam_users_and_admins{background:url(/ww.admin/theme/icons_48.png) 0 -144px no-repeat;}
 #ajaxmenu_linkam_products{background:url(/ww.admin/theme/icons_48.png) 0 -192px no-repeat; }

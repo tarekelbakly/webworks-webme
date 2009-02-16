@@ -18,6 +18,7 @@ header('Pragma:');
 header('Content-Length: ' . filesize($file));
 ob_clean();
 flush();
+ob_start();
 readfile($file);
 
 function get_mimetype($f) {
@@ -26,3 +27,4 @@ function get_mimetype($f) {
     if (isset($mimetypes[$extension]))return $mimetypes[$extension];
     return 'unknown/mimetype';
 }
+ob_show_and_log('design_file');
