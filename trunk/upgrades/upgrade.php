@@ -149,6 +149,10 @@ if($version==18){ // logs
 	mysql_query('create table logs( log_date datetime, log_type enum("page","menu"), ip_address char(15),type_data text,user_agent text,referer text,ram_used int,bandwidth int,time_to_render float,db_calls int)charset=utf8');
 	$version=19;
 }
+if($version==19){ // log user files and theme files
+	mysql_query('alter table logs change log_type log_type enum("page","menu","file","design_file")');
+	$version=20;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();

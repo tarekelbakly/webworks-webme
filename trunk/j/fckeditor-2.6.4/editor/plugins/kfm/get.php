@@ -74,6 +74,7 @@ header('Cache-Control: max-age = 2592000');
 header('Expires-Active: On');
 header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 header('Pragma:');
+$filesize=filesize($path);
 header('Content-Length: '.(string)(filesize($path)));
 if (isset($_GET['forcedownload'])) {
     header('Content-Type: force/download');
@@ -88,5 +89,5 @@ if ($file = fopen($path, 'rb')) { // send file
     }
     fclose($file);
 }
+if(file_exists('api/log_retrieved_file.php'))require 'api/log_retrieved_file.php';
 return((connection_status()==0) and !connection_aborted());
-?>
