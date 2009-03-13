@@ -114,7 +114,7 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 .ajaxmenu_expandable_enditem{background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -112px;width:32px !important;height:16px;float:left;display:block}
 
 .ajaxmenu_menuname{height:16px;display:block}
-.ajaxmenu_menuname a{width:180px;overflow:hidden;display:block;position:relative;}
+.ajaxmenu_menuname a{overflow:hidden;display:block;position:relative;}
 .ajaxmenu_menuname a span{width:16px;repeat-y;background:url(/ww.admin/theme/faders.png);position:absolute;right:0;top:0;height:16px;width:16px;}
 .ajaxmenu_currentPage .ajaxmenu_menuname a span{background-position:-16px 0}
 .ajaxmenu_containsCurrentPage .ajaxmenu_menuname a span{background-position:-32px 0}
