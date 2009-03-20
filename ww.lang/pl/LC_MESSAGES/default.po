@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: webme\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-18 14:22+0100\n"
-"PO-Revision-Date: 2009-03-20 08:40+0100\n"
+"PO-Revision-Date: 2009-03-20 09:14+0100\n"
 "Last-Translator: Kae Verens <kae@verens.com>\n"
 "Language-Team:  <kae@webworks.ie>\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgstr "Strony"
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:23
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:27
 msgid "Insert Page Details"
-msgstr "Dodaj szczegóły dotyczące strony"
+msgstr "Utwórz stronę"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:20
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages.php:24
@@ -106,7 +106,7 @@ msgstr "Login"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:47
 msgid "To access the administrative features of your website, you will need to enter the username and password below and click \"login\"."
-msgstr "Aby uzyskać dostęp do panelu administratora musisz podać swoją nazwę użytkownika oraz kliknąć \"logowanie\""
+msgstr "Aby uzyskać dostęp do panelu administratora musisz podać swój adres email oraz hasło a następnie kliknąć \"logowanie\""
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:57
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:67
@@ -123,7 +123,7 @@ msgstr "Przypominanie hasła"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/login.php:70
 msgid "Use this form to create a new password for yourself."
-msgstr "Wypełnij formularz aby utworzyć nowe hasło dla swojego konta."
+msgstr "Wpisz swój adres email aby wygenerować nowe hasło."
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls.php:3
 msgid "Polls"
@@ -150,7 +150,7 @@ msgstr "Nowa Sonda"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:12
 msgid "Main"
-msgstr "Główna"
+msgstr "Sonda"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/forms.php:14
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/polls/showitems.php:17
@@ -353,7 +353,7 @@ msgstr "czy chcesz zmienić język bez zapisywania?"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:45
 msgid "Common Details"
-msgstr "Podstawowe Szczegóły"
+msgstr "Strona"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:49
 msgid "name"
@@ -485,11 +485,11 @@ msgstr "wszystkie typy"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:214
 msgid "Advanced Options"
-msgstr "Zaawansowane Opcje"
+msgstr "Opcje strony"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:218
 msgid "MetaData"
-msgstr "ZnacznikiMeta"
+msgstr "Sekcja META"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:219
 msgid "keywords"
@@ -527,7 +527,7 @@ msgstr "To jest Strona Główna"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:239
 msgid "Does not appear in navigation"
-msgstr "Brak strony w nawigacji"
+msgstr "Nie pojawia się w nawigacji"
 
 #: /home/kae/files/websites/webworks-webme/trunk/ww.admin/pages/pages.forms.php:239
 msgid "Allow public comments"
