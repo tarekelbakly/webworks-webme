@@ -1,5 +1,6 @@
 <?php
 function template_get_metadata($template,$PAGEDATA){
+	global $DBVARS;
 	$title=($PAGEDATA->title!='')?$PAGEDATA->title:str_replace('www.','',$_SERVER['HTTP_HOST']).' > '.$PAGEDATA->name;
 	$c='<title>'.htmlspecialchars($title).'</title>';
 	// { generate plugins list for those that were not already figured out (this should be optimised as soon as possible)
@@ -29,6 +30,7 @@ function template_get_metadata($template,$PAGEDATA){
 	$c.='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 	if($PAGEDATA->keywords)$c.='<meta http-equiv="keywords" content="'.$PAGEDATA->keywords.'" />';
 	if($PAGEDATA->description)$c.='<meta http-equiv="description" content="'.$PAGEDATA->description.'" />';
+	if($DBVARS['theme_variant'])$c.='<style type="text/css">@import "/ww.skins/'.$DBVARS['theme'].'/cs/'.$DBVARS['theme_variant'].'.css";</style>';
 	$c.='<style type="text/css">.loggedin{display:'.(is_logged_in()?'block':'none').'} .loggedinCell{display:'.(is_logged_in()?'table-cell':'none').'}</style>';
 	return $c;
 }
