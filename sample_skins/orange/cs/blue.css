@@ -1,0 +1,7 @@
+a {COLOR: blue !important;}
+a:visited {COLOR: blue !important;}
+h3 { background: blue url(/ww.skins/orange/i/bg-blue.jpg) repeat-x !important;}
+#header {
+background: blue url(/ww.skins/orange/i/bg-blue.jpg) repeat-x !important;
+}
+#left {background: blue !important;border: 1px dotted blue !important;}
