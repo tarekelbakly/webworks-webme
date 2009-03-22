@@ -1,4 +1,18 @@
 <?php
+function logoDisplay($vars){
+	$vars=array_merge(array('width'=>64,'height'=>64),$vars);
+	if(!file_exists(USERBASE.'/f/skin_files/logo.png'))return '&nbsp;';
+	$x=(int)$vars['width'];
+	$y=(int)$vars['height'];
+	$geometry=$x.'x'.$y;
+	$image_file=USERBASE.'/f/skin_files/logo-'.$geometry.'.png';
+	if(!file_exists($image_file)){
+		$from=addslashes(USERBASE.'/f/skin_files/logo.png');
+		$to=addslashes($image_file);
+		`convert $from -geometry $geometry $to`;
+	}
+	return '<img src="/f/skin_files/logo-'.$geometry.'.png" />';
+}
 function show_page($template,$pagecontent,$PAGEDATA){
 	include SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 	global $DBVARS;
@@ -17,6 +31,7 @@ function show_page($template,$pagecontent,$PAGEDATA){
 //	if(eregi('%BREADCRUMBS%',$template))$template=str_replace('%BREADCRUMBS%',breadcrumbs($PAGEDATA->id),$template);
 	// }
 //	$template=webmeParse($template);
+	$smarty->register_function('LOGO', 'logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->register_function('POLL', 'pollDisplay');
 	require_once SCRIPTBASE . 'common/template_metadata.php';
