@@ -184,7 +184,7 @@ class kfmDirectory extends kfmObject{
 			$pathTmp=$p->name.'/'.$pathTmp;
 			$pid=$p->pid;
 		}
-		return $GLOBALS['rootdir'].$pathTmp;
+		return $GLOBALS['rootdir'].'/'.$pathTmp;
 	}
 	function getProperties(){
 		return array(
@@ -208,24 +208,26 @@ class kfmDirectory extends kfmObject{
 		}
 		return false;
 	}
-	function getSubdirs($oldstyle=false){
+	function getSubdirs(){
 		global $kfm;
-		$this->handle=opendir($this->path);
+		$dir_iterator=new DirectoryIterator($this->path);
 		$dirsdb=db_fetch_all("select id,name from ".KFM_DB_PREFIX."directories where parent=".$this->id);
 		$dirshash=array();
 		if(is_array($dirsdb))foreach($dirsdb as $r)$dirshash[$r['name']]=$r['id'];
 		$directories=array();
-		while(false!==($file=readdir($this->handle))){
-			if(is_dir($this->path.$file)&&$this->checkName($file)){
-				if(!isset($dirshash[$file])){
-					$this->addSubdirToDb($file);
-					$dirshash[$file]=$kfm->db->lastInsertId(KFM_DB_PREFIX.'directories','id');
+		foreach($dir_iterator as $file){
+			if($file->isDot())continue;
+			if(!$file->isDir())continue;
+			$filename=$file->getFilename();
+			if(is_dir($this->path.$filename)&&$this->checkName($filename)){
+				if(!array_key_exists($filename,$dirshash)){
+					$this->addSubdirToDb($filename);
+					$dirshash[$filename]=$kfm->db->lastInsertId(KFM_DB_PREFIX.'directories','id');
 				}
-				$directories[]=kfmDirectory::getInstance($dirshash[$file]);
-				unset($dirshash[$file]);
+				$directories[]=kfmDirectory::getInstance($dirshash[$filename]);
+				unset($dirshash[$filename]);
 			}
 		}
-		closedir($this->handle);
 		return $directories;
 	}
 	function hasSubdirs(){

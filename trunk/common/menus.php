@@ -75,7 +75,7 @@ function menu_setup_main_menu($template){
 function ww_menuDisplay($b){
 	global $PAGEDATA;
 	if(!$PAGEDATA->id)return '';
-	$md5=md5('ww_menudisplay|'.$b);
+	$md5=md5('ww_menudisplay|'.print_r($b,true));
 	$cache=cache_load('menus',$md5);
 	if($cache)return $cache;
 	if(is_array($b)){

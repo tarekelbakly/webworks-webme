@@ -69,6 +69,8 @@ class ProductCategory{
 			$this->page_id=$pid;
 			return Page::getInstance($this->page_id,$r)->getRelativeURL();
 		}
+		$r=Page::getInstanceByType(8);
+		if($r)return $r->getRelativeURL();
 		return 'NO_PAGE_FOUND ('.$id.')';
 	}
 	function getChildCategories($enabled=true){
