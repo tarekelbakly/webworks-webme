@@ -5,7 +5,7 @@ if($id){
 	$data=dbRow('select * from poll where id='.$id);
 }
 else $data=array('name'=>'','enabled'=>1,'body'=>'');
-echo '<form action="'.$_SERVER['PHP_SELF'].'" method="post">';
+echo '<form action="'.$_url.'" method="post">';
 if($id)echo '<input type="hidden" name="id" value="'.$id.'" />';
 echo '<div class="tabs">';
 // { main details

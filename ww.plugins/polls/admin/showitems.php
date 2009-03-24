@@ -7,10 +7,10 @@ if(count($polls)){
 	// {
 	$navlinks='';
 	if($start){
-		$navlinks.='|<a href="'.$_SERVER['PHP_SELF'].'?action=showPolls&amp;start='.($start>99?$start-100:0).'">'.__('Prev').'</a>| ';
+		$navlinks.='|<a href="'.$_url.'&amp;action=showPolls&amp;start='.($start>99?$start-100:0).'">'.__('Prev').'</a>| ';
 	}
 	if($start+100<=$end){
-		$navlinks.='|<a href="'.$_SERVER['PHP_SELF'].'?action=showPolls&amp;start='.($start+100).'">'.__('Next').'</a>| ';
+		$navlinks.='|<a href="'.$_url.'&amp;action=showPolls&amp;start='.($start+100).'">'.__('Next').'</a>| ';
 	}
 	// }
 	echo '<table><tr>';
@@ -21,7 +21,7 @@ if(count($polls)){
 		echo '<tr>';
 		echo '<td>'.htmlspecialchars($r->name).'</td>';
 		echo '<td>'.($r->enabled?_('Yes'):_('No')).'</td>';
-		echo '<td><a href="'.$_SERVER['PHP_SELF'].'?action=editPoll&amp;id='.$r->id.'&amp;start='.$start.'">'.__('edit').'</a>, <a href="'.$_SERVER['PHP_SELF'].'?action=deletePoll&amp;id='.$r->id.'&amp;start='.$start.'" onclick="return confirm(\''.__('are you sure you want to delete this poll?').'\')">[x]</a></td></tr>';
+		echo '<td><a href="'.$_url.'&amp;action=editPoll&amp;id='.$r->id.'&amp;start='.$start.'">'.__('edit').'</a>, <a href="'.$_url.'&amp;action=deletePoll&amp;id='.$r->id.'&amp;start='.$start.'" onclick="return confirm(\''.__('are you sure you want to delete this poll?').'\')">[x]</a></td></tr>';
 	}
 	echo '<tr><td>&nbsp;</td><td>&nbsp;</td><td>'.$navlinks.'</td></tr>';
 	echo '</table>';

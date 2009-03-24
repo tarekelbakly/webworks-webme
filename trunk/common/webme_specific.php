@@ -10,13 +10,16 @@ function config_rewrite(){
 	'password'     => '".addslashes($DBVARS['password'])."',
 	'hostname'     => '".addslashes($DBVARS['hostname'])."',
 	'db_name'      => '".addslashes($DBVARS['db_name'])."',
+
 	'theme'        => '".addslashes($DBVARS['theme'])."',
 	'theme_dir'    => '".addslashes($DBVARS['theme_dir'])."',
 	'theme_variant'=> '".addslashes($DBVARS['theme_variant'])."',
+
 	'site_title'   => '".addslashes($DBVARS['site_title'])."',
 	'site_subtitle'=> '".addslashes($DBVARS['site_subtitle'])."',
 	'version'      => ".((int)$DBVARS['version']).",
-	'userbase'     => '".addslashes($DBVARS['userbase'])."'
+	'userbase'     => '".addslashes($DBVARS['userbase'])."',
+	'plugins'      => '".join(',',$DBVARS['plugins'])."'
 );";
 	file_put_contents(CONFIG_FILE,$config);
 }

@@ -11,6 +11,25 @@ define('ACL_ONLINESTORES', 4096);
 define('ACL_PRODUCTS',    16384);
 define('ACL_ADS',         32768);
 // }
+function addMenuItem(&$arr,$file,$nav){
+	if(ereg('>',$nav)){
+		return;
+		$bits=explode(' > ',$nav);
+		if(!isset($arr[$bits[0]]))$arr[$bits[0]]=array();
+		addMenuItem($arr[$bits[0]],$file,str_replace($bits[0].' > ','',$nav));
+	}else{
+		$arr[$nav]=$file;
+	}
+}
+function admin_menu($list){
+	$arr=array();
+	foreach($list as $key=>$val)$arr[]='<a href="'.$val.'">'.$key.'</a>';
+	return '<div id="leftmenu">'.join('',$arr).'</div>';
+}
+function admin_verifypage($validlist,$default,$val){
+	foreach($validlist as $v)if($v==$val)return $val;
+	return $default;
+}
 function wInput($name,$type='text',$value='',$class=''){
 	switch($type){
 		case 'checkbox': {
@@ -51,16 +70,6 @@ function wFormRow($title,$input){
 	}
 	echo '</td></tr>';
 }
-function addMenuItem(&$arr,$file,$nav){
-	if(ereg('>',$nav)){
-		return;
-		$bits=explode(' > ',$nav);
-		if(!isset($arr[$bits[0]]))$arr[$bits[0]]=array();
-		addMenuItem($arr[$bits[0]],$file,str_replace($bits[0].' > ','',$nav));
-	}else{
-		$arr[$nav]=$file;
-	}
-}
 function drawMenu($menuArray){
 	$c='';
 	foreach($menuArray as $name=>$item){
@@ -81,11 +90,6 @@ function getAdminVar($name,$default=''){
 		return $r['varvalue'];
 	}
 	return $default;
-}
-function setAdminVar($name,$value){
-	dbQuery("delete from admin_vars where varname='".$name."' and admin_id=".get_userid());
-	dbQuery("insert into admin_vars (varname,varvalue,admin_id) values('".addslashes($name)."','".addslashes($value)."',".get_userid().")");
-	$GLOBALS['admin_vars'][$name]=$value;
 }
 function fckeditor($name,$value='',$fullpage=false,$css=''){
 	$oFCKeditor = new FCKeditor($name);
@@ -158,12 +162,8 @@ function fckeditor_generateCSS($pageid){
 	}
 	return $cssurl;
 }
-function admin_menu($list){
-	$arr=array();
-	foreach($list as $key=>$val)$arr[]='<a href="'.$val.'">'.$key.'</a>';
-	return '<div id="leftmenu">'.join('',$arr).'</div>';
-}
-function admin_verifypage($validlist,$default,$val){
-	foreach($validlist as $v)if($v==$val)return $val;
-	return $default;
+function setAdminVar($name,$value){
+	dbQuery("delete from admin_vars where varname='".$name."' and admin_id=".get_userid());
+	dbQuery("insert into admin_vars (varname,varvalue,admin_id) values('".addslashes($name)."','".addslashes($value)."',".get_userid().")");
+	$GLOBALS['admin_vars'][$name]=$value;
 }

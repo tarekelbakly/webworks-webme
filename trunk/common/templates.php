@@ -15,7 +15,7 @@ function logoDisplay($vars){
 }
 function show_page($template,$pagecontent,$PAGEDATA){
 	include SCRIPTBASE . 'common/Smarty/Smarty.class.php';
-	global $DBVARS;
+	global $DBVARS,$PLUGINS;
 	$smarty = new Smarty;
 	$smarty->compile_dir=USERBASE . 'templates_c';
 
@@ -33,7 +33,13 @@ function show_page($template,$pagecontent,$PAGEDATA){
 //	$template=webmeParse($template);
 	$smarty->register_function('LOGO', 'logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
-	$smarty->register_function('POLL', 'pollDisplay');
+	foreach($PLUGINS as $pname=>$plugin){
+		if(isset($plugin['frontend']['template_functions'])){
+			foreach($plugin['frontend']['template_functions'] as $fname=>$vals){
+				$smarty->register_function($fname,$vals['function']);
+			}
+		}
+	}
 	require_once SCRIPTBASE . 'common/template_metadata.php';
 	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
 	// { display the document

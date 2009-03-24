@@ -22,6 +22,7 @@ $config='<'."?php
 	'hostname' => '".addslashes($_SESSION['db_vars']['hostname'])."',
 	'db_name'  => '".addslashes($_SESSION['db_vars']['db_name'])."',
 	'userbase' => '".addslashes($_SESSION['userbase'])."',
+	'plugins'  => '',
 	'version'  => 1
 );";
 
