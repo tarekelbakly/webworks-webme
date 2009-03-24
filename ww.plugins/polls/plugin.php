@@ -9,7 +9,6 @@ $plugin=array(
 	'frontend' => array(
 		'template_functions' => array(
 			'POLL' => array(
-				'file' => 'polls.php',
 				'function' => 'pollDisplay'
 			)
 		)
