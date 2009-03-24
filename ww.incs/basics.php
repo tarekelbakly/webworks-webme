@@ -77,6 +77,13 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	exit;
 }
 require SCRIPTBASE . '.private/config.php';
+$DBVARS['plugins']=(isset($DBVARS['plugins']) && $DBVARS['plugins']!='')?explode(',',$DBVARS['plugins']):array();
+$PLUGINS=array();
+foreach($DBVARS['plugins'] as $pname){
+	if(strpos('/',$pname)!==false)continue;
+	require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
+	$PLUGINS[$pname]=$plugin;
+}
 require SCRIPTBASE . 'common/webme_specific.php';
 if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
 define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
