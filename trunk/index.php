@@ -3,8 +3,7 @@
 include_once('common.php');
 if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	$server=str_replace('www.','',$_SERVER['HTTP_HOST']);
-	if($server=='inkjet.ie')header('Location: https://'.$server.'/');
-	else header('Location: https://www.'.$server.'/');
+	header('Location: https://www.'.$server.'/');
 	exit;
 }
 if(!isset($DBVARS['version']) || $DBVARS['version']<20)redirect('upgrades/upgrade.php');
