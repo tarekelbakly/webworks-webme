@@ -3,7 +3,7 @@ function image_gallery_show($PAGEDATA){
 	$vars=$PAGEDATA->vars;
 	// {
 	global $plugins_to_load;
-	$c='';
+	$c=$PAGEDATA->body;
 	$start=getVar('start');
 	if(!$start)$start=0;
 	$vars=array_merge(array(
@@ -69,6 +69,6 @@ function image_gallery_show($PAGEDATA){
 		$c.='</table><script type="text/javascript" src="/ww.plugins/image_gallery/j/image.gallery.php"></script>';
 		return $c;
 	}else{
-		return '<em>gallery "'.$vars['image_gallery_directory'].'" not found.</em>';
+		return $c.'<em>gallery "'.$vars['image_gallery_directory'].'" not found.</em>';
 	}
 }
