@@ -32,6 +32,7 @@ function ww_showSearchResults(){
 		}
 	// }
 	// { products
+	/*
 	$rs=Products::getBySearch($search);
 	if(count($rs)){
 		$totalfound+=count($rs);
@@ -41,6 +42,7 @@ function ww_showSearchResults(){
 		}
 		$c.='</ol></div>';
 	}
+	*/
 	// }
 	if(!$totalfound){
 		$c.='<em id="searchResultsTitle">no results found</em>';
