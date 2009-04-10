@@ -154,7 +154,12 @@ else{
 			break;
 		// }
 		default: // { plugins, and unknown
-			$c.='<em>this page type ('.$PAGEDATA->type.') not handled yet</em>'.webmeParse($PAGEDATA->body);
+			if(isset($PLUGINS[$PAGEDATA->type])){
+				$p=$PLUGINS[$PAGEDATA->type];
+				if(isset($p['frontend']['page_type']) && function_exists($p['frontend']['page_type'])){
+					$c.=$p['frontend']['page_type']($PAGEDATA);
+				}
+			}
 			break;
 		// }
 	}
