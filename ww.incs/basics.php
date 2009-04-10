@@ -78,12 +78,6 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 }
 require SCRIPTBASE . '.private/config.php';
 $DBVARS['plugins']=(isset($DBVARS['plugins']) && $DBVARS['plugins']!='')?explode(',',$DBVARS['plugins']):array();
-$PLUGINS=array();
-foreach($DBVARS['plugins'] as $pname){
-	if(strpos('/',$pname)!==false)continue;
-	require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
-	$PLUGINS[$pname]=$plugin;
-}
 require SCRIPTBASE . 'common/webme_specific.php';
 if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
 define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
@@ -91,3 +85,9 @@ define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
 define('FCKEDITOR','fckeditor-2.6.4');
 define('KFM_BASE_PATH', SCRIPTBASE.'j/'.FCKEDITOR.'/editor/plugins/kfm/');
 set_include_path(SCRIPTBASE.'ww.php_classes'.PATH_SEPARATOR.KFM_BASE_PATH.'classes'.PATH_SEPARATOR.get_include_path());
+$PLUGINS=array();
+foreach($DBVARS['plugins'] as $pname){
+	if(strpos('/',$pname)!==false)continue;
+	require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
+	$PLUGINS[$pname]=$plugin;
+}
