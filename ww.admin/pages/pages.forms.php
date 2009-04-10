@@ -81,6 +81,17 @@ else{
 			echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
 		}
 	}
+	$plugin=false;
+	foreach($PLUGINS as $n=>$p){
+		if(isset($p['admin']['page_type'])){
+			$tmp='';
+			if($page['type']==$n){
+				$tmp='" selected="selected';
+				$plugin=$p;
+			}
+			echo '<option value="'.htmlspecialchars($n).$tmp.'">'.htmlspecialchars($n).'</option>';
+		}
+	}
 	echo '</select></td>';
 	// }
 	// { parent
@@ -114,12 +125,17 @@ else{
 	$cssurl=fckeditor_generateCSS($page['id']);
 	// }
 	switch($page['type']){
-		case 2: // { events 
+		case '0': case '1': case '5': case '6': case '9': case '10': // { normal
+		echo '<tr><th>'.__('body').'</th><td colspan="5">';
+		echo fckeditor('body',$page['body'],0,$cssurl);
+		echo '</td></tr>';
+		// }
+		case '2': // { events 
 		echo '<tr><td colspan="6" style="height:290px" class="eventsAdmin" id="eventsAdmin">'.__('please wait - loading...').'</td></tr>';
 		$plugins_to_load[]='"eventsAdmin":1';
 		break;
 		// }
-		case 3: // { user login 
+		case '3': // { user login 
 		echo '<tr><th>'.__('Visibility').'</th><td>'.wInput('page_vars[userlogin_visibility]','select',array(
 			'3'=>__('Login and Register forms'),
 			'1'=>__('Login form'),
@@ -142,7 +158,7 @@ else{
 		echo '</td></tr>';
 		break;
 		// }
-		case 4: // { page summaries
+		case '4': // { page summaries
 		echo '<tr><th>pages summarised from</th><td><select name="page_summary_parent"><option value="0">--  none  --</option>';
 		$r2=dbRow('select parent_id from page_summaries where page_id="'.$id.'" limit 1');
 		if(count($r2)){
@@ -156,12 +172,12 @@ else{
 		'the pages you want summarised.</td></tr>';
 		break;
 		// }
-		case 7: // { news 
+		case '7': // { news 
 		echo '<tr><td colspan="6" style="height:290px" class="newsAdmin" id="newsAdmin">'.__('please wait - loading...').'</td></tr>';
 		$plugins_to_load[]='"newsAdmin":1';
 		break;
 		// }
-		case 8: // { products
+		case '8': // { products
 		echo '<tr><th>'.__('content header').'</th><td colspan="4">';
 		echo fckeditor('page_vars[content_header]',$page_vars['content_header'],false,$cssurl);
 		echo '</textarea></td>';
@@ -201,10 +217,10 @@ else{
 		echo '</td></tr>';
 		break;
 		// }
-		default: // { body
-		echo '<tr><th>'.__('body').'</th><td colspan="5">';
-		echo fckeditor('body',$page['body'],0,$cssurl);
-		echo '</td></tr>';
+		default: // { plugin
+			if($plugin && isset($p['admin']['page_type']) && function_exists($p['admin']['page_type'])){
+				echo '<tr><td colspan="6">'.$p['admin']['page_type']($page,$page_vars).'</td></tr>';
+			}
 		// }
 	}
 	// }

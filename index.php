@@ -6,10 +6,10 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<20)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<21)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
-if(is_admin())$plugins_to_load[]='"frontend_admin":1';
+//if(is_admin())$plugins_to_load[]='"frontend_admin":1';
 $page=getVar('page');
 // }
 // { specials
@@ -103,38 +103,38 @@ else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
 else{
 	if($PAGEDATA->htmlheader!='')$c.=$PAGEDATA->htmlheader;
 	switch($PAGEDATA->type){
-		case 0: // { normal page
+		case '0': // { normal page
 			$c.=webmeParse($PAGEDATA->body);
 			break;
 		// }
-		case 2: // { events
+		case '2': // { events
 			$c.='<div id="events_'.$PAGEDATA->id.'" class="events">please wait - loading...</div>';
 			$plugins_to_load[]='"eventcalendar":1';
 			break;
 		// }
-		case 3: // { user login/registration
+		case '3': // { user login/registration
 			include_once(SCRIPTBASE.'common/user.login.and.registration.php');
 			$c.=userloginandregistrationDisplay();
 			break;
 		// }
-		case 4: // { sub-page summaries
+		case '4': // { sub-page summaries
 			include_once('common/page.summaries.php');
 			$c.=displayPageSummaries($PAGEDATA->id);
 			break;
 		// }
-		case 5: // { search results
+		case '5': // { search results
 			$c.=webmeParse($PAGEDATA->body.showSearchResults());
 			break;
 		// }
-		case 7: // { news
+		case '7': // { news
 			$c.=showNews($PAGEDATA->id);
 			break;
 		// }
-		case 8: // { product listing
+		case '8': // { product listing
 			$c.=webmeParse(showProductListing($PAGEDATA->id));
 			break;
 		// }
-		case 9: // { table of contents
+		case '9': // { table of contents
 			$kids=Pages::getInstancesByParent($PAGEDATA->id);
 			$c.=webmeParse($PAGEDATA->body);
 			if(!count($kids->pages))$c.='<em>no sub-pages</em>';
@@ -147,16 +147,16 @@ else{
 			}
 			break;
 		// }
-		case 10: // { online store checkout
+		case '10': // { online store checkout
 			require_once 'common/online_stores.php';
 			$c.=webmeParse($PAGEDATA->body);
 			$c.=osCheckoutDisplay();
 			break;
 		// }
-		default: { # unknown
+		default: // { plugins, and unknown
 			$c.='<em>this page type ('.$PAGEDATA->type.') not handled yet</em>'.webmeParse($PAGEDATA->body);
 			break;
-		}
+		// }
 	}
 	if($c==''&&!$id)$c=show404(str_replace('/',' ',$_SERVER['REQUEST_URI']));
 }

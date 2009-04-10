@@ -98,7 +98,7 @@ function fckeditor($name,$value='',$fullpage=false,$css=''){
 	$oFCKeditor->Height                  = 250;
 	$oFCKeditor->Config['FullPage']      = $fullpage;
 	if($css)$oFCKeditor->Config['EditorAreaCSS'] = $css;
-	$oFCKeditor->Create();
+	return $oFCKeditor->CreateHTML();
 }
 function fckeditor_cleanup($input){
 	$input=str_replace(

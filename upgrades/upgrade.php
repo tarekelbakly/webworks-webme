@@ -153,6 +153,10 @@ if($version==19){ // log user files and theme files
 	mysql_query('alter table logs change log_type log_type enum("page","menu","file","design_file")');
 	$version=20;
 }
+if($version==20){ // change page_type to char string in Pages table
+	mysql_query('alter table pages change type type varchar(64)');
+	$version=21;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
