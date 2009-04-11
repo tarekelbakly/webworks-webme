@@ -30,7 +30,7 @@ function cache_save($type,$md5,$vals){
 	if(!is_dir(USERBASE.'ww.cache/'.$type))mkdir(USERBASE.'ww.cache/'.$type,0777,true);
 	file_put_contents(USERBASE.'ww.cache/'.$type.'/'.$md5, json_encode($vals));
 }
-function ob_show_and_log($type){
+function ob_show_and_log($type,$header=''){
 	require 'Log.php';
 	$log = &Log::singleton('file',USERBASE.'log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=ob_get_length();
@@ -66,6 +66,7 @@ function ob_show_and_log($type){
 		.'	'.(microtime(true)-START_TIME)
 		.'	'.$num_queries
 	);
+	if($header)header($header);
 	ob_flush();
 }
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
