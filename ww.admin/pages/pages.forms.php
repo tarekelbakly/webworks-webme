@@ -85,7 +85,7 @@ else{
 	foreach($PLUGINS as $n=>$p){
 		if(isset($p['admin']['page_type'])){
 			$tmp='';
-			if($page['type']==$n){
+			if(!is_int($page['type']) && $page['type']==$n){
 				$tmp='" selected="selected';
 				$plugin=$p;
 			}

@@ -1,0 +1,10 @@
+<?php
+require 'header.php';
+$pname=$_REQUEST['_plugin'];
+if(strpos('/',$pname)!==false)die('not allowed use the character "/" in a plugin name');
+if(!isset($PLUGINS[$pname]))die('no plugin of that name ('.$pname.') exists');
+$plugin=$PLUGINS[$pname];
+echo '<h1>'.__($plugin['name']).'</h1>';
+$_url='/ww.admin/plugin.php?_plugin='.$pname;
+require SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/index.php';
+require 'footer.php';

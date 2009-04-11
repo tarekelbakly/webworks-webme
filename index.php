@@ -188,6 +188,4 @@ if($template=='')die('no template created. please create a template first');
 // }
 require SCRIPTBASE . 'common/templates.php';
 
-ob_start();
 show_page($template,$pagecontent,$PAGEDATA);
-ob_show_and_log('page');

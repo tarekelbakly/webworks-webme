@@ -44,7 +44,8 @@ function show_page($template,$pagecontent,$PAGEDATA){
 	require_once SCRIPTBASE . 'common/template_metadata.php';
 	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
 	// { display the document
-	header('Content-type: text/html; Charset=utf-8');
+	ob_start();
 	$smarty->display($template);
+	ob_show_and_log('page','Content-type: text/html; Charset=utf-8');
 	// }
 }
