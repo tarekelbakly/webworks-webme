@@ -66,14 +66,14 @@ else{
 	echo '<tr><th>'.__('type').'</th><td><select name="type">';
 	$pagetypes=array(
 		array(0,__('normal'),0),
-		array(2,__('events calendar'),512),
-		array(3,__('user login/registration'),0),
+//		array(2,__('events calendar'),512),
+//		array(3,__('user login/registration'),0),
 		array(4,__('page summaries'),0),
 		array(5,__('search results'),0),
-		array(7,__('news'),512),
-		array(8,__('products'),16384),
-		array(9,__('table of contents'),0),
-		array(10,__('online store checkout'),0)
+//		array(7,__('news'),512),
+//		array(8,__('products'),16384),
+		array(9,__('table of contents'),0) // ,
+//		array(10,__('online store checkout'),0)
 	);
 	foreach($pagetypes as $a){
 		if(has_access_permissions($a[2]) || !$a[2]){
