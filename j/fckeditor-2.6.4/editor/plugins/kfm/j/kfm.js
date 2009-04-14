@@ -451,15 +451,16 @@ function kfm_prompt(txt,val,fn){
 	var table=document.createElement('table');
 	table.id='kfm_prompt_table';
 	var inp=newInput('kfm_prompt',0,val);
-	table.insertRow(0).insertCell(0).innerHTML=txt.replace(/\n/g,'<br />');
+	if($type(txt)=='element')table.insertRow(0).insertCell(0).appendChild(txt);
+	else table.insertRow(0).insertCell(0).innerHTML=txt.replace(/\n/g,'<br />');
 	table.insertRow(1).insertCell(0).appendChild(inp);
 	kfm_modal_open(table,'prompt',[[kfm.lang.Ok,function(){
 		var v=document.getElementById('kfm_prompt').value;
 		kfm_modal_close();
 		window.inPrompt=0;
 		fn(v);
+		document.getElementById('kfm_prompt').focus();
 	}]]);
-	document.getElementById('kfm_prompt').focus();
 }
 function kfm_run_delayed(name,call){
 	name=name+'_timeout';

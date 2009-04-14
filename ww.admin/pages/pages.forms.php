@@ -218,8 +218,8 @@ else{
 		break;
 		// }
 		default: // { plugin
-			if($plugin && isset($p['admin']['page_type']) && function_exists($p['admin']['page_type'])){
-				echo '<tr><td colspan="6">'.$p['admin']['page_type']($page,$page_vars).'</td></tr>';
+			if($plugin && isset($plugin['admin']['page_type']) && function_exists($plugin['admin']['page_type'])){
+				echo '<tr><td colspan="6">'.$plugin['admin']['page_type']($page,$page_vars).'</td></tr>';
 			}
 		// }
 	}
