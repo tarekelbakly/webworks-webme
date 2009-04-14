@@ -81,6 +81,10 @@ function sanitise_html($html) {
 	$html = html_fixImageResizes($html);
 	return $html;
 }
+function webmeMail($from, $to, $subject, $message, $files = false) {
+	inc_common('mail.php');
+	send_mail($from, $to, $subject, $message, $files);
+}
 $is_admin = 0;
 $sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
 // { quick-build similar functions

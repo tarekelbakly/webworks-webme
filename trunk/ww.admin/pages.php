@@ -24,7 +24,8 @@ if(has_access_permissions(ACL_PAGES)){
 			case __('Update Page Details'): include('pages/pages.action.edit.php');   break;
 		}
 	}
-	$edit=($action==__('Insert Page Details') || $action==__('Update Page Details') || $action=='edit')?1:0;
+	$is_an_update=($action==__('Insert Page Details') || $action==__('Update Page Details'));
+	$edit=($is_an_update || $action=='edit')?1:0;
 	if($id&&$edit)setAdminVar('pages_viewing',$id);
 	else if(!$action){
 		$id=getAdminVar('pages_viewing');

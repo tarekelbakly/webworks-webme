@@ -12,15 +12,9 @@ $c.= '<div class="tabPage"><h2>Main Details</h2><table>';
 $c.= '<tr><th>'.__('Send as Email').'</th><td>'.wInput('page_vars[forms_send_as_email]','select',array('1'=>'Yes','0'=>'No'),@$vars['forms_send_as_email']).'</td>';
 $c.= '<th>'.__('Recipient').'</th><td>'.wInput('page_vars[forms_recipient]','',htmlspecialchars(@$vars['forms_recipient'])).'</td></tr>';
 // }
-// { save in database, reply-to
-$c.= '<tr><th>'.__('Save in Database').'</th><td>'.wInput('page_vars[forms_save_in_database]','select',array('0'=>'No','1'=>'Yes'),@$vars['forms_save_in_database']);
-if(@$vars['forms_save_in_database'])$c.= ' <a href="forms.saved.php?forms_id='.$id.'">view saved data</a>';
-$c.= '</td>';
+// { captcha, reply-to
+$c.= '<tr><th>Captcha Required</th><td>'.wInput('page_vars[forms_captcha_required]','select',array('1'=>'Yes','0'=>'No'),@$vars['forms_captcha_required']).'</td>';
 $c.= '<th>Reply-To</th><td>'.wInput('page_vars[forms_replyto]','',htmlspecialchars(@$vars['forms_replyto'])).'</td></tr>';
-// }
-// { captcha required
-$c.= '<tr><th>Captcha Required</th><td colspan="3">'.wInput('page_vars[forms_captcha_required]','select',array('1'=>'Yes','0'=>'No'),@$vars['forms_captcha_required']);
-$c.= '&lt;-- this is for spam prevention. We recommend you leave this as "Yes".</td></tr>';
 // }
 $c.= '</table></div>';
 // }
