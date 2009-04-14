@@ -43,13 +43,13 @@ function image_gallery_admin_page_form($page,$vars){
 	// }
 	// { gallery details
 	$c.='<div class="tabPage"><h2>Gallery Details</h2>';
-	$c.='<table><tr><th>Image Directory</th><td><select name="page_vars[image_gallery_directory]"><option value="/">/</option>';
+	$c.='<table><tr><th>Image Directory</th><td><select id="image_gallery_directory" name="page_vars[image_gallery_directory]"><option value="/">/</option>';
 	foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 		$c.='<option value="'.htmlspecialchars($d).'"';
 		if($d==@$gvars['image_gallery_directory'])$c.=' selected="selected"';
 		$c.='>'.htmlspecialchars($d).'</option>';
 	}
-	$c.='</select></td>';
+	$c.='</select><a href="#page_vars[image_gallery_directory]" onclick="javascript:window.open(\'/j/'.FCKEDITOR.'/editor/plugins/kfm/?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td>';
 	$c.='<th>'.__('Columns').'</th><td><input name="page_vars[image_gallery_x]" value="'.(int)$gvars['image_gallery_x'].'" /></td>';
 	$c.='<th>'.__('Rows').'</th><td><input name="page_vars[image_gallery_y]" value="'.(int)$gvars['image_gallery_y'].'" /></td>';
 	$c.='</tr></table>';
