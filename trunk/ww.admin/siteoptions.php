@@ -5,11 +5,12 @@ echo '<h1>Site Options</h1>';
 echo admin_menu(array(
 	'General'=>'siteoptions.php?page=general',
 	'Themes'=>'siteoptions.php?page=themes',
-	'Localisation'=>'siteoptions.php?page=localisation'
+//	'Localisation'=>'siteoptions.php?page=localisation'
+	'Plugins'=>'siteoptions.php?page=plugins'
 ));
 
 $page=admin_verifypage(
-	array('general','localisation','themes'),
+	array('general',/*'localisation',*/'themes','plugins'),
 	'general',
 	$_REQUEST['page']
 );

@@ -7,9 +7,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('remind')){
 		if(count($u)){
 			$passwd=Password::getNew();
 			dbQuery("UPDATE user_accounts SET password=md5('$passwd') WHERE email='$email'");
-			echo 'sending';
 			mail($email,'['.$sitedomain.'] admin password reset','Your new password is "'.$passwd.'". Please log into the admin area and change it to something else.',"Reply-to: $email\nFrom: $email");
-			echo 'sent';
 		}
 	}
 }
