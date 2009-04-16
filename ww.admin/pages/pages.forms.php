@@ -129,6 +129,7 @@ else{
 		echo '<tr><th>'.__('body').'</th><td colspan="5">';
 		echo fckeditor('body',$page['body'],0,$cssurl);
 		echo '</td></tr>';
+		break;
 		// }
 		case '2': // { events 
 		echo '<tr><td colspan="6" style="height:290px" class="eventsAdmin" id="eventsAdmin">'.__('please wait - loading...').'</td></tr>';
