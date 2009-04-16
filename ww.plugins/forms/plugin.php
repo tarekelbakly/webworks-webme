@@ -4,6 +4,7 @@ $plugin=array(
 	'admin' => array(
 		'page_type' => 'form_admin_page_form'
 	),
+	'description' => 'Allows forms to be created so visitors can contact you',
 	'frontend' => array(
 		'page_type' => 'form_frontend'
 	),
