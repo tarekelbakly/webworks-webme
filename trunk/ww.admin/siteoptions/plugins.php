@@ -26,7 +26,7 @@ $dir=new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
 foreach($dir as $plugin){
 	if(strpos($plugin,'.')===0)continue;
 	$name=$plugin.'';
-	if($PLUGINS[$name])continue;
+	if(isset($PLUGINS[$name]))continue;
 	require_once(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php');
 	echo '<tr><th>',htmlspecialchars(@$plugin['name']),'</th>',
 		'<td>',(float)(@$plugin['version']),'</td>',
