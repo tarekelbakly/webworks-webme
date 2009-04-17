@@ -9,7 +9,7 @@ $plugin=array(
 	'name' => 'Banner Image',
 	'admin' => array(
 		'menu' => array(
-			'top'  => 'options'
+			'top'  => 'Misc'
 		)
 	),
         'description' => 'Upload banner image to your website.',
