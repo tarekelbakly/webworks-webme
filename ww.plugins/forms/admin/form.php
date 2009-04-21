@@ -21,7 +21,6 @@ $c.= '</table></div>';
 // { form fields
 $c.= '<div class="tabPage"><h2>Form Fields</h2>';
 $c.= '<table id="formfieldsTable"><tr><th>Name</th><th>Type</th><th>Required</th><th id="extrasColumn"><a href="javascript:formfieldsAddRow()">add field</a></th></tr>';
-if($edit){
 $q2=dbAll('select * from forms_fields where formsId="'.$id.'" order by id');
 $i=0;
 $arr=array('email'=>__('email'),'input box'=>__('input box'),'textarea'=>__('textarea'),'date'=>__('date'),
@@ -41,7 +40,6 @@ $c.= wInput('formfieldElementsExtra['.($i++).']','hidden',$r2['extra']);
 }
 $c.= '</td></tr>';
 }
-}
 $c.= '</table></div>';
 // }
 // { success message
@@ -57,5 +55,5 @@ $c.= fckeditor('page_vars[forms_template]',@$vars['forms_template']);
 $c.= '</div>';
 // }
 $c.= '</div>';
-if($edit)$c.= '<script type="text/javascript">var formfieldElements='.$i.';</script>';
+$c.= '<script type="text/javascript">var formfieldElements='.$i.';</script>';
 $c.='<script type="text/javascript" src="/ww.plugins/forms/j/admin.fields.js"></script>';
