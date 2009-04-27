@@ -1,12 +1,13 @@
 <?php
 /*
-	Webme Banner Image Plugin v0.1
+	Webme Banner Plugin
 	File: plugin.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
+	Developers: Conor Mac Aoidh <http://macaoidh.name/ conor@macaoidh.name>
+	            Kae Verens      <http://verens.com/    kae@verens.com>
+	report bugs to Kae.
 */
 $plugin=array(
-	'name' => 'Banner Image',
+	'name' => 'Banners',
 	'admin' => array(
 		'menu' => array(
 			'top'  => 'Misc'

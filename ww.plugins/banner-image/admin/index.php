@@ -17,7 +17,8 @@ if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 }
 if(isset($_POST['save_banner'])){
 	$id=(int)@$_POST['id'];
-	$sql='set type='.((int)@$_POST['type']).',html="'.addslashes(@$_POST['html_'.$id]).'"';
+	$pages=@$_POST['pages_'.$id];
+	$sql='set type='.((int)@$_POST['type']).',html="'.addslashes(@$_POST['html_'.$id]).'",pages='.(count($pages)?1:0);
 	if($id){
 		dbQuery("update banners_images $sql where id=$id");
 	}
@@ -30,6 +31,8 @@ if(isset($_POST['save_banner'])){
 		$newdir=USERBASE.'f/skin_files/banner-image';
 		`convert "$tmpname" "$newdir/$id.png"`;
 	}
+	dbQuery("delete from banners_pages where bannerid=$id");
+	foreach(@$pages as $k=>$v)dbQuery('insert into banners_pages set pageid='.((int)$v).",bannerid=$id");
 	$updated='Banner Saved';
 }
 
@@ -38,11 +41,27 @@ if(!is_dir(USERBASE.'f/skin_files/banner-image'))mkdir(USERBASE.'f/skin_files/ba
 $images=dbAll('select * from banners_images');
 
 $num_images=0;
+function banner_image_selectkiddies($i=0,$n=1,$s=array(),$id=0,$prefix=''){
+	$q=dbAll('select name,id from pages where parent="'.$i.'" and id!="'.$id.'" order by ord,name');
+	if(count($q)<1)return;
+	foreach($q as $r){
+		if($r['id']!=''){
+			echo '<option value="'.$r['id'].'" title="'.htmlspecialchars($r['name']).'"';
+			echo(in_array($r['id'],$s))?' selected="selected">':'>';
+			for($j=0;$j<$n;$j++)echo '&nbsp;';
+			$name=$r['name'];
+			echo htmlspecialchars($prefix.$name).'</option>';
+			banner_image_selectkiddies($r['id'],$n+1,$s,$id,$name.' > ');
+		}
+	}
+}
 function banner_image_drawForm($image=array()){
 	if(!count($image))$image=array('id'=>0,'html'=>'','type'=>0);
 	global $num_images;
-	echo '<form method="post" enctype="multipart/form-data"><input type="hidden" name="id" value="',(int)$image['id'],'" /><table width="100%"><tr>';
-	echo '<td><select name="type" id="type_',$num_images,'"><option value="0">Image</option><option value="1"',($image['type']==1?' selected="selected"':''),'>HTML</option></select></td>';
+	echo '<form method="post" enctype="multipart/form-data"><input type="hidden" name="id" value="',(int)$image['id'],'" /><table width="90%"><tr>';
+	// { image/HTML selection
+	echo '<td style="width:80px"><select name="type" id="type_',$num_images,'"><option value="0">Image</option><option value="1"',($image['type']==1?' selected="selected"':''),'>HTML</option></select></td>';
+	// }
 	// { show image form
 	echo '<td><div id="banner_image_img_',$num_images,'" style="display:',($image['type']==1?'none':'block'),'"><input type="file" name="banner-image" /><br />',
 		($image['id']?'<img src="/f/skin_files/banner-image/'.$image['id'].'.png" />':''),'</div>';
@@ -50,11 +69,22 @@ function banner_image_drawForm($image=array()){
 	// { show HTML form
 	echo '<div id="banner_image_html_',$num_images,'" style="display:',($image['type']==0?'none':'block'),'">',fckeditor('html_'.$image['id'],$image['html'],0,'',180),'</div></td>';
 	// }
-	echo '<td><input type="submit" name="save_banner" value="',__('Update'),'" /><a href="./plugin.php?_plugin=banner-image&delete_banner='.$image['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td></tr></table></form>';
+	// { what pages should this be applied to
+	echo '<td style="width:220px">pages the banner should be active on. select "none" to show on all pages<br /><select name="pages_',$image['id'],'[]" multiple="multiple" style="max-width:200px;height:100px">';
+	$ps=dbAll('select * from banners_pages where bannerid='.$image['id']);
+	$pages=array();
+	foreach($ps as $p)$pages[]=$p['pageid'];
+	banner_image_selectkiddies(0,1,$pages);
+	echo '</select></td>';
+	// }
+	// { show submit button and end form
+	echo '<td style="width:80px"><input type="submit" name="save_banner" value="',__('Update'),'" /><br /><br /><br /><a href="./plugin.php?_plugin=banner-image&delete_banner='.$image['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td></tr></table></form>';
+	// }
 	$num_images++;
 }
 foreach($images as $image){
 	banner_image_drawForm($image);
 }
 banner_image_drawForm();
+echo '<script type="text/javascript" src="http://inlinemultiselect.googlecode.com/files/jquery.inlinemultiselect.min.js"></script>';
 echo '<script src="/ww.plugins/banner-image/j/admin.js"></script>';
