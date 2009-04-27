@@ -7,7 +7,7 @@
 */
 
 function show_banner($vars){
-	$b=dbRow('select * from banners_images limit 1');
+	$b=dbRow('select * from banners_images order by rand() limit 1');
 	if(count($b)){
 		if($b['type']==1){
 			$banner=$b['html'];

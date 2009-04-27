@@ -16,9 +16,9 @@ if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 	$updated='Banner Deleted';
 }
 if(isset($_POST['save_banner'])){
-	$sql='set type='.((int)@$_POST['type']).',html="'.addslashes(@$_POST['html']).'"';
-	if((int)@$_POST['id']){
-		$id=(int)@$_POST['id'];
+	$id=(int)@$_POST['id'];
+	$sql='set type='.((int)@$_POST['type']).',html="'.addslashes(@$_POST['html_'.$id]).'"';
+	if($id){
 		dbQuery("update banners_images $sql where id=$id");
 	}
 	else{
@@ -48,7 +48,7 @@ function banner_image_drawForm($image=array()){
 		($image['id']?'<img src="/f/skin_files/banner-image/'.$image['id'].'.png" />':''),'</div>';
 	// }
 	// { show HTML form
-	echo '<div id="banner_image_html_',$num_images,'" style="display:',($image['type']==0?'none':'block'),'">',fckeditor('html',$image['html'],0,'',180),'</div></td>';
+	echo '<div id="banner_image_html_',$num_images,'" style="display:',($image['type']==0?'none':'block'),'">',fckeditor('html_'.$image['id'],$image['html'],0,'',180),'</div></td>';
 	// }
 	echo '<td><input type="submit" name="save_banner" value="',__('Update'),'" /><a href="./plugin.php?_plugin=banner-image&delete_banner='.$image['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td></tr></table></form>';
 	$num_images++;
