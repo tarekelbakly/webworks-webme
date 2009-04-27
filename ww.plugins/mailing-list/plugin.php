@@ -20,7 +20,7 @@ $plugin=array(
 			)
 		)
 	),
-	'version' => '0.2'
+	'version' => '1'
 );
 function showForm(){
 	include_once SCRIPTBASE . 'ww.plugins/mailing-list/frontend/mailing-list.php';

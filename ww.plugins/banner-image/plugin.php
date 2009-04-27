@@ -20,9 +20,9 @@ $plugin=array(
 			)
 		)
 	),
-	'version' => '0.1'
+	'version' => '2'
 );
-function showBanner(){
+function showBanner($vars=null){
 	include_once SCRIPTBASE.'ww.plugins/banner-image/frontend/banner-image.php';
-	return show_banner();
+	return show_banner($vars);
 }

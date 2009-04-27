@@ -6,9 +6,17 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 
-function show_banner(){
-	if(file_exists(USERBASE.'f/skin_files/banner.png')) $banner='<img src="/f/skin_files/banner.png"/>';
-	else $banner='';
+function show_banner($vars){
+	$b=dbRow('select * from banners_images limit 1');
+	if(count($b)){
+		if($b['type']==1){
+			$banner=$b['html'];
+		}
+		else $banner='<img src="/f/skin_files/banner-image/'.$b['id'].'.png" />';
+	}
+	else{
+		if(@$vars['default'])$banner=$vars['default'];
+		else $banner='';
+	}
 	return $banner;
 }
-?>

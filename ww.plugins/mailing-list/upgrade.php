@@ -35,6 +35,9 @@ if($version=='0.1'){
 	dbQuery('insert into mailing_list_options values("","inp_sub","Join")');
 	$version='0.2';
 }
+if($version=='0.1'){
+	$version=1;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();
