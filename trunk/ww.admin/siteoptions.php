@@ -12,7 +12,7 @@ echo admin_menu(array(
 $page=admin_verifypage(
 	array('general',/*'localisation',*/'themes','plugins'),
 	'general',
-	$_REQUEST['page']
+	@$_REQUEST['page']
 );
 
 echo '<div id="hasleftmenu">';

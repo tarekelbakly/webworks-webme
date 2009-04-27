@@ -86,6 +86,22 @@ define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
 define('FCKEDITOR','fckeditor-2.6.4');
 define('KFM_BASE_PATH', SCRIPTBASE.'j/'.FCKEDITOR.'/editor/plugins/kfm/');
 set_include_path(SCRIPTBASE.'ww.php_classes'.PATH_SEPARATOR.KFM_BASE_PATH.'classes'.PATH_SEPARATOR.get_include_path());
+// { theme variables
+if(isset($DBVARS['theme_dir']))define('THEME_DIR',$DBVARS['theme_dir']);
+else define('THEME_DIR',SCRIPTBASE.'ww.skins');
+if($DBVARS['theme'])define('THEME',$DBVARS['theme']);
+else{
+	$dir=new DirectoryIterator(THEME_DIR);
+	$themes_found=0;
+	$DBVARS['theme']='.default';
+	foreach($dir as $file){
+		if(strpos($file,'.')===0)continue;
+		$DBVARS['theme']=$file;
+		break;
+	}
+	define('THEME',$DBVARS['theme']);
+}
+// }
 $PLUGINS=array();
 foreach($DBVARS['plugins'] as $pname){
 	if(strpos('/',$pname)!==false)continue;

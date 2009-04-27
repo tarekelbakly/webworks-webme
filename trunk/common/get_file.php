@@ -6,7 +6,10 @@ if(
 	strpos($file,'..')!==false ||
 	( strpos($file,'/.')!==false && strpos(preg_replace('#/\.files/#','/',$file),'/.')!==false )
 )exit;
-if(!file_exists($file) || !is_file($file))exit;
+if(!file_exists($file) || !is_file($file)){
+	echo 'file does not exist';
+	exit;
+}
 $force_download=isset($_REQUEST['force_download']);
 header('Content-Description: File Transfer');
 if($force_download){

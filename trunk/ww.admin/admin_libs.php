@@ -91,11 +91,11 @@ function getAdminVar($name,$default=''){
 	}
 	return $default;
 }
-function fckeditor($name,$value='',$fullpage=false,$css=''){
+function fckeditor($name,$value='',$fullpage=false,$css='',$height=250){
 	$oFCKeditor = new FCKeditor($name);
 	$oFCKeditor->BasePath = '/j/'.FCKEDITOR.'/';
 	$oFCKeditor->Value                   = $value;
-	$oFCKeditor->Height                  = 250;
+	$oFCKeditor->Height                  = $height;
 	$oFCKeditor->Config['FullPage']      = $fullpage;
 	if($css)$oFCKeditor->Config['EditorAreaCSS'] = $css;
 	return $oFCKeditor->CreateHTML();
