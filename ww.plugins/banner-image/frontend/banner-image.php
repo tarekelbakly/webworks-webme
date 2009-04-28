@@ -9,9 +9,11 @@
 function show_banner($vars){
 	global $PAGEDATA;
 	if($PAGEDATA->id){
-		$b=dbRow('select * from banners_pages,banners_images where pageid='.$PAGEDATA->id.' and pageid=id order by rand() limit 1');
+		$b=dbRow('select * from banners_pages,banners_images where pageid='.$PAGEDATA->id.' and bannerid=id order by rand() limit 1');
 	}
-	if(!isset($b) || !count($b))$b=dbRow('select * from banners_images where !pages order by rand() limit 1');
+	if(!isset($b) || !count($b)){
+		$b=dbRow('select * from banners_images where !pages order by rand() limit 1');
+	}
 	if(count($b)){
 		if($b['type']==1){
 			$banner=$b['html'];
