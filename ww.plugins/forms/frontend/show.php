@@ -50,9 +50,9 @@ function formDisplaySend($page,$vars){
 		if($vars['forms_send_as_email']){
 			$form=formDisplayShow($page,$vars,$err,true);
 			$from=preg_replace('/^FIELD{|}$/','',$vars['forms_replyto']);
-			if($vars['forms_replyto']!=$from)$from=$_POST[preg_replace('/[^a-zA-Z]/','',$from)];
+			if($vars['forms_replyto']!=$from)$from=$_REQUEST[preg_replace('/[^a-zA-Z]/','',$from)];
 			$to=preg_replace('/^FIELD{|}$/','',$vars['forms_recipient']);
-			if($vars['forms_recipient']!=$to)$to=$_POST[preg_replace('/[^a-zA-Z]/','',$to)];
+			if($vars['forms_recipient']!=$to)$to=$_REQUEST[preg_replace('/[^a-zA-Z]/','',$to)];
 			$form=str_replace(array(
 				'<input type="submit" value="Submit Form" />',
 				'<form action="'.$_SERVER['REQUEST_URI'].'" method="post" class="ww_form" enctype="multipart/form-data">',
@@ -87,7 +87,7 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 			$required[]=$name.','.$r2['type'];
 			$class=' required';
 		}
-		if(isset($_POST[$name]))$_SESSION['forms'][$name]=$_POST[$name];
+		if(isset($_REQUEST[$name]))$_SESSION['forms'][$name]=$_REQUEST[$name];
 		$val=getVar($name);
 		if(!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']){
 			switch($name){
@@ -119,10 +119,10 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 		}
 		switch($r2['type']){
 			case 'checkbox': {
-				if($only_show_contents)$d=$_POST[$name];
+				if($only_show_contents)$d=$_REQUEST[$name];
 				else{
 					$d='<input type="checkbox" id="'.$name.'" name="'.$name.'"';
-					if($_POST[$name])$d.=' checked="'.$_POST[$name].'"';
+					if($_REQUEST[$name])$d.=' checked="'.$_REQUEST[$name].'"';
 					$d.=' class="'.$class.' checkbox" />';
 				}
 				break;
@@ -136,7 +136,7 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 				break;
 			}
 			case 'email':{
-				$d=$only_show_contents?$_POST[$name]:'<input id="'.$name.'" name="'.$name.'" value="'.$val.'" class="email'.$class.' text" />';
+				$d=$only_show_contents?$_REQUEST[$name]:'<input id="'.$name.'" name="'.$name.'" value="'.$val.'" class="email'.$class.' text" />';
 				break;
 			}
 			case 'file': {
@@ -148,12 +148,12 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 				break;
 			}
 			case 'selectbox': {
-				if($only_show_contents)$d=$_POST[$name];
+				if($only_show_contents)$d=$_REQUEST[$name];
 				else{
 					$d='<select id="'.$name.'" name="'.$name.'">';
 					$arr=explode("\n",htmlspecialchars($r2['extra']));
 					foreach($arr as $li){
-						if($_POST[$name]==$li)$d.='<option selected="selected">'.rtrim($li).'</option>';
+						if($_REQUEST[$name]==$li)$d.='<option selected="selected">'.rtrim($li).'</option>';
 						else $d.='<option>'.rtrim($li).'</option>';
 					}
 					$d.='</select>';
@@ -161,11 +161,11 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 				break;
 			}
 			case 'textarea': {
-				$d=$only_show_contents?$_POST[$name]:'<textarea id="'.$name.'" name="'.$name.'" class="'.$class.'">'.$_POST[$name].'</textarea>';
+				$d=$only_show_contents?$_REQUEST[$name]:'<textarea id="'.$name.'" name="'.$name.'" class="'.$class.'">'.$_REQUEST[$name].'</textarea>';
 				break;
 			}
 			default:{ # input boxes, and anything which was not handled already
-				$d=$only_show_contents?$_POST[$name]:'<input id="'.$name.'" name="'.$name.'" value="'.$val.'" class="'.$class.' text" />';
+				$d=$only_show_contents?$_REQUEST[$name]:'<input id="'.$name.'" name="'.$name.'" value="'.$val.'" class="'.$class.' text" />';
 				break;
 			}
 		}
