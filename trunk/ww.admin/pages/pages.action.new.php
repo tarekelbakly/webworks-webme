@@ -47,6 +47,7 @@ if(allowedToEditPage($parent)){
 	$id=dbOne('select last_insert_id() as id','id');
 	dbQuery('insert into permissions set id="'.$id.'", type=1, value="'.get_userid().'=7'."\n\n4".'"');
 	echo '<em>'.__('An item has been added to the database.').'</em>';
+	mysql_query('update page_summaries set rss=""');
 	cache_clear('menus');
 	cache_clear('pages');
 }
