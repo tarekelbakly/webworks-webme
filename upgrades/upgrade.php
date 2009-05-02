@@ -157,6 +157,10 @@ if($version==20){ // change page_type to char string in Pages table
 	mysql_query('alter table pages change type type varchar(64)');
 	$version=21;
 }
+if($version==21){ // add plugins to config if not enabled
+	if(@$DBVARS['plugins']=='')$DBVARS['plugins']='polls,image_gallery,forms,panels,banner-image,mailing-list';
+	$version=22;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
