@@ -6,10 +6,9 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<21)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<22)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
-//if(is_admin())$plugins_to_load[]='"frontend_admin":1';
 $page=getVar('page');
 // }
 // { specials
