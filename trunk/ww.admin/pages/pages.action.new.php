@@ -3,9 +3,9 @@ if(allowedToEditPage($parent)){
 	include 'pages/pages.action.common.php';
 	$name=addslashes(getVar('name'));
 	$pid=(int)$_REQUEST['parent'];
-	if(dbQuery("select id from pages where name='$name' and parent=$pid")->numRows()){
+	if(dbQuery("select id from pages where name='$name' and parent=$pid")->rowCount()){
 		$i=2;
-		while(dbQuery("select id from pages where name='$name$i' and parent=$pid")->numRows())$i++;
+		while(dbQuery("select id from pages where name='$name$i' and parent=$pid")->rowCount())$i++;
 		echo '<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
 		$name.=$i;
 	}

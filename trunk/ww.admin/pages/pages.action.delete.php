@@ -6,8 +6,8 @@ if(allowedToEditPage($id)){
 	}
 	else{
 		$q=dbQuery('select parent from pages where id="'.$id.'"');
-		if($q->numRows()){
-			$r=$q->fetchRow();
+		if($q->rowCount()){
+			$r=dbRow('select parent from pages where id="'.$id.'"');
 			dbQuery('delete from page_vars where page_id="'.$id.'"');
 			dbQuery('delete from pages where id="'.$id.'"');
 			dbQuery('update pages set parent="'.$r['parent'].'" where parent="'.$id.'"');

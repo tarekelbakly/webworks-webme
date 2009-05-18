@@ -11,7 +11,7 @@ class ProductOrder{
 		$this->dbVals=$r;
 		self::$instances[$this->id] =& $this;
 	}
-	static function getInstance($id=0,$uid=0,$r){
+	static function getInstance($id=0,$uid=0,$r=false){
 		if (!is_numeric($id)) return false;
 		if (!@array_key_exists($id,self::$instances)) new ProductOrder($id,$uid,$r);
 		return self::$instances[$id];

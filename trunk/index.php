@@ -52,7 +52,7 @@ if(!$id){
 	if($page){
 		if(ereg('&',$page))$page=preg_replace('/&.*/','',$page);
 		$r=Page::getInstanceByName($page);
-		if($r)$id=$r->id;
+		if($r && isset($r->id))$id=$r->id;
 	}
 	if(!$id){
 		$special=1;
@@ -81,7 +81,7 @@ if($p===false){
 	$p=dbRow("select value from permissions where type=1 and id='".$PAGEDATA->id."'");
 	cache_save('pages','permissions_'.$PAGEDATA->id,$p);
 }
-if(count($p)){
+if($p && count($p)){
 	$allowed=0;
 	$lines=explode("\n",$p['value']);
 	if($lines[2]&4)$allowed=1;
@@ -152,6 +152,12 @@ else{
 			$c.=osCheckoutDisplay();
 			break;
 		// }
+		case '11': // { bookings
+			require 'common/bookings.php';
+			$c.=webmeParse($PAGEDATA->body);
+			$c.=bookings_show();
+			break;
+		// }
 		default: // { plugins, and unknown
 			if(isset($PLUGINS[$PAGEDATA->type])){
 				$p=$PLUGINS[$PAGEDATA->type];
@@ -187,4 +193,6 @@ if($template=='')die('no template created. please create a template first');
 // }
 require SCRIPTBASE . 'common/templates.php';
 
+ob_start();
 show_page($template,$pagecontent,$PAGEDATA);
+ob_show_and_log('page');

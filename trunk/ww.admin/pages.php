@@ -1,6 +1,7 @@
 <?php
 require 'header.php';
 echo '<h1>'.__('Pages').'</h1>';
+$parent=(int)@$_REQUEST['parent'];
 /*
 	PAGES PERMISSIONS:
 	1: insert

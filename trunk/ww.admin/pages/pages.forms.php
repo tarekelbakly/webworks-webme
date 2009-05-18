@@ -191,7 +191,7 @@ else{
 			if($r2->id==$page_vars['category_to_show'])echo' selected="selected"';
 			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
-		echo '</select><input type="checkbox" name="page_vars[searchable]" title="searchable"';
+		echo '</select><input type="checkbox" name="page_vars[category_to_show_searchable]" title="searchable"';
 		if($page_vars['category_to_show_searchable'])echo ' "checked="checked"';
 		echo '" /><br />';
 		// }

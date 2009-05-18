@@ -12,7 +12,7 @@ if(strlen($r)>1 && strlen($r)-1==strrpos($r,'/')){ // tried to access a page as 
 	exit;
 }
 $d=Page::getInstanceByName($r);
-if($d){
+if($d && isset($d->id) && $d->id){
 	$id=$d->id;
 	header('Status: 301 typo maybe');
 	header('Redirect: '.$d->getRelativeURL());

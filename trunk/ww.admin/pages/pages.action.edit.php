@@ -51,9 +51,9 @@ if(allowedToEditPage($id)){
 	$body=preg_replace('#</?([ovw]|st1):[^>]*>#','',$body);
 	$body=sanitise_html($body);
 	// { check that name is not duplicate of existing page
-	if(dbQuery('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"')->numRows()){
+	if(dbQuery('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"')->rowCount()){
 		$i=2;
-		while(dbQuery('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' id!="'.$_POST['id'].'"')->numRows())$i++;
+		while(dbQuery('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' id!="'.$_POST['id'].'"')->rowCount())$i++;
 		echo '<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
 		$name=$name.$i;
 	}
@@ -85,10 +85,17 @@ if(allowedToEditPage($id)){
 	if(is_array($pagevars))foreach($pagevars as $k=>$v)dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
 	// }
 	if(isset($_REQUEST['recursively_update_page_templates']))recursively_update_page_templates($id,$template);
-	mysql_query('update page_summaries set rss=""');
 	if($_POST['type']==4){
-		mysql_query('delete from page_summaries where page_id="'.$_POST['id'].'"');
-		mysql_query('insert into page_summaries set page_id="'.$_POST['id'].'",parent_id="'.$_POST['page_summary_parent'].'",rss=""');
+		$q2=mysql_query('select * from page_summaries where page_id="'.$_POST['id'].'"');
+		$do=1;
+		if(mysql_num_rows($q2)){
+			$r2=mysql_fetch_array($q2);
+			if(isset($_POST['page_summary_parent']) && $r2['parent_id']!=$_POST['page_summary_parent']){
+				mysql_query('delete from page_summaries where page_id="'.$_POST['id'].'"');
+			}
+			else $do=0;
+		}
+		if($do)mysql_query('insert into page_summaries set page_id="'.$_POST['id'].'",parent_id="'.$_POST['page_summary_parent'].'",rss=""');
 		include_once(SCRIPTBASE.'/common/page.summaries.php');
 		displayPageSummaries($_POST['id']);
 	}

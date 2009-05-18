@@ -47,7 +47,7 @@ table.user_input_table {  width: 85%; }
 table.user_input_table td { width: 95%; }
 table.user_input_table th { background: none; }
 
-div.dbase table tr.draggable td{cursor:pointer}  
+div.dbase table tr.draggable td{cursor:pointer;cursor:hand}  
 div.dbase_cellwrapper{ display: block; height: 30px; overflow: hidden; }
 table.dbase td.th a, table.dbase td.th a:visited {  padding-left: 12px; background: url(/ww.admin/theme/icons_arrow_default.png) no-repeat 0% 50%; font-size: 11px; }
 table.dbase a.dbase_field_arrowup {  display: block; height: 10px; padding-left: 12px; background: url(/ww.admin/theme/icons_arrow_up.png) no-repeat 0% 50% !important; }
@@ -58,7 +58,7 @@ tr.zebrarow1 td{  background:#f7f7f7;}
 
 table.draggable_active { border: 1px solid #416ba7; /*width: 60% !important; */ }
 table.draggable_active th, table.draggable_active td { padding: 5px 2px; color: #416ba7; font-size: 10px !important; }
-table.draggable_active:hover { cursor: pointer;}
+table.draggable_active:hover { cursor: pointer; cursor: hand; }
 
 table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 
@@ -115,7 +115,7 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 
 .ajaxmenu_menuname{height:16px;display:block}
 .ajaxmenu_menuname a{overflow:hidden;display:block;position:relative;}
-.ajaxmenu_menuname a span{width:16px;background:url(/ww.admin/theme/faders.png) repeat-y;position:absolute;right:0;top:0;height:16px;width:16px;}
+.ajaxmenu_menuname a span{width:16px;repeat-y;background:url(/ww.admin/theme/faders.png);position:absolute;right:0;top:0;height:16px;width:16px;}
 .ajaxmenu_currentPage .ajaxmenu_menuname a span{background-position:-16px 0}
 .ajaxmenu_containsCurrentPage .ajaxmenu_menuname a span{background-position:-32px 0}
 
@@ -153,7 +153,7 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 #leftmenu a:hover,.leftmenu a:hover {background-color:#A6BFE2; color:#fff}
 #leftmenu a.showhideLink            {display:inline;padding-left:15px}
 #leftmenu a.showhideLink:hover      {background-color:inherit;color:#d36042}
-#leftmenu a.thispage                {background:#99f;font-weight:bold;color:#fff}
+#leftmenu a.thispage                {background:#fff}
 #leftmenu a.thispage:hover          {color:#00f; background:#fff; }
 #leftmenu b                         {display:none}
 #leftmenu h4                        {margin:20px 0 0 0;padding:0;border-bottom:2px solid #999;font-weight:bold;background:#333}
@@ -292,7 +292,7 @@ div#formWrapper a.button, div#formWrapper a.button:visited {
 }  
 div#formWrapper div { border: 0 !important; background: none !important; } 
 
-div#formWrapper a#np1 { cursor:pointer;}
+div#formWrapper a#np1 { cursor:pointer;cursor:hand; }
 div#formWrapper a#np1 img { margin: 0 10px; }
 
 table#admin_permissionsForm { margin: 5px !important; padding: 0 !important; clear: both !important; width: 100% !important; }
