@@ -1,7 +1,7 @@
 <?php
 function textObjectsFilter($d){
 	if($d=='')return '';
-	$parseHL=explode(' ',getVar('search'));
+	$parseHL=explode(' ',str_replace('/',' ',getVar('search')));
 	# get search terms to highlight
 	if(!isset($_SERVER['HTTP_REFERER']))$_SERVER['HTTP_REFERER']='';
 	if(ereg('google',$_SERVER['HTTP_REFERER'])){

@@ -3,7 +3,7 @@ class kfmSession extends kfmObject{
 	static $instances=array();
 	var $vars;
 	var $id;
-	function kfmSession($key=''){
+	function __construct($key=''){
 		global $kfm;
 		parent::__construct();
 		$create=1;
@@ -16,7 +16,7 @@ class kfmSession extends kfmObject{
 				$create=0;
 				$this->id=$res['id'];
 				$this->isNew=false;
-				$kfm->db->query("UPDATE ".KFM_DB_PREFIX."session SET last_accessed='".date('Y-m-d G:i:s')."' WHERE id='".$this->id."'");
+				$kfm->db->query("UPDATE ".KFM_DB_PREFIX."session SET last_accessed=now() WHERE id='".$this->id."'");
 			}
 		}
 		if($create){
@@ -38,9 +38,6 @@ class kfmSession extends kfmObject{
 		$this->key=$key;
 		$this->vars=array();
 		setcookie('kfm_cookie',$key,0,'/');
-	}
-	function __construct($key=''){
-		$this->kfmSession($key);
 	}
 	function getInstance($id=0){
 		$id=(int)$id;

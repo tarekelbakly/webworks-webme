@@ -2,7 +2,7 @@
 class kfmDirectory extends kfmObject{
 	static $instances=array();
 	var $subDirs=array();
-	function kfmDirectory($id=1){
+	function __construct($id=1){
 		parent::__construct();
 		$this->id=$id;
 		if(!$id)return;
@@ -13,9 +13,6 @@ class kfmDirectory extends kfmObject{
 		$this->path=$this->getPath();
 		$this->maxWidth=(int)$res['maxwidth'];
 		$this->maxHeight=(int)$res['maxheight'];
-	}
-	function __construct($id=1){
-		$this->kfmDirectory($id);
 	}
 	function addFile($file){
 		global $kfm;
@@ -165,7 +162,7 @@ class kfmDirectory extends kfmObject{
 		closedir($this->handle);
 		return $files;
 	}
-	function getInstance($id=1){
+	static function getInstance($id=1){
 		$id=(int)$id;
 		if($id<1)return;
 		if (!@array_key_exists($id,self::$instances)) {

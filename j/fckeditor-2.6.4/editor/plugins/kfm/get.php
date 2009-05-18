@@ -32,6 +32,25 @@ foreach ($parts as $part) {
     $_GET[$varname]         = urldecode($varval);
 }
 // }
+if(isset($_GET['uri'])){
+	$bits=explode('/',$_GET['uri']);
+	$fname=array_pop($bits);
+	$dir=0;
+	$dirs                   = explode(DIRECTORY_SEPARATOR, trim(join('/',$bits), ' '.DIRECTORY_SEPARATOR));
+	$subdir                 = kfmDirectory::getInstance(1);
+	$startup_sequence_array = array();
+	foreach ($dirs as $dirname) {
+		$subdir = $subdir->getSubdir($dirname);
+		if(!$subdir)break;
+		$dir= $subdir->id;
+	}
+	foreach($subdir->getFiles() as $file){
+		if($file->name==$fname){
+			$_GET['id']=$file->id;
+			break;
+		}
+	}
+}
 $id = $_GET['id'];
 if (!is_numeric($id)) {
     echo kfm_lang('errorInvalidID');
