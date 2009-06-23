@@ -74,6 +74,15 @@ function redirect($addr){
 	echo '<html><head><script type="text/javascript">setTimeout(function(){document.location="'.$addr.'";},10);</script></head><body><noscript>you need javascript to use this site</noscript></body></html>';
 	exit;
 }
+function config_rewrite(){
+	global $DBVARS;
+	$tmparr=$DBVARS;
+	$tmparr['plugins']=join(',',$DBVARS['plugins']);
+	$tmparr2=array();
+	foreach($tmparr as $name=>$val)$tmparr2[]='\''.addslashes($name).'\'=>\''.addslashes($val).'\'';
+	$config="<?php\n\$DBVARS=array(\n	".join(",\n	",$tmparr2)."\n);";
+	file_put_contents(CONFIG_FILE,$config);
+}
 function sanitise_html($html) {
 	$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
 	$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
@@ -99,10 +108,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 	$email=$_REQUEST['email'];
 	$password=$_REQUEST['password'];
 	// }
-	$q=dbQuery('select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'")');
-	if($q->numRows()){
+	$r=dbRow('select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'")');
+	if(count($r)){
 		// { update session variables
-		$r=$q->fetchRow();
 		$r['password']=$password;
 		$_SESSION['userdata']=$r;
 		$r['password'] = $_SESSION['userdata']['password'];
