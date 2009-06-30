@@ -13,11 +13,18 @@ if($action=='Save'){
 	config_rewrite();
 	echo '<em>'.__('options updated').'</em>';
 }
+if($action=='remove_logo'){
+	unlink(USERBASE.'/f/skin_files/logo.png');
+}
 // }
 // { form
 echo '<form method="post" action="siteoptions.php?page=general" enctype="multipart/form-data"><input type="hidden" name="MAX_FILE_SIZE" value="9999999" /><table>';
 echo '<tr><th>Website Title</th><td><input name="site_title" value="'.htmlspecialchars($DBVARS['site_title']).'" /></td></tr>';
 echo '<tr><th>Website Subtitle</th><td><input name="site_subtitle" value="'.htmlspecialchars($DBVARS['site_subtitle']).'" /></td></tr>';
-echo '<tr><th>Logo</th><td><input type="file" name="site_logo" /><br />',file_exists(USERBASE.'f/skin_files/logo.png')?'<img src="/f/skin_files/logo.png?rand='.mt_rand(0,9999).'" />':'','</td></tr>';
+echo '<tr><th>Logo</th><td><input type="file" name="site_logo" /><br />';
+if(file_exists(USERBASE.'f/skin_files/logo.png')){
+	echo '<img src="/f/skin_files/logo.png?rand='.mt_rand(0,9999).'" /><a href="/ww.admin/siteoptions.php?action=remove_logo" onclick="return confirm(\'are you sure you want to remove the logo?\')" title="remove logo">[x]</a>';
+}
+echo '</td></tr>';
 echo '</table><input type="submit" name="action" value="Save" /></form>';
 // }
