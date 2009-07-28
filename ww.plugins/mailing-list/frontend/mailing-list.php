@@ -44,10 +44,10 @@ function show_form(){
 	if(isset($_GET['mailing_list_hash'])){
 		$hash=$_GET['mailing_list_hash'];
 		$email=dbQuery('select email from mailing_list where hash="'.$hash.'"');
-		if(count($email)!=1) $html='<h1>Error</h1><p>Invalid link provided.</p>';
+		if(count($email)!=1) $html='<script type="text/javascript">alert(\'Error. Invalid link provided\');</script>';
 		else{
 			dbQuery('update mailing_list set status="Activated" where hash="'.$hash.'"');
-			$html='<h1>Thank You</h1><p>Email added to the list</p>';
+			$html='<script type="text/javascript">alert(\'Thank You, Email added to the list.\');</script>';
 		}
 	}
 	elseif(isset($_POST['submit'])){
@@ -58,10 +58,9 @@ function show_form(){
 		if($valid==true){
 			$hash=add_database($email,$name);
 			send_confirmation($email,$hash);
-			$html='<h1 id="mailing_thanks">Thank You!</h1>'.
-			      '<p id="mailing_confirmation">A confirmation email has been sent to '.$email.'.</p>';
+			$html='<script type="text/javascript">alert(\'Thank You! A confirmation email has been sent to '.$email.'\');</script>';
 		}
-		else $html='<h1 id="mailing_thanks">Error</h1><p>Invalid details.</p>';
+		else $html='<script type="text/javascript">alert(\'Error. Invalid details.\');</script>';
 	}
 	else{
 		$html=create_form();

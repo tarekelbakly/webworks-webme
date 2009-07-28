@@ -44,7 +44,7 @@ if($cat=='') $cat='Site Wide';
 $p=@$_GET['dynamic_page'];
 if($p==0) $p=1;
 $l=$p*10;
-$m=$l-9;
+$m=$l-10;
 $limit=$m.','.$l;
 
 $SS=array();
@@ -58,13 +58,17 @@ mysql_query('insert into latest_search values ("","'.$s.'","'.$cat.'","'.$_SERVE
 if($cat=='Site Wide') $q=mysql_query('select * from pages where name like "%'.$s.'%" or body like "%'.$s.'%" order by edate limit '.$limit);
 else $q=catags($SS['cat'],$s,$cat,$limit);
 
-$c='<ul>';
 $n=mysql_num_rows($q);
+
+if($n==10) $c.='<p class="right" style="margin-top:-20px"><a href="?dynamic_search_submit=search&dynamic_search='.$s.'&dynamic_category='.$cat.'&dynamic_page='.($p+1).'">Next Page</a></p>';
+if($p>1) $c.='<p style="margin-bottom:20px"><a href="?dynamic_search_submit=search&dynamic_search='.$s.'&dynamic_category='.$cat.'&dynamic_page='.($p-1).'">Previous Page</a></p>';
+
+$c='<ul>';
 if($n==0||!$n) $c='<i>No search results found for "'.$s.'" in category "'.$cat.'". Please try less keywords.</i>';
 else{
         $c.='<ul id="dynamic_list">';
-        $num=($p==0)?0:$m-1;
-        while($r=mysql_fetch_array($q)){
+        $num=($p==0)?0:$m;
+	while($r=mysql_fetch_assoc($q)){
                 $num++;
                 $title=($r['title']=='')?$r['name']:$r['title'];
                 $c.='<li><h4>'.$num.'. &nbsp;&nbsp;'.htmlspecialchars($title).'</h4>';
@@ -72,9 +76,9 @@ else{
                 $c.='<br /><a href="/'.urlencode($r['name']).'">/'.htmlspecialchars($r['name']).'</a></p></li>';
         }
         $c.='</ul>';
-        if($n==10) $c.='<p class="right"><a href="?dynamic_search_submit=search&dynamic_search='.$s.'&dynamic_category='.$cat.'&dynamic_page='.($p+1).'">Next Page</a></p>';
 }
 
+if($n==10) $c.='<p class="right"><a href="?dynamic_search_submit=search&dynamic_search='.$s.'&dynamic_category='.$cat.'&dynamic_page='.($p+1).'">Next Page</a></p>';
 if($p>1) $c.='<p class="left"><a href="?dynamic_search_submit=search&dynamic_search='.$s.'&dynamic_category='.$cat.'&dynamic_page='.($p-1).'">Previous Page</a></p>';
 
 echo $c;

@@ -21,9 +21,10 @@ function dynamic_search(){
         var dynamic_category = $('#dynamic_search_select').attr('value');
         var content = $('#dynamic_search_results');
 	content.css({display:'none'});
+	var hash=Math.floor(Math.random()*1001);
         $('#stuff').css({display:'none'});
 	$.ajax({
-		url:"/ww.plugins/dynamic-search/files/jsresults.php?dynamic_search=" + dynamic_search + "&dynamic_category=" + dynamic_category,
+		url:"/ww.plugins/dynamic-search/files/jsresults.php?dynamic_search=" + dynamic_search + "&dynamic_category=" + dynamic_category + "&hash=" + hash,
 		success: function(html){
 			content.html(html);
 		}
@@ -34,7 +35,6 @@ function dynamic_search(){
 
 function popular_search(){
 	var string=this.href.replace(/.*\?/,'');
-	alert(string);
         var content = $('#dynamic_search_results');
         $('#stuff').css({display:'none'});
         $.ajax({
