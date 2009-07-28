@@ -14,7 +14,8 @@ $plugin=array(
 	'description' => 'Allows news items to be created and displayed on a page..',
 	'frontend' => array(
 		'page_type' => 'news_front'
-	)
+	),
+	'version'=>0.1
 );
 
 function news_admin(){
