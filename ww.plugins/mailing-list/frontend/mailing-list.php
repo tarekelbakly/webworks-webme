@@ -5,6 +5,9 @@
 	Developer: Conor Mac Aoidh <http://macaoidh.name>
 	Report Bugs: <conor@macaoidh.name>
 */
+function falert($text){
+	return '<script type="text/javascript">fAlert(\''.$text.'\');</script>';
+}
 function check_details($email,$name){
 	if($name=='') return false;
 	elseif(!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,20})$",$email)) return false;
@@ -41,29 +44,30 @@ function create_form(){
 		return $f;
 }
 function show_form(){
+	$html='<script type="text/javascript" src="/ww.plugins/mailing-list/files/impromptu.jquery.min.js"></script>
+	       <script type="text/javascript" src="/ww.plugins/mailing-list/files/general.js"></script>
+	       <link rel="stylesheet" type="text/css" href="/ww.plugins/mailing-list/files/mailing-list.css"/>';
+	$html.=create_form();
 	if(isset($_GET['mailing_list_hash'])){
 		$hash=$_GET['mailing_list_hash'];
 		$email=dbQuery('select email from mailing_list where hash="'.$hash.'"');
-		if(count($email)!=1) $html='<script type="text/javascript">alert(\'Error. Invalid link provided\');</script>';
+		if(count($email)!=1) $html.=falert('Error. Invalid link provided');
 		else{
 			dbQuery('update mailing_list set status="Activated" where hash="'.$hash.'"');
-			$html='<script type="text/javascript">alert(\'Thank You, Email added to the list.\');</script>';
+			$html.=falert('Thank You, Email added to the list.');
 		}
 	}
 	elseif(isset($_POST['submit'])){
-		$email=$_POST['mailing_email'];
+		$email.=$_POST['mailing_email'];
 		if(isset($_POST['name']))$name=$_POST['name'];
 		else $name='__empty__';
 		$valid=check_details($email,$name);
 		if($valid==true){
 			$hash=add_database($email,$name);
 			send_confirmation($email,$hash);
-			$html='<script type="text/javascript">alert(\'Thank You! A confirmation email has been sent to '.$email.'\');</script>';
+			$html.=falert('Thank You! A confirmation email has been sent to '.$email);
 		}
-		else $html='<script type="text/javascript">alert(\'Error. Invalid details.\');</script>';
-	}
-	else{
-		$html=create_form();
+		else $html.=falert('Error. Invalid details.');
 	}
 	return $html;
 }
