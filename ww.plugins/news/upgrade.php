@@ -7,9 +7,9 @@
 */
 
 require SCRIPTBASE.'ww.incs/db.php';
-if($version==0){
-	$version='0.1';
-}
+
+if($version==0)
+	$version=1;
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

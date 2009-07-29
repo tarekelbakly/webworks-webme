@@ -27,9 +27,9 @@ function dynamic_search(){
 		url:"/ww.plugins/dynamic-search/files/jsresults.php?dynamic_search=" + dynamic_search + "&dynamic_category=" + dynamic_category + "&hash=" + hash,
 		success: function(html){
 			content.html(html);
+			content.fadeIn('slow');
 		}
 	});
-	content.fadeIn('slow');
         return false;
 }
 
@@ -41,9 +41,9 @@ function popular_search(){
                 url:"/ww.plugins/dynamic-search/files/jsresults.php?" + string,
                 success: function(html){
                         content.html(html);
+        		content.fadeIn('slow');
                 }
         });
-        content.fadeIn('slow');
 	return false;
 }
 

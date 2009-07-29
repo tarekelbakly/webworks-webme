@@ -15,7 +15,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'news_front'
 	),
-	'version'=>0.1
+	'version'=>1
 );
 
 function news_admin(){
