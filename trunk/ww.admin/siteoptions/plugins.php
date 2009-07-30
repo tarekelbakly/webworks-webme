@@ -19,7 +19,6 @@ if($action=='Save'){
 	echo '<script type="text/javascript">window.setTimeout("document.location=\'./siteoptions.php?page=plugins\'",1000);</script>';
 	exit;
 }
-var_dump($DBVARS['plugins']);
 // }
 // { form
 echo '<form method="post" action="siteoptions.php?page=plugins"><table>';
