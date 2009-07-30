@@ -1,7 +1,7 @@
 <?php
 function logoDisplay($vars){
 	$vars=array_merge(array('width'=>64,'height'=>64),$vars);
-	if(!file_exists(USERBASE.'/f/skin_files/logo.png'))return '&nbsp;';
+	if(!file_exists(USERBASE.'/f/skin_files/logo.png'))return '';
 	$x=(int)$vars['width'];
 	$y=(int)$vars['height'];
 	$geometry=$x.'x'.$y;
