@@ -23,6 +23,7 @@ $config='<'."?php
 	'db_name'  => '".addslashes($_SESSION['db_vars']['db_name'])."',
 	'userbase' => '".addslashes($_SESSION['userbase'])."',
 	'plugins'  => 'polls,image_gallery,forms,panels,banner-image,mailing-list',
+	'theme_variant' => '',
 	'version'  => 1
 );";
 
