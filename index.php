@@ -159,12 +159,15 @@ else{
 			break;
 		// }
 		default: // { plugins, and unknown
+			$not_found=true;
 			if(isset($PLUGINS[$PAGEDATA->type])){
 				$p=$PLUGINS[$PAGEDATA->type];
 				if(isset($p['frontend']['page_type']) && function_exists($p['frontend']['page_type'])){
 					$c.=$p['frontend']['page_type']($PAGEDATA);
+					$not_found=false;
 				}
 			}
+			if($not_found)$c.='<em>No plugin found to handle page type <strong>'.htmlspecialchars($PAGEDATA->type).'</strong>. Is the plugin installed and enabled?</em>';
 			break;
 		// }
 	}
