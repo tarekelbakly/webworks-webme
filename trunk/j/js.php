@@ -1,15 +1,16 @@
 <?php
-header('Cache-Control: max-age=2592000');
-header('Expires-Active: On');
-header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
-header('Pragma:');
-header('Content-type: text/javascript; charset=utf-8');
-
 session_start();
 
 require '../.private/config.php';
 require '../common/jslibs.php';
 require '../common/webme_specific.php';
+
+header('Cache-Control: max-age=2592000, public');
+header('Expires-Active: On');
+header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+header('Pragma:');
+header('Content-type: text/javascript; charset=utf-8');
+
 $name=md5_of_dir('./');
 if(!is_dir(USERBASE . 'f/.files/j'))mkdir(USERBASE . 'f/.files/j');
 else{
