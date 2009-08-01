@@ -5,7 +5,7 @@ a        {color: #369; text-decoration: underline; cursor:pointer}
 a:hover  {color:#900; }
 a img    {border: 0; }
 body     {margin:0;padding:5px 5px 40px;background:#f7f7f7 url(/ww.admin/theme/body.png) repeat-x bottom left fixed}
-em       {display:block; color:#333; text-transform: uppercase; font-weight: bold; padding: 3px; padding-left: 45px; padding-top: 18px; margin: 3px 0px;  background: url("/ww.admin/theme/warning.gif") 1% 50% no-repeat; }
+em       {display:block; color:#333; font-weight: bold; padding: 3px; padding-left: 45px; padding-top: 18px; margin: 3px 0px;  background: url("/ww.admin/theme/warning.gif") 1% 50% no-repeat; }
 fieldset {border-bottom:1px solid #f00}
 h1       {font-size:16px; letter-spacing: 1px; background:#d36042;color:#fff; margin: 5px 0;padding: 3px; text-transform: capitalize; }
 h2       {background:#e6eff8;font-size:16px}
@@ -40,7 +40,7 @@ input.small{width:50px}
 input.large{width:100%}
 textarea.small{width:200px;height:80px;font-size:10px !important}
 textarea.medium{width:100%;height:100px}
-th,.theader, td.th{ text-align: left;  color: #416BA7; }
+th,.theader, td.th{color: #416BA7; }
 tr.header>td,td.header{background:#e6eff8;color:#000;padding: 3px;text-transform: capitalize;}
 
 table.user_input_table {  width: 85%; }
@@ -164,8 +164,6 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 
 #hasleftmenu{padding: 5px; border: 1px solid #ededed; background: #fff;margin-left:165px}
 #hasleftmenu input.checkbox {  width: auto !important; } 
-table#formfieldsTable { width: 60%; }
-table#formfieldsTable a, table#formfieldsTable a:visited { display: block; width: 50px; color: #900; }
 
 #sc_cartridges_panel,#sc_clients_panel{height:100px;overflow:auto}
 #tablePopulate th textarea{background:#eee}
@@ -239,7 +237,7 @@ strong.clickable,a.clickable{ background: url("/ww.admin/i/note_edit.gif") 100% 
 .pageForm td input { width: 90%;  margin: 2px; }
 .pageForm td a, .pageForm td a:visited { color: #36f; text-decoration: none; border: 0; }
 .pageForm td a:hover { color: #f63; border-bottom: 1px solid #f63; }
-.pageForm th { text-transform: capitalize;text-align:right;font-weight:bold;padding-right:5px}
+.pageForm th { text-transform: capitalize;font-weight:bold;padding-right:5px}
 textarea.fckeditor { height: 275px!important; } 
 input#action { min-width: 150px!important; width:auto !important; border: 1px outset #ccc; background: #ddd; color: #333; } 
 
