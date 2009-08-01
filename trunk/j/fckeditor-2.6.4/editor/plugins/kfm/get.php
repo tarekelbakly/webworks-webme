@@ -51,7 +51,7 @@ if(isset($_GET['uri'])){
 		}
 	}
 }
-$id = $_GET['id'];
+$id=@$_GET['id'];
 if (!is_numeric($id)) {
     echo kfm_lang('errorInvalidID');
     exit;

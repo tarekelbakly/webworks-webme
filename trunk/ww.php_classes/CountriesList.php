@@ -2,8 +2,8 @@
 class CountriesList{
 	public $countries;
 	private $onChange;
-	// {{{ list of countries
-	// {{{ french
+	// { list of countries
+	// { french
 	public $countriesListFR=array(
 		array('iso'=>'AND', 'name'=>'Andorre'),
 		array('iso'=>'ARE', 'name'=>'Émirats arabes unis'),
@@ -243,8 +243,8 @@ class CountriesList{
 		array('iso'=>'ZMB', 'name'=>'Zambie'),
 		array('iso'=>'ZWE', 'name'=>'Zimbabwe')
 	);
-	// }}}
-	// {{{ german
+	// }
+	// { german
 	public $countriesListDE=array(
 		array('iso'=>'ABW', 'name'=>'Aruba'),
 		array('iso'=>'AFG', 'name'=>'Afghanistan'),
@@ -491,8 +491,8 @@ class CountriesList{
 		array('iso'=>'ZMB', 'name'=>'Sambia'),
 		array('iso'=>'ZWE', 'name'=>'Simbabwe')
 	);
-	// }}}
-	// {{{ default (english)
+	// }
+	// { default (english)
 	public $countriesList=array(
 		array('iso'=>'AFG', 'name'=>'Afghanistan'),
 		array('iso'=>'ALA', 'name'=>'Åland'),
@@ -732,8 +732,8 @@ class CountriesList{
 		array('iso'=>'ZMB', 'name'=>'Zambia'),
 		array('iso'=>'ZWE', 'name'=>'Zimbabwe')
 	);
-	// }}}
-	// }}}
+	// }
+	// }
 	function __construct($countries=array()){
 		$this->disabled=array();
 		$this->selected=array();
@@ -763,11 +763,11 @@ class CountriesList{
 		else $this->countries=$this->countriesList;
 	}
 	static function iso3_to_iso2($iso){
-		// {{{ translation array
+		// { translation array
 		$arr=array(
 			'AFG'=>'AF', 'ALA'=>'AX', 'ALB'=>'AL', 'DZA'=>'DZ', 'ASM'=>'AS', 'AND'=>'AD', 'AGO'=>'AO', 'AIA'=>'AI', 'ATG'=>'AG', 'ARG'=>'AR', 'ARM'=>'AM', 'ABW'=>'AW', 'AUS'=>'AU', 'AUT'=>'AT', 'AZE'=>'AZ', 'BHS'=>'BS', 'BHR'=>'BH', 'BGD'=>'BD', 'BRB'=>'BB', 'BLR'=>'BY', 'BEL'=>'BE', 'BLZ'=>'BZ', 'BEN'=>'BJ', 'BMU'=>'BM', 'BTN'=>'BT', 'BOL'=>'BO', 'BIH'=>'BA', 'BWA'=>'BW', 'BRA'=>'BR', 'VGB'=>'IO', 'BRN'=>'BN', 'BGR'=>'BG', 'BFA'=>'BF', 'BDI'=>'BI', 'KHM'=>'KH', 'CMR'=>'CM', 'CAN'=>'CA', 'CPV'=>'CV', 'CYM'=>'KY', 'CAF'=>'CF', 'TCD'=>'TD', 'CHL'=>'CL', 'CHN'=>'CN', 'COL'=>'CO', 'COM'=>'KM', 'COG'=>'CG', 'COD'=>'CD', 'COK'=>'CK', 'CRI'=>'CR', 'CIV'=>'CI', 'HRV'=>'HR', 'CUB'=>'CU', 'CYP'=>'CY', 'CZE'=>'CZ', 'DNK'=>'DK', 'DJI'=>'DJ', 'DMA'=>'DM', 'DOM'=>'DO', 'ECU'=>'EC', 'EGY'=>'EG', 'SLV'=>'SV', 'GNQ'=>'GQ', 'ERI'=>'ER', 'EST'=>'EE', 'ETH'=>'ET', 'FLK'=>'FK', 'FRO'=>'FO', 'FJI'=>'FJ', 'FIN'=>'FI', 'FRA'=>'FR', 'GUF'=>'GF', 'PYF'=>'PF', 'GAB'=>'GA', 'GMB'=>'GM', 'GEO'=>'GE', 'DEU'=>'DE', 'GHA'=>'GH', 'GIB'=>'GI', 'GRC'=>'GR', 'GRL'=>'GL', 'GRD'=>'GD', 'GLP'=>'GP', 'GUM'=>'GU', 'GTM'=>'GT', 'GGY'=>'GG', 'GIN'=>'GN', 'GNB'=>'GW', 'GUY'=>'GY', 'HTI'=>'HT', 'HND'=>'HN', 'HKG'=>'HK', 'HUN'=>'HU', 'ISL'=>'IS', 'IND'=>'IN', 'IDN'=>'ID', 'IRN'=>'IR', 'IRQ'=>'IQ', 'IRL'=>'IE', 'IMN'=>'IM', 'ISR'=>'IL', 'ITA'=>'IT', 'JAM'=>'JM', 'JPN'=>'JP', 'JEY'=>'JE', 'JOR'=>'JO', 'KAZ'=>'KZ', 'KEN'=>'KE', 'KIR'=>'KI', 'PRK'=>'KP', 'KOR'=>'KR', 'KWT'=>'KW', 'KGZ'=>'KG', 'LAO'=>'LA', 'LVA'=>'LV', 'LBN'=>'LB', 'LSO'=>'LS', 'LBR'=>'LR', 'LBY'=>'LY', 'LIE'=>'LI', 'LTU'=>'LT', 'LUX'=>'LU', 'MAC'=>'MO', 'MKD'=>'MK', 'MDG'=>'MG', 'MWI'=>'MW', 'MYS'=>'MY', 'MDV'=>'MV', 'MLI'=>'ML', 'MLT'=>'MT', 'MHL'=>'MH', 'MTQ'=>'MQ', 'MRT'=>'MR', 'MUS'=>'MU', 'MYT'=>'YT', 'MEX'=>'MX', 'FSM'=>'FM', 'MDA'=>'MD', 'MCO'=>'MC', 'MNG'=>'MN', '1;1'=>';;', 'MSR'=>'MS', 'MAR'=>'MA', 'MOZ'=>'MZ', 'MMR'=>'MM', 'NAM'=>'NA', 'NRU'=>'NR', 'NPL'=>'NP', 'NLD'=>'NL', 'ANT'=>'AN', 'NCL'=>'NC', 'NZL'=>'NZ', 'NIC'=>'NI', 'NIU'=>'NU', 'NER'=>'NE', 'NGA'=>'NG', 'NFK'=>'NF', 'MNP'=>'MP', 'NOR'=>'NO', 'OMN'=>'OM', 'PAK'=>'PK', 'PLW'=>'PW', 'PSE'=>'PS', 'PAN'=>'PA', 'PNG'=>'PG', 'PRY'=>'PY', 'PER'=>'PE', 'PHL'=>'PH', 'PCN'=>'PN', 'POL'=>'PL', 'PRT'=>'PT', 'PRI'=>'PR', 'QAT'=>'QA', 'REU'=>'RE', 'ROU'=>'RO', 'RUS'=>'RU', 'RWA'=>'RW', 'BLM'=>'BL', 'SHN'=>'SH', 'KNA'=>'KN', 'LCA'=>'LC', 'MAF'=>'MF', 'SPM'=>'PM', 'VCT'=>'VC', 'WSM'=>'WS', 'SMR'=>'SM', 'STP'=>'ST', 'SAU'=>'SA', 'SEN'=>'SN', 'SCG'=>'CS', 'SYC'=>'SC', 'SLE'=>'SL', 'SGP'=>'SG', 'SVK'=>'SK', 'SVN'=>'SI', 'SLB'=>'SB', 'SOM'=>'SO', 'ZAF'=>'ZA', 'ESP'=>'ES', 'LKA'=>'LK', 'SDN'=>'SD', 'SUR'=>'SR', 'SJM'=>'SJ', 'SWZ'=>'SZ', 'SWE'=>'SE', 'CHE'=>'CH', 'SYR'=>'SY', 'TWN'=>'TW', 'TJK'=>'TJ', 'TZA'=>'TZ', 'THA'=>'TH', 'TLS'=>'TL', 'TGO'=>'TG', 'TON'=>'TO', 'TTO'=>'TT', 'TUN'=>'TN', 'TUR'=>'TR', 'TKM'=>'TM', 'TCA'=>'TC', 'TUV'=>'TV', 'UGA'=>'UG', 'UKR'=>'UA', 'ARE'=>'AE', 'GBR'=>'GB', 'USA'=>'US', 'VIR'=>'VI', 'URY'=>'UY', 'SUN'=>'SU', 'UZB'=>'UZ', 'VUT'=>'VU', 'VAT'=>'VA', 'VEN'=>'VE', 'VNM'=>'VN', 'WLF'=>'WF', 'ESH'=>'EH', 'YEM'=>'YE', 'YUG'=>'YU', 'ZMB'=>'ZM', 'ZWE'=>'ZW'
 		);
-		// }}}
+		// }
 		return $arr[$iso];
 	}
 	function getCountryName($iso){
@@ -775,7 +775,7 @@ class CountriesList{
 		return $this->isoNameHash[$iso];
 	}
 	function getPhoneExtensionsSelectbox($name, $max_name_length=20, $multiple=0){
-		// {{{ list of extensions
+		// { list of extensions
 		$extensions=array(
 			'ABW'=>'297','AFG'=>'93','AGO'=>'244','AIA'=>'264','ALB'=>'355','AND'=>'376','ANT'=>'599','ARE'=>'971',
 			'ARG'=>'54','ARM'=>'374','ASM'=>'684','ATG'=>'268','AUS'=>'61','AUT'=>'43','AZE'=>'994','BDI'=>'257',
@@ -807,14 +807,14 @@ class CountriesList{
 			'VEN'=>'58','VGB'=>'284','VIR'=>'340','VNM'=>'84','VUT'=>'678','WLF'=>'681','WSM'=>'685','YEM'=>'967',
 			'ZAF'=>'27','ZMB'=>'260','ZWE'=>'263'
 		);
-		// }}}
+		// }
 		$c='<select name="'.htmlspecialchars($name).'" class="countryExtensions_list"';
 		if($this->onChange)$c.=' onchange="'.htmlspecialchars($this->onChange).'"';
 		if($multiple)$c.=' multiple="multiple" size="'.$multiple.'"';
 		$c.='>';
 		foreach($this->countries as $country){
 			$iso=$country['iso'];
-			$extension=(int)$extensions[$iso];
+			$extension=@(int)$extensions[$iso];
 			if(!$extension)continue;
 			$c.='<option value="'.$extension.'"';
 			if(in_array($iso,$this->selected))$c.=' selected="selected"';

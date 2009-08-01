@@ -34,6 +34,7 @@ class ProductCategory{
 		if (!@array_key_exists($name,self::$instancesByName)){
 			$r=dbRow('select * from product_category where name="'.addslashes($name).'" and enabled');
 			new ProductCategory($r['id'],$r);
+			if(!isset(self::$instancesByName[$name]))self::$instancesByName[$name]=false;
 		}
 		return self::$instancesByName[$name];
 	}

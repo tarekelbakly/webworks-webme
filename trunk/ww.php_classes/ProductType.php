@@ -14,7 +14,11 @@ class ProductType{
 			'longform_large_image_size'=>250,
 			'longform_thumb_image_size'=>64,
 			'shortform_thumb_size'=>128,
-			'products_per_page'=>10
+			'products_per_page'=>10,
+			'show_product_variants'=>1,
+			'show_also_bought'=>1,
+			'show_related_products'=>1,
+			'show_contained_products'=>1
 		);
 		else $r=$r?$r:dbRow("select * from product_types where id=$v limit 1");
 		if(!count($r))return false;
