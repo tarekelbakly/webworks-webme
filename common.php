@@ -113,7 +113,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 	$password=$_REQUEST['password'];
 	// }
 	$r=dbRow('select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'")');
-	if(count($r)){
+	if($r && count($r)){
 		// { update session variables
 		$r['password']=$password;
 		$_SESSION['userdata']=$r;
