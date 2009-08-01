@@ -20,14 +20,15 @@ $c.= '</table></div>';
 // }
 // { form fields
 $c.= '<div class="tabPage"><h2>Form Fields</h2>';
-$c.= '<table id="formfieldsTable" width="100%"><tr><th width="30%">Name</th><th width="30%">Type</th><th width="10%">Required</th><th id="extrasColumn"><a href="javascript:formfieldsAddRow()">add field</a></th></tr>';
+$c.= '<table id="formfieldsTable" width="100%"><tr><th width="30%">Name</th><th width="30%">Type</th><th width="10%">Required</th><th id="extrasColumn"><a href="javascript:formfieldsAddRow()">add field</a></th></tr></table>';
+$c.='<ul id="form_fields" style="list-style:none">';
 $q2=dbAll('select * from forms_fields where formsId="'.$id.'" order by id');
 $i=0;
 $arr=array('email'=>__('email'),'input box'=>__('input box'),'textarea'=>__('textarea'),'date'=>__('date'),
 'checkbox'=>__('checkbox'),'selectbox'=>__('selectbox'),'hidden'=>__('hidden message'),'ccdate'=>__('credit card expiry date'));
 foreach($q2 as $r2){
-$c.= '<tr><td>'.wInput('formfieldElementsName['.$i.']','',htmlspecialchars($r2['name'])).'</td><td>'
-.wInput('formfieldElementsType['.$i.']','select',$arr,$r2['type']).'</td><td>'
+$c.= '<li><table width="100%"><tr><td width="30%">'.wInput('formfieldElementsName['.$i.']','',htmlspecialchars($r2['name'])).'</td><td width="30%">'
+.wInput('formfieldElementsType['.$i.']','select',$arr,$r2['type']).'</td><td width="10%">'
 .wInput('formfieldElementsIsRequired['.($i).']','checkbox',$r2['isrequired']).'</td><td>';
 switch($r2['type']){
 case 'selectbox':case 'hidden':{
@@ -38,9 +39,9 @@ default:{
 $c.= wInput('formfieldElementsExtra['.($i++).']','hidden',$r2['extra']);
 }
 }
-$c.= '</td></tr>';
+$c.= '</td></tr></table></li>';
 }
-$c.= '</table></div>';
+$c.= '</ul></div>';
 // }
 // { success message
 $c.= '<div class="tabPage"><h2>Success Message</h2>';
