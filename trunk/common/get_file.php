@@ -1,11 +1,11 @@
 <?php
 require '../common.php';
-if(!isset($_REQUEST['filename']))exit;
-$file=USERBASE.'f/'.$_REQUEST['filename'];
 if(
-	strpos($file,'..')!==false ||
-	( strpos($file,'/.')!==false && strpos(preg_replace('#/\.files/#','/',$file),'/.')!==false )
+	!isset($_REQUEST['filename']) ||
+	strpos($_REQUEST['filename'],'..')!==false ||
+	( strpos($_REQUEST['filename'],'/.')!==false && strpos(preg_replace('#/\.files/#','/',$_REQUEST['filename']),'/.')!==false )
 )exit;
+$file=USERBASE.'f/'.$_REQUEST['filename'];
 if(!file_exists($file) || !is_file($file)){
 	echo 'file does not exist';
 	exit;
