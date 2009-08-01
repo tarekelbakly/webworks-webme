@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'Log.php';
 define('START_TIME',microtime(true));
 function __() {
 	$str = gettext(func_get_arg(0));
@@ -31,7 +32,6 @@ function cache_save($type,$md5,$vals){
 	file_put_contents(USERBASE.'ww.cache/'.$type.'/'.$md5, json_encode($vals));
 }
 function ob_show_and_log($type,$header=''){
-	require 'Log.php';
 	$log = &Log::singleton('file',USERBASE.'log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=ob_get_length();
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
