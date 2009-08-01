@@ -20,7 +20,7 @@ $c.= '</table></div>';
 // }
 // { form fields
 $c.= '<div class="tabPage"><h2>Form Fields</h2>';
-$c.= '<table id="formfieldsTable"><tr><th>Name</th><th>Type</th><th>Required</th><th id="extrasColumn"><a href="javascript:formfieldsAddRow()">add field</a></th></tr>';
+$c.= '<table id="formfieldsTable" width="100%"><tr><th width="30%">Name</th><th width="30%">Type</th><th width="10%">Required</th><th id="extrasColumn"><a href="javascript:formfieldsAddRow()">add field</a></th></tr>';
 $q2=dbAll('select * from forms_fields where formsId="'.$id.'" order by id');
 $i=0;
 $arr=array('email'=>__('email'),'input box'=>__('input box'),'textarea'=>__('textarea'),'date'=>__('date'),
