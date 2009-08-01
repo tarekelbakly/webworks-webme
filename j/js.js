@@ -780,7 +780,7 @@ function updateInputVal(e){
 }
 function webme_start(){
 //	$("img").lazyload({ threshold : 20, effect : "fadeIn" });
-	if(getEls('select').length)ms_convert();
+//	if(getEls('select').length)ms_convert();
 	var p=window.plugins_to_load;
 	if(p.adblock)            loadScript('/ajax/ads.php?pageid='+pagedata.id);
 	if(p.ajaxmenu)           loadAjaxMenu();
@@ -803,10 +803,9 @@ function webme_start(){
 	if(p.os_payment_vouchers)loadScript('/ajax/os_vouchers.php');
 	if(p.os_quickfind)       loadScript('/ajax/os_quickfind.php?pageid='+pagedata.id);
 	if(p.removeRowIfEmpty)   removeRowIfEmpty();
-	if(p.sc_search)          loadScript('/ajax/sc_search.php?pageid='+pagedata.id);
 	if(p.scrollingEvents)    loadScript('/j/scrollingEvents.js');
 	if(p.scrollingNews)      loadScript('/j/scroller.js');
-	if(p.vkfade)             loadJS('/j/jquery.fade.js',0,0,"$('.fademe').vkfade()");
+	if(p.os_fader)           loadScript('/j/os_fader.js');
 
 	// the following items have not yet been optimised at the PHP source
   if(p.eventsAdmin)      loadScript('/ww.admin/ajax/events.admin.php?pageid='+pagedata.id);

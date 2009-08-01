@@ -22,7 +22,7 @@ $config='<'."?php
 	'hostname' => '".addslashes($_SESSION['db_vars']['hostname'])."',
 	'db_name'  => '".addslashes($_SESSION['db_vars']['db_name'])."',
 	'userbase' => '".addslashes($_SESSION['userbase'])."',
-	'plugins'  => 'polls,image_gallery,forms,panels,banner-image,mailing-list',
+	'plugins'  => '',
 	'theme_variant' => '',
 	'version'  => 1
 );";
@@ -35,5 +35,6 @@ if(!file_exists('../.private/config.php')){
 }
 
 echo '<p><strong>Success!</strong> Your WebME installation is complete. Please <a href="/">click here</a> to go to the root of the site.</p>';
+unset($_SESSION['db_vars']);
 
 require 'footer.php';

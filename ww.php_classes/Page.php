@@ -37,7 +37,11 @@ class Page{
 		}
 		else if ($byField == 4) $r=$v;
 		else return false;
-		if(!count($r))return false;
+		if(!count($r || !is_array($r)))return false;
+		if(!isset($r['id']))$r['id']=0;
+		if(!isset($r['type']))$r['type']=0;
+		if(!isset($r['special']))$r['special']=0;
+		if(!isset($r['name']))$r['name']='NO NAME SUPPLIED';
 		foreach ($r as $k=>$v) $this->{$k}=$v;
 		$this->urlname=$r['name'];
 		if(!isset($_SESSION['viewing_language']))$_SESSION['viewing_language']='en';
@@ -69,7 +73,7 @@ class Page{
 			$pid=0;
 			foreach($names as $n){
 				$p=self::getInstanceByNameAndParent($n,$pid);
-				if(!$p)return false;
+				if(!$p || !isset($p->id))return false;
 				$pid=$p->id;
 			}
 			self::$instancesByName[$nameIndex]=$p;
