@@ -18,4 +18,8 @@ function pages_new(){
 $(document).ready(function(){
 	$('.newtoppage,.newsubpage').click(pages_new);
 	$('#pages_form select[name=type]').remoteselectoptions({url:'/ww.admin/pages/get_types.php'});
+	$('#pages_form select[name=parent]').remoteselectoptions({
+		url:'/ww.admin/pages/get_parents.php',
+		other_GET_params:ajaxmenu_expandable_currentPage
+	});
 });

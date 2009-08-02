@@ -37,7 +37,7 @@ else{
 		// }
 	}
 	else{
-		$page=array('parent'=>$id,'type'=>0,'body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>0,'template'=>'','stylesheet'=>'','category'=>'','importance'=>0.5);
+		$page=array('parent'=>$id,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>0,'template'=>'','stylesheet'=>'','category'=>'','importance'=>0.5);
 		$id=0;
 	}
 	echo wInput('id','hidden',$page['id']);
@@ -80,11 +80,13 @@ else{
 	echo '</select></td>';
 	// }
 	// { parent
-	echo '<th>'.__('parent').'</th><td><select name="parent">';
-	$tmp=($page['parent']==0)?' selected="selected"':'';
-	echo '<option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
-	selectkiddies(0,0,$page['parent'],$id);
-	echo '</select></td>';
+	echo '<th>',__('parent'),'</th><td>',"\n\n",'<select name="parent">';
+	if($page['parent']){
+		$parent=Page::getInstance($page['parent']);
+		echo '<option value="',$parent->id,'">',htmlspecialchars($parent->name),'</option>';
+	}
+	else echo '<option value="0"> -- ',__('none'),' -- </option>';
+	echo '</select>',"\n\n",'</td>';
 	// }
 	// { template
 	echo '<th>'.__('template').'</th><td>';

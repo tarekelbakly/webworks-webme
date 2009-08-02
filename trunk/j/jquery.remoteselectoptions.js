@@ -15,7 +15,7 @@
 			$this.focus(function(){
 				if($('option',$this).length>1)return;
 				var v=$this.val();
-				$.get(o.url,{'selected':v},function(res){
+				$.get(o.url,{'selected':v,'other_GET_params':o.other_GET_params},function(res){
 					$this.html(res);
 					setTimeout(function(){
 						var options=$('option',$this);
@@ -30,6 +30,7 @@
 		});
 	};
 	$.fn.remoteselectoptions.defaults={
-		'url':null
+		'url':null,
+		'other_GET_params':{}
 	};
 })(jQuery);
