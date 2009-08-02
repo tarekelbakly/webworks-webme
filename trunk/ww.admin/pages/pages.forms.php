@@ -5,10 +5,13 @@ if(!allowedToEditPage($id)){
 	else echo '<em>'.__('You cannot create a top-level page. Please choose a page to edit from the menu on the left.').'</em>';
 }
 else{
+	if($id && $edit){ // check that page exists
+		$page=dbRow("SELECT * FROM pages WHERE id=$id");
+		if(!$page)$edit=false;
+	}
 	$page_vars=array();
 	echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
 	if($edit){
-		$page=dbRow("SELECT * FROM pages WHERE id=$id");
 		if(isset($_REQUEST['newpage_dialog']) && $page['special']&2)$page['special']-=2;
 		$pvq=dbAll("SELECT * FROM page_vars WHERE page_id=$id");
 		foreach($pvq as $pvr)$page_vars[$pvr['name']]=$pvr['value'];
@@ -37,7 +40,7 @@ else{
 		// }
 	}
 	else{
-		$page=array('parent'=>$id,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>0,'template'=>'','stylesheet'=>'','category'=>'','importance'=>0.5);
+		$page=array('parent'=>0,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>0,'template'=>'','stylesheet'=>'','category'=>'','importance'=>0.5);
 		$id=0;
 	}
 	echo wInput('id','hidden',$page['id']);
