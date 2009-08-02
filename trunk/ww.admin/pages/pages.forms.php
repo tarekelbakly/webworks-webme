@@ -9,6 +9,7 @@ else{
 	echo '<form class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
 	if($edit){
 		$page=dbRow("SELECT * FROM pages WHERE id=$id");
+		if(isset($_REQUEST['newpage_dialog']) && $page['special']&2)$page['special']-=2;
 		$pvq=dbAll("SELECT * FROM page_vars WHERE page_id=$id");
 		foreach($pvq as $pvr)$page_vars[$pvr['name']]=$pvr['value'];
 		// { language
@@ -133,7 +134,7 @@ else{
 		),$page_vars['userlogin_visibility']).'</td>';
 		echo '<th>'.__('Registration type:').'</th><td><select name="page_vars[userlogin_registration_type]"><option>Moderated</option>';
 		echo '<option';
-		if($page_vars['userlogin_registration_type']=='Email-verified')echo ' selected="selected"';
+		if(isset($page_vars['userlogin_registration_type']) && $page_vars['userlogin_registration_type']=='Email-verified')echo ' selected="selected"';
 		echo '>Email-verified</option>';
 		echo '</select></td>';
 		echo '<th>'.__('redirect on login:').'</th><td>';
@@ -181,7 +182,7 @@ else{
 			echo '>'.htmlspecialchars($r2->name).'</option>';
 		}
 		echo '</select><input type="checkbox" name="page_vars[category_to_show_searchable]" title="searchable"';
-		if($page_vars['category_to_show_searchable'])echo ' "checked="checked"';
+		if(isset($page_vars['category_to_show_searchable']) && $page_vars['category_to_show_searchable'])echo ' "checked="checked"';
 		echo '" /><br />';
 		// }
 		// { specify a product

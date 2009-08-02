@@ -20,9 +20,9 @@ $admin_vars=array();
 <html>
 	<head>
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
-		<link rel="stylesheet" href="/j/jquery/smoothness/jquery-ui-1.7.1.custom.css" type="text/css" />
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 		<script src="/js/"></script>
 		<script src="/j/codepress-0.9.6/codepress.js"></script>
 	</head>
