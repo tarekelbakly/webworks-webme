@@ -16,10 +16,31 @@ $errors = array();
 if ($kfm->setting('allow_file_upload')) {
 	$file     = isset($_FILES['kfm_file'])?$_FILES['kfm_file']:$_FILES['Filedata'];
 	$replace  = isset($_REQUEST['fid'])?(int)$_REQUEST['fid']:0;
-	$filename = $file['name'];
 	$tmpname  = $file['tmp_name'];
-	$cwd      = $kfm_session->get('cwd_id');
+	// { filename
+	$filename = $file['name'];
+	if(isset($_REQUEST['rename_to']))$filename=$_REQUEST['rename_to'];
+	// }
+	// { directory
+	if(isset($_REQUEST['directory_name'])){
+		$dirs				   = explode(DIRECTORY_SEPARATOR, trim($_REQUEST['directory_name'], ' '.DIRECTORY_SEPARATOR));
+		$subdir				 = $user_root_dir;
+		$startup_sequence_array = array();
+		foreach ($dirs as $dirname) {
+			$parent=$subdir;
+			$subdir = $parent->getSubdir($dirname);
+			if(!$subdir){
+				kfm_createDirectory($parent->id,$dirname);
+				$subdir=$parent->getSubdir($dirname);
+			}
+			$kfm_startupfolder_id	 = $subdir->id;
+		}
+		$kfm_session->set('cwd_id', $kfm_startupfolder_id);
+		$cwd=$kfm_startupfolder_id;
+	}
+	else $cwd = $kfm_session->get('cwd_id');
 	if(isset($_REQUEST['cwd']) && $_REQUEST['cwd']>0)$cwd=$_REQUEST['cwd'];
+	// }
 	if(!$cwd) $errors[] = kfm_lang('CWD not set');
 	else {
 		$toDir = kfmDirectory::getInstance($cwd);

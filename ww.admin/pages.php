@@ -40,4 +40,5 @@ if(has_access_permissions(ACL_PAGES)){
 }else{
 	echo '<p>'.__('You have no permissions for this page').'</p>';
 }
+echo '<script src="/j/jquery.remoteselectoptions.js"></script><script src="/ww.admin/pages/pages.js"></script>';
 include_once('footer.php');

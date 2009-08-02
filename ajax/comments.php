@@ -9,7 +9,7 @@ function comments_getAll($lastId=0){
     return dbAll("select id,name,md5(email) as email,homepage,comment,cdate from comments where objectid=".getVar('pageid')." and id>".$lastId." and isvalid order by cdate");
 }
 function comments_submit($name='',$email='',$homepage='',$comment='',$password='',$lastId=0){
-    global $recipientEmail,$sitedomain;
+    global $DBVARS,$sitedomain;
     $pageid=getVar('pageid');
     $PAGEDATA=Page::getInstance($pageid);
     if(!$PAGEDATA)return 'error: page doesn\'t exist?';
@@ -36,10 +36,10 @@ function comments_submit($name='',$email='',$homepage='',$comment='',$password='
     else{
     	$hash=base64_encode(sha1(rand(0,65000),true));
     	$app.=',verificationhash="'.$hash.'",isvalid=0';
-    	mail($email,'['.$sitedomain.'] comment verification',"This email is to verify that you, or someone claiming to be you, posted a comment on the $sitedomain website.\n\nIf you did not, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/common/comment_verification.php?hash=".urlencode($hash)."&email=".urlencode($email),"From: $recipientEmail");
+    	mail($email,'['.$sitedomain.'] comment verification',"This email is to verify that you, or someone claiming to be you, posted a comment on the $sitedomain website.\n\nIf you did not, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/common/comment_verification.php?hash=".urlencode($hash)."&email=".urlencode($email),"From: ".$DBVARS['recipientEmail']);
     }
     dbQuery("insert into comments set objectid=".$pageid.",name='".addslashes($name)."',email='".addslashes($email)."',homepage='".addslashes($homepage)."',comment='".htmlspecialchars($comment,ENT_QUOTES)."',cdate=now()$app");
-    mail($recipientEmail,'['.$sitedomain.'] comment on "'.$PAGEDATA->name.'"',
+    mail($DBVARS['recipientEmail'],'['.$sitedomain.'] comment on "'.$PAGEDATA->name.'"',
         'name:     '.$name."\n".
         'email:    '.$email."\n".
         'homepage: '.$homepage."\n".

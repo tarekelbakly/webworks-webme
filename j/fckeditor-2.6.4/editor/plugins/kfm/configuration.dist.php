@@ -78,6 +78,9 @@ $kfm_dont_send_metrics = 0;
 // for example, if the server is in GMT, and you are in Northern Territory, Australia, then the value to use is 9.5
 $kfm_server_hours_offset = 1;
 
+// thumb format. use .png if you need transparencies. .jpg for lower file size
+$kfm_thumb_format='.jpg';
+
 /**
  * This function is called in the admin area. To specify your own admin requirements or security, edit this function
  */
