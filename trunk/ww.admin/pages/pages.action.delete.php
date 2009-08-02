@@ -11,7 +11,7 @@ if(allowedToEditPage($id)){
 			dbQuery('delete from page_vars where page_id="'.$id.'"');
 			dbQuery('delete from pages where id="'.$id.'"');
 			dbQuery('update pages set parent="'.$r['parent'].'" where parent="'.$id.'"');
-			echo '<em>'.__('A page has been deleted.').'</em>';
+			if(!isset($no_echo_on_success))echo '<em>'.__('A page has been deleted.').'</em>';
 			cache_clear('menus');
 			cache_clear('pages');
 		}
