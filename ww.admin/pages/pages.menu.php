@@ -15,7 +15,8 @@ for($i=0;$i<count($rs);++$i){
 	$c.='</a></td><td>';
 	$c.='<a class="newsubpage" href="#">[n]</a>';
 	$c.='</td><td>';
-	$c.='<a class="deletepage" href="pages.php?action=delete&amp;id='.$r['id'].'" class="pagemenu_delete" onclick="return confirm(\''.__('are you sure you want to delete this?').'\');">[x]</a>';
+//	$c.='<a class="deletepage" href="pages.php?action=delete&amp;id='.$r['id'].'" class="pagemenu_delete" onclick="return confirm(\''.__('are you sure you want to delete this?').'\');">[x]</a>';
+	$c.='<a class="deletepage" href="#" class="pagemenu_delete">[x]</a>';
 	$c.='</td></tr>';
 }
 if(admin_can_create_top_pages()){ // admin can create top-level pages

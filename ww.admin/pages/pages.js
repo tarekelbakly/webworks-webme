@@ -1,3 +1,14 @@
+function pages_delete(){
+	if(!confirm('Are you sure you want to delete this?'))return false;
+	var p,link=$(this);
+	p=link.closest('tr')[0].id.replace(/[a-z_]*/,'');
+	if(p==ajaxmenu_expandable_currentPage)document.location='/ww.admin/pages.php?action=delete&id='+p;
+	else $.get('/ww.admin/pages/delete.php?id='+p,function(res){
+		if(res)$(res).dialog();
+		else link.closest('tr').hide(500);
+	});
+	return false;
+}
 function pages_new(){
 	var p=0,link=$(this);
 	if(this.className=='newsubpage')p=link.closest('tr')[0].id.replace(/[a-z_]*/,'');
@@ -17,6 +28,7 @@ function pages_new(){
 }
 $(document).ready(function(){
 	$('.newtoppage,.newsubpage').click(pages_new);
+	$('.deletepage').click(pages_delete);
 	$('#pages_form select[name=type]').remoteselectoptions({url:'/ww.admin/pages/get_types.php'});
 	$('#pages_form select[name=parent]').remoteselectoptions({
 		url:'/ww.admin/pages/get_parents.php',
