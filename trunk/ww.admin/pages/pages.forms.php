@@ -6,7 +6,7 @@ if(!allowedToEditPage($id)){
 }
 else{
 	$page_vars=array();
-	echo '<form class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
+	echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
 	if($edit){
 		$page=dbRow("SELECT * FROM pages WHERE id=$id");
 		if(isset($_REQUEST['newpage_dialog']) && $page['special']&2)$page['special']-=2;
@@ -65,21 +65,16 @@ else{
 	// { page type and parent 
 	// { type
 	echo '<tr><th>'.__('type').'</th><td><select name="type">';
-	foreach($pagetypes as $a){
+	if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
 		if(has_access_permissions($a[2]) || !$a[2]){
-			$tmp=($a[0]==$page['type'])?' selected="selected"':'';
-			echo '<option value="'.$a[0].'"'.$tmp.'>'.htmlspecialchars($a[1]).'</option>';
+			if($a[0]==$page['type'])echo '<option value="',$a[0],'" selected="selected">',htmlspecialchars($a[1]),'</option>';
 		}
 	}
 	$plugin=false;
-	foreach($PLUGINS as $n=>$p){
-		if(isset($p['admin']['page_type'])){
-			$tmp='';
-			if(!is_int($page['type']) && $page['type']==$n){
-				$tmp='" selected="selected';
-				$plugin=$p;
-			}
-			echo '<option value="'.htmlspecialchars($n).$tmp.'">'.htmlspecialchars($n).'</option>';
+	if(!preg_match('/^[0-9]*$/',$page['type']))foreach($PLUGINS as $n=>$p){
+		if(isset($p['admin']['page_type']) && $page['type']==$n){
+			echo '<option value="',htmlspecialchars($n),'" selected="selected">',htmlspecialchars($n),'</option>';
+			$plugin=$p;
 		}
 	}
 	echo '</select></td>';

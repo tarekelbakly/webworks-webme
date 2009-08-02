@@ -1,6 +1,5 @@
 <?php
-
-require '../common.php';
+require '../ww.incs/basics.php';
 
 if(!isset($_REQUEST['filename']))exit;
 $file=THEME_DIR.'/'.$_REQUEST['filename'];

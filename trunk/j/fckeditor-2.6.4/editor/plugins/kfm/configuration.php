@@ -1,4 +1,5 @@
 <?php
+$kfm_thumb_format='.jpg';
 $kfm_username='';
 $kfm_password='';
 $kfm_use_servers_pear = false;

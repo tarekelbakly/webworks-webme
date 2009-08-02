@@ -12,8 +12,10 @@ function pages_new(){
 			}
 		}
 	});
+	$('#newpage_dialog select[name=type]').remoteselectoptions({url:'/ww.admin/pages/get_types.php'});
 	return false;
 }
 $(document).ready(function(){
 	$('.newtoppage,.newsubpage').click(pages_new);
+	$('#pages_form select[name=type]').remoteselectoptions({url:'/ww.admin/pages/get_types.php'});
 });

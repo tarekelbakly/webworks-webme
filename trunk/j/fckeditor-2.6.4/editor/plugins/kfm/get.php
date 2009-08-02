@@ -17,7 +17,7 @@ if (isset($_SERVER['REDIRECT_QUERY_STRING'])&&$_SERVER['REDIRECT_QUERY_STRING'])
     $arr = explode(',', $_SERVER['REDIRECT_QUERY_STRING']);
     foreach ($arr as $r) {
         $arr2           = explode('=', $r);
-        $_GET[$arr2[0]] = $arr2[1];
+        if(count($arr2)>1)$_GET[$arr2[0]] = $arr2[1];
     }
 }
 // { rebuild $_GET (in case it's been mangled by something)
@@ -71,7 +71,11 @@ if (isset($_GET['type'])&&$_GET['type']=='thumb') {
         }
 				if($width>$image->width)$width=$image->width;
 				if($height>$image->height)$height=$image->height;
-        $image->setThumbnail($width, $height);
+				$h=0;$s=0;$l=0;
+				if(isset($_GET['hsl'])){
+					list($h,$s,$l)=explode(':',$_GET['hsl']);
+				}
+        $image->setThumbnail($width, $height,$h,$s,$l);
         $name      = $image->thumb_id;
         $path      = $image->thumb_path;
         $extension = $image->getExtension();
