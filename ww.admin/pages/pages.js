@@ -1,8 +1,9 @@
 function pages_delete(){
 	if(!confirm('Are you sure you want to delete this?'))return false;
 	var p,link=$(this);
-	p=link.closest('tr')[0].id.replace(/[a-z_]*/,'');
-	if(p==ajaxmenu_expandable_currentPage)document.location='/ww.admin/pages.php?action=delete&id='+p;
+	pel=link.closest('tr');
+	p=pel[0].id.replace(/[a-z_]*/,'');
+	if(p==ajaxmenu_expandable_currentPage || pel.hasClass('ajaxmenu_hasChildren'))document.location='/ww.admin/pages.php?action=delete&id='+p;
 	else $.get('/ww.admin/pages/delete.php?id='+p,function(res){
 		if(res)$(res).dialog();
 		else link.closest('tr').hide(500);

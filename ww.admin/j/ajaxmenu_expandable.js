@@ -54,9 +54,9 @@ function ajaxmenu_expandable_open(id){
 			$('<a href="pages.php?action=edit&id='+r.id+'" class="fck_droppable navlink"><span>&nbsp;</span>'+name+'</a>').appendTo(cell);
 		}
 		cell=row.insertCell(1);
-		cell.appendChild(newLink('pages.php?action=new&id='+r.id,'[n]',0,'newsubpage'));
+		cell.appendChild(newLink('#','[n]',0,'newsubpage'));
 		cell=row.insertCell(2);
-		cell.appendChild(newLink('javascript:if(confirm(\'are you sure you want to delete the page "'+r.name+'"?\'))document.location="pages.php?action=delete&id='+r.id+'"','[x]',0,'deletepage'));
+		cell.appendChild(newLink('#','[x]',0,'deletepage'));
 		if(/ajaxmenu_currentPage/.test(r.classes))ajaxmenu_expandable_finishedLoading=1;
 		if(!ajaxmenu_expandable_finishedLoading&&/ajaxmenu_containsCurrentPage/.test(r.classes))toOpen=r.id;
 	}
@@ -70,6 +70,8 @@ function ajaxmenu_expandable_open(id){
 	}
 	if(toOpen)ajaxmenu_expandable_open(toOpen);
 	ajaxmenu_expandable_openmenus[id]=1;
+	$('.newtoppage,.newsubpage').click(pages_new);
+	$('.deletepage').click(pages_delete);
 }
 function ajaxmenu_expandable_close(id){
 	id=parseInt(id);
