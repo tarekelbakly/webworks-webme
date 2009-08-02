@@ -21,5 +21,5 @@ for($i=0;$i<count($rs);++$i){
 if(admin_can_create_top_pages()){ // admin can create top-level pages
 	$c.='<tr><td colspan="4" class="bottom"><a href="'.$_SERVER['PHP_SELF'].'?action=new" class="newtoppage">'.__('CLICK HERE FOR A NEW TOP-LEVEL PAGE').'</a></td></tr>';
 }
-$c.='</table>';
+$c.='</table><script src="/ww.admin/pages/pages.js"></script>';
 echo $c;
