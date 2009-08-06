@@ -2,10 +2,12 @@
 /*
 	Webme Banner Image Plugin
 	File: admin/index.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
+	Developers:  Conor Mac Aoidh  http://macaoidh.name/
+							 Kae Verens       http://verens.com/
+	Report Bugs: kae@verens.com, conor@macaoidh.name
 */
 
+$banner_image_types=array('jpg','gif','png');
 if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 	$id=(int)$_GET['delete_banner'];
 	dbQuery("delete from banners_images where id=$id");
@@ -28,15 +30,19 @@ if(isset($_POST['save_banner'])){
 	}
 	if(isset($_FILES['banner-image']) && file_exists($_FILES['banner-image']['tmp_name'])){
 		$tmpname=addslashes($_FILES['banner-image']['tmp_name']);
-		$newdir=USERBASE.'f/skin_files/banner-image';
-		`convert "$tmpname" "$newdir/$id.png"`;
+		$type=preg_replace('/.*\./','',$_FILES['banner-image']['name']);
+		if(in_array(strtolower($type),$banner_image_types)){
+			$newdir=USERBASE.'f/skin_files/banner-image';
+			`convert "$tmpname" "$newdir/$id.$type"`;
+		}
 	}
 	dbQuery("delete from banners_pages where bannerid=$id");
-	foreach(@$pages as $k=>$v)dbQuery('insert into banners_pages set pageid='.((int)$v).",bannerid=$id");
+	if(is_array($pages))foreach($pages as $k=>$v)dbQuery('insert into banners_pages set pageid='.((int)$v).",bannerid=$id");
 	$updated='Banner Saved';
 }
 
 if(isset($updated)) echo '<em>'.$updated.'</em>';
+if(!is_dir(USERBASE.'f/skin_files'))mkdir(USERBASE.'f/skin_files');
 if(!is_dir(USERBASE.'f/skin_files/banner-image'))mkdir(USERBASE.'f/skin_files/banner-image');
 $images=dbAll('select * from banners_images');
 
@@ -55,6 +61,13 @@ function banner_image_selectkiddies($i=0,$n=1,$s=array(),$id=0,$prefix=''){
 		}
 	}
 }
+function banner_image_getImgHTML($id){
+	global $banner_image_types;
+	$type='';
+	foreach($banner_image_types as $t)if(file_exists(USERBASE.'f/skin_files/banner-image/'.$id.'.'.$t))$type=$t;
+	if(!$type)return 'no image uploaded';
+	return '<img src="/f/skin_files/banner-image/'.$id.'.'.$type.'" />';
+}
 function banner_image_drawForm($image=array()){
 	if(!count($image))$image=array('id'=>0,'html'=>'','type'=>0);
 	global $num_images;
@@ -64,7 +77,7 @@ function banner_image_drawForm($image=array()){
 	// }
 	// { show image form
 	echo '<td><div id="banner_image_img_',$num_images,'" style="display:',($image['type']==1?'none':'block'),'"><input type="file" name="banner-image" /><br />',
-		($image['id']?'<img src="/f/skin_files/banner-image/'.$image['id'].'.png" />':''),'</div>';
+		banner_image_getImgHTML($image['id']),'</div>';
 	// }
 	// { show HTML form
 	echo '<div id="banner_image_html_',$num_images,'" style="display:',($image['type']==0?'none':'block'),'">',fckeditor('html_'.$image['id'],$image['html'],0,'',180),'</div></td>';
