@@ -23,6 +23,14 @@ $plugin=array(
 	),
 	'version' => '2'
 );
+$banner_image_types=array('jpg','gif','png');
+function banner_image_getImgHTML($id,$hide_message=false){
+	global $banner_image_types;
+	$type='';
+	foreach($banner_image_types as $t)if(file_exists(USERBASE.'f/skin_files/banner-image/'.$id.'.'.$t))$type=$t;
+	if(!$type)return $hide_message?'':'no image uploaded';
+	return '<img src="/f/skin_files/banner-image/'.$id.'.'.$type.'" />';
+}
 function showBanner($vars=null){
 	include_once SCRIPTBASE.'ww.plugins/banner-image/frontend/banner-image.php';
 	return show_banner($vars);

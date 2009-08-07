@@ -18,11 +18,12 @@ function show_banner($vars){
 		if($b['type']==1){
 			$banner=$b['html'];
 		}
-		else $banner='<img src="/f/skin_files/banner-image/'.$b['id'].'.png" />';
+		else $banner=banner_image_getImgHTML($b['id'],true);
 	}
 	else{
 		if(@$vars['default'])$banner=$vars['default'];
 		else $banner='';
 	}
-	return $banner;
+	if(!$banner)return '';
+	return '<style type="text/css">#banner{background:none}</style>'.$banner;
 }

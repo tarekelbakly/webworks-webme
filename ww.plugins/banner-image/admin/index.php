@@ -7,7 +7,6 @@
 	Report Bugs: kae@verens.com, conor@macaoidh.name
 */
 
-$banner_image_types=array('jpg','gif','png');
 if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 	$id=(int)$_GET['delete_banner'];
 	dbQuery("delete from banners_images where id=$id");
@@ -60,13 +59,6 @@ function banner_image_selectkiddies($i=0,$n=1,$s=array(),$id=0,$prefix=''){
 			banner_image_selectkiddies($r['id'],$n+1,$s,$id,$name.' > ');
 		}
 	}
-}
-function banner_image_getImgHTML($id){
-	global $banner_image_types;
-	$type='';
-	foreach($banner_image_types as $t)if(file_exists(USERBASE.'f/skin_files/banner-image/'.$id.'.'.$t))$type=$t;
-	if(!$type)return 'no image uploaded';
-	return '<img src="/f/skin_files/banner-image/'.$id.'.'.$type.'" />';
 }
 function banner_image_drawForm($image=array()){
 	if(!count($image))$image=array('id'=>0,'html'=>'','type'=>0);
