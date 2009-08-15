@@ -20,7 +20,7 @@ function imageCheckName(newName,id,doalert){
 function initFckEditor(width,height){
 	if(browser.isSafari)return 0;
 	var sBasePath,els,begin,el,i;
-	sBasePath='/j/'+FCKEDITOR+'/';
+	sBasePath='/j/'+ww.FCKEDITOR+'/';
 	els=$('textarea.fckeditor');
 	begin=oFCKeditor.length;
 	for(i=begin,n=begin+els.length;i<n;++i){

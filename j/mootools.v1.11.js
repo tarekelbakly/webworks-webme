@@ -98,19 +98,6 @@ Class.Merge = function(previous, current){
 	}
 	return current;
 };
-var Chain = new Class({
-	chain: function(fn){
-		this.chains = this.chains || [];
-		this.chains.push(fn);
-		return this;
-	},
-	callChain: function(){
-		if (this.chains && this.chains.length) this.chains.shift().delay(10, this);
-	},
-	clearChain: function(){
-		this.chains = [];
-	}
-});
 var Events = new Class({
 	addEvent: function(type, fn){
 		if (fn != Class.empty){
@@ -1097,7 +1084,6 @@ Fx.Base = new Class({
 			this.stop(true);
 			this.set(this.to);
 			this.fireEvent('onComplete', this.element, 10);
-			this.callChain();
 		}
 	},
 	set: function(to){
@@ -1137,7 +1123,7 @@ Fx.Base = new Class({
 		return this.stop(end);
 	}
 });
-Fx.Base.implement(new Chain, new Events, new Options);
+Fx.Base.implement(new Events, new Options);
 Fx.CSS = {
 	select: function(property, to){
 		if (property.test(/color/i)) return this.Color;

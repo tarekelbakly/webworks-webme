@@ -36,7 +36,7 @@ function frontend_admin_addFckeditor(res){
 	our_div.appendChild(textarea);
 	var oFCKeditor = new FCKeditor('__webmePageContent_fckeditor',x+20,y+100);
 	oFCKeditor.name='__webmePageContent_fckeditor';
-	oFCKeditor.BasePath	= '/j/'+FCKEDITOR+'/' ;
+	oFCKeditor.BasePath	= '/j/'+ww.FCKEDITOR+'/' ;
 	oFCKeditor.Config.ToolbarStartExpanded=false;
 	oFCKeditor.Config.EditorAreaCSS=css;
 	oFCKeditor.ReplaceTextarea();
