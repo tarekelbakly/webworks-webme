@@ -1,6 +1,6 @@
 function pr_addImageUploadForm(){
 	var wrapper=$M('product_image_inputs');
-	var f1=newForm('/j/'+FCKEDITOR+'/editor/plugins/kfm/upload.php','POST','multipart/form-data','kfm_iframe');
+	var f1=newForm('/j/'+ww.FCKEDITOR+'/editor/plugins/kfm/upload.php','POST','multipart/form-data','kfm_iframe');
 	f1.id='kfm_uploadForm';
 	var iframe=newEl('iframe','kfm_iframe');
 	iframe.setStyle('display','none');

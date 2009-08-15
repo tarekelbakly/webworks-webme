@@ -737,38 +737,12 @@ function setClass(o,c){
 	if(o&&(c||getClassName(o)))o.className=c?c:'';
 	return o;
 }
-function setPos(a,b,c){
-	$M(a).setStyles({
-		'left':b,
-		'top':c
-	});
-}
 function showhide(id){
 	var el=$M('showhideDiv'+id),link=$M('showhideLink'+id);
 	var objName=link.innerHTML.replace(/^\[(show|hide)(.*)\]/,'$2');
 	var a=el.style.display=='block'?{d:'none',t:'[show'}:{d:'block',t:'[hide'};
 	el.style.display=a.d;
 	link.replaceChild(newText(a.t+objName+']'),link.childNodes[0]);
-}
-function text2html(text,nobr){
-	if(!window.xhtmlentities){
-		var a,b='';
-		window.xhtmlentities=$H({'&':'amp',' ':'nbsp','¡':'iexcl','¢':'cent','£':'pound','¤':'curren','¥':'yen','¦':'brvbar','§':'sect','¨':'uml','©':'copy','ª':'ordf','«':'laquo','¬':'not','­':'shy','®':'reg','¯':'macr','°':'deg','±':'plusmn','²':'sup2','³':'sup3','´':'acute','µ':'micro','¶':'para','·':'middot','¸':'cedil','¹':'sup1','º':'ordm','»':'raquo','¼':'frac14','½':'frac12','¾':'frac34','¿':'iquest','×':'times','÷':'divide','"':'quot','<':'lt','>':'gt','ˆ':'circ','˜':'tilde',' ':'ensp',' ':'emsp',' ':'thinsp','–':'ndash','—':'mdash','‘':'lsquo','’':'rsquo','‚':'sbquo','“':'ldquo','”':'rdquo','„':'bdquo','†':'dagger','‡':'Dagger','‰':'permil','‹':'lsaquo','›':'rsaquo','€':'euro'});
-		xhtmlentities.each(function(val,key){
-			b+=key;
-		});
-		window.xhtmlentitiesreg=new RegExp('['+b+']');
-	}
-	text=unescape(text);
-	if(xhtmlentitiesreg.test(text))a=1;
-	if(text.indexOf('&')!=-1 && /\&amp;([a-z]*);/.test(text))text=text.replace(/\&amp;([a-z]*);/g,'&$1;');
-	if(!nobr)text=text.replace(/\n/g,'<br />');
-	if(browser.isSafari)text=text.replace(/\r/g,'');
-	return text;
-}
-function toFixed(a,b){
-	a=parseFloat(a);
-	return a.toFixed?a.toFixed(b):a;
 }
 function updateInputVal(e){
 	var id=(new Event(e)).target.id.replace(/_[^_]*$/,'');
@@ -778,6 +752,7 @@ function updateInputVal(e){
 	$M(id).value=y+'-'+m+'-'+d+' '+$F(id+'_hour','00')+':'+$F(id+'_minute','00')+':00';
 }
 window.ww={
+	FCKEDITOR:'fckeditor-2.6.4',
 	webme_start:function(){
 	//	$("img").lazyload({ threshold : 20, effect : "fadeIn" });
 	//	if(getEls('select').length)ms_convert();
@@ -822,70 +797,5 @@ function X(d,s){
 	var showhideDivs=[],showhideNum=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 	var boxdropTracers=[],function_urls=[],sc_supplements=[];
 	var kaejax_timeouts=[],kaejax_xhrinstances=[],ms_select_defaults=[],ms_show_toplinks=true;
-	var FCKEDITOR='fckeditor-2.6.4';
-}
-function html2dom(str,parent){
-	var codeprefixes=['SC_'],lastIndex=str.lastIndexOf('<')+1,obj,substr,indentlevel=charat=0,reg=/[ \/\>].*/;
-	if(!lastIndex||str.charAt(str.length-1)!='>')lastIndex=str.length;
-	while(charat<lastIndex){
-		var addAsInnerHtml=0;
-		if(str.charAt(charat)=='<'){ // element
-			var end=str.indexOf('>',charat+1),nextChar=str.charAt(charat+1);
-			substr=str.substring(charat,end+1);
-			var slen=substr.length
-			if(nextChar=='!'||nextChar=='?')obj=newEl('!');
-			else{
-				var tName=substr.substring(1,slen).replace(reg,'');
-				obj=newEl(tName);
-				if(tName.length+3<slen){
-					var i=stage=inquotes=0,name=value='',params=substr.substring(tName.length+2,slen-1),setAttribute=window.setAttribute;
-					if(params.charAt(params.length-1)=='/')params=params.substring(0,params.length-1);
-					var p1=(' '+params+' ').split(/="/);
-					for(var p2=1;p2<p1.length;p2++){
-						var name=p1[p2-1].substring(p1[p2-1].lastIndexOf(' ')+1,p1[p2-1].length);
-						var value=p1[p2].substring(0,p1[p2].lastIndexOf('" '));
-						setAttribute(obj,name,value);
-					}
-				}
-				if(str.charAt(end-1)!='/'){ // not self-closing
-					indentlevel=1;
-					var subelstart=end+1,tracechar=end,subelend=0;
-					while(indentlevel){
-						subelend=str.indexOf('<',tracechar+1);
-						tracechar=end=str.indexOf('>',subelend+1);
-						if(str.charAt(subelend+1)=='/')--indentlevel;
-						else if(str.charAt(end-1)!='/')++indentlevel;
-					}
-					html2dom(str.substring(subelstart,subelend),obj);
-				}
-			}
-			charat=end+1;
-		}
-		else{ // text
-			var end=str.indexOf('<',charat+1)-1,i;
-			if(end<1)end=str.length-1;
-			var isCode=0,text=str.substring(charat,end+1);
-			codeprefixes.each(function(pre){
-				if(text.indexOf('%'+pre)!=-1)isCode=1;
-			});
-			if(isCode){
-				text=text.replace(/\n/g,'').replace(/^[^%]*|[^%]*$/g,'');
-				var name=text.replace(/^%([^{]*)({.*|)%$/,'$1');
-				var values=text.replace(/^%[^{]*{?((.*)}|)%$/,'$2');
-				obj=sc_buildWidget(name,values);
-			}else{
-				var text2=text2html(text,1);
-				if(text!=text2||text.indexOf('&')!=-1){
-					obj=text2;
-					addAsInnerHtml=1;
-				}
-				else obj=newText(text);
-			}
-			charat=end+1;
-		}
-		if(addAsInnerHtml)parent.innerHTML+=obj;
-		else addEls(parent,obj);
-	}
-	return parent;
 }
 $(document).ready(ww.webme_start);
