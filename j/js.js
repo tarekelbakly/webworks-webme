@@ -172,7 +172,7 @@ function initialise(){
 }
 function initShowHide(vis,objName){
 	if(!objName)objName='';
-	var els=$ES('div.showhide'),i;
+	var els=$('div.showhide'),i;
 	for(var i=0;i<els.length;++i){
 		var thisvis=vis?1:(hasClass(els[i],'show')?1:0);
 		var link=newLink('javascript:showhide('+(++showhideNum)+');',thisvis?'[hide'+objName+']':'[show'+objName+']','showhideLink'+showhideNum,'showhideLink');
@@ -715,13 +715,12 @@ function replaceEl(f,t){
 }
 function removeRowIfEmpty(el){
 	if(!el){
-		el=$ES('.removeRowIfEmpty');
+		el=$('.removeRowIfEmpty');
 		el.each(removeRowIfEmpty);
 		return;
 	}
 	if(el.innerHTML!='')return;
-	while(el&&el.tagName!='TR')el=$M(el.parentNode);
-	if(el)el.remove();
+	$(el).closest('tr').remove();
 }
 function setAttribute(o,n,v){
 	if(!n||!o)return;
@@ -778,40 +777,42 @@ function updateInputVal(e){
 	if(d=='--')d='00';
 	$M(id).value=y+'-'+m+'-'+d+' '+$F(id+'_hour','00')+':'+$F(id+'_minute','00')+':00';
 }
-function webme_start(){
-//	$("img").lazyload({ threshold : 20, effect : "fadeIn" });
-//	if(getEls('select').length)ms_convert();
-	var p=window.plugins_to_load;
-	if(p.adblock)            loadScript('/ajax/ads.php?pageid='+pagedata.id);
-	if(p.ajaxmenu)           loadAjaxMenu();
-	if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
-	if(p.dbase)              loadScript('/ajax/table.php?pageid='+pagedata.id);
-	if(p.eventcalendar)      loadScript('/ajax/events.php?pageid='+pagedata.id);
-	if(p.formvalidation)     loadFormValidation();
-	if(p.frontend_admin)     loadScript('/ajax/frontend_admin.php?pageid='+pagedata.id);
-	if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
-	if(p.tabs)               tabs_init();
-	if(p.showhide)           initShowHide();
-	if(p.fontsize_controls)  loadScript('/j/fonts.js');
-	if(p.imagefader)         loadScript('/j/imagefader.js');
-	if(p.inputdate)          loadDateClass();
-	if(p.product_review)     loadScript('/ajax/product_review.php');
-	if(p.os_basket)          loadScript('/ajax/os_basket.php');
-	if(p.os_countries)       loadScript('/j/os_countries.js');
-	if(p.os_discount_codes)  loadScript('/j/os_discount_codes.js');
-	if(p.os_payment_types)   loadScript('/j/os_payment_types.js');
-	if(p.os_payment_vouchers)loadScript('/ajax/os_vouchers.php');
-	if(p.os_quickfind)       loadScript('/ajax/os_quickfind.php?pageid='+pagedata.id);
-	if(p.removeRowIfEmpty)   removeRowIfEmpty();
-	if(p.scrollingEvents)    loadScript('/j/scrollingEvents.js');
-	if(p.scrollingNews)      loadScript('/j/scroller.js');
-	if(p.os_fader)           loadScript('/j/os_fader.js');
-
-	// the following items have not yet been optimised at the PHP source
-  if(p.eventsAdmin)      loadScript('/ww.admin/ajax/events.admin.php?pageid='+pagedata.id);
-	if(p.newsAdmin)        loadScript('/ww.admin/ajax/news.admin.php?pageid='+pagedata.id);
-
-	if(document.getElementById('webmeComments'))loadScript('/ajax/comments.php?pageid='+pagedata.id);
+window.ww={
+	webme_start:function(){
+	//	$("img").lazyload({ threshold : 20, effect : "fadeIn" });
+	//	if(getEls('select').length)ms_convert();
+		var p=window.plugins_to_load;
+		if(p.adblock)            loadScript('/ajax/ads.php?pageid='+pagedata.id);
+		if(p.ajaxmenu)           loadAjaxMenu();
+		if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
+		if(p.dbase)              loadScript('/ajax/table.php?pageid='+pagedata.id);
+		if(p.eventcalendar)      loadScript('/ajax/events.php?pageid='+pagedata.id);
+		if(p.formvalidation)     loadFormValidation();
+		if(p.frontend_admin)     loadScript('/ajax/frontend_admin.php?pageid='+pagedata.id);
+		if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
+		if(p.tabs)               tabs_init();
+		if(p.showhide)           initShowHide();
+		if(p.fontsize_controls)  loadScript('/j/fonts.js');
+		if(p.imagefader)         loadScript('/j/imagefader.js');
+		if(p.inputdate)          loadDateClass();
+		if(p.product_review)     loadScript('/ajax/product_review.php');
+		if(p.os_basket)          loadScript('/ajax/os_basket.php');
+		if(p.os_countries)       loadScript('/j/os_countries.js');
+		if(p.os_discount_codes)  loadScript('/j/os_discount_codes.js');
+		if(p.os_payment_types)   loadScript('/j/os_payment_types.js');
+		if(p.os_payment_vouchers)loadScript('/ajax/os_vouchers.php');
+		if(p.os_quickfind)       loadScript('/ajax/os_quickfind.php?pageid='+pagedata.id);
+		if(p.removeRowIfEmpty)   removeRowIfEmpty();
+		if(p.scrollingEvents)    loadScript('/j/scrollingEvents.js');
+		if(p.scrollingNews)      loadScript('/j/scroller.js');
+		if(p.os_fader)           loadScript('/j/os_fader.js');
+	
+		// the following items have not yet been optimised at the PHP source
+	  if(p.eventsAdmin)      loadScript('/ww.admin/ajax/events.admin.php?pageid='+pagedata.id);
+		if(p.newsAdmin)        loadScript('/ww.admin/ajax/news.admin.php?pageid='+pagedata.id);
+	
+		if(document.getElementById('webmeComments'))loadScript('/ajax/comments.php?pageid='+pagedata.id);
+	}
 }
 function X(d,s){
 	return $.extend(d,s);
@@ -887,4 +888,4 @@ function html2dom(str,parent){
 	}
 	return parent;
 }
-$(document).ready(webme_start);
+$(document).ready(ww.webme_start);

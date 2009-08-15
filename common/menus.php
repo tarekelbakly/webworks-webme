@@ -1,7 +1,7 @@
 <?php
 function menu_containsPage($needle,$haystack){
 	$r=Page::getInstance($needle);
-	if($r->parent==0)return 0;
+	if(!isset($r->parent) || $r->parent==0)return 0;
 	if($r->parent==$haystack)return 1;
 	return menu_containsPage($r->parent,$haystack);
 }

@@ -38,9 +38,6 @@ $native(Function, Array, String, Number);
 function $chk(obj){
 	return !!(obj || obj === 0);
 };
-function $pick(obj, picked){
-	return obj!=undefined ? obj : picked;
-};
 var Abstract = function(obj){
 	obj = obj || {};
 	obj.extend = $extend;
@@ -236,13 +233,6 @@ Array.each = Array.forEach;
 function $A(array){
 	return Array.copy(array);
 };
-function $each(iterable, fn, bind){
-	if (iterable && typeof iterable.length == 'number' && $type(iterable) != 'object'){
-		Array.forEach(iterable, fn, bind);
-	} else {
-		 for (var name in iterable) fn.call(bind || iterable, iterable[name], name);
-	}
-};
 Array.prototype.test = Array.prototype.contains;
 String.extend({
 	test: function(regex, params){
@@ -331,7 +321,7 @@ Function.extend({
 			}
 			else args = options.arguments || arguments;
 			var returns = function(){
-				return fn.apply($pick(options.bind, fn), args);
+				return fn.apply((options.bind==undefined?fn:options.bind), args);
 			};
 			if (options.delay) return setTimeout(returns, options.delay);
 			if (options.periodical) return setInterval(returns, options.periodical);
@@ -500,14 +490,6 @@ Element.extend({
 		}
 		return this;
 	},
-	adopt: function(){
-		var elements = [];
-		$each(arguments, function(argument){
-			elements = elements.concat(argument);
-		});
-		$$M(elements).inject(this);
-		return this;
-	},
 	remove: function(){
 		return this.parentNode.removeChild(this);
 	},
@@ -638,9 +620,6 @@ if(!this.$tmp.opacity)this.$tmp.opacity=0;
 	getParent: function(){
 		return $M(this.parentNode);
 	},
-	getChildren: function(){
-		return $$M(this.childNodes);
-	},
 	hasChild: function(el){
 		return !!$A(this.getElementsByTagName('*')).contains(el);
 	},
@@ -687,7 +666,7 @@ if(!this.$tmp.opacity)this.$tmp.opacity=0;
 				return this.innerHTML;
 			}
 		}
-		return ($pick(this.innerText, this.textContent));
+		return (this.innerText==undefined?this.textContent:this.innerText);
 	},
 	getTag: function(){
 		return this.tagName.toLowerCase();
@@ -716,13 +695,6 @@ Element.Styles = {'border': [], 'padding': [], 'margin': []};
 	for (var style in Element.Styles) Element.Styles[style].push(style + direction);
 });
 Element.borderShort = ['borderWidth', 'borderStyle', 'borderColor'];
-Element.getMany = function(el, method, keys){
-	var result = {};
-	$each(keys, function(key){
-		result[key] = el[method](key);
-	});
-	return result;
-};
 Element.setMany = function(el, method, pairs){
 	for (var key in pairs) el[method](key, pairs[key]);
 	return el;
@@ -1005,96 +977,6 @@ Elements.extend({
 function $E(selector, filter){
 	return ($M(filter) || document).getElement(selector);
 };
-function $ES(selector, filter){
-	return ($M(filter) || document).getElementsBySelector(selector);
-};
-$$M.shared = {
-	'regexp': /^(\w*|\*)(?:#([\w-]+)|\.([\w-]+))?(?:\[(\w+)(?:([!*^$]?=)["']?([^"'\]]*)["']?)?])?$/,
-	'xpath': {
-		getParam: function(items, context, param, i){
-			var temp = [context.namespaceURI ? 'xhtml:' : '', param[1]];
-			if (param[2]) temp.push('[@id="', param[2], '"]');
-			if (param[3]) temp.push('[contains(concat(" ", @class, " "), " ', param[3], ' ")]');
-			if (param[4]){
-				if (param[5] && param[6]){
-					switch(param[5]){
-						case '*=': temp.push('[contains(@', param[4], ', "', param[6], '")]'); break;
-						case '^=': temp.push('[starts-with(@', param[4], ', "', param[6], '")]'); break;
-						case '$=': temp.push('[substring(@', param[4], ', string-length(@', param[4], ') - ', param[6].length, ' + 1) = "', param[6], '"]'); break;
-						case '=': temp.push('[@', param[4], '="', param[6], '"]'); break;
-						case '!=': temp.push('[@', param[4], '!="', param[6], '"]');
-					}
-				} else {
-					temp.push('[@', param[4], ']');
-				}
-			}
-			items.push(temp.join(''));
-			return items;
-		},
-		getItems: function(items, context, nocash){
-			var elements = [];
-			var xpath = document.evaluate('.//' + items.join('//'), context, $$M.shared.resolver, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-			for (var i = 0, j = xpath.snapshotLength; i < j; i++) elements.push(xpath.snapshotItem(i));
-			return (nocash) ? elements : new Elements(elements.map($));
-		}
-	},
-	'normal': {
-		getParam: function(items, context, param, i){
-			if (i == 0){
-				if (param[2]){
-					var el = context.getElementById(param[2]);
-					if (!el || ((param[1] != '*') && (Element.getTag(el) != param[1]))) return false;
-					items = [el];
-				} else {
-					items = $A(context.getElementsByTagName(param[1]));
-				}
-			} else {
-				items = $$M.shared.getElementsByTagName(items, param[1]);
-				if (param[2]) items = Elements.filterById(items, param[2], true);
-			}
-			if (param[3]) items = Elements.filterByClass(items, param[3], true);
-			if (param[4]) items = Elements.filterByAttribute(items, param[4], param[5], param[6], true);
-			return items;
-		},
-		getItems: function(items, context, nocash){
-			return (nocash) ? items : $$M.unique(items);
-		}
-	},
-	resolver: function(prefix){
-		return (prefix == 'xhtml') ? 'http://www.w3.org/1999/xhtml' : false;
-	},
-	getElementsByTagName: function(context, tagName){
-		var found = [];
-		for (var i = 0, j = context.length; i < j; i++) found.extend(context[i].getElementsByTagName(tagName));
-		return found;
-	}
-};
-$$M.shared.method = (window.xpath) ? 'xpath' : 'normal';
-Element.Methods.Dom = {
-	getElements: function(selector, nocash){
-		var items = [];
-		selector = selector.trim().split(' ');
-		for (var i = 0, j = selector.length; i < j; i++){
-			var sel = selector[i];
-			var param = sel.match($$M.shared.regexp);
-			if (!param) break;
-			param[1] = param[1] || '*';
-			var temp = $$M.shared[$$M.shared.method].getParam(items, this, param, i);
-			if (!temp) break;
-			items = temp;
-		}
-		return $$M.shared[$$M.shared.method].getItems(items, this, nocash);
-	},
-	getElement: function(selector){
-		return $M(this.getElements(selector, true)[0] || false);
-	},
-	getElementsBySelector: function(selector, nocash){
-		var elements = [];
-		selector = selector.split(',');
-		for (var i = 0, j = selector.length; i < j; i++) elements = elements.concat(this.getElements(selector[i], true));
-		return (nocash) ? elements : $$M.unique(elements);
-	}
-};
 Element.extend({
 	getElementById: function(id){
 		var el = document.getElementById(id);
@@ -1103,44 +985,7 @@ Element.extend({
 			if (!parent) return false;
 		}
 		return el;
-	}/*compatibility*/,
-	getElementsByClassName: function(className){ 
-		return this.getElements('.' + className); 
-	}
-});
-document.extend(Element.Methods.Dom);
-Element.extend(Element.Methods.Dom);
-Element.extend({
-	getValue: function(){
-		switch(this.getTag()){
-			case 'select':
-				var values = [];
-				$each(this.options, function(option){
-					if (option.selected) values.push($pick(option.value, option.text));
-				});
-				return (this.multiple) ? values : values[0];
-			case 'input': if (!(this.checked && ['checkbox', 'radio'].contains(this.type)) && !['hidden', 'text', 'password'].contains(this.type)) break;
-			case 'textarea': return this.value;
-		}
-		return false;
-	},
-	getFormElements: function(){
-		return $$M(this.getElementsByTagName('input'), this.getElementsByTagName('select'), this.getElementsByTagName('textarea'));
-	},
-	toQueryString: function(){
-		var queryString = [];
-		this.getFormElements().each(function(el){
-			var name = el.name;
-			var value = el.getValue();
-			if (value === false || !name || el.disabled) return;
-			var qs = function(val){
-				queryString.push(name + '=' + encodeURIComponent(val));
-			};
-			if ($type(value) == 'array') value.each(qs);
-			else qs(value);
-		});
-		return queryString.join('&');
-	}
+	}/*compatibility*/
 });
 Element.extend({
 	scrollTo: function(x, y){

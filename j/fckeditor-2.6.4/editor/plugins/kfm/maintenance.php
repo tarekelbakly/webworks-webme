@@ -17,9 +17,8 @@ require_once 'initialise.php';
 <link rel="stylesheet" href="themes/<?php echo $kfm->setting('theme'); ?>/prompt.css" />
 <script type="text/javascript" src="j/jquery/all.php"></script>
 <script type="text/javascript">
-	var $j = jQuery.noConflict();
-	$j(document).ready(function(){
-		$j.prompt($j('#maintenance_complete_html').html(),{
+	$(document).ready(function(){
+		$.prompt($('#maintenance_complete_html').html(),{
 			buttons:{'Show messages':false,'Go to the file manager':true},
 			callback:function(v,m){
 				if(v)window.location='index.php';

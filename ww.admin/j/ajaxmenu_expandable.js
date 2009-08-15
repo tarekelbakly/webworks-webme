@@ -1,5 +1,5 @@
 function ajaxmenu_expandable_init(){
-	var els=$ES('tr.menuItemTop');
+	var els=$('tr.menuItemTop');
 	ajaxmenu_expandable_menus[0]=[];
 	for(var j=0;j<els.length;++j){
 		var id=els[j].id.replace(/ajaxmenu_expandable_row/,'');

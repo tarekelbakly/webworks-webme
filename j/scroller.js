@@ -1,5 +1,5 @@
 function sn_Init(){
-	var els=$ES('div.scrollingNews');
+	var els=$('div.scrollingNews');
 	for(var j=0;els[j];++j){
 		var el=els[j];
 		if(parseFloat(el.getStyle('height'))!=parseInt(el.getStyle('height')))el.setStyle('height',200);
@@ -10,7 +10,7 @@ function sn_Init(){
 			sn_POffset[j]=18;
 		}
 		{ //  remove empty paragraphs 
-			var ps=$ES('blockquote',el);
+			var ps=$('blockquote',el);
 			for(var k=ps.length-1;k>-1;--k){
 				if(ps[k].innerHTML=='')ps[k].remove();
 				else{

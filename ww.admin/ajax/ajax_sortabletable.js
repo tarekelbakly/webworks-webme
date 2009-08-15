@@ -1,5 +1,5 @@
 function ajax_sortabletable_init(){
-	var els=$ES('tr.draggable');
+	var els=$('tr.draggable');
 	els.each(function(el){el.addEvent('mousedown',ajax_sortabletable_dragstart);});
 }
 function ajax_sortabletable_dragstart(e){
@@ -169,7 +169,7 @@ function ajax_sortabletable_dragstop(e){
 					if((t+h/2)>y)parent.insertBefore(tr.trOrigin,tr.trOver);
 					else parent.insertBefore(tr.trOrigin,tr.trOver.nextSibling);
 					{ // gather the new order and record it
-						var trs=$ES('tr');
+						var trs=$('tr');
 						var newOrder=[];
 						$.each(trs,function(key,tr){
 							if(tr.id){
