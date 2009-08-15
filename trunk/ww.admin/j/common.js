@@ -21,7 +21,7 @@ function initFckEditor(width,height){
 	if(browser.isSafari)return 0;
 	var sBasePath,els,begin,el,i;
 	sBasePath='/j/'+FCKEDITOR+'/';
-	els=$ES('textarea.fckeditor');
+	els=$('textarea.fckeditor');
 	begin=oFCKeditor.length;
 	for(i=begin,n=begin+els.length;i<n;++i){
 		el=els[i-begin];
@@ -56,8 +56,8 @@ function initialiseAdmin(){
 	if(classes['draggable'])loadScript('/ww.admin/ajax/ajax_sortabletable.php');
 	if(classes['accordion']){ // accordion
 		accordionParams={active:'.current',clearStyle:true,autoHeight:false,header:'.accordion-header',fillSpace:false,navigation:true};
-		$j('.accordion').accordion(accordionParams);
-		$j('.accordion0').accordion(accordionParams);
+		$('.accordion').accordion(accordionParams);
+		$('.accordion0').accordion(accordionParams);
 	}
 	var page=document.location.toString().replace(/.*admin\/(.*)\.php.*/,'$1');
 	if(browser.isIE){
@@ -160,7 +160,7 @@ function textarea_toggle(textarea,type){
 	}
 }
 function updateCodePress(){
-	var els=$$M('textarea');
+	var els=$('textarea');
 	for(var i=0;i<els.length;++i){
 		var id=els[i].id.replace(/[^0-9a-zA-Z]/g,'_').replace(/_cp$/,'');
 		try{

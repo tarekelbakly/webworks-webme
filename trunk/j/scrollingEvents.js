@@ -1,5 +1,5 @@
 function scrollingEvents_Init(){
-	var els=$ES('div.scrollingEvents');
+	var els=$('div.scrollingEvents');
 	for(var j=0;els[j];++j){
 		var el=els[j];
 		if(parseFloat(el.getStyle('height'))!=parseInt(el.getStyle('height')))el.setStyle('height',100);
@@ -10,7 +10,7 @@ function scrollingEvents_Init(){
 			scrollingEvents_POffset[j]=18;
 		}
 		{ //  remove empty paragraphs 
-			var ps=$ES('blockquote',el);
+			var ps=$('blockquote',el);
 			for(var k=ps.length-1;k>-1;--k){
 				if(ps[k].innerHTML=='')ps[k].remove();
 				else{
