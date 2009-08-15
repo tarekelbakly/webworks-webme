@@ -60,34 +60,11 @@ function initialiseAdmin(){
 		$j('.accordion0').accordion(accordionParams);
 	}
 	var page=document.location.toString().replace(/.*admin\/(.*)\.php.*/,'$1');
-	switch(page){
-		case 'pages':pages_init();break;
-	}
 	if(browser.isIE){
 		var el=newEl('div','firefoxAd');
 		el.innerHTML='<a href="http://www.spreadfirefox.com/?q=affiliates&id=0&t=203"><img border="0" alt="Upgrade to Firefox 1.5!" title="Upgrade to Firefox 1.5!" src="theme/getFirefox.gif"/><span>Download Firefox</span></a>';
 		document.body.appendChild(el);
 	}
-}
-function pages_init(){
-	$M('name').addEvent('keyup',pages_checkPageName);
-	pages_checkPageName();
-}
-function pages_checkPageName(){
-	var valid=1;
-	var name=$M('name');
-	if(name.value==''||/^ |[&\/\?]| $/.test(name.value)){
-		valid=0;
-		addClass(name,'invalid');
-		if(name.value=='')name.title='name must not be empty';
-		else if(/^ | $/.test(name.value))name.title='name must not start or end with a space';
-		else name.title='allowed characters are a-z, A-Z, 0-9, commas, spaces and hyphens.';
-	}
-	else{
-		removeClassName(name,'invalid');
-		name.title='';
-	}
-	$M('action').disabled=valid?null:true;
 }
 function setSelection(el,val){
 	if(el.setSelectionRange){
