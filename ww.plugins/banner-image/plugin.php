@@ -19,7 +19,8 @@ $plugin=array(
 			'BANNER' => array(
 				'function' => 'showBanner'
 			)
-		)
+		),
+		'widget' => 'showBanner'
 	),
 	'version' => '2'
 );

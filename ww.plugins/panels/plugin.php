@@ -14,12 +14,24 @@ $plugin=array(
 			)
 		)
 	),
-	'version'=>1
+	'version'=>2
 );
 function showPanel($vars){
+	global $PLUGINS;
 	$p=dbRow('select body from panels where name="'.addslashes(@$vars['name']).'" limit 1');
 	if(!count($p)){
 		return '<em>error - panel <strong>'.htmlspecialchars(@$vars['name']).'</strong> does not exist.</em>';
 	}
-	return $p['body'];
+	$widgets=json_decode($p['body']);
+	$h='';
+	foreach($widgets->widgets as $widget){
+		if(isset($PLUGINS[$widget->type])){
+			if(isset($PLUGINS[$widget->type]['frontend']['widget'])){
+				$h.=$PLUGINS[$widget->type]['frontend']['widget']($widget);
+			}
+			else $h.='<em>plugin "'.htmlspecialchars($widget->type).'" does not have a widget interface.</em>';
+		}
+		else $h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
+	}
+	return $h;
 }

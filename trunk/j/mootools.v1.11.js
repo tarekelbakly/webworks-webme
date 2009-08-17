@@ -499,13 +499,6 @@ Element.extend({
 		this.appendChild(document.createTextNode(text));
 		return this;
 	},
-	hasClass: function(className){
-		return this.className.contains(className, ' ');
-	},
-	addClass: function(className){
-		if (!this.hasClass(className)) this.className = (this.className + ' ' + className).clean();
-		return this;
-	},
 	removeClass: function(className){
 		this.className = this.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)'), '$1').clean();
 		return this;

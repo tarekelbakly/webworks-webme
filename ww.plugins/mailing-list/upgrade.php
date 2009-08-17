@@ -6,7 +6,6 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 
-require SCRIPTBASE.'ww.incs/db.php';
 if($version==0){
 	dbQuery('create table if not exists mailing_list(id int auto_increment not null primary key,email text,name text,status text,hash text)default charset=utf8');
 	dbQuery('create table if not exists mailing_list_options(id int auto_increment not null primary key,name text,value text)default charset=utf8');

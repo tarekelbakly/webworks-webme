@@ -8,7 +8,6 @@
 	             <kae@verens.com>
 */
 
-require SCRIPTBASE.'ww.incs/db.php';
 if($version==0) $version='0.1';
 if($version=='0.1'){ // banners_images and banners_pages
 	dbQuery('create table if not exists banners_images( id int auto_increment not null primary key, html text)default charset=utf8;');

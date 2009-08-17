@@ -31,6 +31,38 @@ function cache_save($type,$md5,$vals){
 	if(!is_dir(USERBASE.'ww.cache/'.$type))mkdir(USERBASE.'ww.cache/'.$type,0777,true);
 	file_put_contents(USERBASE.'ww.cache/'.$type.'/'.$md5, json_encode($vals));
 }
+function dbAll($query,$key='') {
+	$q = dbQuery($query);
+	$results=array();
+	while($r=$q->fetch(PDO::FETCH_ASSOC))$results[]=$r;
+	if(!$key)return $results;
+	$arr=array();
+	foreach($results as $r)$arr[$r[$key]]=$r;
+	return $arr;
+}
+function dbInit(){
+	if(isset($GLOBALS['db']))return $GLOBALS['db'];
+	global $DBVARS;
+	$db=new PDO('mysql:host='.$DBVARS['hostname'].';dbname='.$DBVARS['db_name'],$DBVARS['username'],$DBVARS['password']);
+	$db->query('SET NAMES utf8');
+	$db->num_queries=0;
+	$GLOBALS['db']=$db;
+	return $db;
+}
+function dbOne($query, $field='') {
+	$r = dbRow($query);
+	return $r[$field];
+}
+function dbQuery($query){
+	$db=dbInit();
+	$q=$db->query($query);
+	$db->num_queries++;
+	return $q;
+}
+function dbRow($query) {
+	$q = dbQuery($query);
+	return $q->fetch(PDO::FETCH_ASSOC);
+}
 function ob_show_and_log($type,$header=''){
 	$log = &Log::singleton('file',USERBASE.'log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=ob_get_length();

@@ -6,8 +6,6 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 
-require SCRIPTBASE.'ww.incs/db.php';
-
 if($version==0){
 	dbQuery('create table latest_search (id int primary key auto_increment,search text,category text,time text,date text)');
 	$version='0.1';

@@ -6,8 +6,6 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 
-require SCRIPTBASE.'ww.incs/db.php';
-
 if($version==0)
 	$version=1;
 

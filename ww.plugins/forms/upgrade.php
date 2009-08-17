@@ -1,5 +1,4 @@
 <?php
-require SCRIPTBASE.'ww.incs/db.php';
 if($version==0){ // forms_fields
 	dbQuery('CREATE TABLE IF NOT EXISTS `forms_fields` (
 		`id` int(11) NOT NULL auto_increment,

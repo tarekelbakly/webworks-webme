@@ -7,8 +7,10 @@
 */
 
 function show_banner($vars){
-	global $PAGEDATA;
-	if($PAGEDATA->id){
+	if(!is_array($vars) && isset($vars->id) && $vars->id){
+		$b=dbRow('select * from banners_images where id='.$vars->id);
+	}
+	else if($GLOBALS['PAGEDATA']->id){
 		$b=dbRow('select * from banners_pages,banners_images where pageid='.$PAGEDATA->id.' and bannerid=id order by rand() limit 1');
 	}
 	if(!isset($b) || !count($b)){
@@ -21,7 +23,7 @@ function show_banner($vars){
 		else $banner=banner_image_getImgHTML($b['id'],true);
 	}
 	else{
-		if(@$vars['default'])$banner=$vars['default'];
+		if(is_array($vars) && isset($vars['default']) && $vars['default'])$banner=$vars['default'];
 		else $banner='';
 	}
 	if(!$banner)return '';
