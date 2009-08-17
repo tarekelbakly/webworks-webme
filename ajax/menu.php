@@ -1,6 +1,5 @@
 <?php
 require '../ww.incs/basics.php';
-require '../ww.incs/db.php';
 require '../common/menus.php';
 require '../common/kaejax.php';
 function ajaxmenu_getChildren($parentid,$currentpage=0,$topParent=0,$search_options=0){

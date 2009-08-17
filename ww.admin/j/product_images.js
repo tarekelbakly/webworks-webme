@@ -26,7 +26,7 @@ function pr_showimages(res){
 		var icons=[];
 		for(var i=0;i<files.length;++i){
 			var icon=newEl('div','','pr_icon');
-			if(files[i].id==pr_defaultimage)addClass(icon,'pr_default_image');
+			if(files[i].id==pr_defaultimage)S(icon).addClass('pr_default_image');
 			addEls(icon,[
 				newImg('/kfmget/'+files[i].id+',width='+pr_icon_size+',height='+pr_icon_size),
 				files[i].name,

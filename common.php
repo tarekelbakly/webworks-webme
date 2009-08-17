@@ -1,6 +1,5 @@
 <?php
 require dirname(__FILE__).'/ww.incs/basics.php';
-require SCRIPTBASE.'ww.incs/db.php';
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
 	$date = explode(' ', $date);

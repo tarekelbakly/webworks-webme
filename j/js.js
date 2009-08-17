@@ -36,9 +36,6 @@ function $type(obj){
 	}
 	return type;
 };
-function addClass(o,c){
-	setClass(o,getClassName(o)+' '+c);
-}
 function addEls(p,c){
 	if(!p)return;
 	if($type(p)=='string')p=document.getElementById(p);
@@ -50,58 +47,11 @@ function addCell(a,b,c,d,e){
 	var f=a.insertCell(b);
 	f.colSpan=c;
 	addEls(f,d);
-	return setClass(f,e);
+	if(e)f.className=e;
+	return f;
 }
 function addCells(r,c,a){
 	for(var i=0;i<a.length;++i)addCell(r,c+parseInt(i),a[i].length>2?a[i][2]:1,a[i][0],(a[i].length>1?a[i][1]:0));
-}
-function boxdropTracer(f,t){
-	var ef=$M(f),et=$M(t);
-	if(!ef||!et)return;
-	var wf=ef.offsetWidth,hf=ef.offsetHeight;
-	var xf=getOffset(ef,'Left')+(wf/2),yf=getOffset(ef,'Top')+(hf/2),xt=getOffset(et,'Left')+(et.offsetWidth/2),yt=getOffset(et,'Top')+(et.offsetHeight);
-	var d=Math.sqrt((xf-xt)*(xf-xt)+(yf-yt)*(yf-yt));
-	if(d<5)return;
-	var i=boxdropTracers.length;
-	boxdropTracers[i]={dx:xt,dy:yt,x:xf,y:yf,width:wf,height:hf,opacity:.8};
-	setTimeout('boxdropTracerStep('+i+')',100);
-}
-function boxdropTracerStep(id){
-	var el=$M('boxdropTracer'+id);
-	if(!el){
-		el=newEl('div','boxdropTracer'+id,'boxdroptracer');
-		el.setStyles({
-			'border':'1px solid red',
-			'background':'#ff0',
-			'height':0,
-			'width':0,
-			'position':'absolute',
-			'left':0,
-			'top':0
-		});
-		addEls(document.body,el);
-	}
-	with(boxdropTracers[id]){
-		x=dx+(x-dx)*.9;
-		y=dy+(y-dy)*.9;
-		width*=.9;
-		height*=.9;
-		opacity*=.9;
-		if(width<1&&height<1){
-			delEl(el);
-			boxdropTracers[id]=null;
-			return;
-		}
-		el.setStyles({
-			'opacity':opacity,
-			'width':width,
-			'height':height,
-			'left':parseInt(x-width/2),
-			'top':parseInt(y-height/2)
-		
-		});
-	}
-	setTimeout("boxdropTracerStep("+id+")",100);
 }
 function Browser(){
 	var ua=navigator.userAgent;
@@ -160,12 +110,9 @@ function getEvent(e){
 }
 function getParentWithClass(e,t,c) {
 	while(e!=null){
-		if(t!=null&&e.tagName==t&&hasClass(e,c))return e;
+		if(t!=null&&e.tagName==t&&$(e).hasClass(c))return e;
 		e=e.parentNode;
 	}
-}
-function hasClass(o,c){
-	return eval('/(^| )'+c+'( |$)/').test(getClassName($M(o)));
 }
 function initialise(){
 	alert('function initialise() no longer needs to be called from the HTML template. please remove it');
@@ -174,7 +121,7 @@ function initShowHide(vis,objName){
 	if(!objName)objName='';
 	var els=$('div.showhide'),i;
 	for(var i=0;i<els.length;++i){
-		var thisvis=vis?1:(hasClass(els[i],'show')?1:0);
+		var thisvis=vis?1:($(els[i]).hasClass('show')?1:0);
 		var link=newLink('javascript:showhide('+(++showhideNum)+');',thisvis?'[hide'+objName+']':'[show'+objName+']','showhideLink'+showhideNum,'showhideLink');
 		els[i].parentNode.insertBefore(link,els[i]);
 		els[i].id='showhideDiv'+showhideNum;
@@ -663,7 +610,8 @@ function newInput(n,t,v,cl){
 		if(t=='checkbox')b.checked=b.defaultChecked='checked';
 		else if(t!='datetime')b.value=v;
 	}
-	return setClass(b,cl);
+	if(cl)b.className=cl;
+	return b;
 }
 function newLink(h,t,id,c){
 	return X(newEl('a',id,c,t),{href:h});
@@ -725,17 +673,13 @@ function removeRowIfEmpty(el){
 function setAttribute(o,n,v){
 	if(!n||!o)return;
 	if(n=='width'||n=='height')v=v+'px';
-	if(n=='class')setClass(o,v);
+	if(n=='class')o.className=v;
 	else if(n=='style'&&browser.isIE)$M(o).setStyles(v);
 	else if(n=='onchange'&&browser.isIE){
 		var t=n.replace(/^on/,''),f=new Function(v);
 		o.addEvent(t,f);
 	}
 	else o.setAttribute(n,v);
-}
-function setClass(o,c){
-	if(o&&(c||getClassName(o)))o.className=c?c:'';
-	return o;
 }
 function showhide(id){
 	var el=$M('showhideDiv'+id),link=$M('showhideLink'+id);
@@ -795,7 +739,7 @@ function X(d,s){
 { // variables
 	var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,inCheckout=0;
 	var showhideDivs=[],showhideNum=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-	var boxdropTracers=[],function_urls=[],sc_supplements=[];
+	var function_urls=[],sc_supplements=[];
 	var kaejax_timeouts=[],kaejax_xhrinstances=[],ms_select_defaults=[],ms_show_toplinks=true;
 }
 $(document).ready(ww.webme_start);

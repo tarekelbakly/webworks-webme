@@ -1,6 +1,5 @@
 <?php
 require '../ww.incs/basics.php';
-require '../ww.incs/db.php';
 
 if(!isset($_GET['s']))exit;
 $s=addslashes($_GET['s']);
