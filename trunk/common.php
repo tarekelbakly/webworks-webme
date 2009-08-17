@@ -49,7 +49,7 @@ function html_fixImageResizes($src){
 
 		// create address of resized image and update HTML
 		$dir=md5($imgsrc);
-		$newURL=WORKURL_IMAGERESIZES.$dir.'/'.$width.'x'.$height.'.png';
+		$newURL=WORKURL_IMAGERESIZES.$dir.'/'.$width.'x'.$height.'.jpg';
 		$newImgHTML=preg_replace('/(.*src=")[^"]*(".*)/i',"$1$newURL$2",$match);
 		$src=str_replace($match,$newImgHTML,$src);
 
@@ -57,7 +57,7 @@ function html_fixImageResizes($src){
 		$imgdir=WORKDIR_IMAGERESIZES.$dir;
 		@mkdir(WORKDIR_IMAGERESIZES);
 		@mkdir($imgdir);
-		$imgfile=$imgdir.'/'.$width.'x'.$height.'.png';
+		$imgfile=$imgdir.'/'.$width.'x'.$height.'.jpg';
 		if(file_exists($imgfile))continue;
 		$str='convert "'.addslashes($imgsrc).'" -geometry '.$width.'x'.$height.' "'.$imgfile.'"';
 		exec($str);
