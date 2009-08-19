@@ -165,6 +165,20 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 #hasleftmenu{padding: 5px; border: 1px solid #ededed; background: #fff;margin-left:165px}
 #hasleftmenu input.checkbox {  width: auto !important; } 
 
+.right-column{
+	width:200px;
+	float:right;
+	background:#fff;
+	border: 1px solid #ededed;
+	padding: 5px;
+}
+.has-right-column{
+	padding: 5px;
+	border: 1px solid #ededed;
+	background: #fff;
+	margin-right: 215px;
+}
+
 #sc_cartridges_panel,#sc_clients_panel{height:100px;overflow:auto}
 #tablePopulate th textarea{background:#eee}
 #tablePopulate textarea{height:50px}
