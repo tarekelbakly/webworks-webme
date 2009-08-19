@@ -11,9 +11,12 @@ $plugin=array(
 	'admin' => array(
 		'menu' => array(
 			'top'  => 'Misc'
+		),
+		'widget' => array(
+			'form_url' => '/ww.plugins/banner-image/admin/widget-form.php'
 		)
 	),
-        'description' => 'Upload banner image to your website.',
+	'description' => 'HTML snippet or image.',
 	'frontend' => array(
 		'template_functions' => array(
 			'BANNER' => array(

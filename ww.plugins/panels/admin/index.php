@@ -1,33 +1,42 @@
 <?php
-$id=(int)@$_REQUEST['id'];
-if(isset($_REQUEST['action'])){
-	if($_REQUEST['action']=='Save Panel'){
-		$q='name="'.addslashes(@$_REQUEST['name']).'",body="'.addslashes(@$_REQUEST['body']).'"';
-		if($id)dbQuery("update panels set $q where id=$id");
-		else{
-			dbQuery("insert into panels set $q");
-			$id=dbOne("select last_insert_id() as id",'id');
-		}
-	}
-	else if($_REQUEST['action']=='delete'){
-		dbQuery("delete from panels where id=$id");
-		$id=0;
-	}
+echo '<div class="right-column"><h3>Panels</h3><p>Click a header to open it.</p><div id="panels"></div></div>';
+echo '<div class="has-right-column"><h3>Widgets</h3><p>Drag a widget into a panel on the right.</p><div id="widgets"></div><br style="clear:both" /></div>';
+// { css
+echo '<style type="text/css">';
+echo '.has-right-column .widget-wrapper{margin:5px 10px;width:200px;height:75px;float:left;}';
+echo '.widget-wrapper{border:1px solid #416BA7;-moz-border-radius:5px;}.widget-wrapper h4{margin:-1px;-moz-border-radius:5px;}';
+echo '.panel-wrapper{border:1px solid #000;-moz-border-radius:5px;}.panel-wrapper h4{background:#000;margin:-1px;-moz-border-radius:5px;}';
+echo '.panel-opener{text-align:center;float:right;color:#fff;display:block;width:30px;border-left:1px solid #eee;cursor:pointer}';
+echo '.panel-wrapper .widget-wrapper{border:1px solid #416BA7;margin:5px}.panel-wrapper .widget-wrapper h4{background:#416BA7;}';
+echo '</style>';
+// }
+// { panel and widget data
+echo '<script>';
+// { panels
+echo 'ww.panels=[';
+$ps=array();
+$rs=dbAll('select * from panels order by name');
+foreach($rs as $r)$ps[]='{id:'.$r['id'].',name:"'.$r['name'].'",widgets:'.$r['body'].'}';
+echo join(',',$ps);
+echo '];';
+// }
+// { widgets
+echo 'ww.widgets=[';
+$ws=array();
+foreach($PLUGINS as $n=>$p){
+	if(isset($p['frontend']['widget']))$ws[]='{type:"'.$n.'",description:"'.addslashes($p['description']).'"}';
 }
-$panels=dbAll('select id,name from panels order by name');
-echo '<div id="leftmenu">';
-foreach($panels as $p){
-	echo '<a href="/ww.admin/plugin.php?_plugin=panels&id=',$p['id'],'"';
-	if($p['id'] == $id)echo ' class="thispage"';
-	echo '>'.htmlspecialchars($p['name']).'</a>';
+echo join(',',$ws);
+echo '];';
+// }
+// { widget forms
+echo 'ww.widgetForms={';
+$ws=array();
+foreach($PLUGINS as $n=>$p){
+	if(isset($p['admin']['widget']) && isset($p['admin']['widget']['form_url']))$ws[]='"'.$n.'":"'.addslashes($p['admin']['widget']['form_url']).'"';
 }
-echo '<a href="/ww.admin/plugin.php?_plugin=panels">New Panel</a></div>';
-$r=dbRow('select * from panels where id='.$id);
-echo '<div id="hasleftmenu"><h2>Panel</h2>';
-echo '<form method="post" action="/ww.admin/plugin.php?_plugin=panels"><table style="width:90%">';
-echo '<tr><th>Name</th><td><input name="name" value="',htmlspecialchars(@$r['name']),'" /></td></tr>';
-echo '<tr><th>Body</th><td>',fckeditor('body',@$r['body']),'</td></tr>';
-echo '<tr><th colspan="2"><input type="hidden" name="id" value="',$id,'" />';
-echo '<input type="submit" name="action" value="Save Panel" />';
-if($id)echo '<a style="margin-left:20px;" href="/ww.admin/plugin.php?_plugin=panels&amp;id='.$id.'&amp;action=delete" onclick="return confirm(\'are you sure you want to remove this panel?\')" title="delete">[x]</a>';
-echo '</th></tr></table></form>';
+echo join(',',$ws);
+echo '};';
+// }
+echo '</script><script src="/ww.plugins/panels/j/admin.js"></script>';
+// }

@@ -12,7 +12,8 @@ $plugin=array(
 			'POLL' => array(
 				'function' => 'pollDisplay'
 			)
-		)
+		),
+		'widget' => 'pollDisplay'
 	)
 );
 function pollDisplay(){
