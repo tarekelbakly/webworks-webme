@@ -40,7 +40,10 @@ else{
 		// }
 	}
 	else{
-		$page=array('parent'=>0,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>0,'template'=>'','stylesheet'=>'','category'=>'','importance'=>0.5);
+		$parent=isset($_REQUEST['parent'])?(int)$_REQUEST['parent']:0;
+		$special=0;
+		if(isset($_REQUEST['hidden']))$special+=2;
+		$page=array('parent'=>$parent,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>$special,'template'=>'','stylesheet'=>'','category'=>'','importance'=>0.5);
 		$id=0;
 	}
 	echo wInput('id','hidden',$page['id']);

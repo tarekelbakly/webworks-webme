@@ -96,7 +96,7 @@
 				var panel=item.closest('.panel-wrapper');
 				if(!panel.length)return $(this).sortable('cancel');
 				var p=ww.widgetsByName[$('h4',ui.item).text()];
-				var clone=buildRightWidget(p);
+				var clone=buildRightWidget({'type':p.type});
 				showWidgetForm(clone);
 				clone.insertBefore(ui.item);
 				$(this).sortable('cancel');
