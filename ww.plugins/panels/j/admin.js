@@ -37,7 +37,7 @@
 		$('<a href="javascript:;" title="remove widget">remove</a>')
 			.click(function(){
 				if(!confirm('Are you sure you want to remove this widget from this panel?'))return;
-				var panel=w.closest('panel-wrapper');
+				var panel=w.closest('.panel-wrapper');
 				w.remove();
 				updateWidgets(panel);
 			})

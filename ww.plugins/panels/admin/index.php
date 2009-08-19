@@ -5,8 +5,9 @@ echo '<div class="has-right-column"><h3>Widgets</h3><p>Drag a widget into a pane
 echo '<style type="text/css">';
 echo '.has-right-column .widget-wrapper{margin:5px 10px;width:200px;height:75px;float:left;}';
 echo '.widget-wrapper{border:1px solid #416BA7;-moz-border-radius:5px;}.widget-wrapper h4{margin:-1px;-moz-border-radius:5px;}';
-echo '.panel-wrapper{border:1px solid #000;-moz-border-radius:5px;}.panel-wrapper h4{background:#000;margin:-1px;-moz-border-radius:5px;}';
+echo '.panel-wrapper{border:1px solid #000;-moz-border-radius:5px;margin-bottom:10px}.panel-wrapper h4{background:#000;margin:-1px;-moz-border-radius:5px;}';
 echo '.panel-opener{text-align:center;float:right;color:#fff;display:block;width:30px;border-left:1px solid #eee;cursor:pointer}';
+echo '.panel-body{min-height:30px}';
 echo '.panel-wrapper .widget-wrapper{border:1px solid #416BA7;margin:5px}.panel-wrapper .widget-wrapper h4{background:#416BA7;}';
 echo '</style>';
 // }

@@ -18,9 +18,11 @@ $plugin=array(
 );
 function showPanel($vars){
 	global $PLUGINS;
-	$p=dbRow('select body from panels where name="'.addslashes(@$vars['name']).'" limit 1');
-	if(!count($p)){
-		return '<em>error - panel <strong>'.htmlspecialchars(@$vars['name']).'</strong> does not exist.</em>';
+	$name=isset($vars['name'])?$vars['name']:'';
+	$p=dbRow('select body from panels where name="'.addslashes($name).'" limit 1');
+	if(!$p){
+		dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
+		return '';
 	}
 	$widgets=json_decode($p['body']);
 	$h='';
