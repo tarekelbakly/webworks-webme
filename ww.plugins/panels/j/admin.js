@@ -8,9 +8,7 @@
 		}
 		panel.data('widgets',widgets);
 		var json=Json.toString({'widgets':widgets});
-		$.post('/ww.plugins/panels/admin/save.php',{'id':id,'data':json},function(res){
-			$('<div>'+res+'</div>').dialog();
-		});
+		$.post('/ww.plugins/panels/admin/save.php',{'id':id,'data':json});
 	}
 	function showWidgetForm(w){
 		if(!w.length)w=$(this).closest('.widget-wrapper');
@@ -85,7 +83,11 @@
 					var p=widgets[i];
 					buildRightWidget(p).appendTo(widgets_container);
 				}
-				$('.panel-body').sortable();
+				$('.panel-body').sortable({
+					'stop':function(){
+						updateWidgets($(this).closest('.panel-wrapper'));
+					}
+				});
 			});
 		$('#widgets').sortable({
 			'connectWith':'.panel-body',
