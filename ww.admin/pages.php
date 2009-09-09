@@ -33,12 +33,16 @@ if(has_access_permissions(ACL_PAGES)){
 		if(!$id)$id=0;
 		if($id)$edit=1;
 	}
-	include('pages/pages.menu.php');
+	echo '<div style="width:21%;float:left" id="page_menu"></div>';
 	echo '<div id="pages_main">';
 	include('pages/pages.forms.php');
 	echo '</div>';
 }else{
 	echo '<p>'.__('You have no permissions for this page').'</p>';
 }
-echo '<script src="/j/jquery.remoteselectoptions.js"></script><script src="/ww.admin/pages/pages.js"></script>';
-include_once('footer.php');
+echo '<script>window.page_menu_currentpage='.$id.';</script>',
+		'<script src="/j/jquery.remoteselectoptions.js"></script>',
+		'<script src="http://verens.com/demos/nested-sortables/ui.sortable.js"></script>',
+		'<script src="/ww.admin/pages/pages.js"></script>',
+		'<style type="text/css">@import "pages/css.css";</style>';
+require 'footer.php';

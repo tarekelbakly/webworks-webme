@@ -206,7 +206,7 @@ strong.clickable,a.clickable{ background: url("/ww.admin/i/note_edit.gif") 100% 
 
 
 /* Left Hand Menu on the Pages section */
-.pagesContents{ float:left; width:21%; font:10px tahoma, arial,sans-serif; background: #fff; border: 0;  padding: 0; margin: 0px; }
+.pagesContents{ font:10px tahoma, arial,sans-serif; background: #fff; border: 0;  padding: 0; margin: 0px;width:100% }
 .pagesContents td { margin: 0 !important; padding: 0 !important; }
 .pagesContents img{float:left !important; margin:0 !important;padding:0 !important; margin-left: -6px}
 /* The negative margin on the img above is to counter a bug with the way the menu is drawn in IE6. Inexplicably,

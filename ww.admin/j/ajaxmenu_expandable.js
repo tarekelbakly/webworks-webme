@@ -6,7 +6,7 @@ function ajaxmenu_expandable_init(){
 		ajaxmenu_expandable_menuitemdetails[id]={parent:0};
 		ajaxmenu_expandable_menus[0][j]=[id];
 	}
-	var el=$E('tr.ajaxmenu_containsCurrentPage');
+	var el=$('tr.ajaxmenu_containsCurrentPage')[0];
 	if(el){
 		var id=el.id.replace(/ajaxmenu_expandable_row/,'');
 		ajaxmenu_expandable_open(id);
@@ -24,7 +24,7 @@ function ajaxmenu_expandable_open(id){
 		var rowStart=parseInt(caller.rowIndex)+1,indent=caller.indent?caller.indent+1:1,table=caller.parentNode.parentNode;
 	}
 	else{
-		var rowStart=0,indent=0,table=$E('table.ajaxmenu_expandable');
+		var rowStart=0,indent=0,table=$('table.ajaxmenu_expandable')[0];
 	}
 	for(i=0;i<ajaxmenu_expandable_menus[id].length;++i){
 		r=ajaxmenu_expandable_menus[id][i];
@@ -84,7 +84,7 @@ function ajaxmenu_expandable_close(id){
 		var rowStart=caller.rowIndex,table=caller.parentNode.parentNode;
 	}
 	else{
-		var rowStart=-1,table=$E('table.ajaxmenu_expandable');
+		var rowStart=-1,table=$('table.ajaxmenu_expandable')[0];
 	}
 	for(var i=ajaxmenu_expandable_menus[id].length;i>0;--i){
 		var rowId=ajaxmenu_expandable_menus[id][i-1][0];
