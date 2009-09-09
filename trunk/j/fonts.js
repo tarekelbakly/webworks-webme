@@ -1,6 +1,6 @@
 function fontsize_showControls(){
-	var wrapper=$E('.fontsize_controls');
-	window.basefontsize=parseInt($E('body').getStyle('font-size'));
+	var wrapper=$('.fontsize_controls');
+	window.basefontsize=parseInt($('body').css('font-size'));
 	var smaller=new Element('a',{
 		'styles':{
 			'font-size':'.9em'
@@ -20,13 +20,13 @@ function fontsize_larger(){
 	if(currentfontsize>0)return;
 	window.basefontsize*=1.25;
 	currentfontsize++;
-	$E('body').setStyle('font-size',window.basefontsize+'px');
+	$('body').css('font-size',window.basefontsize+'px');
 }
 function fontsize_smaller(){
 	if(currentfontsize<0)return;
 	window.basefontsize*=.8;
 	currentfontsize--;
-	$E('body').setStyle('font-size',window.basefontsize+'px');
+	$('body').css('font-size',window.basefontsize+'px');
 }
 fontsize_showControls();
 var currentfontsize=0;

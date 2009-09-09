@@ -117,7 +117,7 @@ else{
 	switch($page['type']){
 		case '0': case '1': case '5': case '6': case '9': case '10': // { normal
 		echo '<tr><th>'.__('body').'</th><td colspan="5">';
-		echo ckeditor('body',$page['body'],0,$cssurl);
+		echo ckeditor('body',$page['body']);
 		echo '</td></tr>';
 		break;
 		// }

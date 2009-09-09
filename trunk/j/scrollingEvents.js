@@ -18,7 +18,7 @@ function scrollingEvents_Init(){
 						return function(){
 							document.location=href;
 						}
-					})($E('a',ps[k]).href));
+					})($('a',ps[k]).attr('href')));
 				}
 			}
 		}

@@ -954,9 +954,6 @@ Elements.extend({
 		return (nocash) ? elements : new Elements(elements);
 	}
 });
-function $E(selector, filter){
-	return ($M(filter) || document).getElement(selector);
-};
 Element.extend({
 	getElementById: function(id){
 		var el = document.getElementById(id);

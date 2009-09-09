@@ -1,0 +1,14 @@
+<?php
+require '../../ww.incs/basics.php';
+if(!is_admin())exit;
+
+$id=(int)$_REQUEST['id'];
+$to=(int)$_REQUEST['t'];
+$order=explode(',',$_REQUEST['order']);
+dbQuery("update pages set parent=$to where id=$id");
+for($i=0;$i<count($order);++$i){
+	$pid=(int)$order[$i];
+	dbQuery("update pages set ord=$i where id=$pid");
+}
+cache_clear('pages');
+cache_clear('menus');
