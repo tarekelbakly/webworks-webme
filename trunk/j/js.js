@@ -473,7 +473,6 @@ function formShow(containedForm,title,actions){
 			'visibility':'visible'
 		});
 	}
-	if(inAdmin)initFckEditor();
 }
 // { multiselects
 function ms_convert(){
@@ -696,7 +695,7 @@ function updateInputVal(e){
 	$M(id).value=y+'-'+m+'-'+d+' '+$F(id+'_hour','00')+':'+$F(id+'_minute','00')+':00';
 }
 window.ww={
-	FCKEDITOR:'fckeditor-2.6.4',
+	CKEDITOR:'ckeditor',
 	webme_start:function(){
 	//	$("img").lazyload({ threshold : 20, effect : "fadeIn" });
 	//	if(getEls('select').length)ms_convert();
@@ -707,7 +706,6 @@ window.ww={
 		if(p.dbase)              loadScript('/ajax/table.php?pageid='+pagedata.id);
 		if(p.eventcalendar)      loadScript('/ajax/events.php?pageid='+pagedata.id);
 		if(p.formvalidation)     loadFormValidation();
-		if(p.frontend_admin)     loadScript('/ajax/frontend_admin.php?pageid='+pagedata.id);
 		if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
 		if(p.tabs)               tabs_init();
 		if(p.showhide)           initShowHide();

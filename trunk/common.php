@@ -96,8 +96,8 @@ function webmeMail($from, $to, $subject, $message, $files = false) {
 $is_admin = 0;
 $sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
 if(strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false){
-	require_once SCRIPTBASE . 'j/'.FCKEDITOR.'/editor/plugins/kfm/api/api.php';
-	require_once SCRIPTBASE . 'j/'.FCKEDITOR.'/editor/plugins/kfm/initialise.php';
+	require_once SCRIPTBASE . 'j/kfm/api/api.php';
+	require_once SCRIPTBASE . 'j/kfm/initialise.php';
 }
 // { quick-build similar functions
 	$arr = array(array('eventCalendarDisplay', 'funcs.events.php', 'ww_eventCalendarDisplay'), array('panelDisplay', 'funcs.panels.php', 'ww_panelDisplay'), array('imageDisplay', 'funcs.image.display.php', 'func_image_display'), array('menuDisplay', 'menus.php', 'ww_menuDisplay'), array('scrollingEventsDisplay', 'funcs.events.php', 'ww_scrollingEventsDisplay'), array('scrollingNewsDisplay', 'funcs.news.php', 'ww_scrollingNewsDisplay'), array('show404', '404.php', 'ww_show404'), array('showNews', 'funcs.news.php', 'ww_showNews'), array('showProductListing', 'products.php', 'ww_showProductListing'), array('showSearchResults', 'funcs.search.php', 'ww_showSearchResults'), array('sitemap', 'sitemap.php', 'ww_showSitemap'), array('webmeParse', 'funcs.textfilter.php', 'textObjectsFilter'));

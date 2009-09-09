@@ -50,7 +50,6 @@ else{
 	if(is_admin()){
 		$js.=file_get_contents('../ww.admin/j/common.js');
 		$js.=file_get_contents('notice.js');
-		$js.=file_get_contents('fckeditor-2.6.4/fckeditor.js');
 	}
 	
 /* get rid of browser-dependent code above before uncommenting this

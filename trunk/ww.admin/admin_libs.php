@@ -91,76 +91,8 @@ function getAdminVar($name,$default=''){
 	}
 	return $default;
 }
-function fckeditor($name,$value='',$fullpage=false,$css='',$height=250){
-	$oFCKeditor = new FCKeditor($name);
-	$oFCKeditor->BasePath = '/j/'.FCKEDITOR.'/';
-	$oFCKeditor->Value                   = $value;
-	$oFCKeditor->Height                  = $height;
-	$oFCKeditor->Config['FullPage']      = $fullpage;
-	if($css)$oFCKeditor->Config['EditorAreaCSS'] = $css;
-	return $oFCKeditor->CreateHTML();
-}
-function fckeditor_cleanup($input){
-	$input=str_replace(
-		array('<p>%TABSTART%</p>','<p>%TABPAGE%</p>','<p>%TABEND%</p>'),
-		array('%TABSTART%','%TABPAGE%','%TABEND%'),
-		$input
-	);
-	return $input;
-}
-function fckeditor_generateCSS($pageid){
-	$page=Page::getInstance($pageid);
-	$cssurl='';
-	if(isset($page->template) && file_exists($page->template)){
-		@mkdir($_SERVER['DOCUMENT_ROOT'].'/f/.files/fckeditorcss');
-		$cssurl='/f/.files/fckeditorcss/'.md5($page->template).'.css';
-		$cssfile=$_SERVER['DOCUMENT_ROOT'].$cssurl;
-		if(!file_exists($cssfile) || filectime($page->template)>filectime($cssfile)){
-			$file=str_replace(array("\n","\r"),' ',join('',file($page->template)));
-			$file=$_SERVER['DOCUMENT_ROOT'].'/'.preg_replace('/.*(ww.skins[^"]*\.css)".*/','$1',$file);
-			$file=str_replace(array("\n","\r"),' ',join('',file($file)));
-			// { create the 'body' selector
-			$file=preg_replace('/[^}]*(#content|#wrapper)\s*/','html body',$file);
-			$bodies=array();
-			preg_match_all('/html body{[^}]*}/',$file,$bodies);
-			$file=preg_replace('/html body{[^}]*}/','',$file);
-			$rules=array('margin'=>'0 !important','padding'=>'0 !important','background-image'=>'none !important');
-			foreach($bodies[0] as $group){
-				$group=preg_replace('/.*{(.*)}/','$1',$group);
-				$lrules=explode(';',$group);
-				foreach($lrules as $rule){
-					$bits=explode(':',$rule);
-					$name=trim($bits[0]);
-					if(!$name)continue;
-					$value=trim($bits[1]);
-					$valid=1;
-					switch($name){
-						case '':case 'padding':case 'padding-left':case 'padding-top':case 'padding-bottom':case 'padding-right':
-						case 'border':case 'border-left':case 'border-top':case 'border-bottom':case 'border-right':case 'background':
-						case 'margin':case 'margin-left':case 'margin-top':case 'margin-bottom':case 'margin-right': // {
-							$valid=0;
-							break;
-						// }
-						case 'width': case 'height': // {
-							if(isset($rules[$name])){
-								if(preg_match('/%/',$value) || (!preg_match('/%/',$rules[$name]) && (int)$rules[$name]<(int)$value))$value=$rules[$name];
-							}
-						// }
-					}
-					if($valid){
-						$rules[$name]=$value;
-					}
-				}
-			}
-			$file.='html body{';
-			foreach($rules as $name=>$value)$file.=$name.':'.$value.';';
-			$file.='}';
-			// }
-			$file=str_replace('}',"}\n",$file);
-			file_put_contents($cssfile,$file);
-		}
-	}
-	return $cssurl;
+function ckeditor($name,$value='',$fullpage=false,$css='',$height=250){
+	return '<textarea style="width:100%;height:'.$height.'px" name="'.addslashes($name).'">'.htmlspecialchars($value).'</textarea><script>$(document).ready(function(){CKEDITOR.replace("'.addslashes($name).'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME"});});</script>';
 }
 function setAdminVar($name,$value){
 	dbQuery("delete from admin_vars where varname='".$name."' and admin_id=".get_userid());
