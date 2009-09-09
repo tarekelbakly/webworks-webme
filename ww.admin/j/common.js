@@ -1,12 +1,7 @@
-var id='0',pagesContentsChildren=[],pagesContentsParents=[],pagesContentsRowById=[], CMSextra='',oFCKeditor=[],inAdmin=1;
+var id='0',pagesContentsChildren=[],pagesContentsParents=[],pagesContentsRowById=[], CMSextra='',inAdmin=1;
 function admin_editPermissions(type,id){
 	window.permissions=[type,id];
 	loadScript('/ww.admin/j/permissions.php');
-}
-function fckeditor_addOnComplete(lib,func){
-	if(FCKeditor_OnCompleteFunctions_libs.contains(lib))return;
-	FCKeditor_OnCompleteFunctions_libs.push(lib);
-	FCKeditor_OnCompleteFunctions.push(func);
 }
 function imageCheckName(newName,id,doalert){
 	for(i=0;i<imageName.length;i++){
@@ -16,23 +11,6 @@ function imageCheckName(newName,id,doalert){
 		}
 	}
 	return true;
-}
-function initFckEditor(width,height){
-	if(browser.isSafari)return 0;
-	var sBasePath,els,begin,el,i;
-	sBasePath='/j/'+ww.FCKEDITOR+'/';
-	els=$('textarea.fckeditor');
-	begin=oFCKeditor.length;
-	for(i=begin,n=begin+els.length;i<n;++i){
-		el=els[i-begin];
-		removeClassName(el,'fckeditor');
-		oFCKeditor[i]=new FCKeditor(el.name,el.offsetWidth,el.offsetHeight);
-		oFCKeditor[i].name=el.name;
-		oFCKeditor[i].BasePath=sBasePath;
-		oFCKeditor[i].Config.FullPage=el.hasClass('fullpage');
-		oFCKeditor[i].ReplaceTextarea();
-	}
-	return i-1;
 }
 function initialiseAdmin(){
 	var classes=[];
@@ -51,7 +29,6 @@ function initialiseAdmin(){
 	if(classes['addressbook'])loadScript('/ww.admin/j/addressbook.php');
 	if(classes['adminmenu'])loadScript('/ww.admin/ajax/menu.php');
 	if(classes['ajaxmenu_expandable'])loadScript('/ww.admin/ajax/ajaxmenu_expandable.php');
-	if(classes['fckeditor'])initFckEditor();
 	if(classes['sc_supplements'])loadScript('/ww.admin/j/sc_supplements.php');
 	if(classes['draggable'])loadScript('/ww.admin/ajax/ajax_sortabletable.php');
 	if(classes['accordion']){ // accordion
@@ -87,26 +64,7 @@ function setSize(el,x,y){
 function windowOpen(l,n,w,h){
 	window.open(l,n,"width="+w+",height="+h+",left="+(screen.availWidth/2-w/2)+",top="+(screen.availHeight/2-h/2));
 }
-function fckeditor_remove(name){
-	var i;
-	if(window.FCKeditorAPI == undefined)return;
-	FCKeditorAPI.__Instances[name]=null;
-	textarea=$M(name);
-	if(!textarea)return;
-	do{
-		i=textarea.getPrevious(),f=1;
-		if(i&&i.tagName=='IFRAME')i.remove();
-		else f=0;
-	}while(f);
-}
 function notice(v){
 	new Notice(v);
 }
-FCKeditor_OnCompleteFunctions=[function(FCK){FCK.ResetIsDirty();}];
-FCKeditor_OnCompleteFunctions_libs=[];
-FCKeditor_OnComplete=function(FCK){
-	for(var i=0;i<window.parent.FCKeditor_OnCompleteFunctions.length;++i){
-		window.parent.FCKeditor_OnCompleteFunctions[i](FCK);
-	}
-};
 window.addEvent('load',initialiseAdmin);

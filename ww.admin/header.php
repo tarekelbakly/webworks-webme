@@ -8,7 +8,6 @@ if (!is_admin()) {
 }
 // }
 require 'admin_libs.php';
-require SCRIPTBASE.'j/'.FCKEDITOR.'/fckeditor.php';
 $admin_vars=array();
 // { common variables
 	foreach(array('action','resize') as $v)$$v=getVar($v);
@@ -24,7 +23,7 @@ $admin_vars=array();
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 		<script src="/js/"></script>
-		<script src="/j/codepress-0.9.6/codepress.js"></script>
+		<script src="/j/ckeditor/ckeditor.js"></script>
 	</head>
 	<body>
 	<div id="wrapper">

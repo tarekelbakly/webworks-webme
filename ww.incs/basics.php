@@ -115,8 +115,8 @@ require SCRIPTBASE . 'common/webme_specific.php';
 if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
 define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
-define('FCKEDITOR','fckeditor-2.6.4');
-define('KFM_BASE_PATH', SCRIPTBASE.'j/'.FCKEDITOR.'/editor/plugins/kfm/');
+define('CKEDITOR','ckeditor');
+define('KFM_BASE_PATH', SCRIPTBASE.'j/kfm/');
 set_include_path(SCRIPTBASE.'ww.php_classes'.PATH_SEPARATOR.KFM_BASE_PATH.'classes'.PATH_SEPARATOR.get_include_path());
 // { theme variables
 if(isset($DBVARS['theme_dir']))define('THEME_DIR',$DBVARS['theme_dir']);

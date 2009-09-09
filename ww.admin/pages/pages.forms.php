@@ -114,13 +114,10 @@ else{
 	// }
 	// }
 	// { page-type-specific data
-	// { generate FCKeditor CSS
-	$cssurl=fckeditor_generateCSS($page['id']);
-	// }
 	switch($page['type']){
 		case '0': case '1': case '5': case '6': case '9': case '10': // { normal
 		echo '<tr><th>'.__('body').'</th><td colspan="5">';
-		echo fckeditor('body',$page['body'],0,$cssurl);
+		echo ckeditor('body',$page['body'],0,$cssurl);
 		echo '</td></tr>';
 		break;
 		// }
@@ -148,7 +145,7 @@ else{
 		echo '</select></td>';
 		echo '</td></tr>';
 		echo '<tr><th>'.__('body').'</th><td colspan="5">';
-		echo fckeditor('body',$page['body'],false,$cssurl);
+		echo ckeditor('body',$page['body'],false,$cssurl);
 		echo '</td></tr>';
 		break;
 		// }
@@ -173,7 +170,7 @@ else{
 		// }
 		case '8': // { products
 		echo '<tr><th>'.__('content header').'</th><td colspan="4">';
-		echo fckeditor('page_vars[content_header]',$page_vars['content_header'],false,$cssurl);
+		echo ckeditor('page_vars[content_header]',$page_vars['content_header'],false,$cssurl);
 		echo '</textarea></td>';
 		echo '<td>';
 		// { specify a product category

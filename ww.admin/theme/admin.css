@@ -252,7 +252,7 @@ strong.clickable,a.clickable{ background: url("/ww.admin/i/note_edit.gif") 100% 
 .pageForm td a, .pageForm td a:visited { color: #36f; text-decoration: none; border: 0; }
 .pageForm td a:hover { color: #f63; border-bottom: 1px solid #f63; }
 .pageForm th { text-transform: capitalize;font-weight:bold;padding-right:5px}
-textarea.fckeditor { height: 275px!important; } 
+textarea.ckeditor { height: 275px!important; } 
 input#action { min-width: 150px!important; width:auto !important; border: 1px outset #ccc; background: #ddd; color: #333; } 
 
 .pageForm input[type="text"]{width:100%}
