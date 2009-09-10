@@ -15,7 +15,7 @@ echo '<div class="tabs">';
 	echo '<th>'.__('Enabled').'</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
 	if($data['enabled']==0)echo ' selected="selected"';
 	echo '">No</option></select></td></tr>';
-	echo '<tr><th>Question</th><td colspan="3"><textarea class="fckeditor" name="body">'.htmlspecialchars($data['body']).'</textarea></td></tr>';
+	echo '<tr><th>Question</th><td colspan="3">',ckeditor('body',$data['body']),'</td></tr>';
 	echo '</table></div>';
 // }
 // { answers

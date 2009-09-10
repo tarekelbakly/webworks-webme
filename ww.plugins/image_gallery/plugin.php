@@ -42,7 +42,7 @@ function image_gallery_admin_page_form($page,$vars){
 	$c='<div class="tabs">';
 	// { header
 	$c.='<div class="tabPage"><h2>Header</h2>';
-	$c.=fckeditor('body',$page['body'],0,$cssurl);
+	$c.=ckeditor('body',$page['body'],0,$cssurl);
 	$c.='</div>';
 	// }
 	// { gallery details
@@ -54,7 +54,7 @@ function image_gallery_admin_page_form($page,$vars){
 		$c.='>'.htmlspecialchars($d).'</option>';
 	}
 	$c.='</select></td>';
-	$c.='<td colspan="2"><a style="background:#ff0;font-weight:bold;color:red;display:block;text-align:center;" href="#page_vars[image_gallery_directory]" onclick="javascript:window.open(\'/j/'.FCKEDITOR.'/editor/plugins/kfm/?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
+	$c.='<td colspan="2"><a style="background:#ff0;font-weight:bold;color:red;display:block;text-align:center;" href="#page_vars[image_gallery_directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
 	$c.='<tr><th>'.__('Columns').'</th><td><input name="page_vars[image_gallery_x]" value="'.(int)$gvars['image_gallery_x'].'" /></td>';
 	$c.='<th>'.__('Rows').'</th><td><input name="page_vars[image_gallery_y]" value="'.(int)$gvars['image_gallery_y'].'" /></td></tr>';
 	$cl=(int)@$gvars['image_gallery_captionlength'];

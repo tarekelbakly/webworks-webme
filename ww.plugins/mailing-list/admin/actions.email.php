@@ -74,7 +74,7 @@ echo '
 			<h2>Main</h2>
 			<table style="width:100%">
 				<tr><th>Subject</th><td><input name="subject" value="" style="width:85%"/></td>
-				<tr><th>Body</th><td colspan="2"><textarea class="fckeditor" name="body"></textarea></td></tr>
+				<tr><th>Body</th><td colspan="2">'.ckeditor('body').'</td></tr>
 				<tr><td>&nbsp;</td><td><input type="submit" name="send_mail" value="Send Email"/></td></tr>
 			</table>
 		</div>

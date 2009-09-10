@@ -72,7 +72,7 @@ function banner_image_drawForm($image=array()){
 		banner_image_getImgHTML($image['id']),'</div>';
 	// }
 	// { show HTML form
-	echo '<div id="banner_image_html_',$num_images,'" style="display:',($image['type']==0?'none':'block'),'">',fckeditor('html_'.$image['id'],$image['html'],0,'',180),'</div></td>';
+	echo '<div id="banner_image_html_',$num_images,'" style="display:',($image['type']==0?'none':'block'),'">',ckeditor('html_'.$image['id'],$image['html'],0,'',180),'</div></td>';
 	// }
 	// { what pages should this be applied to
 	echo '<td style="width:220px">pages the banner should be active on. select "none" to show on all pages<br /><select name="pages_',$image['id'],'[]" multiple="multiple" style="max-width:200px;height:100px">';

@@ -1,19 +1,22 @@
 <?php
-if(!$edit && $replytoid)$c.= wInput('replytoid','hidden',$replytoid);
+if(!$edit && isset($replytoid) && $replytoid)$c.= wInput('replytoid','hidden',$replytoid);
 $c.= '<div class="tabs">';
 // { header
 $c.='<div class="tabPage"><h2>Header</h2><p>Text to be shown above the form</p>';
-$c.=fckeditor('body',$page['body'],0,$cssurl);
+$c.=ckeditor('body',$page['body']);
 $c.='</div>';
 // }
 // { main details
 $c.= '<div class="tabPage"><h2>Main Details</h2><table>';
 // { send as email, recipient
-$c.= '<tr><th>'.__('Send as Email').'</th><td>'.wInput('page_vars[forms_send_as_email]','select',array('1'=>'Yes','0'=>'No'),@$vars['forms_send_as_email']).'</td>';
-$c.= '<th>'.__('Recipient').'</th><td>'.wInput('page_vars[forms_recipient]','',htmlspecialchars(@$vars['forms_recipient'])).'</td></tr>';
+if(!isset($vars['forms_send_as_email']))$vars['forms_send_as_email']=1;
+if(!isset($vars['forms_recipient']))$vars['forms_recipient']=$_SESSION['userdata']['email'];
+$c.= '<tr><th>'.__('Send as Email').'</th><td>'.wInput('page_vars[forms_send_as_email]','select',array('1'=>'Yes','0'=>'No'),$vars['forms_send_as_email']).'</td>';
+$c.= '<th>'.__('Recipient').'</th><td>'.wInput('page_vars[forms_recipient]','',htmlspecialchars($vars['forms_recipient'])).'</td></tr>';
 // }
 // { captcha, reply-to
-$c.= '<tr><th>Captcha Required</th><td>'.wInput('page_vars[forms_captcha_required]','select',array('1'=>'Yes','0'=>'No'),@$vars['forms_captcha_required']).'</td>';
+if(!isset($vars['forms_captcha_required']))$vars['forms_captcha_required']=1;
+$c.= '<tr><th>Captcha Required</th><td>'.wInput('page_vars[forms_captcha_required]','select',array('1'=>'Yes','0'=>'No'),$vars['forms_captcha_required']).'</td>';
 $c.= '<th>Reply-To</th><td>'.wInput('page_vars[forms_replyto]','',htmlspecialchars(@$vars['forms_replyto'])).'</td></tr>';
 // }
 $c.= '</table></div>';
@@ -46,13 +49,13 @@ $c.= '</ul></div>';
 // { success message
 $c.= '<div class="tabPage"><h2>Success Message</h2>';
 $c.= '<p>What should be displayed on-screen when the message is sent.</p>';
-$c.= fckeditor('page_vars[forms_successmsg]',@$vars['forms_successmsg']);
+$c.= ckeditor('page_vars[forms_successmsg]',@$vars['forms_successmsg']);
 $c.= '</div>';
 // }
 // { template
 $c.= '<div class="tabPage"><h2>Template</h2>';
 $c.= '<p>Leave blank to have an auto-generated template displayed.</p>';
-$c.= fckeditor('page_vars[forms_template]',@$vars['forms_template']);
+$c.= ckeditor('page_vars[forms_template]',@$vars['forms_template']);
 $c.= '</div>';
 // }
 $c.= '</div>';
