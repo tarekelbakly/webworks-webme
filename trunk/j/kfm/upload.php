@@ -57,6 +57,14 @@ if ($kfm->setting('allow_file_upload')) {
 		else if(in_array(kfmFile::getExtension($filename),$kfm->setting('banned_upload_extensions'))){
 			$errors[] = 'The extension: '.kfmFile::getExtension($filename).' is not allowed';
 		}
+		// { check to see if it's an image, and if so, is it bloody massive
+		if(in_array(kfmFile::getExtension($filename),array('jpg', 'jpeg', 'gif', 'png', 'bmp'))){
+			list($width, $height, $type, $attr)=getimagesize($tmpname);
+			if($width>1024 || $height>1024){
+				$errors[] = 'Please do not upload images which are larger than 1024x768';
+			}
+		}
+		// }
 	}
 	if ($cwd==$kfm->setting('root_folder_id') && !$kfm->setting('allow_files_in_root')) $errors[] = 'Cannot upload files to the root directory';
 	if (!$replace && file_exists($to)) $errors[] = 'File already exists'; // TODO new string

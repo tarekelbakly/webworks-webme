@@ -224,8 +224,8 @@ td.listview_icon_bz2{background-image:url(icons/16x16/mimetypes/bz2.png)}
 }
 .notice{
 	display:block;
-	border:1px solid #000;
-	background:red;
+	border:5px solid #000;
+	background:yellow;
 	color:#000;
 	padding:5px;
 	margin:5px
