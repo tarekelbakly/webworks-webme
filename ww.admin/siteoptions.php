@@ -4,13 +4,13 @@ echo '<h1>Site Options</h1>';
 
 echo admin_menu(array(
 	'General'=>'siteoptions.php?page=general',
+	'Users'=>'siteoptions.php?page=users',
 	'Themes'=>'siteoptions.php?page=themes',
-//	'Localisation'=>'siteoptions.php?page=localisation'
 	'Plugins'=>'siteoptions.php?page=plugins'
 ));
 
 $page=admin_verifypage(
-	array('general',/*'localisation',*/'themes','plugins'),
+	array('general','users','themes','plugins'),
 	'general',
 	@$_REQUEST['page']
 );
