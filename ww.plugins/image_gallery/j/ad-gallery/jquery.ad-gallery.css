@@ -12,7 +12,6 @@
 }
 .ad-gallery .ad-image-wrapper .ad-loader {
 	position: absolute;
-	z-index: 10;
 	top: 48%;
 	left: 48%;
 	border: 1px solid #CCC;
@@ -25,7 +24,6 @@
 	height: 100%;
 	cursor: pointer;
 	display: block;
-	z-index: 100;
 }
 .ad-gallery .ad-image-wrapper .ad-prev {
 	position: absolute;
@@ -35,7 +33,6 @@
 	height: 100%;
 	cursor: pointer;
 	display: block;
-	z-index: 100;
 }
 .ad-gallery .ad-image-wrapper .ad-prev, .ad-gallery .ad-image-wrapper .ad-next {
 	/* Or else IE will hide it */
@@ -49,7 +46,6 @@
 	position: absolute;
 	top: 47%;
 	left: 0;
-	z-index: 101;
 }
 .ad-gallery .ad-image-wrapper .ad-next .ad-next-image {
 	background: url(ad_next.png);
@@ -63,7 +59,6 @@
 	overflow: hidden;
 	top: 0;
 	left: 0;
-	z-index: 9;
 }
 .ad-gallery .ad-image-wrapper .ad-image .ad-image-description {
 	position: absolute;
@@ -72,7 +67,6 @@
 	padding: 7px;
 	text-align: left;
 	width: 100%;
-	z-index: 2;
 	background: url(opa75.png);
 	color: #000;
 }
@@ -112,7 +106,6 @@
 	position: absolute;
 	top: 0;
 	height: 100%;
-	z-index: 10;
 }
 /* IE 6 doesn't like height: 100% */
 * html .ad-gallery .ad-forward, .ad-gallery .ad-back {
