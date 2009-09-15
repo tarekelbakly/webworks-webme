@@ -51,16 +51,15 @@
 			.click(showWidgetForm);
 		return widget;
 	}
-	$(document).ready(function(){
-		var panel_column=$('#panels');
-		var widget_column=$('#widgets');
-		ww.widgetsByName={};
+	function panels_init(panel_column){
 		for(var i=0;i<ww.panels.length;++i){
 			var p=ww.panels[i];
 			$('<div class="panel-wrapper" id="panel'+p.id+'"><h4>'+p.name+'</h4></div>')
 				.data('widgets',p.widgets.widgets)
 				.appendTo(panel_column);
 		}
+	}
+	function widgets_init(widget_column){
 		for(var i=0;i<ww.widgets.length;++i){
 			var p=ww.widgets[i];
 			$('<div class="widget-wrapper"><h4>'+p.type+'</h4><p>'+p.description+'</p></div>')
@@ -68,6 +67,13 @@
 				.data('widget',p);
 			ww.widgetsByName[p.type]=p;
 		}
+	}
+	$(document).ready(function(){
+		var panel_column=$('#panels');
+		var widget_column=$('#widgets');
+		ww.widgetsByName={};
+		panels_init(panel_column);
+		widgets_init(widget_column);
 		$('<span class="panel-opener">&darr;</span>')
 			.appendTo('.panel-wrapper h4')
 			.click(function(){
@@ -103,5 +109,6 @@
 				updateWidgets(panel);
 			}
 		})
+		$('<br style="clear:both" />').appendTo(widget_column);
 	});
 })(jQuery);
