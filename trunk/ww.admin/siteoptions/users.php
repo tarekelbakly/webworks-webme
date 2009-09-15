@@ -5,7 +5,7 @@ $groups=array();
 if(isset($_REQUEST['id'])){
 	$id=(int)$_REQUEST['id'];
 	// { handle actions
-	if($action=='delete')
+	if($action=='delete'){}
 	if($action=='Save'){
 		$sql='set email="'.addslashes($_REQUEST['email']).'",name="'.addslashes($_REQUEST['name']).'",phone="'.addslashes($_REQUEST['phone']).'",active="'.(int)$_REQUEST['active'].'",address="'.addslashes($_REQUEST['address']).'"';
 		if(isset($_REQUEST['password']) && $_REQUEST['password']!=''){
