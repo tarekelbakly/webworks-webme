@@ -47,7 +47,6 @@ function content_snippet_edit(ev){
 	var d=$('<div><textarea style="width:600px;height:300px;" id="content_snippet_html'+ww.content_snippet.editor_instances+'" name="content_snippet_html'+ww.content_snippet.editor_instances+'"></textarea></div>');
 	$.getJSON('/ww.plugins/content-snippet/admin/widget-form.php',{'get_content_snippet':id},function(res){
 		d.dialog({
-			modal:true,
 			minWidth:630,
 			minHeight:400,
 			height:400,
