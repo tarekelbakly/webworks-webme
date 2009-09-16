@@ -4,5 +4,5 @@ function show_content_snippet($vars){
 		$html=dbOne('select html from content_snippets where id='.$vars->id,'html');
 		if($html)return $html;
 	}
-	return '<em>this Content Snippet is not yet defined.</em>';
+	return '<p>this Content Snippet is not yet defined.</p>';
 }

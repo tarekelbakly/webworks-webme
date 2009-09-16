@@ -53,6 +53,7 @@ function content_snippet_edit(ev){
 			height:400,
 			width:630,
 			beforeclose:function(){
+				if(!ww.content_snippet.rte)return;
 				ww.content_snippet.rte.destroy();
 				ww.content_snippet.rte=null;
 			},
@@ -81,7 +82,8 @@ function content_snippet_edit(ev){
 		ww.content_snippet.rte.setData(res.content);
 	});
 }
-$('.content_snippet_editlink').click(content_snippet_edit);
+$('.content_snippet_editlink').unbind('click',content_snippet_edit);
+$('.content_snippet_editlink').bind('click',content_snippet_edit);
 <?php
 if($id){
 	echo '$("#content_snippet_preview_'.$id.'").load("/ww.plugins/content-snippet/admin/get_text_preview.php?id='.$id.'")';
