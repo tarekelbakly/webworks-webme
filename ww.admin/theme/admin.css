@@ -115,7 +115,7 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 
 .ajaxmenu_menuname{height:16px;display:block}
 .ajaxmenu_menuname a{overflow:hidden;display:block;position:relative;}
-.ajaxmenu_menuname a span{width:16px;repeat-y;background:url(/ww.admin/theme/faders.png);position:absolute;right:0;top:0;height:16px;width:16px;}
+.ajaxmenu_menuname a span{width:16px;background:url(/ww.admin/theme/faders.png);position:absolute;right:0;top:0;height:16px;width:16px;}
 .ajaxmenu_currentPage .ajaxmenu_menuname a span{background-position:-16px 0}
 .ajaxmenu_containsCurrentPage .ajaxmenu_menuname a span{background-position:-32px 0}
 
@@ -164,20 +164,6 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 
 #hasleftmenu{padding: 5px; border: 1px solid #ededed; background: #fff;margin-left:165px}
 #hasleftmenu input.checkbox {  width: auto !important; } 
-
-.right-column{
-	width:200px;
-	float:right;
-	background:#fff;
-	border: 1px solid #ededed;
-	padding: 5px;
-}
-.has-right-column{
-	padding: 5px;
-	border: 1px solid #ededed;
-	background: #fff;
-	margin-right: 215px;
-}
 
 #sc_cartridges_panel,#sc_clients_panel{height:100px;overflow:auto}
 #tablePopulate th textarea{background:#eee}
