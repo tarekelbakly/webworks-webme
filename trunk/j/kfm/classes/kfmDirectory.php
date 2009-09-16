@@ -138,28 +138,33 @@ class kfmDirectory extends kfmObject{
 		return $sprites;
 	}
 	function getFiles(){
-		$this->handle=opendir($this->path);
-		if(!$this->handle)return $this->error('unable to open directory');
 		$filesdb=db_fetch_all("select * from ".KFM_DB_PREFIX."files where directory=".$this->id);
 		$fileshash=array();
 		if(is_array($filesdb))foreach($filesdb as $r)$fileshash[$r['name']]=$r['id'];
-		$files=array();
-		while(false!==($filename=readdir($this->handle))){
-			if(is_file($this->path.$filename)&&kfmFile::checkName($filename)){
-				if(!isset($fileshash[$filename]))$fileshash[$filename]=kfmFile::addToDb($filename,$this->id);
-				$file=kfmFile::getInstance($fileshash[$filename]);
-				if(!$file)continue;
-				if($file->isImage()){
-					$file=kfmImage::getInstance($fileshash[$filename]);
-					if($this->maxWidth>0 && $this->maxHeight>0 && ($file->width>$this->maxWidth || $file->height>$this->maxHeight)){
-						$file->resize($this->maxWidth,$this->maxHeight);
-					}
-				}
-				$files[]=$file;
-				unset($fileshash[$filename]);
-			}
+		// { get files from directoryIterator, then sort them
+		$tmp=array();
+		foreach(new directoryIterator($this->path) as $f){
+			if($f->isDot())continue;
+			if(is_file($this->path.$f) && kfmFile::checkName($f))$tmp[]=$f.'';
 		}
-		closedir($this->handle);
+		natsort($tmp);
+		// }
+		// { load file details from database
+		$files=array();
+		foreach($tmp as $filename){
+			if(!isset($fileshash[$filename]))$fileshash[$filename]=kfmFile::addToDb($filename,$this->id);
+			$file=kfmFile::getInstance($fileshash[$filename]);
+			if(!$file)continue;
+			if($file->isImage()){
+				$file=kfmImage::getInstance($fileshash[$filename]);
+				if($this->maxWidth>0 && $this->maxHeight>0 && ($file->width>$this->maxWidth || $file->height>$this->maxHeight)){
+					$file->resize($this->maxWidth,$this->maxHeight);
+				}
+			}
+			$files[]=$file;
+			unset($fileshash[$filename]);
+		}
+		// }
 		return $files;
 	}
 	static function getInstance($id=1){
