@@ -43,10 +43,9 @@ function banner_image_selectkiddies($i=0,$n=1,$s=array(),$id=0,$prefix=''){
 		if($r['id']!=''){
 			echo '<option value="'.$r['id'].'" title="'.htmlspecialchars($r['name']).'"';
 			echo(in_array($r['id'],$s))?' selected="selected">':'>';
-			for($j=0;$j<$n;$j++)echo '&nbsp;';
-			$name=$r['name'];
+			$name=strtolower(str_replace(' ','-',$r['name']));
 			echo htmlspecialchars($prefix.$name).'</option>';
-			banner_image_selectkiddies($r['id'],$n+1,$s,$id,$name.' > ');
+			banner_image_selectkiddies($r['id'],$n+1,$s,$id,$name.'/');
 		}
 	}
 }
