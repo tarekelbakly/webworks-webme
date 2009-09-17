@@ -14,5 +14,8 @@ $(document).ready(function(){
 			// }
 		}
 	});
-	ms_convert();
+	$('select').inlinemultiselect({
+		'separator':', ',
+		'endSeparator':' and '
+	});
 });

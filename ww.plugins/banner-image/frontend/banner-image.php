@@ -17,10 +17,7 @@ function show_banner($vars){
 		$b=dbRow('select * from banners_images where !pages order by rand() limit 1');
 	}
 	if(count($b)){
-		if($b['type']==1){
-			$banner=$b['html'];
-		}
-		else $banner=banner_image_getImgHTML($b['id'],true);
+		$banner=$b['html'];
 	}
 	else{
 		if(is_array($vars) && isset($vars['default']) && $vars['default'])$banner=$vars['default'];
