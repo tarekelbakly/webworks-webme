@@ -81,8 +81,11 @@ function content_snippet_edit(ev){
 		ww.content_snippet.rte.setData(res.content);
 	});
 }
-$('.content_snippet_editlink').unbind('click',content_snippet_edit);
-$('.content_snippet_editlink').bind('click',content_snippet_edit);
+$('.content_snippet_editlink').each(function(){
+	if(this.content_click_added)return;
+	$(this).click(content_snippet_edit);
+	this.content_click_added=true;
+})
 <?php
 if($id){
 	echo '$("#content_snippet_preview_'.$id.'").load("/ww.plugins/content-snippet/admin/get_text_preview.php?id='.$id.'")';
