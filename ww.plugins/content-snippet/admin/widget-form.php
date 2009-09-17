@@ -77,7 +77,7 @@ function content_snippet_edit(ev){
 				}
 			}
 		});
-		ww.content_snippet.rte=CKEDITOR.replace( 'content_snippet_html'+ww.content_snippet.editor_instances );
+		ww.content_snippet.rte=CKEDITOR.replace( 'content_snippet_html'+ww.content_snippet.editor_instances,{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME"} );
 		ww.content_snippet.rte.setData(res.content);
 	});
 }
