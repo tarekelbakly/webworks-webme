@@ -140,14 +140,15 @@ function ajaxmenu_openSubMenus(i){
 				}
 				var x;
 				var g=p.parentId!=_am.topMenu;
-				var y=getOffset(p,'Top')+(g||(_am.align=='vertical')?0:p.offsetHeight);
+				var y=$(p).offset().top+(g||(_am.align=='vertical')?0:p.offsetHeight);
 				if(_am.two_tier){
 					x=p.parentNode.offsetLeft;
 					y=p.parentNode.offsetTop+p.offsetHeight;
 				}
 				else{
-					x=getOffset(p,'Left')+(g||(_am.align=='vertical')?p.offsetWidth:0);
-					if(x+150>window.getSize().size.x && g)x=getOffset(p,'Left')-150;
+					x=$(p).offset().left;
+					if(g||(_am.align=='vertical'))x+=p.offsetWidth;
+					if(x+150>window.getSize().size.x && g)x=$(p).offset().left-150;
 				}	
 				var s=document.createElement('div');
 				s.id='ajaxmenu'+i;
