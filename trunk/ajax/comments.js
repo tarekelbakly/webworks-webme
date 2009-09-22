@@ -40,7 +40,7 @@ function comments_showAll(comments){
 						'class':'ww_commentGravatarLink'
 					});
 					var avatar=new Element('img',{
-						'src':  'http://www.gravatar.com/avatar.php?gravatar_id='+c.email+escape(document.location.toString().replace(/(\/\/.*\/).*/,"$1")+'i/gravatar.png'),
+						'src':  'http://www.gravatar.com/avatar.php?gravatar_id='+c.email+'&default='+escape(document.location.toString().replace(/(\/\/.*\/).*/,"$1")+'i/gravatar.png'),
 						'class':'ww_commentAvatar'
 					});
 					link.appendChild(avatar);
