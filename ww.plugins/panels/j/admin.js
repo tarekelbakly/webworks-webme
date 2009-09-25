@@ -33,7 +33,7 @@ function showWidgetForm(w){
 		p.panel=$('h4>span.name',form.closest('.panel-wrapper')).eq(0).text();
 		fholder.load(ww.widgetForms[p.type],p);
 	}
-	else $('<p>no config form associated with this widget</p>').appendTo(form);
+	else $('<p>no config form needed for this widget</p>').appendTo(form);
 	$('<a href="javascript:;" title="remove widget">remove</a>')
 		.click(function(){
 			if(!confirm('Are you sure you want to remove this widget from this panel?'))return;
@@ -41,6 +41,10 @@ function showWidgetForm(w){
 			w.remove();
 			updateWidgets(panel);
 		})
+		.appendTo(form);
+	$('<span>, </span>').appendTo(form);
+	$('<a href="javascript:;">visibility</a>')
+		.click(widget_visibility)
 		.appendTo(form);
 }
 function buildRightWidget(p){
@@ -51,10 +55,80 @@ function buildRightWidget(p){
 		.click(showWidgetForm);
 	return widget;
 }
+function widget_visibility(ev){
+	var el=ev.target,vis=[];
+	var w=$(el).closest('.widget-wrapper');
+	var wd=w.data('widget');
+	if(wd.visibility)vis=wd.visibility;
+	$.get('/ww.plugins/panels/admin/get-visibility.php?visibility='+vis,function(options){
+		var d=$('<form><p>This panel will be visible in <select name="panel_visibility_pages[]" multiple="multiple">'+options+'</select>. If you want it to be visible in all pages, please choose <b>none</b> to indicate that no filtering should take place.</p></form>');
+		d.dialog({
+			width:300,
+			height:400,
+			buttons:{
+				'Save':function(){
+					var arr=[];
+					$('input[name="panel_visibility_pages[]"]:checked').each(function(){
+						arr.push(this.value);
+					});
+					wd.visibility=arr;
+					w.data('widget',wd);
+					updateWidgets(w.closest('.panel-wrapper'));
+					$('#panel_visibility_pages').remove();
+					d.dialog('close');
+					d.remove();
+				},
+				'Close':function(){
+					$('#panel_visibility_pages').remove();
+					d.dialog('close');
+					d.remove();
+				}
+			}
+		});
+		$('select').inlinemultiselect({
+			'separator':', ',
+			'endSeparator':' and '
+		});
+	});
+}
+function panel_visibility(id){
+	$.get('/ww.plugins/panels/admin/get-visibility.php',{'id':id},function(options){
+		var d=$('<form><p>This panel will be visible in <select name="panel_visibility_pages[]" multiple="multiple">'+options+'</select>. If you want it to be visible in all pages, please choose <b>none</b> to indicate that no filtering should take place.</p></form>');
+		d.dialog({
+			width:300,
+			height:400,
+			buttons:{
+				'Save':function(){
+					var arr=[];
+					$('input[name="panel_visibility_pages[]"]:checked').each(function(){
+						arr.push(this.value);
+					});
+					$.get('/ww.plugins/panels/admin/save-visibility.php?id='+id+'&pages='+arr);
+					$('#panel_visibility_pages').remove();
+					d.dialog('close');
+					d.remove();
+				},
+				'Close':function(){
+					$('#panel_visibility_pages').remove();
+					d.dialog('close');
+					d.remove();
+				}
+			}
+		});
+		$('select').inlinemultiselect({
+			'separator':', ',
+			'endSeparator':' and '
+		});
+	});
+}
 function panels_init(panel_column){
 	for(var i=0;i<ww.panels.length;++i){
 		var p=ww.panels[i];
-		$('<div class="panel-wrapper" id="panel'+p.id+'"><h4><span class="name">'+p.name+'</span></h4></div>')
+		$('<div class="panel-wrapper" id="panel'+p.id+'"><h4><span class="name">'
+				+p.name+'</span></h4>'
+				+'<a href="javascript:panel_visibility('
+				+p.id+')" class="visibility" style="display:none">visibility</a></div>'
+			)
 			.data('widgets',p.widgets.widgets)
 			.appendTo(panel_column);
 	}
@@ -80,8 +154,10 @@ $(document).ready(function(){
 			var $this=$(this);
 			var panel=$this.closest('div');
 			if($('.panel-body',panel).length){
+				$('.visibility',panel).css('display','none');
 				return $('.panel-body',panel).remove();
 			}
+			$('.visibility',panel).css('display','block');
 			var widgets_container=$('<div class="panel-body"></div>');
 			widgets_container.appendTo(panel);
 			var widgets=panel.data('widgets');

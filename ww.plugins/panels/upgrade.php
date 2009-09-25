@@ -19,6 +19,10 @@ if($version==1){ // convert panel into widget container
 	}
 	$version=2;
 }
+if($version==2){ // add 'visibility' field
+	dbQuery('alter table panels add visibility text');
+	$version=3;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

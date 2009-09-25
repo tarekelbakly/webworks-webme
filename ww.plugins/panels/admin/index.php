@@ -31,4 +31,6 @@ echo join(',',$ws);
 echo '};';
 // }
 echo '</script><script src="/ww.plugins/panels/j/admin.js"></script>';
+// echo '<script src="http://inlinemultiselect.googlecode.com/files/jquery.inlinemultiselect.min.js"></script>';
+echo '<script src="/ww.plugins/panels/j/jquery.inlinemultiselect.js"></script>';
 // }
