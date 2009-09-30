@@ -7,6 +7,7 @@
 	Report Bugs: kae@verens.com, conor@macaoidh.name
 */
 
+$id=0;
 if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 	$id=(int)$_GET['delete_banner'];
 	dbQuery("delete from banners_images where id=$id");
@@ -26,6 +27,7 @@ if(isset($_POST['save_banner'])){
 	else{
 		dbQuery("insert into banners_images $sql");
 		$id=dbOne('select last_insert_id() as id','id');
+		$_REQUEST['id']=$id;
 	}
 	dbQuery("delete from banners_pages where bannerid=$id");
 	if(is_array($pages))foreach($pages as $k=>$v)dbQuery('insert into banners_pages set pageid='.((int)$v).",bannerid=$id");
@@ -84,7 +86,6 @@ echo '<a href="/ww.admin/plugin.php?_plugin=banner-image" class="new">New Banner
 echo '</div>';
 // }
 
-$id=0;
 if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
 
 banner_image_drawForm($id);
