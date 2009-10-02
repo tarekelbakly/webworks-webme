@@ -94,33 +94,47 @@ var Lightbox={
 	},
 	showFrame:function(){
 		var margin=.05;
-		var fixed=window.ie6?'absolute':'fixed';
+		var fixed='absolute';
 		var ws=window.getSize().size;
+		ws.x=+ws.x;
+		ws.y=+ws.y;
 		this.frameMaxWidth=ws.x*(1-margin*2);
 		this.frameMaxHeight=ws.y*(1-margin*2);
-		this.shader=newEl('div','lightbox_shader');
-		$(this.shader).css({
-			'position':fixed,
-			'top':0,
-			'width':ws.x,
-			'height':ws.y,
-			'left':0,
-			'opacity':.7,
-			'background':'#000'
+		var wrapper=$('<div id="lightbox_wrapper"></div>')
+			.css({
+				'position':'absolute',
+				'top':$(window).scrollTop(),
+				'width':ws.x,
+				'height':ws.y,
+				'left':0
+			});
+		wrapper.appendTo(document.body);
+		this.shader=$('<div id="lightbox_shader"></div>')
+			.css({
+				'position':'absolute',
+				'top':0,
+				'width':ws.x,
+				'height':ws.y,
+				'left':0,
+				'opacity':.7,
+				'background':'#000'
+			})
+			.click(this.hideFrame);
+		this.shader.appendTo(wrapper);
+		$(window).scroll(function() {
+			$('#lightbox_wrapper').css('top', $(this).scrollTop() + "px");
 		});
-		$(this.shader).click(this.hideFrame);
-		document.body.appendChild(this.shader);
-		this.frame=newEl('div','lightbox_frame');
-		$(this.frame).css({
-			'position':fixed,
-			'top':ws.y*margin,
-			'width':this.frameMaxWidth,
-			'height':this.frameMaxHeight,
-			'left':ws.x*margin,
-			'background':'#ccc',
-			'z-index':20
-		});
-		document.body.appendChild(this.frame);
+		this.frame=$('<div id="lightbox_frame"></div>')
+			.css({
+				'position':fixed,
+				'top':ws.y*margin,
+				'width':this.frameMaxWidth,
+				'height':this.frameMaxHeight,
+				'left':ws.x*margin,
+				'background':'#ccc',
+				'z-index':20
+			})
+			.appendTo(wrapper);
 		this.controls=newEl('div','lightbox_controls');
 		$(this.controls).css({
 			'position':'absolute',
@@ -164,7 +178,7 @@ var Lightbox={
 			'right':100
 		});
 		this.controls.appendChild(close);
-		this.frame.appendChild(this.controls);
+		this.frame[0].appendChild(this.controls);
 		this.imageMaxWidth=this.frameMaxWidth-20;
 		this.imageMaxHeight=this.frameMaxHeight-100;
 		this.imageWrapper=newEl('div','lightbox_imageWrapper');
@@ -178,27 +192,30 @@ var Lightbox={
 			'border':'1px solid #000',
 			'background':'#fff no-repeat center center'
 		});
-		this.frame.appendChild(this.imageWrapper);
+		this.frame[0].appendChild(this.imageWrapper);
 		Lightbox.frameVisible=1;
 	},
 	showImage:function(){
 		var ws=window.getSize().size;
+		ws.x=+ws.x;
+		ws.y=+ws.y;
 		if(document.getElementById('lightbox_preloader')){
 			var img=document.getElementById('lightbox_preloader');
-			Lightbox.data[Lightbox.at].width=img.offsetWidth;
-			Lightbox.data[Lightbox.at].height=img.offsetHeight;
+			Lightbox.data[Lightbox.at].width=+img.offsetWidth;
+			Lightbox.data[Lightbox.at].height=+img.offsetHeight;
 			Lightbox.data[Lightbox.at].isLoaded=1;
 			delEl(img);
 		}
 		Lightbox.imageWrapper.innerHTML='';
-		var minwidth=Lightbox.data[Lightbox.at].width<200?200:Lightbox.data[Lightbox.at].width;
-		var minheight=Lightbox.data[Lightbox.at].height<200?200:Lightbox.data[Lightbox.at].height;
+		var minwidth=+Lightbox.data[Lightbox.at].width<200?200:Lightbox.data[Lightbox.at].width;
+		var minheight=+Lightbox.data[Lightbox.at].height<200?200:Lightbox.data[Lightbox.at].height;
 		Lightbox.imageWrapper.style.backgroundImage='url(/i/ajax-loader.gif)';
+//if(document.location.toString()=="http://kase.co.uk/Products-and-Services/Ballustrades#test")alert(+ws.y-Lightbox.data[Lightbox.at].height-100);
 		$(Lightbox.frame).animate({
-			'left':(ws.x-minwidth-20)/2,
-			'top':(ws.y-Lightbox.data[Lightbox.at].height-100)/2,
-			'height':Lightbox.data[Lightbox.at].height+100,
-			'width':minwidth+20
+			'left':(+ws.x-minwidth-20)/2,
+			'top':(+ws.y-Lightbox.data[Lightbox.at].height-100)/2,
+			'height':+Lightbox.data[Lightbox.at].height+100,
+			'width':+minwidth+20
 		},400,'swing',function(){
 			if(!document.getElementById('lightbox_caption'))return;
 			Lightbox.imageWrapper.appendChild(newImg('/kfmget/'+Lightbox.data[Lightbox.at].id+',width='+Lightbox.imageMaxWidth+',height='+Lightbox.imageMaxHeight));
