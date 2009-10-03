@@ -81,9 +81,18 @@ $kfm_server_hours_offset = 1;
 // thumb format. use .png if you need transparencies. .jpg for lower file size
 $kfm_thumb_format='.jpg';
 
+// show a link to the admin area.
+$kfm_show_admin_link=1;
+
+// maximum uploadable image width
+$kfm_max_image_upload_width=1024;
+
+// maximum uploadable image height
+$kfm_max_image_upload_height=768;
+
 /**
- * This function is called in the admin area. To specify your own admin requirements or security, edit this function
+ * This function is called in the admin area. To specify your own admin requirements or security, un-comment and edit this function
  */
-function kfm_admin_check(){
-	return true;
-}
+//	function kfm_admin_check(){
+//		return true;
+//	}

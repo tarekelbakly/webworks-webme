@@ -23,10 +23,10 @@ if (SWFUpload == undefined) {
 	};
 }
 
-SWFUpload.prototype.initSWFUpload = function (settings) {
+SWFUpload.prototype.initSWFUpload = function (userSettings) {
 	try {
 		this.customSettings = {};	// A container where developers can place their own settings associated with this instance.
-		this.settings = settings;
+		this.settings = {};
 		this.eventQueue = [];
 		this.movieName = "SWFUpload_" + SWFUpload.movieCount++;
 		this.movieElement = null;
@@ -36,7 +36,7 @@ SWFUpload.prototype.initSWFUpload = function (settings) {
 		SWFUpload.instances[this.movieName] = this;
 
 		// Load the settings.  Load the Flash movie.
-		this.initSettings();
+		this.initSettings(userSettings);
 		this.loadFlash();
 		this.displayDebugInfo();
 	} catch (ex) {
@@ -50,7 +50,7 @@ SWFUpload.prototype.initSWFUpload = function (settings) {
 /* *************** */
 SWFUpload.instances = {};
 SWFUpload.movieCount = 0;
-SWFUpload.version = "2.2.0 Beta 5 2008-01-29";
+SWFUpload.version = "2.2.1 2009-03-30";
 SWFUpload.QUEUE_ERROR = {
 	QUEUE_LIMIT_EXCEEDED	  		: -100,
 	FILE_EXCEEDS_SIZE_LIMIT  		: -110,
@@ -79,7 +79,8 @@ SWFUpload.FILE_STATUS = {
 SWFUpload.BUTTON_ACTION = {
 	SELECT_FILE  : -100,
 	SELECT_FILES : -110,
-	START_UPLOAD : -120
+	START_UPLOAD : -120,
+	JAVASCRIPT   : -130
 };
 SWFUpload.CURSOR = {
 	ARROW : -1,
@@ -91,24 +92,64 @@ SWFUpload.WINDOW_MODE = {
 	OPAQUE : "opaque"
 };
 
+// Private: takes a URL, determines if it is relative and converts to an absolute URL
+// using the current site. Only processes the URL if it can, otherwise returns the URL untouched
+SWFUpload.completeURL = function (url) {
+	try {
+		var path = "";
+		if (typeof(url) !== "string" || url.match(/^https?:\/\//i) || url.match(/^\//) || url === "") {
+			return url;
+		}
+		
+		var indexSlash = window.location.pathname.lastIndexOf("/");
+		if (indexSlash <= 0) {
+			path = "/";
+		} else {
+			path = window.location.pathname.substr(0, indexSlash) + "/";
+		}
+		
+		return path + url;
+	} catch (ex) {
+		return url;
+	}
+};
+
+
 /* ******************** */
 /* Instance Members  */
 /* ******************** */
 
 // Private: initSettings ensures that all the
 // settings are set, getting a default value if one was not assigned.
-SWFUpload.prototype.initSettings = function () {
+SWFUpload.prototype.initSettings = function (userSettings) {
 	this.ensureDefault = function (settingName, defaultValue) {
-		this.settings[settingName] = (this.settings[settingName] == undefined) ? defaultValue : this.settings[settingName];
+		var setting = userSettings[settingName];
+		if (setting != undefined) {
+			if (typeof(setting) === "object" && !(setting instanceof Array)) {
+				var clone = {};
+				for (var key in setting) {
+					if (setting.hasOwnProperty(key)) {
+						clone[key] = setting[key];
+					}
+				}
+				this.settings[settingName] = clone;
+			} else {
+				this.settings[settingName] = setting;
+			}
+		} else {
+			this.settings[settingName] = defaultValue;
+		}
 	};
 	
 	// Upload backend settings
 	this.ensureDefault("upload_url", "");
+	this.ensureDefault("preserve_relative_urls", false);
 	this.ensureDefault("file_post_name", "Filedata");
 	this.ensureDefault("post_params", {});
 	this.ensureDefault("use_query_string", false);
 	this.ensureDefault("requeue_on_error", false);
 	this.ensureDefault("http_success", []);
+	this.ensureDefault("assume_success_timeout", 0);
 	
 	// File Settings
 	this.ensureDefault("file_types", "*.*");
@@ -132,6 +173,7 @@ SWFUpload.prototype.initSettings = function () {
 	this.ensureDefault("button_action", SWFUpload.BUTTON_ACTION.SELECT_FILES);
 	this.ensureDefault("button_disabled", false);
 	this.ensureDefault("button_placeholder_id", "");
+	this.ensureDefault("button_placeholder", null);
 	this.ensureDefault("button_cursor", SWFUpload.CURSOR.ARROW);
 	this.ensureDefault("button_window_mode", SWFUpload.WINDOW_MODE.WINDOW);
 	
@@ -153,6 +195,8 @@ SWFUpload.prototype.initSettings = function () {
 	this.ensureDefault("upload_success_handler", null);
 	this.ensureDefault("upload_complete_handler", null);
 	
+	this.ensureDefault("button_action_handler", null);
+	
 	this.ensureDefault("debug_handler", this.debugMessage);
 
 	this.ensureDefault("custom_settings", {});
@@ -163,6 +207,11 @@ SWFUpload.prototype.initSettings = function () {
 	// Update the flash url if needed
 	if (!!this.settings.prevent_swf_caching) {
 		this.settings.flash_url = this.settings.flash_url + (this.settings.flash_url.indexOf("?") < 0 ? "?" : "&") + "preventswfcaching=" + new Date().getTime();
+	}
+	
+	if (!this.settings.preserve_relative_urls) {
+		this.settings.upload_url = SWFUpload.completeURL(this.settings.upload_url);
+		this.settings.button_image_url = SWFUpload.completeURL(this.settings.button_image_url);
 	}
 	
 	delete this.ensureDefault;
@@ -178,14 +227,16 @@ SWFUpload.prototype.loadFlash = function () {
 	}
 
 	// Get the element where we will be placing the flash movie
-	targetElement = document.getElementById(this.settings.button_placeholder_id);
+	targetElement = document.getElementById(this.settings.button_placeholder_id) || this.settings.button_placeholder;
 
 	if (targetElement == undefined) {
 		throw "Could not find the placeholder element: " + this.settings.button_placeholder_id;
 	}
 
+	var wrapperType = (targetElement.currentStyle && targetElement.currentStyle["display"] || window.getComputedStyle && document.defaultView.getComputedStyle(targetElement, null).getPropertyValue("display")) !== "block" ? "span" : "div";
+	
 	// Append the container and load the flash
-	tempParent = document.createElement("div");
+	tempParent = document.createElement(wrapperType);
 	tempParent.innerHTML = this.getFlashHTML();	// Using innerHTML is non-standard but the only sensible way to dynamically add Flash in IE (and maybe other browsers)
 	targetElement.parentNode.replaceChild(tempParent.firstChild, targetElement);
 
@@ -222,6 +273,7 @@ SWFUpload.prototype.getFlashVars = function () {
 			"&amp;useQueryString=", encodeURIComponent(this.settings.use_query_string),
 			"&amp;requeueOnError=", encodeURIComponent(this.settings.requeue_on_error),
 			"&amp;httpSuccess=", encodeURIComponent(httpSuccessString),
+			"&amp;assumeSuccessTimeout=", encodeURIComponent(this.settings.assume_success_timeout),
 			"&amp;params=", encodeURIComponent(paramString),
 			"&amp;filePostName=", encodeURIComponent(this.settings.file_post_name),
 			"&amp;fileTypes=", encodeURIComponent(this.settings.file_types),
@@ -283,27 +335,19 @@ SWFUpload.prototype.destroy = function () {
 		// Make sure Flash is done before we try to remove it
 		this.cancelUpload(null, false);
 		
+		// Stop the external interface check from running
+		this.callFlash("StopExternalInterfaceCheck");
+		
+		var movieElement = this.cleanUp();
 
 		// Remove the SWFUpload DOM nodes
-		var movieElement = null;
-		movieElement = this.getMovieElement();
-		
-		if (movieElement && typeof(movieElement.CallFunction) === "unknown") { // We only want to do this in IE
-			// Loop through all the movie's properties and remove all function references (DOM/JS IE 6/7 memory leak workaround)
-			for (var i in movieElement) {
-				try {
-					if (typeof(movieElement[i]) === "function") {
-						movieElement[i] = null;
-					}
-				} catch (ex1) {}
-			}
-
+		if (movieElement) {
 			// Remove the Movie Element from the page
 			try {
 				movieElement.parentNode.removeChild(movieElement);
 			} catch (ex) {}
 		}
-		
+
 		// Remove IE form fix reference
 		window[this.movieName] = null;
 
@@ -341,6 +385,7 @@ SWFUpload.prototype.displayDebugInfo = function () {
 			"\t", "use_query_string:         ", this.settings.use_query_string.toString(), "\n",
 			"\t", "requeue_on_error:         ", this.settings.requeue_on_error.toString(), "\n",
 			"\t", "http_success:             ", this.settings.http_success.join(", "), "\n",
+			"\t", "assume_success_timeout:   ", this.settings.assume_success_timeout, "\n",
 			"\t", "file_post_name:           ", this.settings.file_post_name, "\n",
 			"\t", "post_params:              ", this.settings.post_params.toString(), "\n",
 			"\t", "file_types:               ", this.settings.file_types, "\n",
@@ -353,6 +398,7 @@ SWFUpload.prototype.displayDebugInfo = function () {
 			"\t", "prevent_swf_caching:      ", this.settings.prevent_swf_caching.toString(), "\n",
 
 			"\t", "button_placeholder_id:    ", this.settings.button_placeholder_id.toString(), "\n",
+			"\t", "button_placeholder:       ", (this.settings.button_placeholder ? "Set" : "Not Set"), "\n",
 			"\t", "button_image_url:         ", this.settings.button_image_url.toString(), "\n",
 			"\t", "button_width:             ", this.settings.button_width.toString(), "\n",
 			"\t", "button_height:            ", this.settings.button_height.toString(), "\n",
@@ -427,7 +473,6 @@ SWFUpload.prototype.callFlash = function (functionName, argumentArray) {
 	return returnValue;
 };
 
-
 /* *****************************
 	-- Flash control methods --
 	Your UI should use these
@@ -473,6 +518,15 @@ SWFUpload.prototype.cancelUpload = function (fileID, triggerErrorEvent) {
 SWFUpload.prototype.stopUpload = function () {
 	this.callFlash("StopUpload");
 };
+
+
+// Public: requeueUpload requeues any file. If the file is requeued or already queued true is returned.
+// If the file is not found or is currently uploading false is returned.  Requeuing a file bypasses the
+// file size, queue size, upload limit and other queue checks.  Certain files can't be requeued (e.g, invalid or zero bytes files).
+SWFUpload.prototype.requeueUpload = function (indexOrFileID) {
+	return this.callFlash("RequeueUpload", [indexOrFileID]);
+};
+
 
 /* ************************
  * Settings methods
@@ -595,6 +649,11 @@ SWFUpload.prototype.setHTTPSuccess = function (http_status_codes) {
 	this.callFlash("SetHTTPSuccess", [http_status_codes]);
 };
 
+// Public: setHTTPSuccess changes the http_success setting
+SWFUpload.prototype.setAssumeSuccessTimeout = function (timeout_seconds) {
+	this.settings.assume_success_timeout = timeout_seconds;
+	this.callFlash("SetAssumeSuccessTimeout", [timeout_seconds]);
+};
 
 // Public: setDebugEnabled changes the debug_enabled setting
 SWFUpload.prototype.setDebugEnabled = function (debugEnabled) {
@@ -755,17 +814,19 @@ SWFUpload.prototype.flashReady = function () {
 		return;
 	}
 
-	this.cleanUp(movieElement);
+	this.cleanUp();
 	
 	this.queueEvent("swfupload_loaded_handler");
 };
 
 // Private: removes Flash added fuctions to the DOM node to prevent memory leaks in IE.
 // This function is called by Flash each time the ExternalInterface functions are created.
-SWFUpload.prototype.cleanUp = function (movieElement) {
+SWFUpload.prototype.cleanUp = function () {
+	var movieElement = this.getMovieElement();
+	
 	// Pro-actively unhook all the Flash functions
 	try {
-		if (this.movieElement && typeof(movieElement.CallFunction) === "unknown") { // We only want to do this in IE
+		if (movieElement && typeof(movieElement.CallFunction) === "unknown") { // We only want to do this in IE
 			this.debug("Removing Flash functions hooks (this should only run in IE and should prevent memory leaks)");
 			for (var key in movieElement) {
 				try {
@@ -780,7 +841,7 @@ SWFUpload.prototype.cleanUp = function (movieElement) {
 	
 	}
 
-	// Fix Flashes own cleanup code so if the SWFMovie was removed from the page
+	// Fix Flashes own cleanup code so if the SWF Movie was removed from the page
 	// it doesn't display errors.
 	window["__flash__removeCallback"] = function (instance, name) {
 		try {
@@ -791,9 +852,14 @@ SWFUpload.prototype.cleanUp = function (movieElement) {
 		
 		}
 	};
-
+	
+	return movieElement;
 };
 
+/* When the button_action is set to JavaScript this event gets fired and executes the button_action_handler */
+SWFUpload.prototype.buttonAction = function () {
+	this.queueEvent("button_action_handler");
+};
 
 /* This is a chance to do something before the browse window opens */
 SWFUpload.prototype.fileDialogStart = function () {
@@ -816,8 +882,8 @@ SWFUpload.prototype.fileQueueError = function (file, errorCode, message) {
 
 /* Called after the file dialog has closed and the selected files have been queued.
 	You could call startUpload here if you want the queued files to begin uploading immediately. */
-SWFUpload.prototype.fileDialogComplete = function (numFilesSelected, numFilesQueued) {
-	this.queueEvent("file_dialog_complete_handler", [numFilesSelected, numFilesQueued]);
+SWFUpload.prototype.fileDialogComplete = function (numFilesSelected, numFilesQueued, numFilesInQueue) {
+	this.queueEvent("file_dialog_complete_handler", [numFilesSelected, numFilesQueued, numFilesInQueue]);
 };
 
 SWFUpload.prototype.uploadStart = function (file) {
@@ -857,9 +923,9 @@ SWFUpload.prototype.uploadError = function (file, errorCode, message) {
 	this.queueEvent("upload_error_handler", [file, errorCode, message]);
 };
 
-SWFUpload.prototype.uploadSuccess = function (file, serverData) {
+SWFUpload.prototype.uploadSuccess = function (file, serverData, responseReceived) {
 	file = this.unescapeFilePostParams(file);
-	this.queueEvent("upload_success_handler", [file, serverData]);
+	this.queueEvent("upload_success_handler", [file, serverData, responseReceived]);
 };
 
 SWFUpload.prototype.uploadComplete = function (file) {

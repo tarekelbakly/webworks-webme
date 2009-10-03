@@ -113,14 +113,6 @@ kfm.switchFilesMode=function(m){
 };
 kfm.build=function(){
 	var form_panel,form,right_column,directories,logs,logHeight=64,j,i,w,win,dirs,j,tmp,links;
-	kfm_addHook({name:"download", mode:0,"extensions":"all", writable:2, title:"download file", doFunction:function(files){
-			kfm_downloadSelectedFiles(files[0]);
-		}
-	});
-	if(!window.ie)kfm_addHook({name:"download", mode:1,"extensions":"all", writable:2, title:"download selected files", doFunction:function(files){
-			kfm_downloadSelectedFiles();
-		}
-	});
 	if(kfm_vars.permissions.file.rm)kfm_addHook({name:"remove", mode:2,extensions:"all", writable:1,title:kfm.lang.DeleteFile, doFunction:function(files){
 			if(files.length>1)kfm_deleteSelectedFiles();
 			else kfm_deleteFile(files[0]);
@@ -187,8 +179,9 @@ kfm.build=function(){
 				var ps=left_column.panels;
 				for(var i=0;i<ps.length;++i){
 					var p=document.getElementById(ps[i]);
+          var panel_name=ps[i];
 					if(!p.visible && !kfm_inArray(ps[i],kfm_hidden_panels))links.push({title:'Show panel '+p.panel_title, doFunction:function(){
-							kfm_addPanel(document.getElementById('kfm_left_column'),ps[i]);
+							kfm_addPanel(document.getElementById('kfm_left_column'),panel_name);
 						}
 					});
 				}
@@ -226,7 +219,11 @@ kfm.build=function(){
 			var header=document.createElement('div');
 			header.className='kfm_panel_header';
 			header.id='kfm_panel_header';
-			header.innerHTML='<span id="documents_loader"></span><span id="cwd_display"></span><span id="folder_info"></span>';
+      hhtml = '<span id="documents_loader"></span>' +
+        '<span id="cwd_display"></span>' + 
+        '<span id="folder_info"></span>';
+			if(kfm_vars.show_admin_link) hhtml+='<a href="admin/" id="admin_panel_link">Admin panel</a>';
+			header.innerHTML= hhtml;
 			var documents_body=document.createElement('div');
 			documents_body.id='documents_body';
 			right_column.appendChild(lselect);
@@ -448,8 +445,8 @@ function kfm_prompt(txt,val,fn){
 		kfm_modal_close();
 		window.inPrompt=0;
 		fn(v);
-		document.getElementById('kfm_prompt').focus();
 	}]]);
+	document.getElementById('kfm_prompt').focus();
 }
 function kfm_run_delayed(name,call){
 	name=name+'_timeout';
@@ -492,7 +489,7 @@ function kfm_pluginIframeShow(url){
 		$j(jDiv).slideDown('normal',function(){
 			var x=$j('body').width(),y=$j('body').height()-25;
 			$j(this).append(
-				'<iframe id="plugin_iframe_element" src="'+url+'&ifx='+x+'&ify='+y+'" style="width:100%;height:100%;"></iframe>'
+				'<iframe id="plugin_iframe_element" src="'+url+'" style="width:100%;height:100%;"></iframe>'
 			);
 		});
 	}else{
@@ -541,6 +538,3 @@ var kfm_regexps={
 	plus:/\+/g,
 	remove_filename_extension:/\.[^.]*$/
 }
-$j(document).ready(function(){
-	kfm.build();
-});

@@ -9,7 +9,7 @@ for(i=0;i<HookCategories.length;i++){
 	var cat=new kfm_context_category(catname);
 	context_categories[catname]=cat;
 }
-var kfm_imageExtensions=['jpg','jpeg','png','gif'];
+var kfm_imageExtensions=['jpg','png','gif','jpeg'];
 /* initialize arrays */
 var HooksSingleReadonly={};
 var HooksSingleWritable={};
@@ -190,13 +190,9 @@ function kfm_getDefaultOpener(files){
 		for(var i=0;i<hooks.length;++i){
 			if(hooks[i].name==plugin_name)return hooks[i];
 		}
-	}
-	if(kfm_vars.associations['all']){
+	}else if(kfm_vars.associations['all']){
 		var hooks=kfm_getLinks(files,true);
 		plugin_name=kfm_vars.associations['all'];
-		for(var i=0;i<hooks.length;++i){ // first, choose a plugin which is marked as "isDefault" if available
-			if(hooks[i].name==plugin_name && hooks[i].isDefault)return hooks[i];
-		}
 		for(var i=0;i<hooks.length;++i){
 			if(hooks[i].name==plugin_name)return hooks[i];
 		}

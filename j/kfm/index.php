@@ -55,34 +55,20 @@ if ($kfm->setting('startup_folder')) {
 }
 $kfm->setting('startupfolder_id',$kfm_startupfolder_id);
 // }
-// { file associations
-$ass_arr=array();
-function addAssociations($associations){
-	global $ass_arr;
-	if(!is_array($associations))return;
-	foreach($associations as $association){
-		if(strpos($association['extension'],',')!==false){
-			$exts=split(',',$association['extension']);
-			foreach($exts as $ext) $ass_arr[trim($ext)]=trim($association['plugin']);
-		}else{
-			$ass_arr[trim($association['extension'])]=trim($association['plugin']);
-		}
-	}
-}
 
 // First the user defined file associations
 if($kfm->user_id!=1 || $kfm->isAdmin() || !$kfm->setting('allow_user_file_associations')){
 	$associations=db_fetch_all('SELECT extension, plugin FROM '.KFM_DB_PREFIX.'plugin_extensions WHERE user_id='.$kfm->user_id);
-	addAssociations($associations);
+	$kfm->addAssociations($associations);
 }
 
-// Now the default file associations
+// Now overwrite users file associations with the default file associations
 $associations=db_fetch_all('SELECT extension, plugin FROM '.KFM_DB_PREFIX.'plugin_extensions WHERE user_id=1');
-addAssociations($associations);
+$kfm->addAssociations($associations);
 
 // To javascript object
 $ass_str='{';
-foreach($ass_arr as $ext=>$plugin)$ass_str.='"'.$ext.'":"'.$plugin.'",';
+foreach($kfm->associations as $ext=>$plugin)$ass_str.='"'.$ext.'":"'.$plugin.'",';
 $ass_str=rtrim($ass_str,', ').'}';
 // }
 // { startup selected files
@@ -134,15 +120,6 @@ if(!empty($_POST['kaejax']))kfm_kaejax_handle_client_request();
 		<style type="text/css">@import "themes/<?php echo $kfm->setting('theme'); ?>/css.php"; </style>
 		<style type="text/css">@import "plugins/css.php"; </style>
 		<title>KFM - Kae's File Manager</title>
-<?php // { get list of plugins
-$plugins = array();
-$h	   = opendir(KFM_BASE_PATH.'plugins');
-$tmp='';
-while (false!==($plugin=readdir($h))) {
-	if($plugin[0]=='.' || !is_dir($h.'/'.$plugin))continue;
- 	$plugins[] = $plugin;
-}	
-// } ?>
 	</head>
 	<body>
 		<div id="removeme">
@@ -170,7 +147,6 @@ if ($last_registration!=$today) {
 		echo '<img src="http://kfm.verens.com/extras/register.php?version='.urlencode(KFM_VERSION).
 			'&amp;domain_name='.urlencode($_SERVER['SERVER_NAME']).
 			'&amp;db_type='.$kfm_db_type.
-			'&amp;plugins='.join(',',$plugins).
 		'" />';
 	}
 // }
@@ -202,6 +178,7 @@ if ($last_registration!=$today) {
 				lang:'<?php echo $kfm_language; ?>',
 				subcontext_categories:<?php echo js_array($kfm->setting('subcontext_categories'),true);?>,
 				subcontext_size:<?php echo $kfm->setting('subcontext_size');?>,
+				show_admin_link:<?php echo $kfm_show_admin_link; ?>,
 				version:'<?php echo KFM_VERSION; ?>'
 			};
 			var kfm_widgets=[];
@@ -222,7 +199,7 @@ if ($last_registration!=$today) {
 			for(var i = 0;i<kfm_hidden_panels.length;++i)kfm_hidden_panels[i] = 'kfm_'+kfm_hidden_panels[i]+'_panel';
 		</script>
 <?php // } ?>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 		<script type="text/javascript" src="third-party/swfupload/swfupload.js"></script>
 		<script type="text/javascript" src="j/all.php"></script>
 		<script type="text/javascript" src="lang/<?php echo $kfm_language; ?>.js"></script>
@@ -246,6 +223,9 @@ if($pluginssrc!='')echo "<script type=\"text/javascript\"><!--\n$pluginssrc\n-->
 // } ?>
 <?php // { more JavaScript environment variables. These should be merged into the above set whenever possible ?>
 		<script type="text/javascript">
+      $j(document).ready(function(){
+	      kfm.build();
+      });
 			<?php echo kfm_kaejax_get_javascript(); ?>
 			<?php if(isset($_GET['kfm_caller_type']))echo 'window.kfm_caller_type="'.addslashes($_GET['kfm_caller_type']).'";'; ?>
 		</script>

@@ -45,18 +45,26 @@ if (ini_get('safe_mode')){
     exit;
 }
 if (!file_exists(KFM_BASE_PATH.'configuration.php')) {
-    echo '<em>Missing <code>configuration.php</code>!</em><p>If this is a fresh installation of KFM, then please copy <code>configuration.dist.php</code> to <code>configuration.php</code>, remove the settings you don\'t want to change, and edit the rest to your needs.</p><p>For examples of configuration, please visit http://kfm.verens.com/configuration</p>';
+    echo '<em>Missing <code>configuration.php</code>!</em><p>If this is a fresh installation of KFM, then please <strong>copy</strong> <code>configuration.dist.php</code> to <code>configuration.php</code>, remove the settings you don\'t want to change, and edit the rest to your needs.</p><p>For examples of configuration, please visit http://kfm.verens.com/configuration</p>';
     exit;
 }
 // }
+// { load the default config first, then load the custome config over it
+if(file_exists(KFM_BASE_PATH.'configuration.dist.php'))include KFM_BASE_PATH.'configuration.dist.php';
 require_once KFM_BASE_PATH.'configuration.php';
+if(!function_exists('kfm_admin_check')){
+	function kfm_admin_check(){
+		return true;
+	}
+}
+// }
 // { defines
 define('KFM_DB_PREFIX', $kfm_db_prefix);
 // }
 // { variables
 // structure
 $kfm->defaultSetting('kfm_url','/');
-$kfm->defaultSetting('file_url','url');
+$kfm->defaultSetting('file_url','secure');
 $kfm->defaultSetting('user_root_folder','');
 $kfm->defaultSetting('startup_folder','');
 $kfm->defaultSetting('hidden_panels',array('logs','file_details','directory_properties'));
@@ -130,7 +138,7 @@ if (file_exists(KFM_BASE_PATH.'api/config.php')) require KFM_BASE_PATH.'api/conf
 if (file_exists(KFM_BASE_PATH.'api/cms_hooks.php')) require KFM_BASE_PATH.'api/cms_hooks.php';
 else require KFM_BASE_PATH.'api/cms_hooks.php.dist';
 // }
-$rootdir = strpos($kfm_userfiles_address, './')===0?KFM_BASE_PATH.$kfm_userfiles_address:$kfm_userfiles_address;
+$rootdir = strpos($kfm_userfiles_address, './')===0?KFM_BASE_PATH.$kfm_userfiles_address:$kfm_userfiles_address.'/';
 
 if (!is_dir($rootdir))mkdir($rootdir, 0755);
 if (!is_dir($rootdir)) {
@@ -449,7 +457,7 @@ if ($kfm_language=='') {
 }
 // }
 // {  check the kfm_preferred_languages
-if ($kfm_language=='' && isset($kfm_preferred_languages))foreach($kfm_preferred_languages as $lang)if (in_array($lang, $kfm_available_languages)) {
+if ($kfm_language=='')foreach($kfm->setting('preferred_languages') as $lang)if (in_array($lang, $kfm_available_languages)) {
     $kfm_language = $lang;
     break;
 }

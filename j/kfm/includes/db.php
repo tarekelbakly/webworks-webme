@@ -2,7 +2,7 @@
 class DB{
 	var $db=0;
 	var $dbtype='';
-	function __construct($dsn=array()){
+	function DB($dsn=array()){
 		switch($dsn['type']){
 			case 'sqlitepdo':{
 				require(KFM_BASE_PATH.'includes/db.sqlite.pdo.php');
@@ -14,6 +14,9 @@ class DB{
 				exit('error: unknown database type "'.$dsn['type'].'"');
 			}
 		}
+	}
+	function __construct($dsn=array()){
+		$this->DB($dsn);
 	}
 	function exec($query){
 		$this->db->query($query);
