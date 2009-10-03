@@ -49,3 +49,4 @@ $kfm_allow_multiple_file_returns=0;
 $kfm_banned_files=array('thumbs.db','/^\./');
 $kfm_date_format='%Y-%M-%d'; define('ERROR_LOG_LEVEL',1);
 $kfm_server_hours_offset = 1;
+$kfm_default_file_selection_handler='return_url';

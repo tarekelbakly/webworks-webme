@@ -14,3 +14,5 @@ if(($_SERVER['PHP_SELF']!='/j/kfm/get.php' && $_SERVER['PHP_SELF']!='/j/kfm/get.
 $kfm_api_auth_override=true;
 $kfm->defaultSetting('theme', 'default');
 $kfm->defaultSetting('file_handler','return');
+$kfm->defaultSetting('file_url','filename');
+$kfm->defaultSetting('return_file_id_to_cms',$kfm_return_file_id_to_cms);
