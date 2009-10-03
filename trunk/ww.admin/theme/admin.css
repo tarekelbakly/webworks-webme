@@ -82,6 +82,7 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 #ajaxmenu_linkam_misc{padding-left:59px !important;background:url(/ww.admin/theme/icons_48.png) 0 -96px no-repeat;}
 #ajaxmenu_linkam_users_and_admins{background:url(/ww.admin/theme/icons_48.png) 0 -144px no-repeat;}
 #ajaxmenu_linkam_products{background:url(/ww.admin/theme/icons_48.png) 0 -192px no-repeat; }
+#ajaxmenu_linkam_communication{background:url(/ww.admin/theme/icons_48.png) 0 -382px no-repeat; }
 * html #ajaxmenu_linkam_pages{background-image:url(/ww.admin/theme/icons_48.gif)}
 * html #ajaxmenu_linkam_polls{ background-image: url(/ww.admin/theme/icons_48.gif)}
 * html #ajaxmenu_linkam_siteoptions{ background-image: url(/ww.admin/theme/icons_48.gif)}

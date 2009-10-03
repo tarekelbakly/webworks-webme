@@ -101,7 +101,7 @@ function kfm_fileUploadForm_single(){
 	if(!window.ie)$j.event.add(submit,'click',function(e){
 		e=new Event(e);
 		if(e.rightClick)return;
-		setTimeout('document.getElementById("kfm_file").type="text";document.getElementById("kfm_file").type="file"',1);
+		setTimeout('document.getElementById("kfm_file").type="text";$j("#kfm_file").attr("type","file");',1);
 	});
 	var input=newInput('kfm_file','file');
 	$j.event.add(input,'keyup',kfm_uploadPanel_checkForZip);
@@ -139,7 +139,7 @@ function kfm_fileUploadForm_multiple(){
 	setTimeout(function(){ // delay the creation of the swfupload object, until the browser registers #swfupload_browse_button
 		window.swfUpload = new SWFUpload({
 			// { Backend Settings
-			upload_url: "../../../upload.php",	// Relative to the SWF file or absolute
+			upload_url: "upload.php",	// Relative to the SWF file or absolute
 			post_params: {
 				"PHPSESSID"  : window.phpsession,
 				"swf"        : 1,
@@ -154,7 +154,7 @@ function kfm_fileUploadForm_multiple(){
 			// }
 			// { Event handlers
 			file_queue_error_handler : function(a){
-				alert(a);
+				kfm_showMessage("error: "+a.name+" could not be uploaded");
 			},
 			file_dialog_complete_handler:function(a){
 				var stats=this.getStats();
