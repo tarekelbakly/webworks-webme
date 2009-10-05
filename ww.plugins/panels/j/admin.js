@@ -48,10 +48,16 @@ function showWidgetForm(w){
 		.appendTo(form);
 }
 function buildRightWidget(p){
-	var widget=$('<div class="widget-wrapper"><h4><span class="name">'+p.type+'</span></h4></div>')
+	var widget=$('<div class="widget-wrapper"></div>')
 		.data('widget',p);
+	var h4=$('<h4></h4>')
+		.appendTo(widget);
+	var name=p.name||p.type;
+	$('<span class="name">'+name+'</span>')
+		.click(widget_rename)
+		.appendTo(h4);
 	$('<span class="panel-opener">&darr;</span>')
-		.appendTo($('h4',widget))
+		.appendTo(h4)
 		.click(showWidgetForm);
 	return widget;
 }
@@ -141,6 +147,16 @@ function widgets_init(widget_column){
 			.data('widget',p);
 		ww.widgetsByName[p.type]=p;
 	}
+}
+function widget_rename(ev){
+	var h4=$(ev.target);
+	var p=h4.closest('.widget-wrapper').data('widget');
+	var newName=prompt('What would you like to rename the widget to?',p.name||p.type);
+	if(!newName)return;
+	p.name=newName;
+	h4.closest('.widget-wrapper').data('widget',p);
+	updateWidgets($(h4).closest('.panel-wrapper'));
+	h4.text(newName);
 }
 $(document).ready(function(){
 	var panel_column=$('#panels');
