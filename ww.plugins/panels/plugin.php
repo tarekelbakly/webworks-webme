@@ -32,7 +32,7 @@ function showPanel($vars){
 	$h='';
 	foreach($widgets->widgets as $widget){
 		if(isset($widget->visibility)){
-			if(in_array($GLOBALS['PAGEDATA']->id,$widget->visibility))continue;
+			if(!in_array($GLOBALS['PAGEDATA']->id,$widget->visibility))continue;
 		}
 		if(isset($PLUGINS[$widget->type])){
 			if(isset($PLUGINS[$widget->type]['frontend']['widget'])){
