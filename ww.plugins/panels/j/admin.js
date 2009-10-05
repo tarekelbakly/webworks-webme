@@ -65,6 +65,10 @@ function widget_visibility(ev){
 		d.dialog({
 			width:300,
 			height:400,
+			close:function(){
+				$('#panel_visibility_pages').remove();
+				d.remove();
+			},
 			buttons:{
 				'Save':function(){
 					var arr=[];
@@ -74,14 +78,10 @@ function widget_visibility(ev){
 					wd.visibility=arr;
 					w.data('widget',wd);
 					updateWidgets(w.closest('.panel-wrapper'));
-					$('#panel_visibility_pages').remove();
 					d.dialog('close');
-					d.remove();
 				},
 				'Close':function(){
-					$('#panel_visibility_pages').remove();
 					d.dialog('close');
-					d.remove();
 				}
 			}
 		});
@@ -97,6 +97,10 @@ function panel_visibility(id){
 		d.dialog({
 			width:300,
 			height:400,
+			close:function(){
+				$('#panel_visibility_pages').remove();
+				d.remove();
+			},
 			buttons:{
 				'Save':function(){
 					var arr=[];
@@ -104,14 +108,10 @@ function panel_visibility(id){
 						arr.push(this.value);
 					});
 					$.get('/ww.plugins/panels/admin/save-visibility.php?id='+id+'&pages='+arr);
-					$('#panel_visibility_pages').remove();
 					d.dialog('close');
-					d.remove();
 				},
 				'Close':function(){
-					$('#panel_visibility_pages').remove();
 					d.dialog('close');
-					d.remove();
 				}
 			}
 		});
