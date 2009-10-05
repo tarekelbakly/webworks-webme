@@ -65,7 +65,7 @@ var ig={
 var Lightbox={
 	hideFrame:function(){
 		Lightbox.frameVisible=0;
-		delEl(['lightbox_frame','lightbox_shader']);
+		delEl(['lightbox_frame','lightbox_shader','lightbox_wrapper']);
 	},
 	initialize:function(data){
 		this.data=data;
