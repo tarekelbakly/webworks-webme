@@ -1,31 +1,37 @@
 <?php
 /*
-        Webme News Plugin v0.1
-        File: frontend/display.php
-        Developer: Conor Mac Aoidh <http://macaoidh.name>
-        Report Bugs: <conor@macaoidh.name>
+	Webme News Plugin v0.1
+	File: frontend/display.php
+	Developers:
+		Conor Mac Aoidh  http://macaoidh.name/
+		Kae Verens       http://verens.com/
+	Report Bugs:
+		Kae Verens       kae@verens.com
+		Conor Mac Aoidh  conor@macaoidh.name
 */
 
-$p=@$_GET['news_page'];
-if($p==0) $p=1;
-$l=$p*5;
-$m=$l-5;
-$limit=$m.','.$l;
+$items_per_page=5;
+$p=isset($_REQUEST['news_page'])?(int)$_REQUEST['news_page']:0;
+if($p<0) $p=0;
 
-$q=dbAll('select name,body,cdate from pages where parent='.$GLOBALS['id'].' order by cdate desc limit '.$limit);
-$n=count($q);
+$num_stories=dbOne('select count(id) as num from pages where parent='.$GLOBALS['id'],'num');
+$rs=dbAll('select * from pages where parent='.$GLOBALS['id']." order by cdate desc limit $p,$items_per_page");
 
-$html='';
+$nextprev=array();
+$nextprev[]='<span class="page_n_of_n">page '.(1+floor($p/$items_per_page)).' of '.(ceil($num_stories/$items_per_page)).'</span>';
+if($p)$nextprev[]='<a class="prev" href="?news_page='.($p-$items_per_page).'">Previous Page</a>';
+if($p+$items_per_page < $num_stories)$nextprev[]='<a class="next" href="?news_page='.($p+$items_per_page).'">Next Page</a>';
+$nextprev='<div class="nextprev">'.join(' | ', $nextprev).'</div>';
 
-if($n==5) $html.='<p style="float:right;margin-top:-20px"><a href="?news_page='.($p+1).'">Next Page</a></p>';
-if($p>1) $html.='<p style="margin-top:20px"><a href="?news_page='.($p-1).'">Previous Page</a></p>';
+$html=$nextprev;
 
-$html.='<ul style="list-style-type:none;margin:40px 10px">';
-for($i=0;$i<=($n-1);$i++){
-	$url='/'.str_replace(' ','-',$q[$i]['name']);
-        $html.='<li style="margin:20px 0"><h2><a href="'.$url.'">'.$q[$i]['name'].'</a></h2><p>'.substr(preg_replace('/<[^>]*>/','',$q[$i]['body']),0,600).'...
-		<p><a href="'.$url.'">Posted on '.substr($q[$i]['cdate'],0,-9).'</a></p></li>';
+$links=array();
+foreach($rs as $r){
+	$page=Page::getInstance($r['id'],$r);
+	$links[]='<h2><a href="'.$page->getRelativeURL().'">'.htmlspecialchars($page->name).'</a></h2>'
+		.'<p>'.substr(preg_replace('/<[^>]*>/','',preg_replace('#<h1>[^<]*</h1>#','',$page->body)),0,600).'...</p>'
+		.'<a href="'.$page->getRelativeURL().'">posted on '.date_m2h($page->cdate).'</a>';
 }
-$html.='</ul>';
-if($n==5) $html.='<p style="float:right;margin-bottom:20px"><a href="?news_page='.($p+1).'">Next Page</a></p>';
-if($p>1) $html.='<p style="float:left;margin-bottom:20px"><a href="?news_page='.($p-1).'">Previous Page</a></p>';
+$html.='<ul class="news_page_contents"><li>'.join('</li><li>',$links).'</ul>';
+
+$html.=$nextprev;
