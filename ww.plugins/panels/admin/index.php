@@ -8,7 +8,7 @@ echo '<script>';
 echo 'ww.panels=[';
 $ps=array();
 $rs=dbAll('select * from panels order by name');
-foreach($rs as $r)$ps[]='{id:'.$r['id'].',name:"'.$r['name'].'",widgets:'.$r['body'].'}';
+foreach($rs as $r)$ps[]='{id:'.$r['id'].',disabled:'.$r['disabled'].',name:"'.$r['name'].'",widgets:'.$r['body'].'}';
 echo join(',',$ps);
 echo '];';
 // }
@@ -31,6 +31,5 @@ echo join(',',$ws);
 echo '};';
 // }
 echo '</script><script src="/ww.plugins/panels/j/admin.js"></script>';
-// echo '<script src="http://inlinemultiselect.googlecode.com/files/jquery.inlinemultiselect.min.js"></script>';
 echo '<script src="/ww.plugins/panels/j/jquery.inlinemultiselect.js"></script>';
 // }

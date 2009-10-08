@@ -47,6 +47,13 @@
 	-moz-border-radius:5px;
 	margin-bottom:10px;
 }
+.panel-wrapper.disabled h4{
+	background:#666;
+	color:#999;
+}
+.panel-wrapper.disabled{
+	background:#ccc;
+}
 .right-column{
 	width:300px;
 	float:right;
@@ -66,6 +73,13 @@
 .widget-wrapper{
 	border:1px solid #416BA7;
 	-moz-border-radius:5px;
+}
+.widget-wrapper.disabled h4{
+	background:#666;
+	color:#999;
+}
+.widget-wrapper.disabled{
+	background:#ccc;
 }
 
 

@@ -23,6 +23,10 @@ if($version==2){ // add 'visibility' field
 	dbQuery('alter table panels add visibility text');
 	$version=3;
 }
+if($version==3){ // add "disabled" field
+	dbQuery('alter table panels add disabled smallint default 0');
+	$version=4;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

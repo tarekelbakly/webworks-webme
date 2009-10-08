@@ -46,9 +46,13 @@ function showWidgetForm(w){
 	$('<a href="javascript:;">visibility</a>')
 		.click(widget_visibility)
 		.appendTo(form);
+	$('<span>, </span>').appendTo(form);
+	$('<a class="disabled" href="javascript:;">'+(p.disabled?'disabled':'enabled')+'</a>')
+		.click(widget_toggle_disabled)
+		.appendTo(form);
 }
 function buildRightWidget(p){
-	var widget=$('<div class="widget-wrapper"></div>')
+	var widget=$('<div class="widget-wrapper '+(p.disabled?'disabled':'enabled')+'"></div>')
 		.data('widget',p);
 	var h4=$('<h4></h4>')
 		.appendTo(widget);
@@ -60,6 +64,16 @@ function buildRightWidget(p){
 		.appendTo(h4)
 		.click(showWidgetForm);
 	return widget;
+}
+function widget_toggle_disabled(ev){
+	var el=ev.target,vis=[];
+	var w=$(el).closest('.widget-wrapper');
+	var p=w.data('widget');
+	p.disabled=p.disabled?0:1;
+	w.removeClass().addClass('widget-wrapper '+(p.disabled?'disabled':'enabled'));
+	$('.disabled',w).text(p.disabled?'disabled':'enabled');
+	w.data('widget',p);
+	updateWidgets(w.closest('.panel-wrapper'));
 }
 function widget_visibility(ev){
 	var el=ev.target,vis=[];
@@ -139,16 +153,29 @@ function panel_visibility(id){
 function panels_init(panel_column){
 	for(var i=0;i<ww.panels.length;++i){
 		var p=ww.panels[i];
-		$('<div class="panel-wrapper" id="panel'+p.id+'"><h4><span class="name">'
-				+p.name+'</span></h4><span class="controls" style="display:none">'
-				+'<a title="remove panel" href="javascript:panel_remove('
-				+i+');" class="remove">remove</a>, '
-				+'<a href="javascript:panel_visibility('
-				+p.id+');" class="visibility">visibility</a></span></div>'
+		$('<div class="panel-wrapper '+(p.disabled?'disabled':'enabled')+'" id="panel'+p.id+'">'
+				+'<h4><span class="name">'+p.name+'</span></h4>'
+				+'<span class="controls" style="display:none">'
+					+'<a title="remove panel" href="javascript:panel_remove('
+					  +i+');" class="remove">remove</a>, '
+					+'<a href="javascript:panel_visibility('
+					  +p.id+');" class="visibility">visibility</a>, '
+					+'<a href="javascript:panel_toggle_disabled('
+					  +i+');" class="disabled">'+(p.disabled?'disabled':'enabled')+'</a>'
+				+'</span></div>'
 			)
 			.data('widgets',p.widgets.widgets)
 			.appendTo(panel_column);
 	}
+}
+function panel_toggle_disabled(i){
+	var p=ww.panels[i];
+	p.disabled=p.disabled?0:1;
+	var panel=$('#panel'+p.id);
+	panel.removeClass().addClass('panel-wrapper '+(p.disabled?'disabled':'enabled'));
+	$('.controls .disabled',panel).text(p.disabled?'disabled':'enabled');
+	ww.panels[i]=p;
+	$.get('/ww.plugins/panels/admin/save-disabled.php?id='+p.id+'&disabled='+p.disabled);
 }
 function widgets_init(widget_column){
 	for(var i=0;i<ww.widgets.length;++i){

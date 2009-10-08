@@ -14,16 +14,17 @@ $plugin=array(
 			)
 		)
 	),
-	'version'=>3
+	'version'=>4
 );
 function showPanel($vars){
 	global $PLUGINS;
 	$name=isset($vars['name'])?$vars['name']:'';
-	$p=dbRow('select visibility,body from panels where name="'.addslashes($name).'" limit 1');
+	$p=dbRow('select visibility,disabled,body from panels where name="'.addslashes($name).'" limit 1');
 	if(!$p){
 		dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
 		return '';
 	}
+	if($p['disabled'])return '';
 	if($p['visibility'] && $p['visibility']!='[]'){
 		$visibility=json_decode($p['visibility']);
 		if(!in_array($GLOBALS['PAGEDATA']->id,$visibility))return '';
@@ -31,7 +32,8 @@ function showPanel($vars){
 	$widgets=json_decode($p['body']);
 	$h='';
 	foreach($widgets->widgets as $widget){
-		if(isset($widget->visibility)){
+		if(isset($widget->disabled) && $widget->disabled)continue;
+		if(isset($widget->visibility) && count($widget->visibility)){
 			if(!in_array($GLOBALS['PAGEDATA']->id,$widget->visibility))continue;
 		}
 		if(isset($PLUGINS[$widget->type])){
