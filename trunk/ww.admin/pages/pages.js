@@ -10,9 +10,9 @@ function pages_delete(){
 	});
 	return false;
 }
-function pages_new(){
-	p=$(this)[0].id.replace(/pages_n/,'');
-	$('<form id="newpage_dialog" action="/ww.admin/index.php" method="post"><input type="hidden" name="action" value="Insert Page Details" /><input type="hidden" name="special[1]" value="1" /><input type="hidden" name="newpage_dialog" value="1" /><input type="hidden" name="parent" value="'+p+'" /><table><tr><th>Name</th><td><input name="name" /></td></tr><tr><th>Page Type</th><td><select name="type"><option value="0">normal</option></select></td></tr></table></form>').dialog({
+function pages_new(p){
+	if(!p)p=$(this)[0].id.replace(/pages_n/,'');
+	$('<form id="newpage_dialog" action="/ww.admin/pages.php" method="post"><input type="hidden" name="prefill_body_with_title_as_header" value="1" /><input type="hidden" name="action" value="Insert Page Details" /><input type="hidden" name="special[1]" value="1" /><input type="hidden" name="newpage_dialog" value="1" /><input type="hidden" name="parent" value="'+p+'" /><table><tr><th>Name</th><td><input name="name" /></td></tr><tr><th>Page Type</th><td><select name="type"><option value="0">normal</option></select></td></tr></table></form>').dialog({
 		modal:true,
 		buttons:{
 			'Create Page': function() {
