@@ -1,7 +1,11 @@
 <?php
 if(allowedToEditPage($parent)){
 	include 'pages/pages.action.common.php';
-	$name=addslashes(getVar('name'));
+	$name=$_REQUEST['name'];
+	if(isset($_REQUEST['prefill_body_with_title_as_header']))$body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
+	else if(isset($_REQUEST['body']))$body=$_REQUEST['body'];
+	else $body='';
+	$name=addslashes($name);
 	$pid=(int)$_REQUEST['parent'];
 	if(dbQuery("select id from pages where name='$name' and parent=$pid")->rowCount()){
 		$i=2;
@@ -12,19 +16,7 @@ if(allowedToEditPage($parent)){
 	// { variables
 	$template=getVar('template');
 	$type=getVar('type');
-	$body=str_replace(
-		array(
-			'<u />',"</ul>\r\n<ul>",'<u></u>',' align="center"','margin: 0cm 0cm 0pt;',
-			'class="Bodytext"','<span>&nbsp; </span>',' lang="EN-US"',' lang="EN-IE"',' class="MsoNormal"',
-			'style=""','bgstyle="color:','bgcolor="',' lang="EN-GB"'),
-		array(
-			'','','','','margin:0;',
-			'','','&nbsp;','','','',
-			'','style="background:','style="background:',''),
-		getVar('body')
-	);
 	$title=isset($_REQUEST['title'])?addslashes($_REQUEST['title']):'';
-	$body=preg_replace('#</?([ovw]|st1):[^>]*>#','',$body);
 	$keywords=getVar('keywords');
 	$description=getVar('description');
 	$importance=(float)getVar('importance');
@@ -41,7 +33,7 @@ if(allowedToEditPage($parent)){
 	else{
 		$ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;
 	}
-	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",body="'.addslashes(sanitise_html(getVar('body'))).'",type="'.$type.'"';
+	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",body="'.addslashes(sanitise_html($body)).'",type="'.$type.'"';
 	$q.=',parent='.$pid;
 	if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
 	dbQuery($q);
