@@ -97,6 +97,15 @@ function widget_visibility(ev){
 		});
 	});
 }
+function panel_remove(i){
+	var p=ww.panels[i];
+	var id=p.id;
+	if(!confirm('Are you sure you want to delete this panel?'))return;
+	if(!confirm('Just double-checking... deleting this panel will remove the configurations of its contained widgets. Are you /sure/ you want to remove this? Note that your panel will be recreated (without its widgets) if the site theme has it defined.'))return;
+	$.get('/ww.plugins/panels/admin/remove-panel.php?id='+p.id,function(){
+		document.location='/ww.admin/plugin.php?_plugin=panels';
+	});
+}
 function panel_visibility(id){
 	$.get('/ww.plugins/panels/admin/get-visibility.php',{'id':id},function(options){
 		var d=$('<form><p>This panel will be visible in <select name="panel_visibility_pages[]" multiple="multiple">'+options+'</select>. If you want it to be visible in all pages, please choose <b>none</b> to indicate that no filtering should take place.</p></form>');
@@ -131,9 +140,11 @@ function panels_init(panel_column){
 	for(var i=0;i<ww.panels.length;++i){
 		var p=ww.panels[i];
 		$('<div class="panel-wrapper" id="panel'+p.id+'"><h4><span class="name">'
-				+p.name+'</span></h4>'
+				+p.name+'</span></h4><span class="controls" style="display:none">'
+				+'<a title="remove panel" href="javascript:panel_remove('
+				+i+');" class="remove">remove</a>, '
 				+'<a href="javascript:panel_visibility('
-				+p.id+')" class="visibility" style="display:none">visibility</a></div>'
+				+p.id+');" class="visibility">visibility</a></span></div>'
 			)
 			.data('widgets',p.widgets.widgets)
 			.appendTo(panel_column);
@@ -170,10 +181,10 @@ $(document).ready(function(){
 			var $this=$(this);
 			var panel=$this.closest('div');
 			if($('.panel-body',panel).length){
-				$('.visibility',panel).css('display','none');
+				$('.controls',panel).css('display','none');
 				return $('.panel-body',panel).remove();
 			}
-			$('.visibility',panel).css('display','block');
+			$('.controls',panel).css('display','block');
 			var widgets_container=$('<div class="panel-body"></div>');
 			widgets_container.appendTo(panel);
 			var widgets=panel.data('widgets');
