@@ -19,7 +19,7 @@ function formDisplaySend($page,$vars){
 				break;
 			}
 			case 'date':case 'ccdate':{
-				$val=date_m2h(selectDate($name,'get'));
+				$val=date_m2h($_REQUEST[$name]);
 				if($r2['type']=='ccdate')$val=preg_replace('#.* ([a-zA-Z]*, [0-9]+)#',"$1",$val);
 				$values[$r2['name']]=$val;
 				$plaintext.=htmlspecialchars($r2['name'])."\n".htmlspecialchars($val).$separator;
@@ -117,6 +117,8 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 				// }
 			}
 		}
+		if(!isset($_REQUEST[$name]))$_REQUEST[$name]='';
+		echo $r2['type'];
 		switch($r2['type']){
 			case 'checkbox': {
 				if($only_show_contents)$d=$_REQUEST[$name];
@@ -128,11 +130,17 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 				break;
 			}
 			case 'ccdate': {
-				$d=$only_show_contents?selectdate($name,'get',0):selectdate($name,'ccdate',selectdate($name,'get'));
+				if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m');
+				$d=$only_show_contents?
+					preg_replace('#.* ([a-zA-Z]*, [0-9]+)#',"$1",date_m2h($_REQUEST[$name])):
+					'<input name="'.$name.'" value="'.$_REQUEST[$name].'" class="ccdate" />';
 				break;
 			}
 			case 'date': {
-				$d=$only_show_contents?date_m2h(selectdate($name,'get')):selectdate($name,'date',selectdate($name,'get'));
+				if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m-d');
+				$d=$only_show_contents?
+					date_m2h($_REQUEST[$name]):
+					'<input name="'.$name.'" value="'.$_REQUEST[$name].'" class="date" />';
 				break;
 			}
 			case 'email':{
@@ -196,6 +204,14 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 	if(!$vars['forms_template']||$vars['forms_template']=='&nbsp;')$c.='</th></tr></table>';
 	$c.='</fieldset>';
 	if(!$only_show_contents && $show_submit)$c.='</form>';
+	$c.='<script>$(document).ready(function(){'
+		.'$(".date").datepicker({'
+			.'"dateFormat":"yy-mm-dd"'
+		.'});'
+		.'$(".ccdate").datepicker({'
+			.'"dateFormat":"yy-mm"'
+		.'});'
+	.'});</script>';
 	return $c;
 }
 function form_saveValues($formid,$values){
@@ -217,7 +233,7 @@ function form_getErrors($form_id){
 				break;
 			}
 			case 'date':case 'ccdate':{
-				$val=date_m2h(selectDate($name,'get'));
+				$val=date_m2h($_REQUEST[$name]);
 				if($r2['type']=='ccdate')$val=preg_replace('#.* ([a-zA-Z]*, [0-9]+)#',"$1",$val);
 				break;
 			}
@@ -250,7 +266,7 @@ function form_getValues($formid){
 				break;
 			}
 			case 'date':case 'ccdate':{
-				$val=date_m2h(selectDate($name,'get'));
+				$val=date_m2h($_REQUEST[$name]);
 				if($r2['type']=='ccdate')$val=preg_replace('#.* ([a-zA-Z]*, [0-9]+)#',"$1",$val);
 				$values[$r2['name']]=$val;
 				break;

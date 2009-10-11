@@ -32,9 +32,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
 else $id=0;
 echo '<a href="javascript:;" id="content_snippet_editlink_'.$id.'" class="content_snippet_editlink">view or edit snippet</a>';
-if($id){
-	echo '<div id="content_snippet_preview_'.$id.'"></div>';
-}
 ?>
 <script>
 if(!ww.content_snippet)ww.content_snippet={
@@ -86,9 +83,4 @@ $('.content_snippet_editlink').each(function(){
 	$(this).click(content_snippet_edit);
 	this.content_click_added=true;
 })
-<?php
-if($id){
-	echo '$("#content_snippet_preview_'.$id.'").load("/ww.plugins/content-snippet/admin/get_text_preview.php?id='.$id.'")';
-}
-?>
 </script>
