@@ -6,7 +6,7 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<23)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<25)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 $page=getVar('page');
