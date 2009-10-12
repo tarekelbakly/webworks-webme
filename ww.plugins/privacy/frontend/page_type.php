@@ -144,12 +144,9 @@ function userregistration_register(){
 		$r=dbRow("SELECT * FROM site_vars WHERE name='user_discount'");
 		$discount=(float)$r['value'];
 		$hash=base64_encode(sha1(rand(0,65000),true));
-		dbQuery('insert into user_accounts set 
-			name="'.$name.'",
-			password=md5("'.$password.'"),
-			email="'.$email.'",
-			verification_hash="'.$hash.'",
-			active=0');
+		$sql='insert into user_accounts set name="'.$name.'", password=md5("'.$password.'"), email="'.$email.'", verification_hash="'.$hash.'", active=0';
+echo $sql;
+		dbQuery($sql);
 		$page=$GLOBALS['PAGEDATA'];
 		$sitedomain=$GLOBALS['sitedomain'];
 		$recipientEmail=$DBVARS['recipientEmail'];
