@@ -118,7 +118,6 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 			}
 		}
 		if(!isset($_REQUEST[$name]))$_REQUEST[$name]='';
-		echo $r2['type'];
 		switch($r2['type']){
 			case 'checkbox': {
 				if($only_show_contents)$d=$_REQUEST[$name];
