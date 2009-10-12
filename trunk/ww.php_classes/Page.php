@@ -149,7 +149,6 @@ class Page{
 			}
 		}
 		foreach($pvq as $pvr)$this->vars[$pvr['name']]=$pvr['value'];
-		if(isset($_SESSION['os_country']) && $_SESSION['os_country'] && isset($this->vars['banned_countries']) && $this->vars['banned_countries'] && strpos($this->vars['banned_countries'],$_SESSION['os_country'])!==false)$this->banned=true;
 		return $this;
 	}
 }

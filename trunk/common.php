@@ -123,7 +123,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 		$USERGROUPS = array();
 		$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
 		if($rs)foreach($rs as $r){
-			$USERGROUPS[$r['name']] = 1;
+			$USERGROUPS[$r['name']] = $r['id'];
 		}
 		$_SESSION['userdata']['groups']=$USERGROUPS;
 		// }

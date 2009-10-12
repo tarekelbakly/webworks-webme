@@ -220,7 +220,7 @@ else{
 	// { Advanced Options
 	echo '<div class="tabPage"><h2>'.__('Advanced Options').'</h2>';
 	echo '<table>';
-	echo '<td width="33%">';
+	echo '<td>';
 	// { metadata 
 	echo '<h4>'.__('MetaData').'</h4><table>';
 	echo '<tr><th>'.__('keywords').'</th><td>'.wInput('keywords','',htmlspecialchars($page['keywords'])).'</td></tr>';
@@ -240,7 +240,7 @@ else{
 	echo '</td></tr>';
 	echo '</table>';
 	// }
-	echo '</td><td width="33%">';
+	echo '</td><td>';
 	// { special
 	echo '<h4>'.__('Special').'</h4>';
 	$specials=array(__('Is Home Page'),__('Does not appear in navigation'),'','','','',__('Allow public comments'));
@@ -258,18 +258,19 @@ else{
 	echo '<tr><th colspan="2">'.__('Recursively update page templates').'</th><td><input type="checkbox" name="recursively_update_page_templates" /></td></tr>';
 	echo '</table>';
 	// }
-	echo '</td><td width="34%">';
-	// { page not visible in
-	echo '<h4>'.__('Hide this page in ...').'</h4>';
-	$c=new CountriesList();
-	if(isset($page_vars['banned_countries']) && $page_vars['banned_countries']!='')$c->setSelected(explode(',',$page_vars['banned_countries']));
-	echo $c->getSelectbox('banned_countries[]',30,8);
-	// }
 	echo '</td></tr></table></div>';
+	// }
+	// { tabs added by plugins
+	foreach($PLUGINS as $n=>$p){
+		if(isset($p['admin']['page_panel'])){
+			echo '<div class="tabPage"><h2>'.$p['admin']['page_panel']['name'].'</h2>';
+			$p['admin']['page_panel']['function']($page,$page_vars);
+			echo '</div>';
+		}
+	}
 	// }
 	echo '</div>';
 	if($edit)echo '<a href="javascript:admin_editPermissions(1,'.$id.')" class="pagePermissions"></a>';
 	echo wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details')));
-	echo '</div>';
 	echo '</form>';
 }

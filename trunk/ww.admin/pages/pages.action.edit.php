@@ -79,10 +79,10 @@ if(allowedToEditPage($id)){
 	// { page_vars
 	dbQuery('delete from page_vars where page_id="'.$id.'"');
 	$pagevars=isset($_REQUEST['page_vars'])?$_REQUEST['page_vars']:array();
-	if(isset($_REQUEST['banned_countries']) && is_array($_REQUEST['banned_countries'])){
-		$pagevars['banned_countries']=join(',',$_REQUEST['banned_countries']);
+	if(is_array($pagevars))foreach($pagevars as $k=>$v){
+		if(is_array($v))$v=json_encode($v);
+		dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
 	}
-	if(is_array($pagevars))foreach($pagevars as $k=>$v)dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');
 	// }
 	if(isset($_REQUEST['recursively_update_page_templates']))recursively_update_page_templates($id,$template);
 	if($_POST['type']==4){
