@@ -6,7 +6,7 @@ if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	header('Location: https://www.'.$server.'/');
 	exit;
 }
-if(!isset($DBVARS['version']) || $DBVARS['version']<22)redirect('upgrades/upgrade.php');
+if(!isset($DBVARS['version']) || $DBVARS['version']<23)redirect('upgrades/upgrade.php');
 $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 $page=getVar('page');
@@ -69,34 +69,28 @@ if($id){
     $PAGEDATA=Page::getInstance($id)->initValues();
 }
 else{
+	if($page!='')redirect('/');
 	echo 'no page loaded. If this is a new site, then please <a href="/ww.admin/">log into the admin area</a> and create your first page.';
 	exit;
 }
 // }
 // { main content
 $c='';
-$permissions=array();
-$p=cache_load('pages','permissions_'.$PAGEDATA->id);
-if($p===false){
-	$p=dbRow("select value from permissions where type=1 and id='".$PAGEDATA->id."'");
-	cache_save('pages','permissions_'.$PAGEDATA->id,$p);
-}
-if($p && count($p)){
-	$allowed=0;
-	$lines=explode("\n",$p['value']);
-	if($lines[2]&4)$allowed=1;
-	else{ # usergroups
-		$g=explode(',',$lines[1]);
-		foreach($g as $p){
-			$p=explode('=',$p);
-			if(isset($USERGROUPS[$p[0]]) && $p[1]&4)$allowed=1;
-		}
+// { check if page is protected
+$allowed=1;
+foreach($PLUGINS as $p){
+	if(!$allowed)continue;
+	if(isset($p['frontend']['page_display_test'])){
+		$allowed=$p['frontend']['page_display_test']($PAGEDATA);
 	}
-}else $allowed=1;
+}
+// }
 if(!$allowed){
-	$c.='<h2>Permission Denied</h2><p>This is a protected document. To view it, you must first log in.</p>';
-	$p=Page::getInstanceByType(3);
-	if($p)$c.='<p>Click <a href="'.$p->getRelativeURL().'">here</a> to log in.</p>';
+	$c.='<h2>Permission Denied</h2><p>This is a protected document.</p>';
+	if(isset($_SESSION['userdata'])){
+		$c.='<p>You are not in a user-group which has access to this page. If you think you should be, please contact the site administrator.</p>';
+	}
+	else $c.='<p>Click <a href="/common/redirector.php/loginpage">here</a> to log in.</p>';
 }
 else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
 else{
@@ -174,12 +168,6 @@ else{
 	if($c==''&&!$id)$c=show404(str_replace('/',' ',$_SERVER['REQUEST_URI']));
 }
 if($PAGEDATA->special&64)$c.='<div id="webmeComments"></div>';
-// { show any error messages that turned up
-if(isset($_SESSION['msgs_errors'])){
-	$c.='<script type="text/javascript">alert('.json_encode($_SESSION['msgs_errors']).'.join("\n"));</script>';
-	unset($_SESSION['msgs_errors']);
-}
-// }
 $pagecontent=$c;
 // }
 // { load page template

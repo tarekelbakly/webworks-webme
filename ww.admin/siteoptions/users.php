@@ -20,7 +20,20 @@ if(isset($_REQUEST['id'])){
 			dbQuery('update user_accounts '.$sql.' where id='.$id);
 		}
 		dbQuery("delete from users_groups where user_accounts_id=$id");
+		// { first, create new groups if required
+		if(isset($_REQUEST['new_groups'])){
+			foreach($_REQUEST['new_groups'] as $ng){
+				$n=addslashes($ng);
+				dbQuery("insert into groups values(0,'$n',0)");
+				$_REQUEST['groups'][dbOne('select last_insert_id() as id','id')]=true;
+			}
+		}
+		// }
 		foreach($_REQUEST['groups'] as $k=>$n)dbQuery("insert into users_groups set user_accounts_id=$id,groups_id=".(int)$k);
+		// { now remove any groups other than Administrator that are not used at all
+		$rs=dbAll('select id from (select groups.id,groups_id from groups left join users_groups on groups.id=groups_id) as derived where groups_id is null');
+		foreach($rs as $r)if($r['id']!='1')dbRow('delete from groups where id='.$r['id']);
+		// }
 		echo '<em>'.__('users updated').'</em>';
 	}
 	// }
@@ -34,7 +47,7 @@ if(isset($_REQUEST['id'])){
 	echo '<tr><th>Email</th><td><input name="email" value="'.htmlspecialchars($r['email']).'" /></td><th>(repeat)</th><td><input name="password2" type="password" /></td></tr>';
 	echo '<tr><th rowspan="3">Address</th><td rowspan="3"><textarea name="address" style="height:100px;width:200px">'.htmlspecialchars($r['address']).'</textarea></td><th>Phone</th><td><input name="phone" value="'.htmlspecialchars($r['phone']).'" /></td></tr>';
 	// { groups
-	echo '<tr><th>Groups</th><td>';
+	echo '<tr><th>Groups</th><td class="groups">';
 	$grs=dbAll('select id,name from groups');
 	$gms=array();
 	foreach($grs as $g){
@@ -77,4 +90,7 @@ foreach($users as $user){
 }
 echo '<tr><td colspan="2"></td><td><a href="siteoptions.php?page=users&amp;id=-1">Create User</a></td></tr>';
 echo '</table>';
+// }
+// { javascript
+echo '<script src="/ww.admin/siteoptions/users.js"></script>';
 // }

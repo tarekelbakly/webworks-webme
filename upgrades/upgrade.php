@@ -160,6 +160,10 @@ if($version==21){ // add plugins to config if not enabled
 	if(@$DBVARS['plugins']=='')$DBVARS['plugins']='polls,image_gallery,forms,panels,banner-image,mailing-list';
 	$version=22;
 }
+if($version==22){ // add verification hash to user_accounts table
+	dbQuery('alter table users add verification_hash text');
+	$version=23;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
