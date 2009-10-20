@@ -15,10 +15,7 @@ function show_banner($vars){
 		}
 	}
 	else if($GLOBALS['PAGEDATA']->id){
-	echo '<!-- ';
 		$b=dbRow('select * from banners_pages,banners_images where pageid='.$GLOBALS['PAGEDATA']->id.' and bannerid=id order by rand() limit 1');
-		var_dump($b);
-		echo ' -->';
 		if(count($b) && !$b['html']){
 			$b['html']=banner_image_getImgHTML($b['id']);
 			dbQuery('update banners_pages set html="'.addslashes($b['html']).'" where id='.$b['id']);
