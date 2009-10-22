@@ -8,7 +8,7 @@ $plugin=array(
 			'function' => 'privacy_show_page_panel'
 		)
 	),
-	'description' => 'Keep some pages private to user-groups or countries.',
+	'description' => 'User authentication, page protection.',
 	'frontend' => array(
 		'page_type' => 'privacy_front',
 		'page_display_test' => 'privacy_page_test'
