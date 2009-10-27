@@ -18,12 +18,12 @@ $admin_vars=array();
 ?>
 <html>
 	<head>
-		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 		<script src="/js/"></script>
 		<script src="/j/ckeditor/ckeditor.js"></script>
+		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
 	</head>
 	<body>
 	<div id="wrapper">
