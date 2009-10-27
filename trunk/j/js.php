@@ -15,8 +15,6 @@ $name=md5_of_dir('./');
 if(!is_dir(USERBASE . 'f/.files/j'))mkdir(USERBASE . 'f/.files/j');
 else{
 	$js=file_get_contents('mootools.v1.11.js');
-	$js.=file_get_contents('jquery.accordion.js').';';
-//	$js.=file_get_contents('jquery.lazyload.mini.js');
 	$js.=file_get_contents('json.js');
 	$js.=file_get_contents('js.js');
 	$js.=file_get_contents('tabs.js');
