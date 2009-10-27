@@ -49,8 +49,10 @@ function formDisplaySend($page,$vars){
 	else{
 		if($vars['forms_send_as_email']){
 			$form=formDisplayShow($page,$vars,$err,true);
+			// { from
 			$from=preg_replace('/^FIELD{|}$/','',$vars['forms_replyto']);
 			if($vars['forms_replyto']!=$from)$from=$_REQUEST[preg_replace('/[^a-zA-Z]/','',$from)];
+			// }
 			$to=preg_replace('/^FIELD{|}$/','',$vars['forms_recipient']);
 			if($vars['forms_recipient']!=$to)$to=$_REQUEST[preg_replace('/[^a-zA-Z]/','',$to)];
 			$form=str_replace(array(
@@ -60,7 +62,6 @@ function formDisplaySend($page,$vars){
 			),'',$form);
 			webmeMail($to,$from,$page['name'],'<html><head></head><body>'.$form.'</body></html>',$_FILES);
 		}
-		if($vars['forms_save_in_database'])form_saveValues($vars['forms_id'],$values);
 		$c.='<div id="thankyoumessage">'.$vars['forms_successmsg'].'</div>';
 	}
 	return $c;
