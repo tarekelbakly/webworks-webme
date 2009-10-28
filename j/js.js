@@ -285,18 +285,15 @@ function loadArray(k,v){
 	});
 	return a;
 }
-function loadDateClass(skipload){
-	if(skipload){
-		if(!window.inputdate_ids)window.inputdate_ids=[];
-		var els=$('.inputdate');
-		els.each(function(key,el){
-			$(el).removeClass('inputdate');
-			if(!el.id)el.id='inputdate'+window.inputdate_ids.length;
-			window.inputdate_ids.push(el.id);
-			$(el).datepicker({dateFormat:'dd/mm/yy'});
-		});
-	}
-	else loadJS('/j/ui.datepicker.js',0,0,'loadDateClass(1)',1);
+function loadDateClass(){
+	if(!window.inputdate_ids)window.inputdate_ids=[];
+	var els=$('.inputdate');
+	els.each(function(key,el){
+		$(el).removeClass('inputdate');
+		if(!el.id)el.id='inputdate'+window.inputdate_ids.length;
+		window.inputdate_ids.push(el.id);
+		$(el).datepicker({dateFormat:'dd/mm/yy'});
+	});
 }
 function loadFormValidation(skipload){
 	if(skipload){
