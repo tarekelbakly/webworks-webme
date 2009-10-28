@@ -1,5 +1,6 @@
-<?
+<?php
 header('Content-type: text/html; Charset=utf-8');
+date_default_timezone_set('Eire');
 require '../common.php';
 // { if not logged in, show login page
 if (!is_admin()) {
