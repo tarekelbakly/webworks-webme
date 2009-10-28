@@ -50,7 +50,7 @@ if(isset($message) && $message!='')echo '<br /><br /><strong>'.$message.'</stron
 	<div class="tabs" style="width:400px;text-align:left;margin:0 auto">
 		<div class="tabPage">
    		<h2><?php echo __('Login'); ?></h2>
-	   	<form method="post" action="<?=$_SERVER['PHP_SELF'];?>">
+	   	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 				<table cols="3">
 			   	<tr><th colspan="1"><?php echo __('email'); ?></th><td colspan="2"><input id="email" name="email" /></td></tr>
 			   	<tr><th colspan="1"><?php echo __('password'); ?></th><td colspan="2"><input type="password" name="password" /></td></tr>
@@ -60,7 +60,7 @@ if(isset($message) && $message!='')echo '<br /><br /><strong>'.$message.'</stron
 		</div>
 		<div class="tabPage">
    		<h2><?php echo __('Reminder'); ?></h2>
-	   	<form method="post" action="<?=$_SERVER['PHP_SELF'];?>">
+	   	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 				<table cols="3">
 			   	<tr><th colspan="1"><?php echo __('email'); ?></th><td colspan="2"><input id="email" type="text" name="email" /></td></tr>
 					<tr><th colspan="3" align="right"><input name="action" type="submit" value="<?php echo __('remind'); ?>" class="login" /></th></tr>
