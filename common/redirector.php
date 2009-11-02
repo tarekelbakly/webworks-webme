@@ -7,7 +7,7 @@ $type=@$_REQUEST['type'];
 $url='/';
 switch($type){
 	case 'loginpage': // {
-		$p=Page::getInstanceByType(3);
+		$p=Page::getInstanceByType('privacy');
 		if(!$p)$url='/';
 		else $url=$p->getRelativeUrl().'#Login';
 		break;
