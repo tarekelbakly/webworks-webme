@@ -19,11 +19,11 @@ class Page{
 				if(count($r))cache_save('pages',$fname,$r);
 			}
 		}
-		else if ($byField == 2 && is_numeric($v)){ // by type
+		else if ($byField == 2){ // by type
 			$fname='page_by_type_'.$v;
 			$r=cache_load('pages',$fname);
 			if(!$r){
-				$r=dbRow("select * from pages where type=$v limit 1");
+				$r=dbRow("select * from pages where type='$v' limit 1");
 				cache_save('pages',$fname,$r);
 			}
 		}
