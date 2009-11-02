@@ -169,58 +169,6 @@ function userregistration_showProfile(){
 	$ud=$_SESSION['userdata'];
 	$name=$ud['name']?$ud['name']:$ud['contactname'];
 	$c='<a class="logout" href="/?logout=1">log out</a><h2>User Profile: '.htmlspecialchars($name).'</h2><table>';
-	$store_page=Page::getInstanceByType(10);
-	if($store_page){
-		if($ud['discount']){
-			$c.='<tr><th>Shopping Discount</th><td>'.$ud['discount'].'%</td></tr>';
-		}
-		// { wishlist
-		$c.='<tr><th>Wishlist</th><td>';
-		if(@$_REQUEST['action']=='Update Wishlist'){
-			if(is_array(@$_REQUEST['wishlist_remove'])){
-				$ids=array();
-				foreach(array_keys($_REQUEST['wishlist_remove']) as $id)$ids[]=(int)$id;
-				dbQuery('delete from product_wishlist where product_id in ('.join(',',$ids).') and user_id='.$ud['id']);
-			}
-			if(is_array(@$_REQUEST['wishlist_add_to_cart'])){
-				foreach(array_keys($_REQUEST['wishlist_add_to_cart']) as $product_id)osChangeItemAmount($product_id,1);
-			}
-		}
-		$wc=osHowManyItemsInWishlist();
-		if(!$wc)$c.='your wishlist is empty.';
-		else{
-			$c.='<form action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'" method="post" /><table class="bordered"><tr><th>product</th><th>remove</th><th>add to cart</th></tr>';
-			$wc=dbAll('select * from product_wishlist where user_id='.$ud['id']);
-			$ids=array();
-			foreach($wc as $w)$ids[]=$w['product_id'];
-			$ps=Products::getByIds($ids);
-			foreach($ps as $p){
-				$c.='<tr><td><a href="'.$p->getRelativeUrl().'">'.htmlspecialchars($p->name).'</a></td><td><input type="checkbox" name="wishlist_remove['.$p->id.']" /></td><td><input type="checkbox" name="wishlist_add_to_cart['.$p->id.']" /></td></tr>';
-			}
-			$c.='<tr><td colspan="3" style="text-align:right"><input type="submit" name="action" value="Update Wishlist" /></tr>';
-			$c.='</table>';
-		}
-		$c.='</td></tr>';
-		// }
-		// { purchase history
-		$c.='<tr><th>Your Purchases</th><td>';
-		$rs=ProductOrders::getInstancesByUserid($ud['id']);
-		if(!$rs)$c.='no purchases made to date using this user account.';
-		else{
-			$c.='<table><tr><th>Date</th><th>Amount</th><th>Status</th><th>Invoice</th></tr>';
-			$statii=array('Awaiting Payment','Paid','Dispatched');
-			foreach($rs as $r){
-				$c.='<tr><td>'
-					.date_m2h($r->date_created).'</td><td>'
-					.osToPrice($r->total_due).'</td><td>'
-					.$statii[$r->status]
-					.'</th><th><a href="/common/online_stores-retrieve_invoice.php?id='.$r->id.'">invoice</a></td></tr>';
-			}
-			$c.='</table><span class="price_disclaimer"><sup>*</sup>Amount is amount paid at purchase in the site\'s base currency, expressed using today\'s currency exchange rate</span>';
-		}
-		$c.='</td></tr>';
-		// }
-	}
 	$c.='</table>';
 	return $c;
 }
