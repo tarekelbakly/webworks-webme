@@ -5,7 +5,10 @@ if(!isset($_REQUEST['filename']))exit;
 $file=THEME_DIR.'/'.$_REQUEST['filename'];
 if( strpos($file,'..')!==false || strpos($file,'/.')!==false )exit;
 
-if(!file_exists($file) || !is_file($file))exit;
+if(!file_exists($file) || !is_file($file)){
+	header("HTTP/1.0 404 Oh No!");
+	exit;
+}
 
 header('Content-Description: File Transfer');
 header('Content-Type: '.get_mimetype(preg_replace('/.*\./','',$file)));
