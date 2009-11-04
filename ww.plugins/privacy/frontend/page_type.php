@@ -145,10 +145,9 @@ function userregistration_register(){
 		$discount=(float)$r['value'];
 		$hash=base64_encode(sha1(rand(0,65000),true));
 		$sql='insert into user_accounts set name="'.$name.'", password=md5("'.$password.'"), email="'.$email.'", verification_hash="'.$hash.'", active=0';
-echo $sql;
 		dbQuery($sql);
 		$page=$GLOBALS['PAGEDATA'];
-		$sitedomain=$GLOBALS['sitedomain'];
+		$sitedomain='www.'.str_replace('www.','',$GLOBALS['sitedomain']);
 		$recipientEmail=$DBVARS['recipientEmail'];
 		$long_url="http://$sitedomain".$page->getRelativeUrl()."?hash=".urlencode($hash)."&email=".urlencode($email).'#Login';
 		$short_url=md5($long_url);

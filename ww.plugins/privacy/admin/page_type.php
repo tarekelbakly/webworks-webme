@@ -23,8 +23,7 @@ $html.='</select>';
 $html.='<script>var page_vars_userlogin_redirect_to='.$page_vars['userlogin_redirect_to'].';
 $(document).ready(function(){
 	$("#page_vars_userlogin_redirect_to").remoteselectoptions({
-		url:"/ww.admin/pages/get_parents.php",
-		other_GET_params:page_menu_currentpage
+		url:"/ww.admin/pages/get_parents.php"
 	});
 });</script>';
 $html.='</td>';
