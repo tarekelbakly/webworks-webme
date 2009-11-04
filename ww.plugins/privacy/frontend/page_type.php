@@ -58,9 +58,9 @@ function userloginandregistrationDisplay(){
 			$p=Password::getNew();
 			mail($email,'['.$sitedomain.'] user password changed',"Your new password:\n\n".$p,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 			dbQuery('update user_accounts set password=md5("'.$p.'") where email="'.$email.'"');
-			$c.='<em>Please check your email for your new password.</em>';
+			$c.='<script>$(document).ready(function(){$("<strong>Please check your email for your new password.</strong>").dialog({modal:true,height:100,width:150});});</script>';
 		}else{
-			$c.='<em>No user account with that email address exists.</em>';
+			$c.='<script>$(document).ready(function(){$("<strong>No user account with that email address exists.</strong>").dialog({modal:true,height:100,width:150});});</script>';
 		}
 	}
 	if(!$PAGEDATA->vars['userlogin_visibility'])$PAGEDATA->vars['userlogin_visibility']=3;
