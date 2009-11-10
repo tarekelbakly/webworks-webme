@@ -44,7 +44,7 @@ function ig_updateGallery(at){
 			var br=newEl('br');
 			br.style.clear='both';
 			a.appendChild(br);
-			a.appendChild(newEl('span',0,'caption',img.caption));
+			$('<span class="caption">'+img.caption.replace(/\\\\n/,'<br />')+'</span>').appendTo(a);
 			div.appendChild(a);
 			document.getElementById('igCell_'+y+'_'+x).appendChild(div);
 		}
@@ -220,7 +220,7 @@ var Lightbox={
 			if(!document.getElementById('lightbox_caption'))return;
 			Lightbox.imageWrapper.appendChild(newImg('/kfmget/'+Lightbox.data[Lightbox.at].id+',width='+Lightbox.imageMaxWidth+',height='+Lightbox.imageMaxHeight));
 			Lightbox.imageWrapper.style.backgroundImage='none';
-			document.getElementById('lightbox_caption').innerHTML=Lightbox.data[Lightbox.at].caption;
+			document.getElementById('lightbox_caption').innerHTML=Lightbox.data[Lightbox.at].caption.replace(/\\\\n/,'<br />');
 		});
 	}
 };
