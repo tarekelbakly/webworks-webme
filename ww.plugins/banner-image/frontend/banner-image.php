@@ -2,8 +2,10 @@
 /*
 	Webme Banner Image Plugin v0.1
 	File: frontend/banner-image.php
-	Developer: Conor Mac Aoidh <http://macaoidh.name>
-	Report Bugs: <conor@macaoidh.name>
+	Developers:
+		Conor Mac Aoidh  http://macaoidh.name/
+		Kae Verens       http://verens.com/
+	Report Bugs: kae@verens.com
 */
 
 function show_banner($vars){
@@ -21,7 +23,7 @@ function show_banner($vars){
 			dbQuery('update banners_pages set html="'.addslashes($b['html']).'" where id='.$b['id']);
 		}
 	}
-	if(!isset($b) || !count($b)){
+	if(!isset($b) || $b===false || !count($b)){
 		$b=dbRow('select * from banners_images where !pages order by rand() limit 1');
 	}
 	if($b && count($b)){
