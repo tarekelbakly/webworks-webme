@@ -62,6 +62,9 @@ function formDisplaySend($page,$vars){
 			),'',$form);
 			webmeMail($to,$from,$page['name'],'<html><head></head><body>'.$form.'</body></html>',$_FILES);
 		}
+		if($vars['forms_record_in_db']){
+			form_saveValues($page['id']);
+		}
 		$c.='<div id="thankyoumessage">'.$vars['forms_successmsg'].'</div>';
 	}
 	return $c;
@@ -214,10 +217,17 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 	.'});</script>';
 	return $c;
 }
-function form_saveValues($formid,$values){
+function form_saveValues($formid){
 	dbQuery("insert into forms_saved (forms_id,date_created) values($formid,now())");
 	$id=dbOne('select last_insert_id() as id','id');
-	foreach($values as $key=>$val)dbQuery("insert into forms_saved_values (forms_saved_id,name,value) values(".$id.",'".addslashes($key)."','".addslashes($val)."')");
+	$q2=dbAll('select name from forms_fields where formsId="'.$formid.'" order by id');
+	foreach($q2 as $r){
+		$name=preg_replace('/[^a-zA-Z0-9_]/','',$r['name']);
+		if(isset($_REQUEST[$name]))$val=addslashes($_REQUEST[$name]);
+		else $val='';
+		$key=addslashes($r['name']);
+		dbQuery("insert into forms_saved_values (forms_saved_id,name,value) values($id,'$key','$val')");
+	}
 }
 function form_getErrors($form_id){
 	$r=dbRow('select * from forms where id="'.$form_id.'"');

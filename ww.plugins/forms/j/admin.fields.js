@@ -9,5 +9,14 @@ function formfieldsAddRow(){
 }
 function formfieldsChange(e){
 }
+function form_export(id){
+	if(!id)return alert('cannot export from an empty form database');
+	if(!(+$('select[name="page_vars\\[forms_record_in_db\\]"]').val()))return alert('this form doesn\'t record to database');
+	var d=$('#export_from').val();
+	document.location='/ww.plugins/forms/j/export.php?date='+d+'&id='+id;
+}
 if(!formfieldElements)var formfieldElements=0;
-$(document).ready(formfieldsAddRow);
+$(document).ready(function(){
+	formfieldsAddRow();
+	$('.date').datepicker({dateFormat:'yy-m-d'});
+});

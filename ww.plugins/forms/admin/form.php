@@ -17,7 +17,12 @@ $c.= '<th>'.__('Recipient').'</th><td>'.wInput('page_vars[forms_recipient]','',h
 // { captcha, reply-to
 if(!isset($vars['forms_captcha_required']))$vars['forms_captcha_required']=1;
 $c.= '<tr><th>Captcha Required</th><td>'.wInput('page_vars[forms_captcha_required]','select',array('1'=>'Yes','0'=>'No'),$vars['forms_captcha_required']).'</td>';
+if(!isset($vars['forms_replyto']) || !$vars['forms_replyto'])$vars['forms_replyto']='FIELD{email}';
 $c.= '<th>Reply-To</th><td>'.wInput('page_vars[forms_replyto]','',htmlspecialchars(@$vars['forms_replyto'])).'</td></tr>';
+// }
+// { record in database
+$c.= '<tr><th>Record In DB</th><td>'.wInput('page_vars[forms_record_in_db]','select',array('0'=>'No','1'=>'Yes'),$vars['forms_record_in_db']).'</td>';
+$c.= '<th>Export<br /><i style="font-size:small">(requires Record In DB)</i></th><td>from: <input id="export_from" class="date" value="'.date('Y-m-d',mktime(0,0,0,date("m")-1,date("d"),date("Y"))).'" />. <a href="javascript:form_export('.$id.')">export</a></td></tr>';
 // }
 $c.= '</table></div>';
 // }
