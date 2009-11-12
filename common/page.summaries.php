@@ -11,23 +11,25 @@ function displayPageSummaries($id){
 		$rss.='<link>'.$_SERVER['REQUEST_URI'].'</link><description>RSS for '.$PAGEDATA->name.'</description>';
 		$category=$PAGEDATA->category?' and category="'.$PAGEDATA->category.'"':'';
 		$containedpages=get_contained_pageids($r['parent_id']);
-		$q2=dbAll('select edate,name,title,body from pages where id in ('.join(',',$containedpages).')'.$category.' order by cdate desc limit 20');
-		foreach($q2 as $r2){
-			$rss.='<item>';
-			if(!$r2['title'])$r2['title']=$r2['name'];
-			$rss.='<title>'.htmlspecialchars($r2['title']).'</title>';
-			$rss.='<pubDate>'.date_m2h($r2['edate']).'</pubDate>';
-			{ # build body
-				if($r['amount_to_show']==0 || $r['amount_to_show']==1){
-					$length=$r['amount_to_show']==0?300:600;
-					$body=substr( preg_replace('/<[^>]*>/','',str_replace(array('&amp;','&nbsp;','&lsquo;'),array('&',' ','&apos;'),$r2['body'])),0,$length).'...';
+		if(count($containedpages)){
+			$q2=dbAll('select edate,name,title,body from pages where id in ('.join(',',$containedpages).')'.$category.' order by cdate desc limit 20');
+			foreach($q2 as $r2){
+				$rss.='<item>';
+				if(!$r2['title'])$r2['title']=$r2['name'];
+				$rss.='<title>'.htmlspecialchars($r2['title']).'</title>';
+				$rss.='<pubDate>'.date_m2h($r2['edate']).'</pubDate>';
+				{ # build body
+					if($r['amount_to_show']==0 || $r['amount_to_show']==1){
+						$length=$r['amount_to_show']==0?300:600;
+						$body=substr( preg_replace('/<[^>]*>/','',str_replace(array('&amp;','&nbsp;','&lsquo;'),array('&',' ','&apos;'),$r2['body'])),0,$length).'...';
+					}
+					else $body=$r2['body'];
+					$body=str_replace('&euro;','&#8364;',$body); # xml parsers can't handle this
 				}
-				else $body=$r2['body'];
-				$body=str_replace('&euro;','&#8364;',$body); # xml parsers can't handle this
+				$rss.='<description>'.$body.'</description>';
+				$rss.='<link>http://'.$_SERVER['HTTP_HOST'].'/'.urlencode(str_replace(' ','-',$r2['name'])).'</link>';
+				$rss.='</item>';
 			}
-			$rss.='<description>'.$body.'</description>';
-			$rss.='<link>http://'.$_SERVER['HTTP_HOST'].'/'.urlencode(str_replace(' ','-',$r2['name'])).'</link>';
-			$rss.='</item>';
 		}
 		$rss.='</channel></rss>';
 		dbQuery('update page_summaries set rss="'.addslashes($rss).'" where page_id="'.$PAGEDATA->id.'"');
