@@ -1,0 +1,14 @@
+table{
+	border:solid #000;
+	border-width:1px 0 0 1px;
+	width:100%;
+}
+td,th{
+	vertical-align:top;
+	border:solid #000;
+	border-width:0 1px 1px 0;
+}
+code{
+	color:#600;
+	border-bottom:1px dashed red;
+}
