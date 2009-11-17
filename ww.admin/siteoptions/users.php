@@ -1,11 +1,14 @@
 <?php
 echo '<h2>'.__('Users').'</h2>';
 $groups=array();
-// { form
-if(isset($_REQUEST['id'])){
+// { handle actions
+if(isset($_REQUEST['action'])){
 	$id=(int)$_REQUEST['id'];
-	// { handle actions
-	if($action=='delete'){}
+	if($action=='delete'){
+		dbQuery("delete from user_accounts where id=$id");
+		dbQuery("delete from users_groups where user_accounts_id=$id");
+		unset($_REQUEST['id']);
+	}
 	if($action=='Save'){
 		$sql='set email="'.addslashes($_REQUEST['email']).'",name="'.addslashes($_REQUEST['name']).'",phone="'.addslashes($_REQUEST['phone']).'",active="'.(int)$_REQUEST['active'].'",address="'.addslashes($_REQUEST['address']).'"';
 		if(isset($_REQUEST['password']) && $_REQUEST['password']!=''){
@@ -36,7 +39,11 @@ if(isset($_REQUEST['id'])){
 		// }
 		echo '<em>'.__('users updated').'</em>';
 	}
-	// }
+}
+// }
+// { form
+if(isset($_REQUEST['id'])){
+	$id=(int)$_REQUEST['id'];
 	$r=dbRow("select * from user_accounts where id=$id");
 	if(!is_array($r) || !count($r)){
 		$r=array('id'=>-1,'email'=>'','name'=>'','phone'=>'','active'=>0,'address'=>'','parent'=>$_SESSION['userdata']['id']);
