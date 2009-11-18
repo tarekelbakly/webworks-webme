@@ -111,18 +111,20 @@ function userregistration(){
 	return userregistration_form();
 }
 function userregistration_form($error=''){
-	$formid=dbOne('SELECT value FROM site_vars WHERE name="user_form"','value');
-	$extraform=$formid?formDisplayShow($formid,'',0,0):'';
+	global $PAGEDATA;
 	$c='<div id="userregistration"><h2>Register</h2>'.$error.'<form class="userRegistrationBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#tab=Register" method="post"><table>'
 		.'<tr><th>Name</th><td><input type="text" name="name" value="'.htmlspecialchars(getVar('name')).'" /></td>'
 		.'<th>Email</th><td><input type="text" name="email" value="'.htmlspecialchars(getVar('email')).'" /></td></tr></table>';
-	$c.=$extraform;
+	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions']){
+		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.<br />';
+		$c.='<script>function userlogin_t_and_c(){$("'.addslashes(str_replace(array("\n","\r"),' ',$PAGEDATA->vars['userlogin_terms_and_conditions'])).'").dialog({modal:true});}</script>';
+	}
 	$c.='<input type="submit" name="a" value="Register" />'
 		.'</form></div>';
 	return $c;
 }
 function userregistration_register(){
-	global $DBVARS;
+	global $DBVARS,$PAGEDATA;
 	// { variables
 		$contactname=getVar('contactname');
 		$name=getVar('name');
@@ -134,6 +136,7 @@ function userregistration_register(){
 		$address3=getVar('address3');
 		$howyouheard=getVar('howyouheard');
 	// }
+	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions'] && !isset($_REQUEST['terms_and_conditions']))return '<em>You must agree to the terms and conditions. Please press "Back" and try again.</em>';
 	if(!$name||!$email)return userregistration_form('<em>You must fill in at least your name and email.</em>');
 	// { check if the email address is already registered
 		$r=dbRow('select id from user_accounts where email="'.$email.'"');

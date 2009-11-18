@@ -1,9 +1,9 @@
 <?php
 $html='<tr><td colspan="6"><div class="tabs">';
 // { main
-$html.='<div class="tabPage"><h2>Header</h2><table style="width:100%"><tr><th>'.__('body').'</th><td colspan="5">';
+$html.='<div class="tabPage"><h2>Header</h2><p>This will appear above the login/registration form</p>';
 $html.=ckeditor('body',$page['body'],false);
-$html.='</td></tr></table></div>';
+$html.='</div>';
 // }
 // { options
 $html.='<div class="tabPage"><h2>Options</h2><table style="width:100%">';
@@ -52,6 +52,11 @@ else{
 $html.='</select></td></tr>';
 // }
 $html.='</table></div>';
+// }
+// { terms and conditions
+$html.='<div class="tabPage"><h2>Terms and Conditions</h2><p>Leave blank if no terms and conditions agreement is needed</p>';
+$html.=ckeditor('page_vars[userlogin_terms_and_conditions]',$page_vars['userlogin_terms_and_conditions'],false);
+$html.='</div>';
 // }
 $html.='</div><script>var page_vars_userlogin_redirect_to='.$page_vars['userlogin_redirect_to'].';
 $(document).ready(function(){
