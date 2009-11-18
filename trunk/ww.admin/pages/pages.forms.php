@@ -59,12 +59,13 @@ else{
 	echo '<th width="10%">'.__('title').'</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
 	// }
 	// { url 
+	echo '<th colspan="2">';
 	if($edit){
 		$u='/'.str_replace(' ','-',$page['name']);
-		$u='<a href="'.$u.'">'.urldecode($u).'</a>';
+		echo '<a style="font-weight:bold;color:red" href="'.$u.'" target="_blank">VIEW PAGE</a>';
 	}
-	else $u=__('not available yet');
-	echo '<th width="10%">'.__('URL').'</th><td width="23%">'.$u.'</td>';
+	else echo '&nbsp;';
+	echo '</th>';
 	// }
 	echo '</tr>';
 	// }
