@@ -227,7 +227,7 @@ strong.clickable,a.clickable{ background: url("/ww.admin/i/note_edit.gif") 100% 
 
 /* ---------------- Styles for the main section for the Pages section --------------------------------------------- */
 
-#pages_main{  float: right;  width: 75%; border: 1px solid #ccc; background: #fff; margin: 0; padding: 10px; }
+#pages_main{  float: right;  width: 75%; border: 1px solid #ccc; background: #fff; margin: 0; padding: 10px; margin-bottom:30px;}
 * html #pages_main { height: 1%; }
 #pages_main h3 { margin: 0; margin-bottom: 10px; padding: 0; }
 
