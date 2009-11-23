@@ -10,6 +10,7 @@
  * @link     http://kfm.verens.com/
  */
 if(!defined('KFM_BASE_PATH'))define('KFM_BASE_PATH', dirname(__FILE__).'/');
+if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))@date_default_timezone_set(date_default_timezone_get());
 
 // { load classes and helper functions
 if(!function_exists('__autoload')){
@@ -72,9 +73,10 @@ $kfm->defaultSetting('log_level', 0);
 $kfm->defaultSetting('file_handler','download');
 $kfm->defaultSetting('allow_user_file_associations',false);
 //display
+$kfm->defaultSetting('theme', false); // must be overwritten
+$kfm->defaultSetting('show_admin_link', false);
 $kfm->defaultSetting('time_format', '%T');
 $kfm->defaultSetting('date_format', '%x');
-$kfm->defaultSetting('theme', false); // must be overwritten
 $kfm->defaultSetting('listview',0);
 $kfm->defaultSetting('preferred_languages',array('en','de','da','es','fr','nl','ga'));
 //contextmenu
@@ -113,6 +115,8 @@ $kfm->defaultSetting('only_allow_image_upload',0);
 $kfm->defaultSetting('use_multiple_file_upload',1);
 $kfm->defaultSetting('default_upload_permission',644);
 $kfm->defaultSetting('banned_upload_extensions',array());
+$kfm->defaultSetting('max_image_upload_width', 1024);
+$kfm->defaultSetting('max_image_upload_height', 768);
 // plugins
 $kfm->defaultSetting('disabled_plugins',array());
 // depricated
@@ -295,7 +299,7 @@ if (!$kfm_session->get('loggedin') && (!isset($kfm_api_auth_override)||!$kfm_api
     $err = '';
     if (isset($_POST['username'])&&isset($_POST['password'])) {
         $res=db_fetch_row('SELECT id, username, password, status FROM '.KFM_DB_PREFIX.'users WHERE username="'.$_POST['username'].'" AND password="'.sha1($_POST['password']).'"');
-        if(count($res)){
+        if($res && count($res)){
             $kfm_session->setMultiple(array('user_id'=>$res['id'],'username'=>$_POST['username'], 'password'=>$_POST['password'],'user_status'=>$res['status'], 'loggedin'=>1));
         }else $err = '<em>Incorrect Password. Please try again, or check your <code>configuration.php</code>.</em>';
     }

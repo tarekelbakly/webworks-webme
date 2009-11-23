@@ -31,6 +31,7 @@ td{vertical-align:top}
 #kfm_left_column{width:240px;position:relative;float:left;background:white;border-right:1px solid #bababa;overflow:hidden}
 #kfm_right_column{overflow:hidden;position:relative;height:100%;background:white}
 #kfm_right_column div.kfm_panel_header{background:url(bitsandpieces/panelheader-bg.png) repeat-x}
+#admin_panel_link{float:right;font-size:12px;text-indent:0;background-image:url();white-space:nowrap;width:auto;position:relative;margin-right:100px;}
 #kfm_right_column #kfm_editFileTable textarea{background:#eee;font-style:italic}
 #kfm_right_column #kfm_editFileTable td{text-align:center}
 #kfm_search_table{width:100%}
@@ -213,7 +214,7 @@ td.listview_icon_bz2{background-image:url(icons/16x16/mimetypes/bz2.png)}
 #kfm_directories .kfm_dir_name.kfm_directory_open div{background:#9cf}
 #kfm_directories .kfm_dir_name div:hover{color:red}
 #message{top:2px; right:3px; position:absolute; z-index:10000; background-color: #f00; color: #000; font-weight:bold;}
-.button{margin-left:15px;color:#fff;background:#666;font-weight:bold;text-decoration:none;padding:2px 4px;display:block;text-align:center;border:2px solid;border-color:#ccc #999 #999 #ccc}
+.button{margin-left:15px;color:#fff;background:#666;font-weight:bold;text-decoration:none;padding:2px 4px;text-align:center;border:2px solid;border-color:#ccc #999 #999 #ccc;cursor:pointer}
 .button:hover{color:#f00;background:#fff}
 
 /* IE-specific crap */
@@ -224,8 +225,8 @@ td.listview_icon_bz2{background-image:url(icons/16x16/mimetypes/bz2.png)}
 }
 .notice{
 	display:block;
-	border:5px solid #000;
-	background:yellow;
+	border:1px solid #000;
+	background:red;
 	color:#000;
 	padding:5px;
 	margin:5px
