@@ -23,7 +23,6 @@ class kfmSession extends kfmObject{
 					$old_done=0;
 					foreach($old_sessions as $r){
 						if($old_done++ == 10)break;
-						echo 'DELETE FROM '.KFM_DB_PREFIX.'session_vars WHERE session_id='.$r['id'].'<br />';
 						$kfm->db->query('DELETE FROM '.KFM_DB_PREFIX.'session_vars WHERE session_id='.$r['id']);
 						$kfm->db->query('DELETE FROM '.KFM_DB_PREFIX.'session WHERE id='.$r['id']);
 					}
