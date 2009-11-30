@@ -64,4 +64,32 @@ $c.='<tr><th>'.__('Thumb Size').'</th><td><input name="page_vars[image_gallery_t
 $c.='</table>';
 $c.='</div>';
 // }
+// { online store
+if(isset($GLOBALS['PLUGINS']['online-store'])){
+	$c.='<div class="tabPage"><h2>Online Store</h2><table>';
+	// { for sale
+	$c.='<tr><th>Are these images for sale?</th><td><select name="page_vars[image_gallery_forsale]"><option value="">No</option>';
+	$c.='<option value="yes"';
+	if(isset($vars['image_gallery_forsale']) && $vars['image_gallery_forsale']=='yes')$c.=' selected="selected"';
+	$c.='>Yes</option></td></tr>';
+	// }
+	// { prices
+	$c.='<tr><th>Prices</th><td>';
+	$ps=array();
+	for($i=0;isset($vars['image_gallery_prices_'.$i]);++$i){
+		$price=preg_replace('/[^0-9.]/','',$vars['image_gallery_prices_'.$i]);
+		if(!((float)$price))continue;
+		$ps[]=array('description'=>$vars['image_gallery_pricedescs_'.$i],'price'=>(float)$price);
+	}
+	for($cnt=0;isset($ps[$cnt]);++$cnt){
+		$c.='<input class="medium" name="page_vars[image_gallery_pricedescs_'.$cnt.']" value="'.htmlspecialchars($ps[$cnt]['description']).'" />'
+				.'<input class="ig_price small" name="page_vars[image_gallery_prices_'.$cnt.']" value="'.$ps[$cnt]['price'].'" /><br />';
+	}
+	$c.='<input class="medium" name="page_vars[image_gallery_pricedescs_'.$cnt.']" value="description" /><input class="ig_price small" name="page_vars[image_gallery_prices_'.$cnt.']" value="0" /><br />';
+	$c.='<a id="ig_prices_more" href="javascript:image_gallery_add_price()">[more]</a></td></tr>';
+	// }
+	$c.='</table><script>var ig_price_count='.$cnt.';</script></div>';
+}
+// }
 $c.='</div>';
+$c.='<script src="/ww.plugins/image_gallery/j/admin.js"></script>';
