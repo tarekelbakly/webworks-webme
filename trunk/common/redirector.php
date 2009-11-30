@@ -28,5 +28,10 @@ switch($type){
 		else $url=$p->getRelativeUrl().'#os_wishlist';
 		break;
 	// }
+	default: // {
+		$p=Page::getInstanceByType($type);
+		if(!$p)$url='/';
+		else $url=$p->getRelativeUrl();
+	// }
 }
 redirect($url);

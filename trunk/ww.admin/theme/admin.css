@@ -37,6 +37,7 @@ td,th { vertical-align:top; padding: 3px; background: none; }
 textarea{font-size:1em;width:100%;height:200px;border-width:1px}
 input.date{width:90px !important}
 input.small{width:50px !important}
+input.medium{width:150px !important}
 input.large{width:100%}
 textarea.small{width:200px;height:80px;font-size:10px !important}
 textarea.medium{width:100%;height:100px}
