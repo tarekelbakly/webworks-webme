@@ -42,8 +42,16 @@ if (!$fp) {
 			}
 
 			// process payment
-			$db->query("UPDATE online_store_orders SET status='1' WHERE id=$id");
-			$details=json_decode($order['items'],true);
+			require dirname(__FILE__).'/process-order.php';
+			process_order($id,$order);
+//			$db->query("UPDATE online_store_orders SET status='1' WHERE id=$id");
+//			$form_vals=json_decode($order['form_vals']);
+//			$from='noreply@'.str_replace('www.',$_SERVER['HTTP_HOST']);
+//			$headers = "From: $from\r\nReply-To: $from\r\nX-Mailer: PHP/" . phpversion();
+//			$headers.='MIME-Version: 1.0' . "\r\n";
+//			$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+//			$headers .= 'To: '.$form_vals['Email']. "\r\n";
+//			mail($form_vals['Email'],'['.str_replace('www.',$_SERVER['HTTP_HOST']).'] invoice #'.$id, $order['invoice'], $headers);
 		}
 		else if (strcmp ($res, "INVALID") == 0) {
 			// echo the response
