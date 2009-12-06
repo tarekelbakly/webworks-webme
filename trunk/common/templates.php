@@ -51,8 +51,8 @@ function logoDisplay($vars){
 	return '<img src="/f/skin_files/logo-'.$geometry.'.png" />';
 }
 function show_page($template,$pagecontent,$PAGEDATA){
-	include SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 	global $DBVARS,$PLUGINS;
+	include_once SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 	$smarty = new Smarty;
 	$smarty->compile_dir=USERBASE . 'templates_c';
 
