@@ -25,8 +25,11 @@ function parse_messaging_notifier($data){
 					$f=messaging_notifier_get_phpbb3($r);
 					break;
 				// }
+				case 'email': // {
+					$f=messaging_notifier_get_email($r);
+					break;
+				// }
 			}
-			cache_save('messaging-notifier',$md5,$f);
 		}
 		$altogether=array_merge($altogether,$f);
 	}
@@ -60,6 +63,7 @@ function messaging_notifier_get_twitter($r){
 		$i['unixtime']=strtotime($unixtime->item(0)->nodeValue);
 		$arr[]=$i;
 	}
+	cache_save('messaging-notifier',md5($r->url),$arr);
 	return $arr;
 }
 function messaging_notifier_get_phpbb3($r){
@@ -91,5 +95,38 @@ function messaging_notifier_get_phpbb3($r){
 			$arr[]=$i;
 		}
 	}
+	cache_save('messaging-notifier',md5($r->url),$arr);
+	return $arr;
+}
+function messaging_notifier_get_email($r){
+	$bs=explode('|',$r->url);
+	$username=$bs[0];
+	$password=$bs[1];
+	$hostname=$bs[2];
+	$link_url=isset($bs[3])?$bs[3]:'';
+	$mbox=imap_open('{'.$hostname.':143/novalidate-cert}INBOX',$username,$password);
+	$emails=imap_search($mbox,'ALL');
+	$arr=array();
+	if($emails && is_array($emails))foreach($emails as $email_number){
+		$overview=imap_fetch_overview($mbox,$email_number,0);
+		$subject=$overview[0]->subject;
+		$from=trim(preg_replace('/<[^>]*>/','',$overview[0]->from));
+		$arr[]=array(
+			'type'  => 'email',
+			'title' => $from.' wrote an email: '.$subject,
+			'link' => $link_url,
+			'unixtime'=>strtotime($overview[0]->date)
+		);
+#		imap_delete($mbox,$email_number);
+	}
+#	imap_expunge($mbox);
+	imap_close($mbox);
+	$md5=md5($r->url);
+	$c=cache_load('messaging-notifier',$md5);
+	if(!$c)$c=array();
+	$arr=array_merge($arr,$c);
+	krsort($arr);
+	$arr=array_slice($arr,0,10);
+	cache_save('messaging-notifier',$md5,$arr);
 	return $arr;
 }

@@ -12,3 +12,6 @@
 .messaging-notifier-phpBB3{
 	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-phpbb.png);
 }
+.messaging-notifier-email{
+	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-email.png);
+}

@@ -107,8 +107,9 @@ function messaging_notifier_edit(ev){
 }
 function messaging_notifier_table_row(rdata){
 	var ts=[
-		['Twitter','address of the twitter account. example: http://twitter.com/IrishPhpUG'],
-		['phpBB3','address of the forum. example: http://forum.php.ie/viewforum.php?f=2']
+		['email','enter in this form: username|password|mailserver|optional_link_url'],
+		['phpBB3','address of the forum. example: http://forum.php.ie/viewforum.php?f=2'],
+		['Twitter','address of the twitter account. example: http://twitter.com/IrishPhpUG']
 	];
 	if(!rdata)rdata={'type':'','url':'','refresh':60};
 	var tr='<tr><td><select><option>--none--</option>';
