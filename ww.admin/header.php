@@ -32,5 +32,5 @@ $admin_vars=array();
 <div id="header"> 
   <div id="toprightbox"></div><a href="http://webworks.ie/f/webme-help.pdf" class="ajaxmenu_linkam_help" title="<?php echo __('Click to read a PDF doc, detailing how to get started with WebME').'">'.__('Help'); ?></a><a href="./?logout=1" class="ajaxmenu_linkam_logout" title="<?php echo __('Log out from your account').'">'.__('Logout');?></a>
 </div>
-		<div id="ajaxmenuam_top" class="adminmenu ajaxmenu menuBarTop"><script type="text/javascript">var pagedata={id:'am_top'};</script><a href="#"><?php echo __('loading. please wait...');?></a></div>
+		<div id="ajaxmenuam_top" class="adminmenu ajaxmenu menuBarTop"><script type="text/javascript">var pagedata={id:'am_top',adminid:<?php echo $_SESSION['userdata']['id']; ?>};</script><a href="#"><?php echo __('loading. please wait...');?></a></div>
 		<div id="main">
