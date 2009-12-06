@@ -117,9 +117,9 @@ function messaging_notifier_get_email($r){
 			'link' => $link_url,
 			'unixtime'=>strtotime($overview[0]->date)
 		);
-#		imap_delete($mbox,$email_number);
+		imap_delete($mbox,$email_number);
 	}
-#	imap_expunge($mbox);
+	imap_expunge($mbox);
 	imap_close($mbox);
 	$md5=md5($r->url);
 	$c=cache_load('messaging-notifier',$md5);
