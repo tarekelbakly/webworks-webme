@@ -2,8 +2,13 @@
 	list-style-type:square;
 	padding:2px;
 }
-.messaging-notifier-Twitter{
-	margin:0 0 0 24px;
+.messaging-notifier li{
+	margin:0 0 0 32px;
 	padding:0;
+}
+.messaging-notifier-Twitter{
 	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-twitter.png);
+}
+.messaging-notifier-phpBB3{
+	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-phpbb.png);
 }

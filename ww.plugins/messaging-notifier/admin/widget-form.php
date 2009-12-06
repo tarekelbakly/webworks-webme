@@ -106,7 +106,10 @@ function messaging_notifier_edit(ev){
 	});
 }
 function messaging_notifier_table_row(rdata){
-	var ts=[['Twitter','address of the twitter account. example: http://twitter.com/IrishPhpUG']];
+	var ts=[
+		['Twitter','address of the twitter account. example: http://twitter.com/IrishPhpUG'],
+		['phpBB3','address of the forum. example: http://forum.php.ie/viewforum.php?f=2']
+	];
 	if(!rdata)rdata={'type':'','url':'','refresh':60};
 	var tr='<tr><td><select><option>--none--</option>';
 	for(var j=0;j<ts.length;++j){
