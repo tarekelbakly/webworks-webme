@@ -31,7 +31,7 @@ function parse_messaging_notifier($data){
 		if(++$i > 10)continue;
 		$html.='<li class="messaging-notifier-'.$r['type'].'"><a href="'.$r['link'].'">'.htmlspecialchars($r['title']).'</a><br /><i>'.date('Y M jS H:i',$r['unixtime']).'</i></li>';
 	}
-	$html.='</ul>';
+	$html.='</ul><style type="text/css">@import "/ww.plugins/messaging-notifier/c/styles.css";</style>';
 	return $html;
 }
 function messaging_notifier_get_twitter($r){
