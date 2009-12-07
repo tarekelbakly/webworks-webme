@@ -119,14 +119,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 		$r['password'] = $_SESSION['userdata']['password'];
 		$_SESSION['userdata'] = $r;
 		// }
-		// { groups
-		$USERGROUPS = array();
-		$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
-		if($rs)foreach($rs as $r){
-			$USERGROUPS[$r['name']] = $r['id'];
-		}
-		$_SESSION['userdata']['groups']=$USERGROUPS;
-		// }
 		// { redirect if applicable
 		$redirect_url='';
 		if(isset($_POST['login_referer']) && strpos($_POST['login_referer'],'/')===0){
@@ -139,6 +131,16 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 		if($redirect_url!='')redirect($redirect_url);
 		// }
 	}
+}
+if(isset($_SESSION['userdata']['id']) && !isset($_SESSION['userdata']['groups'])){
+	// { groups
+	$USERGROUPS = array();
+	$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
+	if($rs)foreach($rs as $r){
+		$USERGROUPS[$r['name']] = $r['id'];
+	}
+	$_SESSION['userdata']['groups']=$USERGROUPS;
+	// }
 }
 if(isset($_REQUEST['logout']))unset($_SESSION['userdata']);
 // }
