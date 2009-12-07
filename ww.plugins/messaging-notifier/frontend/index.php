@@ -10,12 +10,8 @@ function parse_messaging_notifier($data){
 	$altogether=array();
 	foreach($data as $r){
 		$md5=md5($r->url);
-		if(file_exists(USERBASE.'ww.cache/messaging-notifier/'.$md5)){
-			$ctime=filectime(USERBASE.'ww.cache/messaging-notifier/'.$md5);
-			if($ctime+$r->refresh*60 < time()) unlink(USERBASE.'ww.cache/messaging-notifier/'.$md5);
-		}
 		$f=cache_load('messaging-notifier',$md5);
-		if(!$f){
+		if($f===false || (file_exists(USERBASE.'ww.cache/messaging-notifier/'.$md5) && filectime(USERBASE.'ww.cache/messaging-notifier/'.$md5)+$r->refresh*60 < time())){
 			switch($r->type){
 				case 'Twitter': // {
 					$f=messaging_notifier_get_twitter($r);
@@ -123,7 +119,7 @@ function messaging_notifier_get_email($r){
 	imap_close($mbox);
 	$md5=md5($r->url);
 	$c=cache_load('messaging-notifier',$md5);
-	if(!$c)$c=array();
+	if($c===false)$c=array();
 	$arr=array_merge($arr,$c);
 	krsort($arr);
 	$arr=array_slice($arr,0,10);
