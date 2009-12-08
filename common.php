@@ -172,7 +172,8 @@ if(!isset($_SESSION['webme_language']) || strpos($_SESSION['webme_language'],'_'
   }
 	if(!isset($_SESSION['webme_language']) || !in_array($_SESSION['webme_language'],array('de','en','fr','es')))$_SESSION['webme_language']='en';
 }
-if($_SESSION['webme_language']=='')$_SESSION['webme_language']='en';
+if($_SESSION['webme_language']=='')$_SESSION['webme_language']='C';
+$_SESSION['webme_language']='C';
 function __setLocale($locale){
 	$_SESSION['webme_language']=$locale;
 	if(!setLocale(LC_ALL,$_SESSION['webme_language'])){
