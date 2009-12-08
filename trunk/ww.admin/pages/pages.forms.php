@@ -69,7 +69,7 @@ else{
 	// }
 	echo '</tr>';
 	// }
-	// { page type and parent 
+	// { page type, parent , template
 	// { type
 	echo '<tr><th>'.__('type').'</th><td><select name="type">';
 	if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
