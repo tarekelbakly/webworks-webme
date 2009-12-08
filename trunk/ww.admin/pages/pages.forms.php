@@ -69,7 +69,7 @@ else{
 	// }
 	echo '</tr>';
 	// }
-	// { page type, parent , template
+	// { page type, parent, template
 	// { type
 	echo '<tr><th>'.__('type').'</th><td><select name="type">';
 	if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
@@ -97,20 +97,22 @@ else{
 	// }
 	// { template
 	echo '<th>'.__('template').'</th><td>';
-	$ex='ls '.THEME_DIR.'/'.THEME.'/h/*html';
-	$d=`$ex`;
-	$d=explode("\n",$d);array_pop($d);
+	$d=array();
+	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
+	foreach($dir as $f){
+		if($f->isDot())continue;
+		$n=$f->getFilename();
+		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
+	}
 	if(count($d)>1){
 		echo '<select name="template">';
-		foreach($d as $f){
-			$f=preg_replace('/^\.\.\/|\n|\r|$/','',$f);
-			$name=preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$f);
+		foreach($d as $name){
 			echo '<option ';
 			if($name==$page['template'])echo ' selected="selected"';
 			echo '>'.$name.'</option>';
 		}
 		echo '</select>';
-	}else echo htmlspecialchars(preg_replace('/.*skins\/[^\/]*\/h\/|\.html/','',$d[0]));
+	}else echo htmlspecialchars($d[0]);
 	echo '</td></tr>';
 	// }
 	// }
