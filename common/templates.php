@@ -81,6 +81,7 @@ function show_page($template,$pagecontent,$PAGEDATA){
 	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
 	// { display the document
 	ob_start();
+	if(strpos($template,'/')===false)$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
 	$smarty->display($template);
 	ob_show_and_log('page','Content-type: text/html; Charset=utf-8');
 	// }
