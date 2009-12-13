@@ -175,9 +175,14 @@ if(file_exists(THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html')){
 	$template=THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html';
 }
 else{
-	$ex='ls '.THEME_DIR.'/'.THEME.'/h/*html';
-	$d=`$ex`;
-	$d=explode("\n",$d);
+	$d=array();
+	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
+	foreach($dir as $f){
+		if($f->isDot())continue;
+		$n=$f->getFilename();
+		if(strpos($n,'.')===0)continue;
+		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
+	}
 	$template=$d[0];
 }
 if($template=='')die('no template created. please create a template first');
