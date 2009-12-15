@@ -6,12 +6,15 @@
 	margin:0 0 0 32px;
 	padding:0;
 }
-.messaging-notifier-Twitter{
-	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-twitter.png);
+.messaging-notifier-email{
+	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-email.png);
 }
 .messaging-notifier-phpBB3{
 	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-phpbb.png);
 }
-.messaging-notifier-email{
-	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-email.png);
+.messaging-notifier-RSS{
+	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-rss.png);
+}
+.messaging-notifier-Twitter{
+	list-style-image:url(/ww.plugins/messaging-notifier/i/icon-twitter.png);
 }

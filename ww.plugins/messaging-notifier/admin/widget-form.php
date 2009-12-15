@@ -109,6 +109,7 @@ function messaging_notifier_table_row(rdata){
 	var ts=[
 		['email','enter in this form: username|password|mailserver|optional_link_url'],
 		['phpBB3','address of the forum. example: http://forum.php.ie/viewforum.php?f=2'],
+		['RSS','address of the RSS feed. example: http://planet.php.ie/rss/'],
 		['Twitter','address of the twitter account. example: http://twitter.com/IrishPhpUG']
 	];
 	if(!rdata)rdata={'type':'','url':'','refresh':60};

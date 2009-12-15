@@ -13,16 +13,20 @@ function parse_messaging_notifier($data){
 		$f=cache_load('messaging-notifier',$md5);
 		if($f===false || (file_exists(USERBASE.'ww.cache/messaging-notifier/'.$md5) && filectime(USERBASE.'ww.cache/messaging-notifier/'.$md5)+$r->refresh*60 < time())){
 			switch($r->type){
-				case 'Twitter': // {
-					$f=messaging_notifier_get_twitter($r);
+				case 'email': // {
+					$f=messaging_notifier_get_email($r);
 					break;
 				// }
 				case 'phpBB3': // {
 					$f=messaging_notifier_get_phpbb3($r);
 					break;
 				// }
-				case 'email': // {
-					$f=messaging_notifier_get_email($r);
+				case 'RSS': // {
+					$f=messaging_notifier_get_rss($r);
+					break;
+				// }
+				case 'Twitter': // {
+					$f=messaging_notifier_get_twitter($r);
 					break;
 				// }
 			}
@@ -42,6 +46,25 @@ function parse_messaging_notifier($data){
 	}
 	$html.='</ul><style type="text/css">@import "/ww.plugins/messaging-notifier/c/styles.css";</style>';
 	return $html;
+}
+function messaging_notifier_get_rss($r){
+	$f=file_get_contents($r->url);
+	$dom=DOMDocument::loadXML($f);
+	$items=$dom->getElementsByTagName('item');
+	$arr=array();
+	foreach($items as $item){
+		$i=array();
+		$i['type']='RSS';
+		$title=$item->getElementsByTagName('title');
+		$i['title']=$title->item(0)->nodeValue;
+		$link=$item->getElementsByTagName('link');
+		$i['link']=$link->item(0)->nodeValue;
+		$unixtime=$item->getElementsByTagName('pubDate');
+		$i['unixtime']=strtotime($unixtime->item(0)->nodeValue);
+		$arr[]=$i;
+	}
+	cache_save('messaging-notifier',md5($r->url),$arr);
+	return $arr;
 }
 function messaging_notifier_get_twitter($r){
 	$f=file_get_contents($r->url);
