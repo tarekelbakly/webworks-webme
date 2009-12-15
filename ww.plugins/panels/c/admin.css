@@ -5,6 +5,15 @@
 	overflow:auto;
 	height:50px;
 }
+#splitter-wrapper{
+	width:100%;
+	border:1px solid #aaa;
+	height:440px;
+}
+.vsplitbar {
+	width: 4px;
+	background: #aaa url(/ww.plugins/panels/j/splitter/img/vgrabber.gif) no-repeat center center;
+}
 .panel-body{
 	min-height:30px;
 }
@@ -170,12 +179,3 @@ div.selectWrapper div.listWrapper input.listBox {
 margin:-1px 5px 0 -20px;
 }
 
-#splitter-wrapper{
-	width:100%;
-	border:1px solid #aaa;
-	height:350px;
-}
-.vsplitbar {
-	width: 2px;
-	background: #aaa;
-}
