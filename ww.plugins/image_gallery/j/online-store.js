@@ -1,6 +1,6 @@
 function ig_setup_ad_store(){
 	if(ig_prices.length<1)return; // no prices
-	var html='<table class="ig-ad-add-to-cart" style="position:absolute;right:0;z-index:20">';
+	var html='<table class="ig-ad-add-to-cart" style="position:absolute;right:0;z-index:101">';
 	if(ig_prices.length>1){
 		var i;
 		// { description
