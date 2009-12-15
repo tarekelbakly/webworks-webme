@@ -1,17 +1,9 @@
-.has-right-column .widget-wrapper{
+.splitter-panel-left .widget-wrapper{
 	margin:5px 10px 0 10px;
-	width:200px;
-	float:left;
 }
-.has-right-column .widget-wrapper p{
+.splitter-panel-left .widget-wrapper p{
 	overflow:auto;
 	height:50px;
-}
-.has-right-column{
-	padding: 5px;
-	border: 1px solid #ededed;
-	background: #fff;
-	margin-right: 315px;
 }
 .panel-body{
 	min-height:30px;
@@ -73,6 +65,8 @@
 .widget-wrapper{
 	border:1px solid #416BA7;
 	-moz-border-radius:5px;
+	width:200px;
+	float:left;
 }
 .widget-wrapper.disabled h4{
 	background:#666;
@@ -174,4 +168,14 @@ background:#ddf;
 /* checkbox */
 div.selectWrapper div.listWrapper input.listBox {
 margin:-1px 5px 0 -20px;
+}
+
+#splitter-wrapper{
+	width:100%;
+	border:1px solid #aaa;
+	height:350px;
+}
+.vsplitbar {
+	width: 2px;
+	background: #aaa;
 }

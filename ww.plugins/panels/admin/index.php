@@ -1,6 +1,8 @@
 <?php
-echo '<div class="right-column"><h3>Panels</h3><p>Click a header to open it.</p><div id="panels"></div></div>';
-echo '<div class="has-right-column"><h3>Widgets</h3><p>Drag a widget into a panel on the right.</p><div id="widgets"></div><br style="clear:both" /></div>';
+echo '<div id="splitter-wrapper">';
+echo '<div class="splitter-panel splitter-panel-left"><h3>Widgets</h3><p>Drag a widget into a panel on the right.</p><div id="widgets"></div><br style="clear:both" /></div>';
+echo '<div class="splitter-panel splitter-panel-right"><h3>Panels</h3><p>Click a header to open it.</p><div id="panels"></div><br style="clear:both" /></div>';
+echo '</div>';
 echo '<link rel="stylesheet" type="text/css" href="/ww.plugins/panels/c/admin.css" />';
 // { panel and widget data
 echo '<script>';
@@ -32,4 +34,5 @@ echo '};';
 // }
 echo '</script><script src="/ww.plugins/panels/j/admin.js"></script>';
 echo '<script src="/ww.plugins/panels/j/jquery.inlinemultiselect.js"></script>';
+echo '<script src="/ww.plugins/panels/j/splitter/splitter.js"></script>';
 // }

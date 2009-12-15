@@ -219,6 +219,7 @@ $(document).ready(function(){
 				var p=widgets[i];
 				buildRightWidget(p).appendTo(widgets_container);
 			}
+			$('<br style="clear:both" />').appendTo(widgets_container);
 			$('.panel-body').sortable({
 				'stop':function(){
 					updateWidgets($(this).closest('.panel-wrapper'));
@@ -240,4 +241,7 @@ $(document).ready(function(){
 		}
 	})
 	$('<br style="clear:both" />').appendTo(widget_column);
+	$('#splitter-wrapper').splitter({
+		'sizeRight':230
+	});
 });
