@@ -36,7 +36,7 @@ function _getDirectoryParentsArr($dir,$path=array()){
 function _loadDirectories($pid,$oldpid=0){
 	global $kfmdb;
 	$dir=kfmDirectory::getInstance($pid);
-	$pdir=str_replace($GLOBALS['rootdir'],'',$dir->path);
+	$pdir=str_replace($GLOBALS['rootdir'],'',$dir->path());
 	$directories=array();
 	foreach($dir->getSubdirs() as $subDir)$directories[]=array($subDir->name,$subDir->hasSubdirs(),$subDir->id,$subDir->maxWidth(),$subDir->maxHeight());
 	sort($directories);
@@ -81,4 +81,4 @@ function kfm_rmMixed($files=array(), $directories=array()){
 		$dir=new kfmDirectory($did);
 		if($dir->delete())$dircount++;
 	}
-}	
+}
