@@ -56,9 +56,15 @@ function kfm_createFileUploadPanel(contentsonly){
 	iframe.name='kfm_iframe';
 	iframe.src='javascript:false';
 	iframe.style.display='none';
-	wrapper.appendChild(kfm_vars.use_multiple_file_upload ?
-		kfm_fileUploadForm_multiple() :
-		kfm_fileUploadForm_single()
+	// { test to see if multiple uploads are natively supported
+	var inp=document.createElement('input');
+	inp.type='file';
+	inp.setAttribute('multiple','multiple');
+	var nm=inp.multiple?true:false;
+	// }
+	wrapper.appendChild((nm || !kfm_vars.use_multiple_file_upload) ?
+		kfm_fileUploadForm_native():
+		kfm_fileUploadForm_flash()
 	);
 	// }
 	// { copy from URL
@@ -81,7 +87,7 @@ function kfm_createFileUploadPanel(contentsonly){
 	var contents=[sel,wrapper,iframe,f2];
 	return contentsonly?contents:kfm_createPanel(kfm.lang.FileUpload,'kfm_file_upload_panel',contents,{maxedState:3,state:3,order:2});
 }
-function kfm_fileUploadForm_single(){
+function kfm_fileUploadForm_native(){
 	var f1;
 	if(window.ie)f1=document.createElement('<form action="upload.php" method="POST" enctype="multipart/form-data" target="kfm_iframe">');
 	else{
@@ -98,23 +104,27 @@ function kfm_fileUploadForm_single(){
 	max_upload_size.type='hidden';
 	max_upload_size.value='9999999999';
 	var submit=newInput('upload','submit',kfm.lang.Upload);
-	if(!window.ie)$j.event.add(submit,'click',function(e){
-		e=new Event(e);
-		if(e.rightClick)return;
-		setTimeout('document.getElementById("kfm_file").type="text";$j("#kfm_file").attr("type","file");',1);
+	$j.event.add(submit,'click',function(e){
+		if(e.button!=0)return; // only interested in left-clicks
+		setTimeout('$j("#kfm_file").replaceWith(kfm_fileUploadForm_getNativeInput());',1);
 	});
-	var input=newInput('kfm_file','file');
-	$j.event.add(input,'keyup',kfm_uploadPanel_checkForZip);
-	$j.event.add(input,'change',kfm_uploadPanel_checkForZip);
 	var unzip1=document.createElement('span');
 	unzip1.id='kfm_unzip1';
 	unzip1.className='kfm_unzipWhenUploaded';
 	unzip1.style.visibility='hidden';
 	kfm.addEl(unzip1,[newInput('kfm_unzipWhenUploaded','checkbox'),kfm.lang.ExtractAfterUpload]);
-	kfm.addEl(f1,[input,max_upload_size,submit,unzip1]);
+	kfm.addEl(f1,[kfm_fileUploadForm_getNativeInput(),max_upload_size,submit,unzip1]);
 	return f1;
 }
-function kfm_fileUploadForm_multiple(){
+function kfm_fileUploadForm_getNativeInput(){
+	var input=newInput('kfm_file','file');
+	input.setAttribute('multiple','multiple');
+	if(input.multiple)input.name='kfm_file[]';
+	$j.event.add(input,'keyup',kfm_uploadPanel_checkForZip);
+	$j.event.add(input,'change',kfm_uploadPanel_checkForZip);
+	return input;
+}
+function kfm_fileUploadForm_flash(){
 	// { form
 	var t=document.createElement('table');
 	t.id='kfm_uploadFormSwf';

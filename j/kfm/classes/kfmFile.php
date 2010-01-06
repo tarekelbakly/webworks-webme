@@ -24,8 +24,9 @@ class kfmFile extends kfmObject{
 			$this->name=$filedata['name'];
 			$this->parent=$filedata['directory'];
 			$dir=kfmDirectory::getInstance($this->parent);
-			$this->directory=$dir->path;
-			$this->path=$dir->path.'/'.$filedata['name'];
+      $this->dir = $dir;
+			$this->directory=$dir->path();
+			$this->path=$this->directory.'/'.$filedata['name'];
 			if(!$this->exists()){
 //				$this->error(kfm_lang('File cannot be found')); // removed because it is causing false errors
 				$this->delete();
@@ -134,9 +135,12 @@ class kfmFile extends kfmObject{
 		if($kfm->setting('file_url')=='secure'){
 			$url=$kfm->setting('kfm_url').'get.php?id='.$this->id.GET_PARAMS;
 		}else{
-			$url=$kfm->setting('files_url').str_replace($kfm->setting('files_root_path'),'',$this->path);
+      $url = $kfm->setting('files_url').$this->dir->relativePath().$this->name;
+			//$url=$kfm->setting('files_url').str_replace($kfm->setting('files_root_path'),'',$this->path);
 		}
-		return preg_replace('/([^:])?\/{2,}/','$1/',$url);
+		return $url; # this was "return preg_replace('/([^:])?\/{2,}/','$1/',$url);"
+		             # but that caused URLs such as "http:/example.com/test.jpg"
+								 # instead of "http://example.com/test.jpg"
 	}
 
 	/**
@@ -200,7 +204,7 @@ class kfmFile extends kfmObject{
 		if(!$this->writable)return $this->error(kfm_lang('fileNotMovableUnwritable',$this->name));
 		$dir=kfmDirectory::getInstance($dir_id);
 		if(!$dir)return $this->error(kfm_lang('failedGetDirectoryObject'));
-		if(!rename($this->path,$dir->path.'/'.$this->name))return $this->error(kfm_lang('failedMoveFile',$this->name));
+		if(!rename($this->path,$dir->path().'/'.$this->name))return $this->error(kfm_lang('failedMoveFile',$this->name));
 		$q=$kfmdb->query("update ".KFM_DB_PREFIX."files set directory=".$dir_id." where id=".$this->id);
 	}
 

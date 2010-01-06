@@ -36,8 +36,9 @@ $kfm_session->set('kfm_url',dirname((!empty($_SERVER['HTTPS'])) ?
 ).DIRECTORY_SEPARATOR);
 // { root folder name
 if($kfm->setting('root_folder_name')=='foldername')$kfm->setting('root_folder_name',$user_root_dir->name);
-else{
-	$kfm->setting('root_folder_name',str_replace('username',$kfm->username,$kfm->setting('root_folder_name')));
+elseif(strpos($kfm->setting('root_folder_name'), 'username') !== false){
+	if($kfm->user_id == 1) $kfm->setting('root_folder_name', 'root'); // Special default user case
+  else $kfm->setting('root_folder_name',str_replace('username',$kfm->setting('username'),$kfm->setting('root_folder_name')));
 }
 // }
 // { startup folder
@@ -100,12 +101,12 @@ if (isset($_GET['cwd']) && (int)$_GET['cwd']) {
 if(count($kfm->setting('default_directories'))){
 	foreach($kfm->setting('default_directories') as $dir){
 		$dir=trim($dir);
-		@mkdir($user_root_dir->path.$dir,0755);
+		@mkdir($user_root_dir->path().$dir,0755, true);
 	}
 }
 // }
 // } setup
-header('Content-type: text/html; Charset = utf-8');
+header('Content-type: text/html; charset=UTF-8');
 // { export kaejax stuff
 kfm_kaejax_export('kfm_changeCaption', 'kfm_copyFiles', 'kfm_createDirectory',
 	'kfm_createEmptyFile', 'kfm_deleteDirectory', 'kfm_downloadFileFromUrl', 
@@ -183,7 +184,7 @@ if ($last_registration!=$today) {
 				lang:'<?php echo $kfm_language; ?>',
 				subcontext_categories:<?php echo js_array($kfm->setting('subcontext_categories'),true);?>,
 				subcontext_size:<?php echo $kfm->setting('subcontext_size');?>,
-				show_admin_link:<?php echo $kfm->setting('show_admin_link')?1:0; ?>,
+				show_admin_link:<?php echo ($kfm->setting('show_admin_link')?'true':'false'); ?>,
 				version:'<?php echo KFM_VERSION; ?>'
 			};
 			var kfm_widgets=[];

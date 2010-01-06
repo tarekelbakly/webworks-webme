@@ -9,6 +9,7 @@
  * @license  docs/license.txt for licensing
  * @link     http://kfm.verens.com/
  */
+error_reporting(E_PARSE | E_WARNING);
 if(!defined('KFM_BASE_PATH'))define('KFM_BASE_PATH', dirname(__FILE__).'/');
 if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))@date_default_timezone_set(date_default_timezone_get());
 
@@ -38,6 +39,15 @@ function sql_escape($sql) {
     if ($kfm_db_type=='sqlite'||$kfm_db_type=='sqlitepdo')$sql = str_replace("\\'", "''", $sql);
     return $sql;
 }
+function file_join(){
+  $path= (strtoupper (substr(PHP_OS, 0,3)) == 'WIN')
+    ?''
+    :'/';
+	$args=func_get_args();
+  $path.=join('/',$args);
+  $path = str_replace(array('///','//'), '/', $path);
+  return $path;
+}
 // }
 if (get_magic_quotes_gpc()) require 'includes/remove_magic_quotes.php';
 // { check for fatal errors
@@ -64,7 +74,9 @@ define('KFM_DB_PREFIX', $kfm_db_prefix);
 // }
 // { variables
 // structure
-$kfm->defaultSetting('kfm_url','/'.str_replace($_SERVER['DOCUMENT_ROOT'],'',getcwd()).'/');
+$kfm->defaultSetting('kfm_url','/'
+  .str_replace($_SERVER['DOCUMENT_ROOT'],'',str_replace('\\','/',getcwd()))
+  .'/');
 $kfm->defaultSetting('file_url','secure');
 $kfm->defaultSetting('user_root_folder','');
 $kfm->defaultSetting('startup_folder','');
@@ -73,7 +85,7 @@ $kfm->defaultSetting('log_level', 0);
 $kfm->defaultSetting('file_handler','download');
 $kfm->defaultSetting('allow_user_file_associations',false);
 //display
-$kfm->defaultSetting('theme', false); // must be overwritten
+//$kfm->defaultSetting('theme', false); // must be overwritten
 $kfm->defaultSetting('show_admin_link', false);
 $kfm->defaultSetting('time_format', '%T');
 $kfm->defaultSetting('date_format', '%x');
@@ -144,14 +156,15 @@ else require KFM_BASE_PATH.'api/cms_hooks.php.dist';
 // }
 $rootdir = (strpos($kfm_userfiles_address, './')===0 || strpos($kfm_userfiles_address, '../')===0) ?KFM_BASE_PATH.$kfm_userfiles_address:$kfm_userfiles_address.'/';
 
-if (!is_dir($rootdir))mkdir($rootdir, 0755);
+if (!is_dir($rootdir))mkdir($rootdir, 0755, true);
 $rootdir = realpath($rootdir);
 if (!is_dir($rootdir)) {
     echo 'error: "'.htmlspecialchars($rootdir).'" could not be created';
     exit;
 }
 $rootdir = realpath($rootdir).'/';
-$kfm->defaultSetting('files_root_path',$rootdir);
+$kfm->defaultSetting('files_root_path',$rootdir); // This may be a security problem, don't use this property!!!
+$kfm->files_root_path = $rootdir; // Use this in stead
 define('KFM_DIR', dirname(__FILE__));
 if (!defined('GET_PARAMS')) define('GET_PARAMS', '');
 define('IMAGEMAGICK_PATH', isset($kfm_imagemagick_path)?$kfm_imagemagick_path:'/usr/bin/convert');
@@ -240,18 +253,7 @@ case 'pgsql': // {
     break;
 // }
 case 'sqlite': // {
-    include_once 'MDB2.php';
-    $kfmdb_create = false;
-    define('DBNAME', $kfm_db_name);
-    if (!file_exists(WORKPATH.DBNAME))$kfmdb_create = true;
-    $dsn   = array('phptype'=>'sqlite', 'database'=>WORKPATH.DBNAME, 'mode'=>'0644');
-    $kfmdb = &MDB2::connect($dsn);
-    kfm_dieOnError($kfmdb);
-    $kfmdb->setFetchMode(MDB2_FETCHMODE_ASSOC);
-     $kfmdb->setOption('portability',MDB2_PORTABILITY_ALL ^ MDB2_PORTABILITY_EMPTY_TO_NULL);
-    if ($kfmdb_create)include KFM_BASE_PATH.'scripts/db.sqlite.create.php';
-    $db_defined = 1;
-    break;
+	die('<p>The embedded SQLite in PHP is version 2, but that is no longer supported by <a href="http://www.sqlite.org/download.html">SQLite</a>, <a href="http://php.net/manual/en/book.sqlite.php">PHP</a>, or <a href="http://kfm.verens.com/">KFM</a>. Please use the PDO SQLite driver instead.</p>');
 // }
 case 'sqlitepdo': // {
     $kfmdb_create = false;
@@ -327,7 +329,7 @@ if(is_array($admin_settings)){
     }
 }
 if($uid!=1){
-    $user_settings=db_fetch_all('SELECT name, value FROM '.KFM_DB_PREFIX.'settings WHERE user_id='.$uid.' AND usersetting=1');
+    $user_settings=db_fetch_all('SELECT name, value FROM '.KFM_DB_PREFIX.'settings WHERE user_id='.$uid);
     if(is_array($user_settings)){
 			foreach($user_settings as $setting)$settings[$setting['name']]=$setting['value'];
     }
@@ -373,14 +375,14 @@ foreach($kfm->sdef as $sname=>$sdef){
                 $value=$settings[$sname];
                 break;
         }
-        $kfm->defaultSetting($sname, $value);
+        $kfm->setting($sname, $value);
     }
 }
 // }
 // { (user) root folder
 $kfm_root_dir = kfmDirectory::getInstance(1);
 if ($kfm->user_id!=1 && $kfm->setting('user_root_folder')){
-    $kfm->defaultSetting('user_root_folder',str_replace('username',$kfm->username,$kfm->setting('user_root_folder')));
+    $kfm->setting('user_root_folder',str_replace('username',$kfm->username,$kfm->setting('user_root_folder')));
     $dirs   = explode(DIRECTORY_SEPARATOR, trim($kfm->setting('user_root_folder'), ' '.DIRECTORY_SEPARATOR));
     $subdir = $kfm_root_dir;
     foreach ($dirs as $dirname) {
@@ -407,7 +409,7 @@ closedir($h);
 // }
 // { Setting the theme
 if(isset($_GET['theme']))$kfm_session->set('theme',$_GET['theme']);
-if($kfm_session->get('theme'))$kfm->defaultSetting('theme',$kfm_session->get('theme'));
+if($kfm_session->get('theme'))$kfm->setting('theme',$kfm_session->get('theme'));
 else if($kfm->setting('theme')) $kfm_session->set('theme',$kfm->setting('theme'));
 else{
     if(in_array('default',$kfm->themes)){
