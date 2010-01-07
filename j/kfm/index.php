@@ -123,7 +123,7 @@ if(!empty($_POST['kaejax']))kfm_kaejax_handle_client_request();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
-		<style type="text/css">@import "themes/<?php echo $kfm->setting('theme'); ?>/css.php"; </style>
+		<style type="text/css">@import "themes/default/css.php"; </style>
 		<style type="text/css">@import "plugins/css.php"; </style>
 		<title>KFM - Kae's File Manager</title>
 	</head>
