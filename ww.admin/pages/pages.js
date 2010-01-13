@@ -27,6 +27,7 @@ function pages_new(p){
 	return false;
 }
 function pages_menu_goto(){
+	if(window.pages_menu_vars.dontfollow)return;
 	var id=$(this)[0].id.replace(/pages_name/,'');
 	document.location='/ww.admin/pages.php?action=edit&id='+id;
 }
@@ -74,6 +75,7 @@ function pages_menu_expand(){
 	$this.toggleClass('open');
 }
 function pages_menu_record_start(ev,ui){
+	window.pages_menu_vars.dontfollow=true;
 	var item=ui.item[0];
 	pages_menu_vars.f_item=item.id.replace(/pages_p/,'');
 	pages_menu_vars.f_parent=item.parentNode.id.replace(/pages_w/,'');
@@ -86,6 +88,7 @@ function pages_menu_record_stop(ev,ui){
 		item_ids.push(items[i].id.replace(/pages_p/,''));
 	}
 	$.get('/ww.admin/pages/move_page.php?id='+pages_menu_vars.f_item+'&t='+pages_menu_vars.t_parent+'&order='+item_ids);
+	setTimeout("window.pages_menu_vars.dontfollow=false",200);
 }
 $(document).ready(function(){
 	pages_menu_init();
