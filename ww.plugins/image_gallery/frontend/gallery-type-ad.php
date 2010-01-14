@@ -7,6 +7,16 @@ $c.='</ul> </div> </div> </div>';
 $c.='<script src="/ww.plugins/image_gallery/j/ad-gallery/jquery.ad-gallery.pack.js"></script><style type="text/css">@import "/ww.plugins/image_gallery/j/ad-gallery/jquery.ad-gallery.css";.ad-gallery .ad-image-wrapper{	height: 400px;}</style><script>
 $("document").ready(function(){
 	$(".ad-gallery").adGallery({
-		animate_first_image:true
+		animate_first_image:true,
+		slideshow:{';
+$slideshowvars=array();
+if($vars['image_gallery_autostart']){
+	$slideshowvars[]='enable:true';
+	$slideshowvars[]='autostart:true';
+}
+$sp=(int)$vars['image_gallery_slidedelay'];
+if($sp)$slideshowvars[]='speed:'.$sp;
+$c.=join(',',$slideshowvars);
+$c.='}
 	});
 });</script>';

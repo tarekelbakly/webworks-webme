@@ -20,6 +20,8 @@ $gvars=array(
 	'image_gallery_directory'    =>'/',
 	'image_gallery_x'            =>3,
 	'image_gallery_y'            =>2,
+	'image_gallery_autostart'    =>0,
+	'image_gallery_slidedelay'   =>5000,
 	'image_gallery_thumbsize'    =>150,
 	'image_gallery_captionlength'=>100,
 	'image_gallery_hoverphoto'   =>0,
@@ -54,10 +56,23 @@ foreach($types as $t){
 }
 $c.='</select></td></tr>';
 // }
-$c.='<tr><th>'.__('Rows').'</th><td><input name="page_vars[image_gallery_y]" value="'.(int)$gvars['image_gallery_y'].'" /></td></tr>';
+// { rows
+$c.='<tr><th>'.__('Rows').'</th><td><input name="page_vars[image_gallery_y]" value="'.(int)$gvars['image_gallery_y'].'" /></td>';
+// }
+// { autostart the slideshow
+$c.='<th>Autostart slide-show</th><td><select name="page_vars[image_gallery_autostart]"><option value="0">No</option><option value="1"';
+if($gvars['image_gallery_autostart'])$c.=' selected="selected"';
+$c.='>Yes</option></select></td></tr>';
+// }
+// { caption length
 $cl=(int)@$gvars['image_gallery_captionlength'];
 $cl=$cl?$cl:100;
-$c.='<tr><th>'.__('Caption Length').'</th><td><input name="page_vars[image_gallery_captionlength]" value="'.$cl.'" /></td></tr>';
+$c.='<tr><th>'.__('Caption Length').'</th><td><input name="page_vars[image_gallery_captionlength]" value="'.$cl.'" /></td>';
+// }
+// { slide delay
+$sd=(int)@$gvars['image_gallery_slidedelay'];
+$c.='<th>Slide Delay</th><td><input name="page_vars[image_gallery_slidedelay]" class="small" value="'.$sd.'" />ms</td></tr>';
+// }
 $ts=(int)@$gvars['image_gallery_thumbsize'];
 $ts=$ts?$ts:150;
 $c.='<tr><th>'.__('Thumb Size').'</th><td><input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" /></td></tr>';
