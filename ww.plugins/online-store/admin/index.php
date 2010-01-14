@@ -13,11 +13,14 @@ foreach($arr as $k=>$v){
 	$c.='">'.htmlspecialchars($v).'</option>';
 }
 $c.='</select>.</p>';
-$rs=dbAll('select id,total,date_created from online_store_orders where status='.((int)$_SESSION['online-store']['status']).' order by date_created desc');
+$rs=dbAll('select status,id,total,date_created from online_store_orders where status='.((int)$_SESSION['online-store']['status']).' order by date_created desc');
 if(is_array($rs) && count($rs)){
-	$c.='<div style="margin:0 20%"><table width="100%" class="datatable"><thead><tr><th>Date</th><th>Amount</th><th>Invoice</th><th>Status</th></tr></thead><tbody>';
+	$c.='<div style="margin:0 20%"><table width="100%" class="datatable"><thead><tr><th>Date</th><th>Amount</th><th>Invoice</th><th>Checkout Form</th><th>Status</th></tr></thead><tbody>';
 	foreach($rs as $r){
-		$c.='<tr><td><span style="display:none">'.$r['date_created'].'</span>'.date_m2h($r['date_created']).'</td><td>&euro;'.$r['total'].'</td><td><a href="javascript:os_invoice('.$r['id'].')">invoice</a></td><td><a href="javascript:os_status('.$r['id'].')">'.htmlspecialchars($arr[(int)$r['status']]).'</a></td></tr>';
+		$c.='<tr><td><span style="display:none">'.$r['date_created'].'</span>'.date_m2h($r['date_created']).'</td>'
+			.'<td>&euro;'.$r['total'].'</td><td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a></td>'
+			.'<td><a href="javascript:os_form_vals('.$r['id'].')">Checkout Form</a></td>'
+			.'<td><a href="javascript:os_status('.$r['id'].','.(int)$r['status'].')" id="os_status_'.$r['id'].'">'.htmlspecialchars($arr[(int)$r['status']]).'</a></td></tr>';
 	}
 	$c.='</tbody></table></div>';
 }
