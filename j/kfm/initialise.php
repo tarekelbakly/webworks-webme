@@ -127,8 +127,8 @@ $kfm->defaultSetting('only_allow_image_upload',0);
 $kfm->defaultSetting('use_multiple_file_upload',1);
 $kfm->defaultSetting('default_upload_permission',644);
 $kfm->defaultSetting('banned_upload_extensions',array());
-$kfm->defaultSetting('max_image_upload_width', 1024);
-$kfm->defaultSetting('max_image_upload_height', 768);
+$kfm->defaultSetting('max_image_upload_width', 1025);
+$kfm->defaultSetting('max_image_upload_height',1025);
 // plugins
 $kfm->defaultSetting('disabled_plugins',array());
 // depricated
