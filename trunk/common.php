@@ -108,10 +108,10 @@ if(strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false){
 // { user authentication
 if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 	// { variables
-	$email=addslashes($_REQUEST['email']);
-	$password=addslashes($_REQUEST['password']);
+	$email=$_REQUEST['email'];
+	$password=$_REQUEST['password'];
 	// }
-	$r=dbRow('select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'")');
+	$r=dbRow('select * from user_accounts where email="'.addslashes($email).'" and password=md5("'.$password.'")');
 	if($r && count($r)){
 		// { update session variables
 		$r['password']=$password;
