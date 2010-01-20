@@ -32,6 +32,7 @@ function template_get_metadata($template,$PAGEDATA){
 	$c.='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 	if($PAGEDATA->keywords)$c.='<meta http-equiv="keywords" content="'.$PAGEDATA->keywords.'" />';
 	if($PAGEDATA->description)$c.='<meta http-equiv="description" content="'.$PAGEDATA->description.'" />';
+	if(isset($PAGEDATA->vars['google-site-verification']))$c.='<meta name="google-site-verification" content="'.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
 	if($DBVARS['theme_variant'])$c.='<style type="text/css">@import "/ww.skins/'.$DBVARS['theme'].'/cs/'.$DBVARS['theme_variant'].'.css";</style>';
 	$c.='<style type="text/css">.loggedin{display:'.(is_logged_in()?'block':'none').'} .loggedinCell{display:'.(is_logged_in()?'table-cell':'none').'}</style>';
 	return $c;
