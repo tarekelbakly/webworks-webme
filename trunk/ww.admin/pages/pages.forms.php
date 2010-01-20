@@ -241,6 +241,7 @@ else{
 	}
 	else echo wInput('category2');
 	echo '</td></tr>';
+	echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.(@$page_vars['google-site-verification']).'" /></td></tr>';
 	echo '</table>';
 	// }
 	echo '</td><td>';
