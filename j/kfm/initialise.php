@@ -124,7 +124,7 @@ $kfm->defaultSetting('use_imagemagick',1);
 //upload
 $kfm->defaultSetting('allow_file_upload',1);
 $kfm->defaultSetting('only_allow_image_upload',0);
-$kfm->defaultSetting('use_multiple_file_upload',1);
+$kfm->defaultSetting('use_multiple_file_upload',0);
 $kfm->defaultSetting('default_upload_permission',644);
 $kfm->defaultSetting('banned_upload_extensions',array());
 $kfm->defaultSetting('max_image_upload_width', 1025);
