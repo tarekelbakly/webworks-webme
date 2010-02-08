@@ -13,109 +13,14 @@ function textObjectsFilter($d){
 			}
 		}
 	}
-	$d=str_replace("\n",'%LINERETURN%',$d);
-	if(ereg('%TABSTART%',$d)){ # add in tab pages
-		$d=str_replace('%TABSTART%','<div class="tabs"><div class="tabPage">',$d);
-		if(ereg('%TABEND%',$d))$d=str_replace('%TABEND%','</div></div>',$d);
-		else $d.='</div></div>';
-		$d=str_replace('%TABPAGE%','</div><div class="tabPage">',$d);
-	}
-	// { list of codes
-	$replacements=array(
-		'ADS'                 => 'adsDisplay',
-		'COUNTRIES'           => 'countriesDisplay',
-		'DYNAMICTABLE'        => 'database_display_old',
-		'DATABASE'            => 'database_display',
-		'EVENTCALENDAR'       => 'eventCalendarDisplay',
-		'EZINE_SUBSCRIPTION'  => 'ezineSubscriptionDisplay', // DEPRECATED
-		'EZINE_SUBSCRIBE'     => 'ezineSubscribeDisplay',
-		'EZINE_SUBSCRIBE_PERMISSION'=>'ezineSubscribePermissionDisplay',
-		'FORM'                => 'formDisplay',
-		'LANGUAGE_FLAGS'      => 'languageFlagsDisplay',
-		'LOGIN_BOX'           => 'loginBox',
-		'OS_BASKET'           => 'osBasketDisplay',
-		'OS_BASKET_SMALL'     => 'os_basketDisplaySmall',
-		'OS_BEST_SELLERS'     => 'os_bestsellers',
-		'OS_CATEGORY_PRODUCTS'=> 'products_showCategoryContents',
-    'OS_LIST_ALL_PRODUCTS'=> 'products_list',
-    'OS_NEW_PRODUCTS'     => 'products_newProducts',
-    'OS_PRODUCTS_BY_DISCOUNT'=> 'os_productsByDiscount',
-		'OS_QUICKFIND'        => 'osQuickFindDisplay',
-		'OS_WISHLIST_SMALL'   => 'os_showWishlist',
-		'PANEL'               => 'panelDisplay',
-		'POLL'                => 'poll_display',
-		'PRODUCT_CATEGORIES_SELECTBOX'=>'products_categories_selectbox',
-		'SCROLLINGNEWS'       => 'scrollingNewsDisplay',
-		'SCROLLINGEVENTS'     => 'scrollingEventsDisplay',
-		'SITE_SKINS'          => 'siteSkinThumbs',
-		'SMS_SUBSCRIBE'       => 'smsSubscribeDisplay',
-		'GALLERY'             => 'imageGalleryDisplay'
-	);
-	// }
-	// { files to include for those codes
-	$include_files=array(
-		'ADS'                 => 'common/ads.php',
-		'COUNTRIES'           => 'common/countries.php',
-		'DATABASE'            => 'common/databases.php',
-		'DYNAMICTABLE'        => 'common/databases.php',
-		'EZINE_SUBSCRIPTION'  => 'common/ezine.subscription.php',
-		'LANGUAGE_FLAGS'      => 'common/languages.php',
-		'LOGIN_BOX'           => 'common/user.login.and.registration.php',
-		'EZINE_SUBSCRIBE'     => 'common/ezine_subscribe.php',
-		'EZINE_SUBSCRIBE_PERMISSION'=>'common/ezine_subscribe.php',
-		'FORM'                => 'common/funcs.forms.php',
-		'GALLERY'             => 'common/funcs.image.gallery.php',
-		'OS_BASKET'           => 'common/online_stores.php',
-		'OS_BASKET_SMALL'     => 'common/online_stores.php',
-		'OS_BEST_SELLERS'     => 'common/online_stores.php',
-		'OS_CATEGORY_PRODUCTS'=> 'common/products.php',
-    'OS_LIST_ALL_PRODUCTS'=> 'common/products.php',
-		'OS_NEW_PRODUCTS'     => 'common/products.php',
-		'OS_PRODUCTS_BY_DISCOUNT'=>'common/online_stores.php',
-		'OS_QUICKFIND'        => 'common/online_stores.php',
-		'OS_WISHLIST_SMALL'   => 'common/online_stores.php',
-		'POLL'                => 'common/polls.php',
-		'PRODUCT_CATEGORIES_SELECTBOX'=>'common/products.php',
-		'SITE_SKINS'          => 'common/site.skins.php',
-		'SMS_SUBSCRIBE'       => 'common/sms_subscribe.php'
-	);
-	// }
-	do{ 
-		$a=$d; 
-		if(preg_match('/%\([^\)]*\)%/',$d)){ 
-			$b=preg_replace('/.*%\(([^)]*)\)%.*/m','\1',$d); 
-			$d=str_replace('%('.$b.')%',__($b),$d,$count); 
-		} 
-	}while($a!=$d); 
-	foreach($replacements as $code=>$function){
-		$d=preg_replace('#<p>'.$code.'{([^}^<^>]*)}</p>#',$code.'{\1}',$d);
-		do{
-			$a=md5($d);
-			if(ereg($code.'{[^}^<^>]*}',$d)){
-				if(isset($include_files[$code]))require_once(SCRIPTBASE.$include_files[$code]);
-				$b=preg_replace('/.*'.$code.'{([^}^<^>]*)}.*/','\1',$d);
-				$c=$function($b);
-				$d=str_replace('%'.$code.'{'.$b.'}%',$c,$d,$count);
-				if(!$count)$d=str_replace($code.'{'.$b.'}',$c,$d);
-				unset($c);
-				$d=str_replace(array("\r","\n"),'%LINERETURN%',$d);
-			}
-		}while($a!=md5($d));
-
-	}
 	if(count($parseHL)){
 		$c=$d;
 		foreach($parseHL as $HL){
 			if($HL!=''){
-				$d=preg_replace('/(>(|[^<]*[^a-zA-Z]))('.addslashes($HL).')([^a-zA-Z][^<]*)/i','$1<span class="hl">$3</span>$4',$d);
+				$d=preg_replace('/(>(|[^<]*[^a-zA-Z]))('.addslashes($HL).')([^a-zA-Z][^<]*)/im','$1<span class="hl">$3</span>$4',$d);
 			}
 		}
 		if($c!=$d)$d=preg_replace('/(<[^>]*)<[^>]*>([^<]*)<[^>]*>/','$1$2',$d);
 	}
-	$d=str_replace('%LANGUAGE%',$_SESSION['webme_language'],$d);
-	$d=str_replace('%SKIN%',THEME,$d);
-	if(isset($_SESSION['os_country']))$d=str_replace('%COUNTRY%',$_SESSION['os_country'],$d);
-	$d=str_replace('%CURRENCY%',isset($_SESSION['os_currency'])?$_SESSION['os_currency']:'NO_CURRENCY_SET',$d);
-	$d=str_replace('%DOMAIN%',str_replace('www.','',$_SERVER['HTTP_HOST']),$d);
-	return str_replace('%LINERETURN%',"\n",$d);
+	return $d;
 }
