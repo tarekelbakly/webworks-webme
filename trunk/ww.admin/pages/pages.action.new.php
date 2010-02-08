@@ -18,6 +18,7 @@ if(allowedToEditPage($parent)){
 	$type=getVar('type');
 	$title=isset($_REQUEST['title'])?addslashes($_REQUEST['title']):'';
 	$keywords=getVar('keywords');
+	$associated_date=getVar('associated_date');
 	$description=getVar('description');
 	$importance=(float)getVar('importance');
 	if($importance<0)$importance=0;
@@ -33,7 +34,7 @@ if(allowedToEditPage($parent)){
 	else{
 		$ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;
 	}
-	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",body="'.addslashes(sanitise_html($body)).'",type="'.$type.'"';
+	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",body="'.addslashes(sanitise_html($body)).'",type="'.$type.'",associated_date="'.addslashes($associated_date).'"';
 	$q.=',parent='.$pid;
 	if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
 	dbQuery($q);

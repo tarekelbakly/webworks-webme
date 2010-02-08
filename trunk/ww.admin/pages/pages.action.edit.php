@@ -30,6 +30,7 @@ if(allowedToEditPage($id)){
 	// {
 	$keywords=$_REQUEST['keywords'];
 	$description=$_REQUEST['description'];
+	$associated_date=$_REQUEST['associated_date'];
 	$title=$_REQUEST['title'];
 	$importance=(float)$_REQUEST['importance'];
 	$name=$_REQUEST['name'];
@@ -62,7 +63,7 @@ if(allowedToEditPage($id)){
 	$category2=getVar('category2');
 	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
-	$q='update pages set importance="'.$importance.'",category="'.$category.'",template="'.$template.'",edate=now(),type="'.$_POST['type'].'"';
+	$q='update pages set importance="'.$importance.'",category="'.$category.'",template="'.$template.'",edate=now(),type="'.$_POST['type'].'",associated_date="'.addslashes($associated_date).'"';
 	if(!$translation)$q.=',keywords="'.$keywords.'",description="'.$description.'",name="'.addslashes($name).'",title="'.$_POST['title'].'",body="'.addslashes($body).'"';
 	else{
 		dbQuery("DELETE FROM translations WHERE object_type='page' AND object_id=$id AND lang='".addslashes($_SESSION['editing_language'])."'");

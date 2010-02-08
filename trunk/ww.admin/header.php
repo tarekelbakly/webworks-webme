@@ -30,6 +30,10 @@ $admin_vars=array();
 		<script>
 			$(document).ready(function(){
 				$('.datatable').dataTable();
+				$('input.date').datepicker({
+					dateFormat:'yy-mm-dd',
+					modal:true
+				});
 			});
 		</script>
 	</head>

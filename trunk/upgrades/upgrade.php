@@ -168,6 +168,10 @@ if($version==24){ // add short_url
 	dbQuery('CREATE TABLE `short_urls` ( `id` int(11) NOT NULL AUTO_INCREMENT, `cdate` datetime DEFAULT NULL, `long_url` text, `short_url` char(32) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8');
 	$version=25;
 }
+if($version==25){ // change page_type to char string in Pages table
+	dbQuery('alter table pages add associated_date date');
+	$version=26;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
