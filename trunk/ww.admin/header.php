@@ -27,15 +27,7 @@ $admin_vars=array();
 		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
 		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
-		<script>
-			$(document).ready(function(){
-				$('.datatable').dataTable();
-				$('input.date').datepicker({
-					dateFormat:'yy-mm-dd',
-					modal:true
-				});
-			});
-		</script>
+		<script src="/ww.admin/j/admin.js"></script>
 	</head>
 	<body>
 	<div id="wrapper">
