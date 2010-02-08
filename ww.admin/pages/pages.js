@@ -90,6 +90,7 @@ function pages_menu_record_stop(ev,ui){
 	$.get('/ww.admin/pages/move_page.php?id='+pages_menu_vars.f_item+'&t='+pages_menu_vars.t_parent+'&order='+item_ids);
 	setTimeout("window.pages_menu_vars.dontfollow=false",200);
 }
+window.pages_menu_vars={};
 $(document).ready(function(){
 	pages_menu_init();
 	$('.newtoppage,.newsubpage').click(pages_new);
@@ -100,4 +101,3 @@ $(document).ready(function(){
 		other_GET_params:page_menu_currentpage
 	});
 });
-window.pages_menu_vars={};
