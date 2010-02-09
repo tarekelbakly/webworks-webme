@@ -6,7 +6,7 @@ if(!isset($vars->id)){
 	return;
 }
 if(!$vars->stories_to_show)$vars->stories_to_show=10;
-$rs=dbAll('select id from pages where parent='.$vars->id.' order by cdate desc limit '.$vars->stories_to_show);
+$rs=dbAll('select id from pages where parent='.$vars->id.' order by associated_date desc,cdate desc limit '.$vars->stories_to_show);
 if(!count($rs)){
 	$html='<em>No news items to display.</em>';
 	return;
@@ -20,7 +20,7 @@ foreach($rs as $r){
 		$body=preg_replace('/<[^>]*>/','',$body);
 		$body='<br /><i>'.substr($body,0,$vars->characters_shown).'...</i>';
 	}
-	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'.htmlspecialchars($page->name).'</strong>'.$body.'</a>';
+	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'.htmlspecialchars($page->name).'</strong><div class="date">'.date_m2h($page->associated_date).'</div>'.$body.'</a>';
 }
 $style='';
 if(isset($vars->scrolling) && $vars->scrolling){
