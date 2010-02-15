@@ -183,6 +183,7 @@ else{
 		if(strpos($n,'.')===0)continue;
 		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
 	}
+	asort($d);
 	$template=$d[0];
 }
 if($template=='')die('no template created. please create a template first');
