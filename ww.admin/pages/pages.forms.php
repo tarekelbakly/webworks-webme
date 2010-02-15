@@ -104,6 +104,7 @@ else{
 		$n=$f->getFilename();
 		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
 	}
+	asort($d);
 	if(count($d)>1){
 		echo '<select name="template">';
 		foreach($d as $name){
