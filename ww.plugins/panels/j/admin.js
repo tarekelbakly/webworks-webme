@@ -57,6 +57,9 @@ function buildRightWidget(p){
 	var h4=$('<h4></h4>')
 		.appendTo(widget);
 	var name=p.name||p.type;
+	$('<input type="checkbox" class="widget_header_visibility" title="tick this to show the widget title on the front-end" />')
+		.click(widget_header_visibility)
+		.appendTo(h4);
 	$('<span class="name">'+name+'</span>')
 		.click(widget_rename)
 		.appendTo(h4);
@@ -64,6 +67,14 @@ function buildRightWidget(p){
 		.appendTo(h4)
 		.click(showWidgetForm);
 	return widget;
+}
+function widget_header_visibility(ev){
+	var el=ev.target,vis=[];
+	var w=$(el).closest('.widget-wrapper');
+	var p=w.data('widget');
+	p.header_visibility=el.checked;
+	w.data('widget',p);
+	updateWidgets(w.closest('.panel-wrapper'));
 }
 function widget_toggle_disabled(ev){
 	var el=ev.target,vis=[];
@@ -217,7 +228,9 @@ $(document).ready(function(){
 			var widgets=panel.data('widgets');
 			for(var i=0;i<widgets.length;++i){
 				var p=widgets[i];
-				buildRightWidget(p).appendTo(widgets_container);
+				var w=buildRightWidget(p);
+				w.appendTo(widgets_container);
+				if(p.header_visibility)$('input.widget_header_visibility',w)[0].checked=true;
 			}
 			$('<br style="clear:both" />').appendTo(widgets_container);
 			$('.panel-body').sortable({
