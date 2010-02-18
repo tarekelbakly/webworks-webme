@@ -24,11 +24,12 @@ foreach($rs as $r){
 }
 $style='';
 if(isset($vars->scrolling) && $vars->scrolling){
+	$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
 	if(isset($vars->scrolling) && $vars->scrolling)$html.='<script src="/ww.plugins/news/j/jquery.vticker.js"></script><script>$(document).ready(function(){
 	$(".news_excerpts_wrapper").vTicker({
 		speed: 4000,
 		pause: 5000,
-		showItems: 1,
+		showItems: '.$n_items.',
 		animation: "",
 		mousePause: true
 	});
