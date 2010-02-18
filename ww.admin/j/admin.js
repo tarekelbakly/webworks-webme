@@ -9,7 +9,10 @@ $(document).ready(function(){
 				dateFormat:'yy-mm-dd',
 				modal:true,
 				altField:'#'+id,
-				altFormat:'DD, d MM, yy'
+				altFormat:'DD, d MM, yy',
+				onSelect:function(dateText,inst){
+					this.value=dateText;
+				}
 			});
 		var $wrapper=$this.wrap('<div style="position:relative" />');
 		var $input=$('<input id="'+id+'" class="date-human-readable" value="'+date_m2h($this.val())+'" />');

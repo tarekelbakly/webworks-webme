@@ -62,6 +62,7 @@ function show_page($template,$pagecontent,$PAGEDATA){
 	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
 	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
 	$smarty->assign('PAGEDATA',$PAGEDATA);
+	$smarty->register_function('BREADCRUMBS','show_page_breadcrumbs');
 //	$pagename=($PAGEDATA->title=='')?$PAGEDATA->name:$PAGEDATA->title;
 //	$template=str_replace('%PAGENAME%',htmlspecialchars($pagename),$template);
 //	$template=str_replace('%PAGEID%','page'.$PAGEDATA->id,$template);
@@ -86,4 +87,10 @@ function show_page($template,$pagecontent,$PAGEDATA){
 	$smarty->display($template);
 	ob_show_and_log('page','Content-type: text/html; Charset=utf-8');
 	// }
+}
+function show_page_breadcrumbs($id=0) {
+	if($id)$page=Page::getInstance($id);
+	else $page=$GLOBALS['PAGEDATA'];
+	$c=$page->parent ? show_page_breadcrumbs($page->parent) . ' &raquo; ' : '';
+	return $c . '<a href="' . $page->getRelativeURL() . '" title="' . htmlspecialchars($page->title) . '">' . htmlspecialchars($page->name) . '</a>';
 }
