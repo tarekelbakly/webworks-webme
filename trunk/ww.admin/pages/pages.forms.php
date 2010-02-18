@@ -11,6 +11,7 @@ else{
 	}
 	$page_vars=array();
 	echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
+	echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
 	if($edit){
 		if(isset($_REQUEST['newpage_dialog']) && $page['special']&2)$page['special']-=2;
 		$pvq=dbAll("SELECT * FROM page_vars WHERE page_id=$id");
@@ -47,7 +48,7 @@ else{
 		$id=0;
 	}
 	echo wInput('id','hidden',$page['id']);
-	echo '<div class="tabs" style="clear:right">';
+	echo '<div class="tabs">';
 	// { Common Details
 	echo '<div class="tabPage"><h2>'.__('Common Details').'</h2><table style="clear:right">';
 	// { name, title, url
@@ -69,7 +70,7 @@ else{
 	// }
 	echo '</tr>';
 	// }
-	// { page type, parent, template
+	// { page type, parent, associated date
 	// { type
 	echo '<tr><th>'.__('type').'</th><td><select name="type">';
 	if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
@@ -95,27 +96,8 @@ else{
 	else echo '<option value="0"> -- ',__('none'),' -- </option>';
 	echo '</select>',"\n\n",'</td>';
 	// }
-	// { template
-	echo '<th>'.__('template').'</th><td>';
-	$d=array();
-	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
-	foreach($dir as $f){
-		if($f->isDot())continue;
-		$n=$f->getFilename();
-		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
-	}
-	asort($d);
-	if(count($d)>1){
-		echo '<select name="template">';
-		foreach($d as $name){
-			echo '<option ';
-			if($name==$page['template'])echo ' selected="selected"';
-			echo '>'.$name.'</option>';
-		}
-		echo '</select>';
-	}else echo htmlspecialchars($d[0]);
-	echo '</td></tr>';
-	// }
+	echo '<th>Associated Date</th><td><input name="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td>';
+	echo '</tr>';
 	// }
 	// { page-type-specific data
 	switch($page['type']){
@@ -244,7 +226,30 @@ else{
 	echo '</td></tr>';
 	echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars(@$page_vars['google-site-verification']).'" /></td></tr>';
 	if(!isset($page['associated_date']) || !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$page['associated_date']) || $page['associated_date']=='0000-00-00')$page['associated_date']=date('Y-m-d');
-	echo '<tr><th>Associated Date</th><td><input name="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td></tr>';
+	echo '<tr>';
+	// { template
+	echo '<th>'.__('template').'</th><td>';
+	$d=array();
+	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
+	foreach($dir as $f){
+		if($f->isDot())continue;
+		$n=$f->getFilename();
+		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
+	}
+	asort($d);
+	if(count($d)>1){
+		echo '<select name="template">';
+		foreach($d as $name){
+			echo '<option ';
+			if($name==$page['template'])echo ' selected="selected"';
+			echo '>'.$name.'</option>';
+		}
+		echo '</select>';
+	}
+	else echo 'no options available';
+	echo '</td>';
+	// }
+	echo '</tr>';
 	echo '</table>';
 	// }
 	echo '</td><td>';
@@ -277,7 +282,6 @@ else{
 	}
 	// }
 	echo '</div>';
-	if($edit)echo '<a href="javascript:admin_editPermissions(1,'.$id.')" class="pagePermissions"></a>';
 	echo wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details')));
 	echo '</form>';
 }
