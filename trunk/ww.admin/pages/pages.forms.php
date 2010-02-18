@@ -243,7 +243,7 @@ else{
 	else echo wInput('category2');
 	echo '</td></tr>';
 	echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars(@$page_vars['google-site-verification']).'" /></td></tr>';
-	if(!isset($page['associated_date']) || !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$page['associated_date']))$page['associated_date']=date('Y-m-d');
+	if(!isset($page['associated_date']) || !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$page['associated_date']) || $page['associated_date']=='0000-00-00')$page['associated_date']=date('Y-m-d');
 	echo '<tr><th>Associated Date</th><td><input name="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td></tr>';
 	echo '</table>';
 	// }
