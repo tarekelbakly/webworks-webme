@@ -12,7 +12,7 @@ function userloginandregistrationDisplay(){
 		$password=Password::getNew();
 		dbQuery("update user_accounts set password=md5('$password'),verification_hash='',active=1 where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
 		$m='<h1>Thank you</h1><p>Your email address has been verified. Your login password is <strong>'.$password.'</strong>. Please take note of this password, and then log in.</p>';
-		$c.=$m.'<script>$("<div>'.$m.'</div>").dialog({modal:true});</script>';
+		$c.=$m.'<script>$(document).ready(function(){$("<div>'.$m.'</div>").dialog({modal:true});});</script>';
 	}
 	if($action=='Login' || $loggedin){
 		// { variables
@@ -113,7 +113,7 @@ function userregistration(){
 	if(getVar('a')=='Register')return userregistration_register();
 	return userregistration_form();
 }
-function userregistration_form($error=''){
+function userregistration_form($error='',$alert=''){
 	global $PAGEDATA;
 	$c='<div id="userregistration"><h2>Register</h2>';
 	if(isset($PAGEDATA->vars['userlogin_message_registration']))$c.=$PAGEDATA->vars['userlogin_message_registration'];
@@ -124,6 +124,7 @@ function userregistration_form($error=''){
 		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.<br />';
 		$c.='<script>function userlogin_t_and_c(){$("'.addslashes(str_replace(array("\n","\r"),' ',$PAGEDATA->vars['userlogin_terms_and_conditions'])).'").dialog({modal:true});}</script>';
 	}
+	if($alert)$c.='<script>$(document).ready(function(){$(\''.addslashes($alert).'\').dialog({modal:true});});</script>';
 	$c.='<input type="submit" name="a" value="Register" />'
 		.'</form></div>';
 	return $c;
@@ -177,14 +178,14 @@ function userregistration_register(){
 					mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain_s\nReply-to: noreply@$sitedomain_s");
 				}
 			}
-			return '<script>$("<p><strong>Thank you for registering</strong>. Please check your email for a verification URL. Once that\'s been followed, your account will be activated and a password supplied to you.</p>").dialog({modal:true});</script>';
+			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Please check your email for a verification URL. Once that\'s been followed, your account will be activated and a password supplied to you.</p>');
 		}
 		else{
 			$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');
 			foreach($admins as $admin){
 				mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user ($email) has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain_s\nReply-to: noreply@$sitedomain_s");
 			}
-			return '<script>$("<p><strong>Thank you for registering</strong>. Our admins will moderate your registration, and you will receive an email with your new password when it is activated.</p>").dialog({modal:true});</script>';
+			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Our admins will moderate your registration, and you will receive an email with your new password when it is activated.</p>');
 		}
 	// }
 }
