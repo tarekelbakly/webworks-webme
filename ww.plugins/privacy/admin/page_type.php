@@ -80,6 +80,39 @@ $html.='<div class="tabPage"><h2>Terms and Conditions</h2><p>Leave blank if no t
 $html.=ckeditor('page_vars[userlogin_terms_and_conditions]',$page_vars['userlogin_terms_and_conditions'],false);
 $html.='</div>';
 // }
+// { addition privacy fields
+$html.= '<div class="tabPage"><h2>Extra User Data</h2><p>These are fields that you can ask your subscribers to fill-in for your info.</p>';
+$html.= '<table id="privacyfieldsTable" width="100%"><tr><th width="30%">Name</th><th width="30%">Type</th><th width="10%">Required</th><th id="extrasColumn"><a href="javascript:privacyfieldsAddRow()">add field</a></th></tr></table>';
+$html.='<ul id="privacy_fields" style="list-style:none">';
+if(!isset($page_vars['privacy_extra_fields']))$page_vars['privacy_extra_fields']='[]';
+$rs=json_decode($page_vars['privacy_extra_fields']);
+$i=0;
+$arr=array('email'=>__('email'),'input box'=>__('input box'),'textarea'=>__('textarea'),'date'=>__('date'),
+'checkbox'=>__('checkbox'),'selectbox'=>__('selectbox'),'hidden'=>__('hidden message'),'ccdate'=>__('credit card expiry date'));
+foreach($rs as $r){
+	if(!isset($r->name))continue;
+	if(!isset($r->type))$r->type='input box';
+	if(!isset($r->is_required))$r->is_required=false;
+	if(!isset($r->extra))$r->extra='';
+	$html.= '<li><table width="100%"><tr><td width="30%">'.wInput('page_vars[privacy_extra_fields]['.$i.'][name]','',htmlspecialchars($r->name)).'</td><td width="30%">'
+	.wInput('page_vars[privacy_extra_fields]['.$i.'][type]','select',$arr,$r->type).'</td><td width="10%">'
+	.wInput('page_vars[privacy_extra_fields]['.($i).'][is_required]','checkbox',$r->is_required).'</td><td>';
+	switch($r->type){
+		case 'selectbox':case 'hidden':{
+			$html.= wInput('page_vars[privacy_extra_fields]['.($i++).'][extra]','textarea',$r->extra,'small');
+			break;
+		}
+		default:{
+			$html.= wInput('page_vars[privacy_extra_fields]['.($i++).'][extra]','hidden',$r->extra);
+		}
+	}
+	$html.= '</td></tr></table></li>';
+}
+$html.='</ul>';
+$html.='<script type="text/javascript">var privacyfieldElements='.$i.';</script>';
+$html.='<script type="text/javascript" src="/ww.plugins/privacy/j/admin.fields.js"></script>';
+$html.='</div>';
+// }
 $html.='</div><script>var page_vars_userlogin_redirect_to='.$page_vars['userlogin_redirect_to'].';
 $(document).ready(function(){
 	$("#page_vars_userlogin_redirect_to").remoteselectoptions({

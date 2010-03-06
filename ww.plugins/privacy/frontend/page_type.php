@@ -36,8 +36,8 @@ function userloginandregistrationDisplay(){
 			$n=$_SESSION['userdata']['name']==''?$_SESSION['userdata']['contactname']:$_SESSION['userdata']['name'];
 			if($action=='Login'){
 				$redirect_url='';
-				if(isset($_POST['login_referer']) && strpos($_POST['login_referer'],'/')===0){
-					$redirect_url=$_POST['login_referer'];
+				if(isset($_REQUEST['login_referer']) && strpos($_REQUEST['login_referer'],'/')===0){
+					$redirect_url=$_REQUEST['login_referer'];
 				}
 				else if($PAGEDATA->vars['userlogin_redirect_to']){
 					$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
@@ -95,6 +95,7 @@ function userLoginBoxDisplay(){
 	$c.='<tr><th><label for="email">Email</label></th><td><input type="text" name="email" value="'.getVar('email').'" /></td>';
 	$c.='<th><label for="password">Password</label></th><td><input type="password" name="password" /></td></tr>';
 	$c.='</table><input type="submit" name="action" value="Login" />';
+	if(isset($_REQUEST['login_referer']))$c.='<input type="hidden" name="login_referer" value="'.htmlspecialchars($_REQUEST['login_referer'],ENT_QUOTES).'" />';
 	$c.='</form>';
 	$c.='</div>';
 	return $c;
@@ -117,9 +118,120 @@ function userregistration_form($error='',$alert=''){
 	global $PAGEDATA;
 	$c='<div id="userregistration"><h2>Register</h2>';
 	if(isset($PAGEDATA->vars['userlogin_message_registration']))$c.=$PAGEDATA->vars['userlogin_message_registration'];
-	$c.=$error.'<form class="userRegistrationBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#tab=Register" method="post"><table>'
+	$c.=$error.'<form class="userRegistrationBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#userregistration" method="post"><table>'
 		.'<tr><th>Name</th><td><input type="text" name="name" value="'.htmlspecialchars(getVar('name')).'" /></td>'
 		.'<th>Email</th><td><input type="text" name="email" value="'.htmlspecialchars(getVar('email')).'" /></td></tr></table>';
+	if(isset($PAGEDATA->vars['privacy_extra_fields']) && strlen($PAGEDATA->vars['privacy_extra_fields'])>2){
+		$c.='<table>';
+		$required=array();
+		$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
+		$cnt=0;
+		foreach($rs as $r){
+			if(!$r->name)continue;
+			if($r->type=='hidden' && !$only_show_contents)continue;
+			$name=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
+			$class='';
+			if($r->is_required){
+				$required[]=$name.','.$r->type;
+				$class=' required';
+			}
+			if(isset($_REQUEST[$name]))$_SESSION['privacys'][$name]=$_REQUEST[$name];
+			$val=getVar($name);
+			if(!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']){
+				switch($name){
+					case 'Email': case '__ezine_subscribe': // {
+						$val=$_SESSION['userdata']['email'];
+						break;
+					// }
+					case 'FirstName': // {
+						$val=preg_replace('/ .*/','',$_SESSION['userdata']['name']);
+						break;
+					// }
+					case 'Street': // {
+						$val=$_SESSION['userdata']['address1'];
+						break;
+					// }
+					case 'Street2': // {
+						$val=$_SESSION['userdata']['address2'];
+						break;
+					// }
+					case 'Surname': // {
+						$val=preg_replace('/.* /','',$_SESSION['userdata']['name']);
+						break;
+					// }
+					case 'Town': // {
+						$val=$_SESSION['userdata']['address3'];
+						break;
+					// }
+				}
+			}
+			if(!isset($_REQUEST[$name]))$_REQUEST[$name]='';
+			switch($r->type){
+				case 'checkbox': {
+					if($only_show_contents)$d=$_REQUEST[$name];
+					else{
+						$d='<input type="checkbox" id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'"';
+						if($_REQUEST[$name])$d.=' checked="'.$_REQUEST[$name].'"';
+						$d.=' class="'.$class.' checkbox" />';
+					}
+					break;
+				}
+				case 'ccdate': {
+					if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m');
+					$d=$only_show_contents?
+						preg_replace('#.* ([a-zA-Z]*, [0-9]+)#',"$1",date_m2h($_REQUEST[$name])):
+						'<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="ccdate" />';
+					break;
+				}
+				case 'date': {
+					if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m-d');
+					$d=$only_show_contents?
+						date_m2h($_REQUEST[$name]):
+						'<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="date" />';
+					break;
+				}
+				case 'email':{
+					$d=$only_show_contents?$_REQUEST[$name]:'<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="email'.$class.' text" />';
+					break;
+				}
+				case 'file': {
+					$d=$only_show_contents?'<i>files attached</i>':'<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" type="file" />';
+					break;
+				}
+				case 'hidden': {
+					$d=$only_show_contents?htmlspecialchars($r->extra):'<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.' hidden">'.htmlspecialchars($r->extra).'</textarea>';
+					break;
+				}
+				case 'selectbox': {
+					if($only_show_contents)$d=$_REQUEST[$name];
+					else{
+						$d='<select id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'">';
+						$arr=explode("\n",htmlspecialchars($r->extra));
+						foreach($arr as $li){
+							if($_REQUEST[$name]==$li)$d.='<option selected="selected">'.rtrim($li).'</option>';
+							else $d.='<option>'.rtrim($li).'</option>';
+						}
+						$d.='</select>';
+					}
+					break;
+				}
+				case 'textarea': {
+					$d=$only_show_contents?$_REQUEST[$name]:'<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.'">'.$_REQUEST[$name].'</textarea>';
+					break;
+				}
+				default:{ # input boxes, and anything which was not handled already
+					$d=$only_show_contents?$_REQUEST[$name]:'<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="'.$class.' text" />';
+					break;
+				}
+			}
+			$c.='<tr><th>'.htmlspecialchars(__($r->name));
+			if($r->is_required)$c.='<sup>*</sup>';
+			$c.="</th>\n\t<td>".$d."</td></tr>\n\n";
+			$cnt++;
+		}
+		$c.='</table>';
+		if(count($required))$c.='<br />'.__('* indicates required fields');
+	}
 	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions']){
 		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.<br />';
 		$c.='<script>function userlogin_t_and_c(){$("'.addslashes(str_replace(array("\n","\r"),' ',$PAGEDATA->vars['userlogin_terms_and_conditions'])).'").dialog({modal:true});}</script>';
@@ -148,12 +260,22 @@ function userregistration_register(){
 		$r=dbRow('select id from user_accounts where email="'.$email.'"');
 		if($r && count($r))return userregistration_form('<p><em>That email is already registered.</em></p>');
 	// }
+	// { check for user_account table "extras"
+		$extras=array();
+		$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
+		foreach($rs as $r){
+			if(!$r->name)continue;
+			$name=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
+			if($r->is_required && (!isset($_REQUEST['privacy_extras_'.$name]) || !$_REQUEST['privacy_extras_'.$name]))return userregistration_form('<p><em>The field <strong>'.$r->name.'</strong> is required.</em></p>');
+			$extras[$r->name]=$_REQUEST['privacy_extras_'.$name];
+		}
+	// }
 	// { register the account
 		$password=Password::getNew();
 		$r=dbRow("SELECT * FROM site_vars WHERE name='user_discount'");
 		$discount=(float)$r['value'];
 		$hash=base64_encode(sha1(rand(0,65000),true));
-		$sql='insert into user_accounts set name="'.$name.'", password=md5("'.$password.'"), email="'.$email.'", verification_hash="'.$hash.'", active=0';
+		$sql='insert into user_accounts set name="'.$name.'", password=md5("'.$password.'"), email="'.$email.'", verification_hash="'.$hash.'", active=0, extras="'.addslashes(json_encode($extras)).'"';
 		dbQuery($sql);
 		$page=$GLOBALS['PAGEDATA'];
 		$id=dbOne('select last_insert_id() as id','id');
