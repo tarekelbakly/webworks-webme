@@ -9,7 +9,9 @@ switch($type){
 	case 'loginpage': // {
 		$p=Page::getInstanceByType('privacy');
 		if(!$p)$url='/';
-		else $url=$p->getRelativeUrl().'#Login';
+		else $url=$p->getRelativeUrl();
+		if(isset($_REQUEST['login_referer']))$url.='?login_referer='.urlencode($_REQUEST['login_referer']);
+		$url.='#Login';
 		break;
 	// }
 	case 'product': // {

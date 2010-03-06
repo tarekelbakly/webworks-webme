@@ -172,6 +172,10 @@ if($version==25){ // change page_type to char string in Pages table
 	dbQuery('alter table pages add associated_date date');
 	$version=26;
 }
+if($version==26){ // add "extras" to user_account, in case more are wanted later
+	dbQuery('alter table user_accounts add extras text');
+	$version=27;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
