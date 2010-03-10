@@ -15,3 +15,12 @@ echo file_get_contents('lightbox.css');
 echo file_get_contents('tabs.css');
 echo file_get_contents('news_scroller.css');
 echo file_get_contents('product_reviews.css');
+
+if(isset($_GET['skin']) && isset($_GET['variant'])){
+	if(strpos($_GET['skin'],'.')!==false || strpos($_GET['variant'],'.')!==false)exit;
+	require '../.private/config.php';
+	if(isset($DBVARS['theme_dir']))define('THEME_DIR',$DBVARS['theme_dir']);
+	else define('THEME_DIR',$_SERVER['DOCUMENT_ROOT'].'/ww.skins');
+	$fname=THEME_DIR.'/'.$_GET['skin'].'/cs/'.$_GET['variant'].'.css';
+	if(file_exists($fname))echo file_get_contents($fname);
+}

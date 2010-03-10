@@ -16,11 +16,12 @@ function template_get_metadata($template,$PAGEDATA){
 	// }
 	$dir=SCRIPTBASE.'j';
 	$modified=md5(`ls -l $dir`);
+	$c.='<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" />';
+	if($DBVARS['theme_variant'])$c.='<link rel="stylesheet" href="/css/'.$DBVARS['theme'].'/'.$DBVARS['theme_variant'].'" type="text/css" />';
+	else $c.='<link rel="stylesheet" href="/css" type="text/css" />';
 	$c.='<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>';
 	$c.='<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>';
-	$c.='<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" />';
 	$c.='<script type="text/javascript" src="/js/'.$modified.'"></script>';
-	$c.='<script type="text/javascript" src="/js_lang/'.$_SESSION['webme_language'].'/'.$modified.'"></script>';
 	$c.='<script type="text/javascript">var pagedata={id:'.$PAGEDATA->id.',url:"'.$PAGEDATA->getRelativeURL().'",country:"'.(isset($_SESSION['os_country'])?$_SESSION['os_country']:'').'"},';
 	$c.='userdata={isAdmin:'.(is_admin()?1:0);
 	if(isset($_SESSION['userdata']) && isset($_SESSION['userdata']['discount']))$c.=',discount:'.(int)$_SESSION['userdata']['discount'];
@@ -28,12 +29,10 @@ function template_get_metadata($template,$PAGEDATA){
 	$c.='plugins_to_load={'.join(',',$GLOBALS['plugins_to_load']).'};';
 	$c.='document.write("<"+"style type=\'text/css\'>a.nojs{display:none !important}<"+"/style>");';
 	$c.='</script>';
-	$c.='<style type="text/css">@import "/css";</style>';
 	$c.='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 	if($PAGEDATA->keywords)$c.='<meta http-equiv="keywords" content="'.$PAGEDATA->keywords.'" />';
 	if($PAGEDATA->description)$c.='<meta http-equiv="description" content="'.$PAGEDATA->description.'" />';
 	if(isset($PAGEDATA->vars['google-site-verification']))$c.='<meta name="google-site-verification" content="'.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
-	if($DBVARS['theme_variant'])$c.='<style type="text/css">@import "/ww.skins/'.$DBVARS['theme'].'/cs/'.$DBVARS['theme_variant'].'.css";</style>';
 	$c.='<style type="text/css">.loggedin{display:'.(is_logged_in()?'block':'none').'} .loggedinCell{display:'.(is_logged_in()?'table-cell':'none').'}</style>';
 	return $c;
 }
