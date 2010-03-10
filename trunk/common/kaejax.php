@@ -27,13 +27,13 @@ if(!isset($SAJAX_INCLUDED)){
 		return $res.substr($str, $i);
 	}
 	function kaejax_handle_client_request(){
+		header('Content-type: text/javascript; Charset=utf-8');
 		if(!isset($_POST['kaejax']))return;
 		$unmangled=kaejax_decode_unicode_url(str_replace(array('%2B',"\r","\n","\t"),array('+','\r','\n','\t'),$_POST['kaejax']));
 		$obj=json_decode($unmangled);
 		$fs=$obj->c;
 		$res=array();
 		foreach($fs as $f)$res[]=call_user_func_array($f->f,$f->v);
-		header('Content-type: text/javascript; Charset=utf-8');
 		echo json_encode($res);
 		exit;
 	}
