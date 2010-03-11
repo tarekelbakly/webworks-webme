@@ -306,7 +306,7 @@ function loadFormValidation(skipload){
 			$(el).validate();
 		});
 	}
-	else loadJS('/j/jquery.validate.min.js',0,0,'loadFormValidation(1)',1);
+	else loadJS('http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js',0,0,'loadFormValidation(1)',1);
 }
 function loadJS(url,id,lang,onload,runanyway){
 	var i=0;
