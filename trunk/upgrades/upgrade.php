@@ -46,7 +46,7 @@ if($version==2){ // admin vars
 }
 if($version==3){ // pages
 	dbQuery('CREATE TABLE `pages` ( `id` int(11) NOT NULL auto_increment, `name` text, `body` mediumtext, `parent` int(11) default 0, `ord` int(11) NOT NULL default 0,
-		`cdate` datetime NOT NULL default "0000-00-00 00:00:00", `special` bigint(20) default NULL, `edate` datetime default NULL, `assocDate` date default NULL, `title` text,
+		`cdate` datetime NOT NULL default "0000-00-00 00:00:00", `special` bigint(20) default NULL, `edate` datetime default NULL, `title` text,
 		`htmlheader` text, `template` text, `type` smallint(6) default 0, `keywords` text, `description` text, `category` text NOT NULL, `importance` float default 0.5,
 		PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8');
 	dbQuery("INSERT INTO `pages` VALUES (1,'Home','<h1>Welcome</h1>\\r\\n<p>This is your new website. To administer it, please go to <a href=\\\"/ww.admin/\\\">/ww.admin</a> and log in using your email address and password. If you have forgotten your password, please use the reminder form to have a new password sent to you.</p>\\r\\n<p>If you don\\'t like the default theme, please choose a different one in the Site Options page.</p>\\r\\n<p>To keep uptodate with new developments in the CMS, please bookmark <a href=\\\"http://webme.eu/whats-new\\\">http://webme.eu/whats-new</a>.</p>',0,1,now(),1,now(),NULL,'',NULL,'',0,'','','',0.5)");
