@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/common.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/common.php';
 require_once SCRIPTBASE.'common/kaejax.php';
 function ig_getImages($dirId){
 	$files=kfm_loadFiles($dirId);
