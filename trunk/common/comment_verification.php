@@ -1,5 +1,5 @@
 <?php
-require('../common.php');
+require('../ww.incs/common.php');
 if(!isset($_GET['hash']) || !isset($_GET['email']))die('missing value in GET string');
 
 $r=dbRow("select * from comments where email='".addslashes($_GET['email'])."' and verificationhash='".addslashes($_GET['hash'])."'");

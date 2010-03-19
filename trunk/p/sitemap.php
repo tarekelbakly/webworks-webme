@@ -1,5 +1,5 @@
 <?php
-include('../common.php');
+include('../ww.incs/common.php');
 header('Content-type: text/xml; charset=utf-8');
 echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 echo '<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">';

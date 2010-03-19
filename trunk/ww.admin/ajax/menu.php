@@ -1,5 +1,5 @@
 <?php
-require '../../common.php';
+require '../../ww.incs/common.php';
 require SCRIPTBASE.'ww.admin/admin_libs.php';
 require SCRIPTBASE.'common/menus.php';
 require SCRIPTBASE.'common/kaejax.php';

@@ -1,6 +1,6 @@
 <?php
 
-require '../common.php';
+require '../ww.incs/common.php';
 
 $id=@(int)$_REQUEST['id'];
 $type=@$_REQUEST['type'];

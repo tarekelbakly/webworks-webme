@@ -1,5 +1,5 @@
 <?php
-include('../common.php');
+include('../ww.incs/common.php');
 header('Content-type: text/xml; charset=utf-8');
 $pagename=str_replace('-','_',preg_replace('#^/|.rss$#','',urldecode($_SERVER['REQUEST_URI'])));
 $r=dbRow("select id from pages where name like '".$pagename."'");

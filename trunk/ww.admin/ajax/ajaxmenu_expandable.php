@@ -1,5 +1,5 @@
 <?php
-require('../../common.php');
+require('../../ww.incs/common.php');
 require('../../common/menus.php');
 require('../../common/kaejax.php');
 require('../pages/pages.funcs.php');

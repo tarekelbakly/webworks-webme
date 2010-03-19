@@ -1,6 +1,6 @@
 <?php
 $version=0;
-require '../common.php';
+require '../ww.incs/common.php';
 if(isset($DBVARS['version']))$version=(int)$DBVARS['version'];
 echo '<strong>upgrades detected. running upgrade script.</strong>';
 // {

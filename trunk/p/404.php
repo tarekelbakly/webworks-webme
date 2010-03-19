@@ -1,6 +1,6 @@
 <?php
 $SCRIPTBASE=$_SERVER['DOCUMENT_ROOT'];
-include_once($SCRIPTBASE.'/common.php');
+include_once($SCRIPTBASE.'/ww.incs/common.php');
 $r=preg_replace('/^\//','',$_SERVER['REQUEST_URI']);
 if(preg_match('#^f/.*\.[A-Z]{3}\.([^.]*)$#',$r)){
 	echo 'missing image';exit;
