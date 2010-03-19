@@ -1,5 +1,5 @@
 <?php
-require('../../common.php');
+require('../../ww.incs/common.php');
 require('../../common/kaejax.php');
 function ajax_sortabletable_reorder($parent,$order){
 	$x='';

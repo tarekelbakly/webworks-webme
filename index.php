@@ -1,6 +1,6 @@
 <?php
 // { common variables and functions
-include_once('common.php');
+include_once('ww.incs/common.php');
 if(isset($https_required) && $https_required && !$_SERVER['HTTPS']){
 	$server=str_replace('www.','',$_SERVER['HTTP_HOST']);
 	header('Location: https://www.'.$server.'/');
