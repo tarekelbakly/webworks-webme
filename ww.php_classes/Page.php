@@ -11,6 +11,7 @@ class Page{
 		# byField: 0=ID; 1=Name
 		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:($v?dbRow("select * from pages where id=$v limit 1"):array());
 		else if ($byField == 1){ // by name
+			if(preg_match('/[^a-zA-Z0-9 \-_]/',$name))return false;
 			$name=strtolower(str_replace('-','_',$v));
 			$fname='page_by_name_'.md5($name);
 			$r=cache_load('pages',$fname);
@@ -22,16 +23,18 @@ class Page{
 		else if ($byField == 2){ // by type
 			$fname='page_by_type_'.$v;
 			$r=cache_load('pages',$fname);
-			if(!$r){
+			if($r===false){
 				$r=dbRow("select * from pages where type='$v' limit 1");
+				if($r===false)$r=array();
 				cache_save('pages',$fname,$r);
 			}
 		}
 		else if ($byField == 3 && is_numeric($v)){ // by special
 			$fname='page_by_special_'.$v;
 			$r=cache_load('pages',$fname);
-			if(!$r){
+			if($r===false){
 				$r=dbRow("select * from pages where special&$v limit 1");
+				if($r===false)$r=array();
 				cache_save('pages',$fname,$r);
 			}
 		}
@@ -65,6 +68,7 @@ class Page{
 		return self::$instances[$id];
 	}
 	function getInstanceByName($name=''){
+		if(preg_match('/[^a-zA-Z0-9 \-_\/]/',$name))return false;
 		$name=strtolower($name);
 		$nameIndex=preg_replace('#[^a-z0-9/]#','-',$name);
 		if(@array_key_exists($nameIndex,self::$instancesByName))return self::$instancesByName[$nameIndex];
@@ -108,9 +112,15 @@ class Page{
 		return self::$instancesByType[$type];
 	}
 	function getInstanceByNameAndParent($name,$parent){
+		if(preg_match('/[^a-zA-Z0-9 \-_]/',$name))return false;
 		$name=str_replace('-','_',$name);
 	  if(!@array_key_exists($name.'/'.$parent,self::$instancesByNAndP)){
-			$r=dbRow("SELECT * FROM pages WHERE parent=$parent AND name LIKE '".addslashes($name)."'");
+			$r=cache_load('pages',md5($parent.'|'.$name));
+			if($r===false){
+				$r=dbRow("SELECT * FROM pages WHERE parent=$parent AND name LIKE '".addslashes($name)."'");
+				if($r===false)$r=array();
+				cache_save('pages',md5($parent.'|'.$name),$r);
+			}
 			if(!count($r))return false;
 			self::$instancesByNAndP[$name.'/'.$parent] = new Page($r,4);
 		}
@@ -118,14 +128,14 @@ class Page{
 	}
 	function getRelativeURL(){
 		if(isset($this->relativeURL))return $this->relativeURL;
-				$this->relativeURL='';
-				if($this->parent){
-					$p=Page::getInstance($this->parent);
-					if($p)$this->relativeURL.=$p->getRelativeURL();
-				}
+		$this->relativeURL='';
+		if($this->parent){
+			$p=Page::getInstance($this->parent);
+			if($p)$this->relativeURL.=$p->getRelativeURL();
+		}
 		$this->relativeURL.='/'.$this->getURLSafeName();
 		return $this->relativeURL;
-		}
+	}
 	function getTopParentId(){
 		if(!$this->parent)return $this->id;
 		$p=Page::getInstance($this->parent);

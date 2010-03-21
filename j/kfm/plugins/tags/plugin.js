@@ -7,8 +7,8 @@ function kfm_plugin_tags(){
 	this.extensions='all';
 	this.doFunction=function(files){alert('Tags doFunction is not set')};
 }
-kfm_addHook(new kfm_plugin_tags(),{name:'tags_add',title:kfm.lang.AddTagsToFiles,doFunction:function(files){kfm_tagAdd(files[0])}});
-kfm_addHook(new kfm_plugin_tags(),{name:'tags_remove',title:kfm.lang.RemoveTagsFromFiles,doFunction:function(files){kfm_tagRemove(files[0])}});
+kfm_addHook(new kfm_plugin_tags(),{name:'tags_add',title:"add tags to files",doFunction:function(files){kfm_tagAdd(files[0])}});
+kfm_addHook(new kfm_plugin_tags(),{name:'tags_remove',title:"remove tags from files",doFunction:function(files){kfm_tagRemove(files[0])}});
 
 function kfm_tagAdd(id){
 	kfm_prompt(kfm.lang.WhatIsTheNewTag,'',function(newTag){
@@ -43,7 +43,7 @@ function kfm_tagDraw(id){
 	$j('span.kfm_unknown_tag').each(function(key,el){
 		if(el.innerHTML==id){
 			el.innerHTML=name;
-			$j.className.remove(el,'kfm_unknown_tag');
+			$j(el).removeClass('kfm_unknown_tag');
 		}
 	});
 }

@@ -75,18 +75,18 @@ define('KFM_DB_PREFIX', $kfm_db_prefix);
 // { variables
 // structure
 $kfm->defaultSetting('kfm_url','/'
-  .str_replace($_SERVER['DOCUMENT_ROOT'],'',str_replace('\\','/',getcwd()))
-  .'/');
-$kfm->defaultSetting('file_url','url');
+	.str_replace($_SERVER['DOCUMENT_ROOT'],'',str_replace('\\','/',getcwd()))
+	.'/');
+$kfm->defaultSetting('file_url','url'); # Unsecure, but better for people setting the userfiles_output
 $kfm->defaultSetting('user_root_folder','');
 $kfm->defaultSetting('startup_folder','');
+$kfm->defaultSetting('force_startup_folder',false);
 $kfm->defaultSetting('hidden_panels',array('logs','file_details','directory_properties'));
 $kfm->defaultSetting('log_level', 0);
-$kfm->defaultSetting('file_handler','download');
 $kfm->defaultSetting('allow_user_file_associations',false);
 //display
 //$kfm->defaultSetting('theme', false); // must be overwritten
-$kfm->defaultSetting('show_admin_link', false);
+$kfm->defaultSetting('show_admin_link', true);
 $kfm->defaultSetting('time_format', '%T');
 $kfm->defaultSetting('date_format', '%x');
 $kfm->defaultSetting('listview',0);
@@ -124,7 +124,7 @@ $kfm->defaultSetting('use_imagemagick',1);
 //upload
 $kfm->defaultSetting('allow_file_upload',1);
 $kfm->defaultSetting('only_allow_image_upload',0);
-$kfm->defaultSetting('use_multiple_file_upload',0);
+$kfm->defaultSetting('use_multiple_file_upload',1);
 $kfm->defaultSetting('default_upload_permission',644);
 $kfm->defaultSetting('banned_upload_extensions',array());
 $kfm->defaultSetting('max_image_upload_width', 1025);
@@ -133,10 +133,6 @@ $kfm->defaultSetting('max_image_upload_height',1025);
 $kfm->defaultSetting('disabled_plugins',array());
 // depricated
 $kfm->defaultSetting('allow_image_manipulation',1); // this is plugin management
-$kfm->defaultSetting('show_disabled_contextmenu_links',1); // Should be depricated
-$kfm->defaultSetting('return_file_id_to_cms',0); // Should be deprecated in favour of plugin
-$kfm->defaultSetting('allow_multiple_file_returns',0); // Should be deprecated in favour of plugin
-$kfm->defaultSetting('slideshow_delay',4);
 
 if(!$kfm_use_servers_pear)set_include_path(KFM_BASE_PATH.'includes/pear'.PATH_SEPARATOR.get_include_path());
 if(!substr($kfm_userfiles_output,-1,1)=='/')$kfm_userfiles_output .= '/'; // Just convention, end with slash
@@ -292,7 +288,9 @@ if (!function_exists('json_encode')) { // php-json is not installed
 // }
 // { start session
 $session_id  = (isset($_REQUEST['kfm_session']))?$_REQUEST['kfm_session']:'';
+#define('NOW',microtime(true));
 $kfm_session = new kfmSession($session_id);
+#die(microtime(true)-NOW);
 if (isset($_GET['logout'])||isset($_GET['log_out'])) $kfm_session->set('loggedin',0);
 $kfm->defaultSetting('kfm_session_id', $kfm_session->key);
 // }
@@ -320,22 +318,36 @@ $kfm->defaultSetting('user_name',$kfm->username);
 $kfm->session= &$kfm_session;
 // }
 // { Read settings
-$settings=array();
-$admin_settings=db_fetch_all('SELECT name, value, usersetting FROM '.KFM_DB_PREFIX.'settings WHERE user_id=1');
-if(is_array($admin_settings)){
+function get_settings($uid){
+  $settings=array();
+  $usersettings = array();
+  $admin_settings=db_fetch_all('SELECT name, value, usersetting FROM '.KFM_DB_PREFIX.'settings WHERE user_id=1');
+  if(is_array($admin_settings)){
     foreach($admin_settings as $setting){
         $settings[$setting['name']]=$setting['value'];
-        if($setting['usersetting'])$kfm->addUserSetting($setting['name']);
+        if($setting['usersetting']) $usersettings[] = $setting['name'];
     }
-}
-if($uid!=1){
-    $user_settings=db_fetch_all('SELECT name, value FROM '.KFM_DB_PREFIX.'settings WHERE user_id='.$uid);
+  }
+  if($uid!=1){
+    $user_settings=db_fetch_all('SELECT name, value, usersetting FROM '.KFM_DB_PREFIX.'settings WHERE user_id='.$uid);
     if(is_array($user_settings)){
-			foreach($user_settings as $setting)$settings[$setting['name']]=$setting['value'];
+			foreach($user_settings as $setting){
+        $settings[$setting['name']]=$setting['value'];
+        if($setting['usersetting']) $usersettings[] = $setting['name'];
+      }
     }
+  }
+  return array($settings, array_unique($usersettings));
+}
+list($settings, $usersettings) = get_settings($uid); // $settings as database values
+foreach($usersettings as $usersetting) $kfm->addUserSetting($usersetting);
+if(!isset($settings['kfm_url'])){
+ $kfm_url = str_replace($_SERVER['DOCUMENT_ROOT'],'',str_replace('\\','/',getcwd()));
+ if(!$kfm_url[0] == '/') $kfm_url = '/'.$kfm_url; // Make the url absolute
+ $kfm->db->query('INSERT INTO '.KFM_DB_PREFIX.'settings (name, value, user_id) VALUES ("kfm_url", "'.mysql_escape_string($kfm_url).'",1)');
 }
 if(isset($settings['disabled_plugins'])){
-    $kfm->defaultSetting('disabled_plugins',setting_array($settings['disabled_plugins']));
+    $kfm->setting('disabled_plugins',setting_array($settings['disabled_plugins']));
     unset($settings['disabled_plugins']); // it does not have to be set again
 }
 // }
@@ -440,6 +452,7 @@ if ($handle = opendir(KFM_BASE_PATH.'lang')) {
 }
 // }
 // {  check for URL parameter "lang"
+if (isset($_REQUEST['langCode'])) $_REQUEST['lang']=$_REQUEST['langCode'];
 if (isset($_REQUEST['lang'])&&$_REQUEST['lang']&&in_array($_REQUEST['lang'], $kfm_available_languages)) {
     $kfm_language = $_REQUEST['lang'];
     $kfm_session->set('language', $kfm_language);

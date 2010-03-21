@@ -11,7 +11,7 @@ function plugin_lightbox(){
 	}
 }
 kfm_addHook(new plugin_lightbox());
-kfm_addHook(new plugin_lightbox(),{mode:0,title:kfm.lang.ViewImage});
+kfm_addHook(new plugin_lightbox(),{mode:0,title:"view image"});
 function $(id){
 	return document.getElementById(id);
 }
@@ -60,7 +60,7 @@ function kfm_img_startLightbox(id){
 		wrapper.appendChild(el);
 	}
 	if(oldEl)$j(oldEl).remove();
-	var w=data.width,h=data.height,url='get.php?id='+id,r=0;
+	var w=data.width,h=data.height,url='get.php?id='+id+kfm_vars.get_params,r=0;
 	if(!w||!h)return kfm_img_stopLightbox();
 	if(w>ws.x*.9||h>ws.y*.9){
 		if(w>ws.x*.9){
@@ -95,8 +95,7 @@ function kfm_img_startLightbox(id){
 	kfm_resizeHandler_add('kfm_lightboxWrapper');
 }
 function kfm_img_stopLightbox(e){
-	e=new Event(e);
-	if(e.rightClick)return;
+	if(e.button==2)return;
 	$j("#kfm_lightboxWrapper").remove();
 	window.kfm_slideshow=window.kfm_slideshow_stopped=null;
 	if(window.lightbox_slideshowTimer)clearTimeout(window.lightbox_slideshowTimer);
