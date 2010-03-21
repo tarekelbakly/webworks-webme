@@ -1,4 +1,5 @@
 <?php
+$kfm_do_not_save_session=true;
 require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 $plugin=array(

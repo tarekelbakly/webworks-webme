@@ -10,37 +10,19 @@ function _(str,context,vars,htmlonly){ // translations
 	// { set up variables
 	if(!context)context='kfm';
 	if(!vars)vars=[];
-	if(!window.lang)window.lang=[];
-	if(!window.lang[kfm_vars.lang])window.lang[kfm_vars.lang]=[];
 	// }
+	if(!kfm.lang[str]){
+//		alert('missing language string\n------------\n'+str+'\n------------\nplease email kae@verens.com with the correct translation');
+		kfm.lang[str]=str;
+	}
 	if(htmlonly){
-		if(window.lang[kfm_vars.lang][str]){
-			el='<span class="kfmlang kfmlang_'+str.toLowerCase().replace(/[^a-z0-9]/g,'')+'">'+window.lang[kfm_vars.lang][str].text+'</span>';
-			window.lang[kfm_vars.lang][str].requested=1;
-		}
-		else el='<span class="kfmlang kfmlang_'+str.toLowerCase().replace(/[^a-z0-9]/g,'')+'">...</span>';
+		el='<span class="kfmlang kfmlang_'+str.toLowerCase().replace(/[^a-z0-9]/g,'')+'">'+kfm.lang[str]+'</span>';
 	}
 	else{
 		el=document.createElement('span');
 		el.className='kfmlang kfmlang_'+str.toLowerCase().replace(/[^a-z0-9]/g,'');
 		el.original=[str,context,vars];
-		if(window.lang[kfm_vars.lang][str]){
-			el.appendChild(document.createTextNode(window.lang[kfm_vars.lang][str].text));
-			window.lang[kfm_vars.lang][str].requested=1;
-		}
-		else el.appendChild(document.createTextNode('...'));
-	}
-	if(!window.lang[kfm_vars.lang][str]){
-		x_kfm_translate(str,context,kfm_vars.lang,function(res){
-			if(window.lang[kfm_vars.lang][str])return; // in case the string is requested multiple times
-			window.lang[kfm_vars.lang][str]={
-				'text':res,
-				'requested':1
-			}
-			setTimeout(function(){
-				$j('.kfmlang_'+str.toLowerCase().replace(/[^a-z0-9]/g,'')).text(window.lang[kfm_vars.lang][str].text);
-			},1);
-		});
+		el.appendChild(document.createTextNode(kfm.lang[str]));
 	}
 	return el;
 }
@@ -82,26 +64,17 @@ function kfm_kaejax_do_call(func_name,args){
 	window.kfm_kaejax_timeouts[uri].callbacks[l]=args[args.length-1];
 }
 function kfm_kaejax_sendRequests(uri){
-	var t=window.kfm_kaejax_timeouts[uri],callbacks=window.kfm_kaejax_timeouts[uri].callbacks;
+	// { get the request queue for the uri, and clear the queue
+	var t=window.kfm_kaejax_timeouts[uri];
+	var callbacks=t.callbacks;
 	t.callbacks=null;
 	window.kfm_kaejax_timeouts[uri]=null;
-	var x=new XMLHttpRequest(),post_data="kaejax="+escape(Json.toString(t)).replace(kfm_regexps.plus,'%2B').replace(kfm_regexps.ascii_stuff,'%u00$1').replace(/\n/g,' ');
-	post_data=kfm_sanitise_ajax(post_data);
-	x.open('POST',uri,true);
-	x.setRequestHeader("Method","POST "+uri+" HTTP/1.1");
-	x.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	x.onreadystatechange=function(){
-		if(x.readyState!=4){
-			return;
-		}
-		var r=x.responseText;
-		if(r.substring(0,5)=='error'){
-			return kfm.alert(r);
-		}
-		var v=eval('('+unescape(r)+')');
+	// }
+	// { send the requests to the server, and send the results back to the callbacks when the server's finished
+	$j.post(uri,{kaejax:Json.toString(t)},function(v){
 		var f,p,i;
-		if(v.errors.length)kfm.showErrors(v.errors);
-		if(v.messages.length)kfm.showMessages(v.messages);
+		if(v.errors && v.errors.length)kfm.showErrors(v.errors);
+		if(v.messages && v.messages.length)kfm.showMessages(v.messages);
 		for(i=0;i<t.c.length;++i){
 			f=callbacks[i];
 			p=[];
@@ -111,8 +84,8 @@ function kfm_kaejax_sendRequests(uri){
 			}
 			f(v.results[i],p);
 		}
-	};
-	x.send(post_data);
+	},'json');
+	// }
 }
 function loadJS(url,id,lang,onload){
 	var i=0,el;

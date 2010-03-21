@@ -5,11 +5,13 @@
 class kfmBase extends kfmObject{
 	var $doctype='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 	var $settings=array();
+  var $settings_frozen = array();
 	var $plugins=array();
 	var $themes=array();
 	var $user_settings=array();
 	var $admin_tabs=array();
 	var $associations=array();
+  var $associations_frozen=false;
 	//Settings definition
 	var $sdef=array(
 		'Structure settings'=>array( 'type'=>'group_header'),
@@ -17,9 +19,9 @@ class kfmBase extends kfmObject{
 		'file_url'=>array('type'=>'choice_list','options'=>array('File url'=>'url','Secure'=>'secure')),
 		'user_root_folder'=>array('type'=>'text'),
 		'startup_folder'=>array('type'=>'text'),
+    'force_startup_folder'=>array('type' => 'bool'),
 		'hidden_panels'=>array('type'=>'select_list','options'=>array('logs','file_details','file_upload','search','directory_properties','widgets')),
 		'startup_folder'=>array('type'=>'text', 'properties'=>array('size'=>16)),
-		'file_handler'=>array('type'=>'choice_list', 'options'=>array('Return'=>'return','Download'=>'download')),
 		'allow_user_file_associations'=>array('type'=>'bool'),
 		
 		'Display settings'=>array( 'type'=>'group_header'),
@@ -65,11 +67,11 @@ class kfmBase extends kfmObject{
 		
 		'Image settings'=>array( 'type'=>'group_header'),
 		'use_imagemagick'=>array('type'=>'bool'),
+		'allow_image_manipulation'=>array('type'=>'bool'),
 		
 		'Upload settings'=>array( 'type'=>'group_header'),
 		'allow_file_upload'=>array('type'=>'bool'),
 		'only_allow_image_upload'=>array('type'=>'bool'),
-		//'show_disabled_contextmenu_links'=>array('type'=>'bool'), // Should be depricated
 		'use_multiple_file_upload'=>array('type'=>'bool'),
 		'default_upload_permission'=>array('type'=>'integer', 'properties'=>array('size'=>3,'maxsize'=>3)),
 		'banned_upload_extensions'=>array('type'=>'array'),
@@ -78,11 +80,6 @@ class kfmBase extends kfmObject{
 		
 		'Plugin settings'=>array( 'type'=>'group_header'),
 		'disabled_plugins'=>array('type'=>'select_list'),
-		'Depricated settings'=>array( 'type'=>'group_header'),
-		'return_file_id_to_cms'=>array('type'=>'bool'), // Should be deprecated in favour of plugin
-		'allow_multiple_file_returns'=>array('type'=>'bool'), // Should be deprecated in favour of plugin
-		'slideshow_delay'=>array('type'=>'integer'),
-		'allow_image_manipulation'=>array('type'=>'bool')
 	);
 
 	function isUserSetting($name){
@@ -130,20 +127,22 @@ class kfmBase extends kfmObject{
 	 * 
 	 * @return $value
 	 */
-	function setting($name,$value='novaluegiven'){
+	function setting($name,$value='novaluegiven', $freeze = false){
 		if($value=='novaluegiven'){
 			if(!isset($this->settings[$name]))return $this->error('Setting '.$name.' does not exists');
 			return $this->settings[$name];
 		}
-		$this->settings[$name]=$value;
+		if(!in_array($name, $this->settings_frozen))$this->settings[$name]=$value;
+    if($freeze) $this->settings_frozen[] = $name;
 	}
 
   /**
    * Bulk update settings
    */
-  function setSettings($settings = array()){
+  function setSettings($settings = array(), $freeze = false){
     foreach($settings as $setting_name => $setting_value){
       $this->settings[$setting_name] = $setting_value;
+      if($freeze) $this->settings_frozen[] = $setting_name;
     }
   }
 
@@ -155,6 +154,13 @@ class kfmBase extends kfmObject{
 	function addAdminTab($name, $page,$stylesheet=false){
 		$this->admin_tabs[]=array('title'=>$name, 'page'=>$page, 'stylesheet'=>$stylesheet);
 	}
+
+  /**
+    * Freeze a setting. After this a setting will not be changed anymore
+    */
+  function freezeSetting($setting){
+    $this->settings_frozen[] = $setting;
+  }
 
 	/**
 	 * returns a parameter, returns the default if not present
@@ -185,7 +191,12 @@ class kfmBase extends kfmObject{
 	/**
 	 * This function returns true if the user is an admin user, false if not
 	 */
-	function isAdmin(){
+	function isAdmin($uid = false){
+    if($uid){
+      $res=db_fetch_row('SELECT id, username, password, status FROM '.KFM_DB_PREFIX.'users WHERE id='.mysql_escape_string($uid));
+      if($res && $res['status'] == 1) return true;
+      else return false;
+    }
 		return $this->user_status==1;
 	}
 
@@ -217,6 +228,7 @@ class kfmBase extends kfmObject{
 	 *	)
 	 */
 	function addAssociations($associations){
+    if($this->associations_frozen) return;
 		if(!is_array($associations))return;
 		foreach($associations as $association){
 			if(strpos($association['extension'],',')!==false){
@@ -230,9 +242,27 @@ class kfmBase extends kfmObject{
 
 	/* Add an association to kfm. This associates a plugin with an extension.
 	 * It should be something like:
-	 *	array( 'plugin' => 'download', 'extension' => 'pdf' )
+   * $kfm->addAssociation('lightbox','jpg,png,jpeg,gif');
+   * $kfm->addAssociation('rename', 'all');
 	 */
 	function addAssociation($plugin, $extensions){
 		$this->addAssociations(array('plugin'=>$plugin, 'extension'=>$extensions));
+    return $this; // Allow chaining
 	}
+
+  /**
+    * Clear associations created before 
+    */
+  function clearAssociations(){
+    $this->associations = array();
+    return $this; // Allow chaining
+  }
+
+  /**
+    * Prevent future associations
+    */
+  function freezeAssociations(){
+    $this->associations_frozen = true;
+    return $this; // Allow chaining
+  }
 }

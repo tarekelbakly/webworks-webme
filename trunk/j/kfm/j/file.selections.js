@@ -6,7 +6,6 @@ function kfm_addToSelection(id){
 	document.getElementById('kfm_file_icon_'+id).className+=' selected';
 	kfm_selectionCheck();
 }
-llStubs.push('kfm_chooseFile');
 function kfm_isFileSelected(filename){
 	return kfm_inArray(filename,selectedFiles);
 }
@@ -15,8 +14,7 @@ function kfm_removeFromSelection(id){
 	var i;
 	for(i=0;i<selectedFiles.length;++i){
 		if(selectedFiles[i]==id){
-			var el=document.getElementById('kfm_file_icon_'+id);
-			if(el)$j.className.remove(el,'selected');
+			$j('#kfm_file_icon_'+id).removeClass('selected');
 			kfm_selectionCheck();
 			return selectedFiles.splice(i,1);
 		}
@@ -34,8 +32,7 @@ function kfm_selectInvert(){
 }
 function kfm_selectNone(){
 	if(kfm_lastClicked){
-		var el=document.getElementById('kfm_file_icon_'+kfm_lastClicked);
-		if(el)$j.className.remove(el,'last_clicked');
+		$j('#kfm_file_icon_'+kfm_lastClicked).removeClass('last_clicked');
 	}
 	for(var i=selectedFiles.length;i>-1;--i)kfm_removeFromSelection(selectedFiles[i]);
 	kfm_lastClicked=0;
@@ -50,10 +47,9 @@ function kfm_selectionCheck(){
 	else kfm_run_delayed('file_details','if(!selectedFiles.length)kfm_showFileDetails();');
 }
 function kfm_selection_drag(e){
-	e=new Event(e);
 	if(!window.dragType||window.dragType!=2||!window.drag_wrapper)return;
 	clearSelections();
-	var p1=e.page,p2=window.drag_wrapper.orig;
+	var p1={x:e.pageX,y:e.pageY},p2=window.drag_wrapper.orig;
 	var x1=p1.x>p2.x?p2.x:p1.x;
 	var x2=p2.x>p1.x?p2.x:p1.x;
 	var y1=p1.y>p2.y?p2.y:p1.y;
@@ -105,8 +101,7 @@ function kfm_shiftFileSelectionUD(dir){
 }
 function kfm_toggleSelectedFile(e){
 	var row;
-	e=new Event(e);
-	if(e.rightClick)return;
+	if(e.type=="contextmenu" || e.button==2)return;
 	e.stopPropagation();
 	kfm_closeContextMenu();
 	if(window.dragAddedFileToSelection){
@@ -123,7 +118,7 @@ function kfm_toggleSelectedFile(e){
 	}
 	if(kfm_lastClicked){
 		var el=document.getElementById('kfm_file_icon_'+kfm_lastClicked);
-		if(el)$j.className.remove(el,'last_clicked');
+		if(el)$j(el).removeClass('last_clicked');
 		else kfm_lastClicked=0;
 	}
 	if(kfm_lastClicked&&e.shift){

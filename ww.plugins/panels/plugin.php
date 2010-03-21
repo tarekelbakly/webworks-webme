@@ -19,10 +19,14 @@ $plugin=array(
 function showPanel($vars){
 	global $PLUGINS;
 	$name=isset($vars['name'])?$vars['name']:'';
-	$p=dbRow('select visibility,disabled,body from panels where name="'.addslashes($name).'" limit 1');
-	if(!$p){
-		dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
-		return '';
+	$p=cache_load('panels',md5($name));
+	if($p===false){
+		$p=dbRow('select visibility,disabled,body from panels where name="'.addslashes($name).'" limit 1');
+		if(!$p){
+			dbQuery("insert into panels (name,body) values('".addslashes($name)."','{\"widgets\":[]}')");
+			return '';
+		}
+		cache_save('panels',md5($name),$p);
 	}
 	if($p['disabled'])return '';
 	if($p['visibility'] && $p['visibility']!='[]'){

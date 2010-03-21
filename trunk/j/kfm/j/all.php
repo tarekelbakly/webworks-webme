@@ -1,5 +1,4 @@
 <?php
-
 require '../initialise.php';
 require 'libs.php';
 
@@ -15,8 +14,6 @@ else{ // build cacheable js file
 	$js.=file_get_contents('mootools.v1.11/mootools.v1.11.js');
 	// }
 	// { jquery scripts
-	//$js.=file_get_contents('jquery/jquery.dimensions.pack.js');
-  $js.=file_get_contents('jquery/jquery-impromptu.2.7.min.js');
 	$js.=file_get_contents('jquery/jquery.iutil.pack.js');
 	$js.=file_get_contents('jquery/jquery.idrag.js');
 	$js.=file_get_contents('jquery/jquery.grid.columnSizing.js');
@@ -51,7 +48,7 @@ else{ // build cacheable js file
 		delete_old_md5s(WORKPATH);
 		exit;
 	}
-	else{
+	else if(strpos($_SERVER['REQUEST_URI'],'/can-minify')!==false){
 		$js.="setTimeout(function(){var a=document.createElement('img');a.src='j/all.php?minify=1';a.style.display='none';document.body.appendChild(a);},5000);";
 	}
 	echo $js;

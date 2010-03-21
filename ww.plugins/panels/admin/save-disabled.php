@@ -6,6 +6,6 @@ if(isset($_REQUEST['id']) && isset($_REQUEST['disabled'])){
 	$id=(int)$_REQUEST['id'];
 	$disabled=(int)$_REQUEST['disabled'];
 	dbQuery("update panels set disabled='$disabled' where id=$id");
-	echo "update panels set disabled='$disabled' where id=$id";
+	cache_clear('panels');
 }
 echo 'done';

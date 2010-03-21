@@ -16,10 +16,10 @@
  */
 
 // what type of database to use
-// values allowed: mysql, pgsql, sqlite, sqlitepdo
+// values allowed: mysql, pgsql, sqlitepdo
 $kfm_db_type = 'sqlitepdo';
 
-// the following options should only be filled if you are not using sqlite/sqlitepdo as the database
+// the following options should only be filled if you are not using sqlitepdo as the database
 $kfm_db_prefix   = 'kfm_';
 $kfm_db_host     = 'localhost';
 $kfm_db_name     = 'kfm';
@@ -46,15 +46,15 @@ $use_kfm_security=false;
 $kfm_userfiles_address = '/home/kae/Desktop/userfiles';
 
 // where should a browser look to find the files?
-// Note that this is usually the same as $kfm_userfiles_address (if it is relative), but could be different
-//   in the case that the server uses mod_rewrite or personal web-sites, etc
-// Use the value 'get.php' if you want to use the KFM file handler script to manage file downloads.
-// If you are not using get.php, this value must end in '/'.
-// Examples:
+// This setting assumes that the files are available throught a public address.
+// This is not secure. To securely store files, put them outside the public hierarchy, make sure that the setting
+// $kfm_userfiles_address is correct and set kfm_url to secure in the admin panel or put in this place the correct
+// values for the secure settings if you are not using the admin panel:
+// $kfm->setting('kfm_url', '/kfm/'); // Web address of KFM
+// $kfm->setting('file_url', 'secure');
+// Examples for public accessable files:
 //   $kfm_userfiles_output = 'http://thisdomain.com/files/';
 //   $kfm_userfiles_output = '/files/';
-//   $kfm_userfiles_output = 'http://thisdomain.com/kfm/get.php';
-//   $kfm_userfiles_output = '/kfm/get.php';
 $kfm_userfiles_output = '/userfiles/';
 
 // directory in which KFM keeps its database and generated files
@@ -85,8 +85,14 @@ $kfm_thumb_format='.jpg';
 $kfm_default_file_selection_handler='return_url';
 
 /**
+ * Ignore DB Session - leave this as "false", unless you are a developer and accessing KFM through an API.
+ * Developers: this is for cases where KFM files are included and you just need to use its functions without going through the whole setup.
+ */
+if(!isset($kfm_do_not_save_session))$kfm_do_not_save_session=false;
+
+/**
  * This function is called in the admin area. To specify your own admin requirements or security, un-comment and edit this function
  */
 //	function kfm_admin_check(){
-//		return true;
+//		return false; // Disable the admin area
 //	}

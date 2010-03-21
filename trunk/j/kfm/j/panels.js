@@ -57,10 +57,12 @@ function kfm_createFileUploadPanel(contentsonly){
 	iframe.src='javascript:false';
 	iframe.style.display='none';
 	// { test to see if multiple uploads are natively supported
-	var inp=document.createElement('input');
+	var inp=document.createElement('input'),nm=false;
 	inp.type='file';
-	inp.setAttribute('multiple','multiple');
-	var nm=inp.multiple?true:false;
+	if('multiple' in inp){
+		inp.setAttribute('multiple','multiple');
+		nm=true;
+	}
 	// }
 	wrapper.appendChild((nm || !kfm_vars.use_multiple_file_upload) ?
 		kfm_fileUploadForm_native():
@@ -147,14 +149,15 @@ function kfm_fileUploadForm_flash(){
 	c.innerHTML='&nbsp;';
 	// }
 	setTimeout(function(){ // delay the creation of the swfupload object, until the browser registers #swfupload_browse_button
+		var post_params = {
+			"swf"        : 1,
+			"kfm_session": window.session_key
+		};
+		post_params[window.phpsession_name] = window.phpsession_id;
 		window.swfUpload = new SWFUpload({
 			// { Backend Settings
 			upload_url: "upload.php",	// Relative to the SWF file or absolute
-			post_params: {
-				"PHPSESSID"  : window.phpsession,
-				"swf"        : 1,
-				"kfm_session": window.session_key
-			},
+			post_params: post_params,
 			// }
 			// { File Upload Settings
 			file_size_limit : "9999 MB",	// 2MB
@@ -218,14 +221,13 @@ function kfm_fileUploadForm_flash(){
 		});
 	},1);
 	$j.event.add(b2,'click',function(e){
-		e=new Event(e);
-		if(e.rightClick)return;
+		if(e.button==2)return;
 		window.swfUpload.cancelUpload();
 	});
 	return t;
 }
 function kfm_createFileDetailsPanel(){
-	return kfm_createPanel(kfm.lang.FileDetails,'kfm_file_details_panel',0,{abilities:1,order:4});
+	return kfm_createPanel(kfm.lang["file details"],'kfm_file_details_panel',0,{abilities:1,order:4});
 }
 function kfm_createPanel(title,id,subels,vars){
 	// states:    0=minimised,1=maximised,2=fixed-height, 3=fixed-height-maxed
@@ -462,7 +464,6 @@ function kfm_togglePanelsUnlocked(){
 	kfm_refreshPanels('kfm_left_column');
 }
 function kfm_uploadPanel_checkForZip(e){
-	e=new Event(e);
 	e.stopPropagation();
 	var v=this.value;
 	var h=(v.indexOf('.')==-1||v.replace(/.*(\.[^.]*)/,'$1')!='.zip');
