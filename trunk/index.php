@@ -12,33 +12,7 @@ $plugins_to_load=array(); // to be used by javascript
 $page=getVar('page');
 // }
 // { specials
-if(isset($_GET['wwSpecial'])){
-	switch($_GET['wwSpecial']){
-		case 'productsearch':{
-			if(isset($_POST['producttype'])&&$_POST['producttype']){
-				$r=ProductType::getInstanceByName($_POST['producttype']);
-				if($r){
-					$r2=dbRow("select page_id from page_vars where name='product_type' and value='".$r->id."'");
-					if(count($r2))$id=$r2['page_id'];
-				}
-			}
-			else{
-				$r2=dbRow("select page_id from page_vars where name='product_type' and value='0'");
-				if(count($r2))$id=$r2['page_id'];
-			}
-			if(!$id){
-				$r=Page::getInstanceByType(8);
-				if($r)$id=$r->id;
-			}
-			break;
-		}
-		default:{
-			echo 'unknown wwSpecial';
-			exit;
-		}
-	}
-}
-else if($page=='' && isset($_GET['search'])){
+if($page=='' && isset($_GET['search'])){
 	$p=Page::getInstanceByType(5);
 	if(!$p || !isset($p->id)){
 		dbQuery('insert into pages set cdate=now(),edate=now(),name="__search",body="",type=5,special=2,ord=5000');
@@ -94,7 +68,6 @@ if(!$allowed){
 }
 else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
 else{
-	if($PAGEDATA->htmlheader!='')$c.=$PAGEDATA->htmlheader;
 	switch($PAGEDATA->type){
 		case '0': // { normal page
 			$c.=webmeParse($PAGEDATA->body);

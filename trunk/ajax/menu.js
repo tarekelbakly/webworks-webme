@@ -160,7 +160,6 @@ function ajaxmenu_openSubMenus(i){
 					s.style.position='absolute';
 					s.style.left=x+'px';
 					s.style.top=y+'px';
-					s.style.zIndex=3;
 				}
 				s.innerHTML='loading...';
 				submenuWrapper.appendChild(s);
