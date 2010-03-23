@@ -11,8 +11,10 @@ function __() {
 	}
 	return $str;  
 }
-function __autoload($name) {
-	require $name . '.php';
+if(!function_exists('__autoload')){
+	function __autoload($name) {
+		require $name . '.php';
+	}
 }
 function cache_clear($type){
 	if(!is_dir(USERBASE.'/ww.cache/'.$type))return;
@@ -169,17 +171,19 @@ else{
 // }
 $PLUGINS=array();
 #echo "load ww.incs/basics.php7 ".(microtime(true)-START_TIME).'<br />';
-foreach($DBVARS['plugins'] as $pname){
-	if(strpos('/',$pname)!==false)continue;
-#echo "load ww.incs/basics.php8 ".(microtime(true)-START_TIME).'<br />';
-	require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
-#echo "load ww.incs/basics.php9 ".(microtime(true)-START_TIME).'<br />';
-	if(@$plugin['version'] && (@$DBVARS[$pname.'|version']!=$plugin['version'])){
-		$version=(int)@$DBVARS[$pname.'|version'];
-		require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
-		header('Location: '.$_SERVER['REQUEST_URI']);
-		exit;
+if(!isset($ignore_webme_plugins)){
+	foreach($DBVARS['plugins'] as $pname){
+		if(strpos('/',$pname)!==false)continue;
+	#echo "load ww.incs/basics.php8 ".(microtime(true)-START_TIME).'<br />';
+		require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
+	#echo "load ww.incs/basics.php9 ".(microtime(true)-START_TIME).'<br />';
+		if(@$plugin['version'] && (@$DBVARS[$pname.'|version']!=$plugin['version'])){
+			$version=(int)@$DBVARS[$pname.'|version'];
+			require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
+			header('Location: '.$_SERVER['REQUEST_URI']);
+			exit;
+		}
+		$PLUGINS[$pname]=$plugin;
 	}
-	$PLUGINS[$pname]=$plugin;
 }
 #echo "load ww.incs/basics.php ".(microtime(true)-START_TIME).'<br />';

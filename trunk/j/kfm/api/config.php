@@ -1,7 +1,7 @@
 <?php
 if(!defined('START_TIME'))define('START_TIME',microtime(true));
-include_once($_SERVER['DOCUMENT_ROOT'].'/.private/config.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/common/webme_specific.php');
+$ignore_webme_plugins=true;
+include_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $kfm_userfiles_address=$DBVARS['userbase'].'/f/';
 if(!session_id()){
 	if(isset($_GET['cms_session']))session_id($_GET['cms_session']);
