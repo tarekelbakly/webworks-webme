@@ -99,12 +99,46 @@ if(strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false){
 	require_once SCRIPTBASE . 'j/kfm/api/api.php';
 	require_once SCRIPTBASE . 'j/kfm/initialise.php';
 }
-// { quick-build similar functions
-	$arr = array(array('eventCalendarDisplay', 'funcs.events.php', 'ww_eventCalendarDisplay'), array('panelDisplay', 'funcs.panels.php', 'ww_panelDisplay'), array('imageDisplay', 'funcs.image.display.php', 'func_image_display'), array('menuDisplay', 'menus.php', 'ww_menuDisplay'), array('scrollingEventsDisplay', 'funcs.events.php', 'ww_scrollingEventsDisplay'), array('scrollingNewsDisplay', 'funcs.news.php', 'ww_scrollingNewsDisplay'), array('show404', '404.php', 'ww_show404'), array('showNews', 'funcs.news.php', 'ww_showNews'), array('showProductListing', 'products.php', 'ww_showProductListing'), array('showSearchResults', 'funcs.search.php', 'ww_showSearchResults'), array('sitemap', 'sitemap.php', 'ww_showSitemap'), array('webmeParse', 'funcs.textfilter.php', 'textObjectsFilter'));
-	foreach ($arr as $a) {
-		eval('function ' . $a[0] . '($a=0){inc_common("' . $a[1] . '");return ' . $a[2] . '($a);}');
-	}
-// }
+function eventCalendarDisplay($a=0){
+	include_once SCRIPTBASE . 'common/funcs.events.php';
+	return ww_eventCalendarDisplay($a);
+}
+function panelDisplay($a=0){
+	include_once SCRIPTBASE . 'common/funcs.panels.php';
+	return ww_panelDisplay($a);
+}
+function imageDisplay($a=0){
+	include_once SCRIPTBASE . 'common/funcs.image.display.php';
+	return func_image_display($a);
+}
+function menuDisplay($a=0){
+	include_once SCRIPTBASE . 'common/menus.php';
+	return ww_menuDisplay($a);
+}
+function scrollingEventsDisplay($a=0){
+	include_once SCRIPTBASE . 'common/funcs.events.php';
+	return ww_scrollingEventsDisplay($a);
+}
+function scrollingNewsDisplay($a=0){
+	include_once SCRIPTBASE . 'common/funcs.news.php';
+	return ww_scrollingNewsDisplay($a);
+}
+function show404($a=0){
+	include_once SCRIPTBASE . 'common/404.php';
+	return ww_show404($a);
+}
+function showSearchResults($a=0){
+	include_once SCRIPTBASE . 'common/funcs.search.php';
+	return ww_showSearchResults($a);
+}
+function sitemap($a=0){
+	include_once SCRIPTBASE . 'common/sitemap.php';
+	return ww_showSitemap($a);
+}
+function webmeParse($a=0){
+	include_once SCRIPTBASE . 'common/funcs.textfilter.php';
+	return textObjectsFilter($a);
+}
 // { user authentication
 if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 	// { variables
@@ -144,51 +178,4 @@ if(isset($_SESSION['userdata']['id']) && !isset($_SESSION['userdata']['groups'])
 }
 if(isset($_REQUEST['logout']))unset($_SESSION['userdata']);
 // }
-// { set/get webme language settings
-if(getVar('__webme_language')){
-	$_SESSION['webme_language']=addslashes(getVar('__webme_language'));
-}
-if(!isset($_SESSION['webme_language']) || strpos($_SESSION['webme_language'],'_'!==false)){
-	if ($handle = opendir(SCRIPTBASE.'ww.lang')) {
-		$files = array('en');
-			while(false!==($file = readdir($handle))){
-				if(substr($file,0,1)=='.')continue;
-				if (is_dir(SCRIPTBASE.'ww.lang/'.$file))$files[] = $file;
-			}
-		closedir($handle);
-		sort($files);
-		$available_languages = array();
-		foreach($files as $f)$available_languages[] = $f;
-	} else {
-		echo 'error: missing language files';
-		exit;
-	}
-	$ls=array();
-  if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))$_SERVER['HTTP_ACCEPT_LANGUAGE'] = '';
-  $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-  foreach($langs as $lang)if (in_array(preg_replace('/;.*/','',trim($lang)), $available_languages)) {
-	$_SESSION['webme_language'] = preg_replace('/;.*/','',trim($lang));
-	break;
-  }
-	if(!isset($_SESSION['webme_language']) || !in_array($_SESSION['webme_language'],array('de','en','fr','es')))$_SESSION['webme_language']='en';
-}
-if($_SESSION['webme_language']=='')$_SESSION['webme_language']='C';
-$_SESSION['webme_language']='C';
-function __setLocale($locale){
-	$_SESSION['webme_language']=$locale;
-	if(!setLocale(LC_ALL,$_SESSION['webme_language'])){
-		preg_match_all("/[^|\w]".$_SESSION['webme_language'].'.*/',`locale -a`,$matches);
-		if(!count($matches[0]))die('no locale info for "'.$_SESSION['webme_language'].'"');
-		$_SESSION['webme_language']=trim($matches[0][0]);
-		foreach($matches[0] as $m)if(preg_match('/utf8/',$m)){
-			$_SESSION['webme_language']=trim($m);
-			break;
-		}
-		setLocale(LC_ALL,$_SESSION['webme_language']);
-		if(strpos($_SESSION['webme_language'],'_')!==false)$_SESSION['webme_language']=preg_replace('/_.*/','',$_SESSION['webme_language']);
-	}
-	bindtextdomain('default',SCRIPTBASE.'ww.lang/');
-	textdomain('default');
-}
-__setLocale($_SESSION['webme_language']);
-// }
+#echo "load ww.incs/common.php ".(microtime(true)-START_TIME).'<br />';

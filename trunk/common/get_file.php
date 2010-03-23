@@ -1,7 +1,7 @@
 <?php
 require '../ww.incs/basics.php';
 if(!isset($_REQUEST['filename']))exit;
-$file=USERBASE.'f/'.$_REQUEST['filename'];
+$file=USERBASE.'/f/'.$_REQUEST['filename'];
 if(
 	strpos($file,'..')!==false ||
 	( strpos($file,'/.')!==false && strpos(preg_replace('#/\.files/#','/',$file),'/.')!==false )

@@ -4,7 +4,7 @@ date_default_timezone_set('Eire');
 
 require '../.private/config.php';
 require '../common/jslibs.php';
-require '../common/webme_specific.php';
+require '../ww.incs/basics.php';
 
 header('Cache-Control: max-age=2592000, public');
 header('Expires-Active: On');
@@ -13,7 +13,7 @@ header('Pragma:');
 header('Content-type: text/javascript; charset=utf-8');
 
 $name=md5_of_dir('./');
-if(!is_dir(USERBASE . 'f/.files/j'))mkdir(USERBASE . 'f/.files/j');
+if(!is_dir(USERBASE . '/f/.files/j'))mkdir(USERBASE . '/f/.files/j');
 else{
 	$js=file_get_contents('mootools.v1.11.js');
 	$js.=file_get_contents('json.js');
