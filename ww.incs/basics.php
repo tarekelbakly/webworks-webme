@@ -15,22 +15,22 @@ function __autoload($name) {
 	require $name . '.php';
 }
 function cache_clear($type){
-	if(!is_dir(USERBASE.'ww.cache/'.$type))return;
-	$d=new DirectoryIterator(USERBASE.'ww.cache/'.$type);
+	if(!is_dir(USERBASE.'/ww.cache/'.$type))return;
+	$d=new DirectoryIterator(USERBASE.'/ww.cache/'.$type);
 	foreach($d as $f){
 		if($f=='.' || $f=='..')continue;
-		unlink(USERBASE.'ww.cache/'.$type.'/'.$f);
+		unlink(USERBASE.'/ww.cache/'.$type.'/'.$f);
 	}
 }
 function cache_load($type,$md5){
-	if(file_exists(USERBASE.'ww.cache/'.$type.'/'.$md5)){
-		return json_decode(file_get_contents(USERBASE.'ww.cache/'.$type.'/'.$md5), true);
+	if(file_exists(USERBASE.'/ww.cache/'.$type.'/'.$md5)){
+		return json_decode(file_get_contents(USERBASE.'/ww.cache/'.$type.'/'.$md5), true);
 	}
 	return false;
 }
 function cache_save($type,$md5,$vals){
-	if(!is_dir(USERBASE.'ww.cache/'.$type))mkdir(USERBASE.'ww.cache/'.$type,0777,true);
-	file_put_contents(USERBASE.'ww.cache/'.$type.'/'.$md5, json_encode($vals));
+	if(!is_dir(USERBASE.'/ww.cache/'.$type))mkdir(USERBASE.'/ww.cache/'.$type,0777,true);
+	file_put_contents(USERBASE.'/ww.cache/'.$type.'/'.$md5, json_encode($vals));
 }
 function dbAll($query,$key='') {
 	$q = dbQuery($query);
@@ -65,7 +65,7 @@ function dbRow($query) {
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
 function ob_show_and_log($type,$header=''){
-	$log = &Log::singleton('file',USERBASE.'log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
+	$log = &Log::singleton('file',USERBASE.'/log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=ob_get_length();
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
 	switch($type){
@@ -102,6 +102,24 @@ function ob_show_and_log($type,$header=''){
 	if($header)header($header);
 	ob_flush();
 }
+function admin_can_create_top_pages(){
+	return has_page_permissions(1024);
+}
+function is_admin(){
+	return (isset($_SESSION['userdata']) && isset($_SESSION['userdata']['groups']['administrators']));
+}
+function is_logged_in(){
+	return isset($_SESSION['userdata']);
+}
+function get_userid(){
+	return $_SESSION['userdata']['id'];
+}
+function has_page_permissions($val){
+	return true;
+}
+function has_access_permissions($val){
+	return true;
+}
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>No configuration file found</p>';
@@ -111,10 +129,24 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	exit;
 }
 require SCRIPTBASE . '.private/config.php';
+if(isset($DBVARS['userbase']))define('USERBASE', $DBVARS['userbase']);
+else define('USERBASE', $_SERVER['DOCUMENT_ROOT']);
+// { built-in page types
+$pagetypes=array(
+	array(0,'normal',0),
+	array(4,'page summaries',0),
+	array(5,'search results',0),
+	array(9,'table of contents',0)
+);
+// }
+$admin_top_menu=array(
+	array('id'=>'am_pages','name'=>'pages','link'=>'pages.php'),
+	array('id'=>'am_siteoptions','name'=>_('site options'),'link'=>'siteoptions.php'),
+	array('id'=>'am_stats','name'=>_('stats'),'link'=>'stats.php')
+);
 $DBVARS['plugins']=(isset($DBVARS['plugins']) && $DBVARS['plugins']!='')?explode(',',$DBVARS['plugins']):array();
-require SCRIPTBASE . 'common/webme_specific.php';
 if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php');
-define('WORKDIR_IMAGERESIZES', USERBASE.'f/.files/image_resizes/');
+define('WORKDIR_IMAGERESIZES', USERBASE.'/f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
 define('CKEDITOR','ckeditor');
 define('KFM_BASE_PATH', SCRIPTBASE.'j/kfm/');
@@ -136,9 +168,12 @@ else{
 }
 // }
 $PLUGINS=array();
+#echo "load ww.incs/basics.php7 ".(microtime(true)-START_TIME).'<br />';
 foreach($DBVARS['plugins'] as $pname){
 	if(strpos('/',$pname)!==false)continue;
+#echo "load ww.incs/basics.php8 ".(microtime(true)-START_TIME).'<br />';
 	require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
+#echo "load ww.incs/basics.php9 ".(microtime(true)-START_TIME).'<br />';
 	if(@$plugin['version'] && (@$DBVARS[$pname.'|version']!=$plugin['version'])){
 		$version=(int)@$DBVARS[$pname.'|version'];
 		require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
@@ -147,3 +182,4 @@ foreach($DBVARS['plugins'] as $pname){
 	}
 	$PLUGINS[$pname]=$plugin;
 }
+#echo "load ww.incs/basics.php ".(microtime(true)-START_TIME).'<br />';

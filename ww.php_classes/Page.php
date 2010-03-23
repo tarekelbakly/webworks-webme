@@ -8,6 +8,7 @@ class Page{
 	static $instancesByType		= array();
 	public $vals;
 	function __construct($v,$byField=0,$fromRow=0,$pvq=0){
+#echo "start Page constructor ".(microtime(true)-START_TIME).'<br />';
 		# byField: 0=ID; 1=Name
 		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:($v?dbRow("select * from pages where id=$v limit 1"):array());
 		else if ($byField == 1){ // by name
@@ -61,6 +62,7 @@ class Page{
 		$this->__valuesLoaded=false;
 		if($pvq)$this->initValues($pvq);
 		// }
+#echo "finish Page constructor ".(microtime(true)-START_TIME).'<br />';
 	}
 	function getInstance($id=0,$fromRow=false,$pvq=false){
 		if (!is_numeric($id)) return false;
