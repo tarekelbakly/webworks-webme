@@ -24,16 +24,60 @@ $admin_vars=array();
 		<script src="/js/"></script>
 		<script src="/j/ckeditor/ckeditor.js"></script>
 		<script src="/j/datatables/media/js/jquery.dataTables.js"></script>
+		<script src="/j/fg.menu.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" />
+<?php
+foreach($PLUGINS as $pname=>$p){
+	if(file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin.css'))echo '<link rel="stylesheet" href="/ww.plugins/'.$pname.'/admin.css" type="text/css" />';
+}
+?>
 		<script src="/ww.admin/j/admin.js"></script>
 	</head>
 	<body>
-	<div id="wrapper">
-		
-<div id="header"> 
-  <div id="toprightbox"></div><a href="http://webworks.ie/f/webme-help.pdf" class="ajaxmenu_linkam_help" title="<?php echo __('Click to read a PDF doc, detailing how to get started with WebME').'">'.__('Help'); ?></a><a href="./?logout=1" class="ajaxmenu_linkam_logout" title="<?php echo __('Log out from your account').'">'.__('Logout');?></a>
-</div>
-		<div id="ajaxmenuam_top" class="adminmenu ajaxmenu menuBarTop"><script type="text/javascript">var pagedata={id:'am_top',adminid:<?php echo $_SESSION['userdata']['id']; ?>};</script><a href="#"><?php echo __('loading. please wait...');?></a></div>
-		<div id="main">
+		<div id="header"> 
+<?php
+	// { setup standard menu items
+	$menus=array(
+		'Pages'=>array(
+			'_link'=>'pages.php'
+		),
+		'Site Options'=>array(
+			'_link'=>'siteoptions.php'
+		)
+	);
+	// }
+	// { add custom items (from plugins)
+	foreach($PLUGINS as $pname=>$p){
+		if(!isset($p['admin']) || !isset($p['admin']['menu']))continue;
+		foreach($p['admin']['menu'] as $name=>$page){
+			if(preg_match('/[^a-zA-Z0-9 >]/',$name))continue; # illegal characters in name
+			$json='{"'.str_replace('>','":{"',$name).'":{"_link":"plugin.php?_plugin='.$pname.'&amp;_page='.$page.'"}}'.str_repeat('}',substr_count($name,'>'));
+			$menus=array_merge_recursive($menus,json_decode($json,true));
+		}
+	}
+	// }
+	// { add final items
+	$menus['Log Out']=array('_link'=>'/?logout=1');
+	// }
+	// { display menu as UL list
+	function menu_show($items,$name=false,$prefix){
+		if(isset($items['_link']))echo '<a href="'.$items['_link'].'">'.$name.'</a>';
+		else if($name!='top')echo '<a href="#'.$prefix.'-'.$name.'">'.$name.'</a>';
+		if(count($items)==1 && isset($items['_link']))return;
+		echo '<div id="'.$prefix.'-'.$name.'"><ul>';
+		foreach($items as $iname=>$subitems){
+			if($iname=='_link')continue;
+			echo '<li>';
+			menu_show($subitems,$iname,$prefix.'-'.$name);
+			echo '</li>';
+		}
+		echo '</ul></div>';
+	}
+	menu_show($menus,'top','menu');
+	// }
+?>
+		</div>
+		<div id="wrapper">
+			<div id="main">

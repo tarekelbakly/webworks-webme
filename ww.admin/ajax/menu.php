@@ -14,11 +14,9 @@ function ajaxmenu_getChildren($parentid,$currentpage=0){
 					$top=array();
 					foreach($PLUGINS as $name=>$vals){
 						if(isset($vals['admin']['menu'])){
-							$v=$vals['admin']['menu'];
-							if($v['top']=='top'){
-								$r[]=array('id'=>'am_'.strtolower($v['name']),'name'=>_($v['name']),'link'=>'plugin.php?name='.$v['name']);
-							}
-							else $top[$v['top']]=true;
+							$vs=$vals['admin']['menu'];
+							// foreach menu such as "Top>Child", create the "Top" menu
+							foreach($vs as $v=>$vopts)$top[preg_replace('/>.*/','',$v)]=true;
 						}
 					}
 					foreach($top as $name=>$v){
@@ -33,6 +31,10 @@ function ajaxmenu_getChildren($parentid,$currentpage=0){
 					foreach($PLUGINS as $name=>$vals){
 						if(isset($vals['admin']['menu'])){
 							$v=$vals['admin']['menu'];
+
+#							foreach($vs as $name=>$v){
+								
+#							}
 							if(strtolower($v['top'])==$parent){
 								$r[]=array('id'=>'am_'.$name,'name'=>_($vals['name']),'link'=>'plugin.php?_plugin='.$name);
 							}
