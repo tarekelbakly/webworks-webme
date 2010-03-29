@@ -27,4 +27,15 @@ function convert_date_to_human_readable(){
 $(document).ready(function(){
 	$('.datatable').dataTable();
 	$('input.date-human').each(convert_date_to_human_readable);
+	$('#menu-top li a').each(function(){
+		if(!(/#/.test(this.href.toString())))return; // only apply menu to links with '#' in them
+		$(this).menu({
+			content: $(this).next().html(),
+			showSpeed: 400,
+			callerOnState: '',
+			loadingState: '',
+			linkHover: '',
+			linkHoverSecondary: ''
+		});
+	});
 });

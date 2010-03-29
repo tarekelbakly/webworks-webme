@@ -4,7 +4,11 @@
 a        {color: #369; text-decoration: underline; cursor:pointer}
 a:hover  {color:#900; }
 a img    {border: 0; }
-body     {margin:0;padding:5px 5px 60px;background:#f7f7f7 url(/ww.admin/theme/body.png) repeat-x bottom left fixed}
+body{
+	margin:0;
+	padding:93px 0 20px 10px;
+	background:url(/ww.admin/theme/bnner-bg.jpg) repeat-x left top;
+}
 em       {display:block; color:#333; font-weight: bold; padding: 3px; padding-left: 45px; padding-top: 18px; margin: 3px 0px;  background: url("/ww.admin/theme/warning.gif") 1% 50% no-repeat; }
 em strong{color:red;font-style:italic}
 fieldset {border-bottom:1px solid #f00}
@@ -65,8 +69,6 @@ table.draggable_active:hover { cursor: pointer; cursor: hand; }
 table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 
 
-/*ul{margin:0 0 10px 0;padding-left:0;list-style:none;margin-bottom:10px}*/
-
 #wrapper { min-width: 980px; margin: 0; }
 
 #ajaxmenuam_top{ position:absolute;left:0;top:77px;z-index:2;margin:0;padding:0}
@@ -83,14 +85,12 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 .menu #ajaxmenu_linkam_stats{ background: url(/ww.admin/theme/icons_stats.png) no-repeat 0 center; }
 #ajaxmenu_linkam_misc{padding-left:59px !important;background:url(/ww.admin/theme/icons_48.png) 0 -96px no-repeat;}
 #ajaxmenu_linkam_users_and_admins{background:url(/ww.admin/theme/icons_48.png) 0 -144px no-repeat;}
-#ajaxmenu_linkam_products{background:url(/ww.admin/theme/icons_48.png) 0 -192px no-repeat; }
 #ajaxmenu_linkam_communication{background:url(/ww.admin/theme/icons_48.png) 0 -382px no-repeat; }
 * html #ajaxmenu_linkam_pages{background-image:url(/ww.admin/theme/icons_48.gif)}
 * html #ajaxmenu_linkam_polls{ background-image: url(/ww.admin/theme/icons_48.gif)}
 * html #ajaxmenu_linkam_siteoptions{ background-image: url(/ww.admin/theme/icons_48.gif)}
 * html #ajaxmenu_linkam_misc{background-image:url(/ww.admin/theme/icons_48.gif)}
 * html #ajaxmenu_linkam_users_and_admins{background-image:url(/ww.admin/theme/icons_48.gif)}
-* html #ajaxmenu_linkam_products{background-image:url(/ww.admin/theme/icons_48.gif)}
 
 
 #ajaxmenu_linkam_admins { background: url(/ww.admin/theme/icons_admins.png) no-repeat 0% 50%!important; }
@@ -128,19 +128,12 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 .menu a {width: 120px; color: #416BA7;display: block; text-decoration:none;padding:5px; border: 0;}
 .menu a:hover { color: #A76b41;background:#fff}
 
-#header{ 
-	position:relative; left: 0;top: 0;right: 0; height:120px; /*min-width:980px;*/
-	background:#fff url(/ww.admin/theme/icons_120.png) repeat-x top left; margin: 0; padding: 0;
-}
-
-
 #toprightbox{ 
 	/*position:absolute; top: 0px; right: 0px; */
 	height:120px; width: 225px; float: right; 
 	background:url(/ww.admin/theme/icons_120.png) no-repeat right -120px; 
 	padding-left:90px; /*padding-top:11px;*/
 }
-#header a, #header a:visited {text-decoration:none;color:#fff;margin:0 6px 0 26px; border: 0;}
 a.ajaxmenu_linkam_help { display: block; width: 57px; line-height:28px;text-align: right; margin: 0; position: absolute; top: 5px; right: 79px; background: url(/ww.admin/theme/icons_28.png) 0 0 no-repeat;	}
 a.ajaxmenu_linkam_logout { display: block; width: 68px; line-height: 28px; text-align: right; margin: 0; position: absolute; top: 5px; right: 5px; background: url(/ww.admin/theme/icons_28.png) 0 -28px no-repeat;	}
 * html a.ajaxmenu_linkam_help  {background-image:url(/ww.admin/theme/icons_28.gif)};
@@ -348,3 +341,62 @@ ul.accordion0 div{display:none;}
 a.accordion-header{color: #000 !important;border-bottom:1px solid #000 !important}
 .selected{font-style:italic}
 #ui-datepicker-div{z-index:2000}
+#header{
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	background:url(/ww.admin/theme/banner.jpg) no-repeat left top;
+	height:93px;
+}
+#menu-top{
+	position:absolute;
+	top:67px;
+	border-top:1px solid #fff;
+}
+#menu-top ul{
+	list-style:none;
+}
+#menu-top>ul{
+	margin:0;
+}
+#menu-top ul ul{
+	display:none;
+}
+#menu-top>ul>li{
+	float:left;
+}
+#menu-top>ul>li>a{
+	display:block;
+	width:100px;
+	text-align:center;
+	text-decoration:none;
+	padding:2px 0;
+	color:#fff;
+	font-weight:bold;
+	font-size:12px;
+	line-height:21px;
+	font-family:"Univers", Tahoma, Trebuchet MS;
+}
+#menu-top>ul>li>a:hover{
+	font-style:italic;
+	color:#99CC00;
+
+}
+div.fg-menu-container{
+	position:relative;
+	background:#000;
+}
+div.fg-menu-container ul{
+	margin:0;
+	padding:10px;
+	list-style:none;
+}
+div.fg-menu-container ul li a{
+	display:block;
+	color:#fff;
+	padding:2px 5px;
+}
+div.fg-menu-container ul li a:hover{
+	font-style:italic;
+}
