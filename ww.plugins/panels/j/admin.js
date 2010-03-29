@@ -128,7 +128,7 @@ function panel_remove(i){
 	if(!confirm('Are you sure you want to delete this panel?'))return;
 	if(!confirm('Just double-checking... deleting this panel will remove the configurations of its contained widgets. Are you /sure/ you want to remove this? Note that your panel will be recreated (without its widgets) if the site theme has it defined.'))return;
 	$.get('/ww.plugins/panels/admin/remove-panel.php?id='+p.id,function(){
-		document.location='/ww.admin/plugin.php?_plugin=panels';
+		document.location='/ww.admin/plugin.php?_plugin=panels&_page=index';
 	});
 }
 function panel_visibility(id){

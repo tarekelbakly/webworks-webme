@@ -23,7 +23,7 @@ function form_valid(){
 function delete_row(){
 	var id=this.href.replace(/.*!/,"");
 	if(confirm("Are you sure you want to delete this email from the list?")){
-		$.getJSON("/ww.admin/plugin.php?_plugin=mailing-list&mailing_list=delete&id="+id);
+		$.getJSON("/ww.admin/plugin.php?_plugin=mailing-list&mailing_list=delete&_page=index&id="+id);
 		$(this).parent().parent().fadeOut("slow",function(){
 			$(this).remove();
 		});

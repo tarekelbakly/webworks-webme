@@ -54,7 +54,7 @@ function banner_image_selectkiddies($i=0,$n=1,$s=array(),$id=0,$prefix=''){
 function banner_image_drawForm($id=0){
 	if(!($id))$fdata=array('id'=>0,'html'=>'','name'=>'banner');
 	else $fdata=dbRow("select * from banners_images where id=$id");
-	echo '<form method="post" action="/ww.admin/plugin.php?_plugin=banner-image" enctype="multipart/form-data"><input type="hidden" name="id" value="',(int)$fdata['id'],'" />';
+	echo '<form method="post" action="/ww.admin/plugin.php?_plugin=banner-image&amp;_page=index" enctype="multipart/form-data"><input type="hidden" name="id" value="',(int)$fdata['id'],'" />';
 	echo '<table>';
 	// {
 	echo '<tr><th>Name</th><td><input name="name" value="'.htmlspecialchars($fdata['name']).'" /></td></tr>';
@@ -71,7 +71,7 @@ function banner_image_drawForm($id=0){
 	echo '<tr><th>Banner</th><td><div id="banner_image_html">',ckeditor('html_'.$fdata['id'],$fdata['html'],0,'',180),'</div></td></tr>';
 	// }
 	// { show submit button and end form
-	echo '<tr><td><a href="./plugin.php?_plugin=banner-image&delete_banner='.$fdata['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td><td><input type="submit" name="save_banner" value="',__('Update'),'" /></td></tr>';
+	echo '<tr><td><a href="./plugin.php?_plugin=banner-image&_page=index&delete_banner='.$fdata['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td><td><input type="submit" name="save_banner" value="',__('Update'),'" /></td></tr>';
 	// }
 	echo '</table></form>';
 }
@@ -80,9 +80,9 @@ function banner_image_drawForm($id=0){
 echo '<div id="leftmenu">';
 $rs=dbAll('select id,name from banners_images');
 foreach($rs as $r){
-	echo '<a href="/ww.admin/plugin.php?_plugin=banner-image&id='.$r['id'].'">'.htmlspecialchars($r['name']).'</a>';
+	echo '<a href="/ww.admin/plugin.php?_plugin=banner-image&id='.$r['id'].'&amp;_page=index">'.htmlspecialchars($r['name']).'</a>';
 }
-echo '<a href="/ww.admin/plugin.php?_plugin=banner-image" class="new">New Banner</a>';
+echo '<a href="/ww.admin/plugin.php?_plugin=banner-image&amp;_page=index" class="new">New Banner</a>';
 echo '</div>';
 // }
 
