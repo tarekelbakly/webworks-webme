@@ -9,7 +9,7 @@ $plugin=array(
 	'name' => 'Mailing List',
 	'admin' => array(
 		'menu' => array(
-			'top'  => 'Communication'
+			'Communication>Mailing List'=>'index'
 		)
 	),
         'description' => 'Collect and manage emails in a mailing list. Also send emails to that list.',

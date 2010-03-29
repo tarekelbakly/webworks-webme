@@ -10,7 +10,7 @@ $plugin=array(
 	'name' => 'Banners',
 	'admin' => array(
 		'menu' => array(
-			'top'  => 'Misc'
+			'Misc>Banners'  => 'index'
 		),
 	),
 	'description' => 'HTML snippet or image.',
