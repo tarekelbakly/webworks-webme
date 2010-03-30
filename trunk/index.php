@@ -206,7 +206,6 @@ function logoDisplay($vars){
 function show_page($template,$pagecontent,$PAGEDATA){
 	global $DBVARS,$PLUGINS;
 	include_once SCRIPTBASE . 'common/Smarty/Smarty.class.php';
-#echo "load Smarty.class.php ".(microtime(true)-START_TIME).'<br />';
 	$smarty = new Smarty;
 	$smarty->compile_dir=USERBASE . '/templates_c';
 
@@ -216,14 +215,6 @@ function show_page($template,$pagecontent,$PAGEDATA){
 	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
 	$smarty->assign('PAGEDATA',$PAGEDATA);
 	$smarty->register_function('BREADCRUMBS','show_page_breadcrumbs');
-//	$pagename=($PAGEDATA->title=='')?$PAGEDATA->name:$PAGEDATA->title;
-//	$template=str_replace('%PAGENAME%',htmlspecialchars($pagename),$template);
-//	$template=str_replace('%PAGEID%','page'.$PAGEDATA->id,$template);
-//	$template=str_replace('%DATE%',date('D d, M Y'),$template);
-//	$template=str_replace('%LOGOUT%',is_logged_in()?'<a href="/?logout=1" id="logout">Log Out</a>':'',$template);
-//	if(eregi('%BREADCRUMBS%',$template))$template=str_replace('%BREADCRUMBS%',breadcrumbs($PAGEDATA->id),$template);
-	// }
-//	$template=webmeParse($template);
 	$smarty->register_function('LOGO', 'logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	foreach($PLUGINS as $pname=>$plugin){
@@ -234,14 +225,12 @@ function show_page($template,$pagecontent,$PAGEDATA){
 		}
 	}
 	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
-#echo "set up Smarty class ".(microtime(true)-START_TIME).'<br />';
 	// { display the document
 	ob_start();
 	if(strpos($template,'/')===false)$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
 	$smarty->display($template);
 	ob_show_and_log('page','Content-type: text/html; Charset=utf-8');
 	// }
-#echo "<br />output html to buffer ".(microtime(true)-START_TIME).'<br />';
 }
 function show_page_breadcrumbs($id=0) {
 	if($id)$page=Page::getInstance($id);
