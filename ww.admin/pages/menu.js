@@ -120,31 +120,33 @@ $(function(){
 			'contextmenu':{
 				'items':{
 					'create' : {
-						label	: "Create Page", 
-						icon	: "create",
-						visible	: function (NODE, TREE_OBJ) { 
+						'label'	: "Create Page", 
+						'icon'	: "create",
+						'visible'	: function (NODE, TREE_OBJ) { 
 							if(NODE.length != 1) return 0; 
 							return TREE_OBJ.check("creatable", NODE); 
 						}, 
-						action:pages_add_subpage,
-						separator_after : true
+						'action':pages_add_subpage,
+						'separator_after' : true
 					},
 					'rename': false,
 					'remove' : {
-						label	: "Delete Page", 
-						icon	: "remove",
-						visible	: function (NODE, TREE_OBJ) { 
+						'label'	: "Delete Page", 
+						'icon'	: "remove",
+						'visible'	: function (NODE, TREE_OBJ) { 
 							if(NODE.length != 1) return 0; 
 							return TREE_OBJ.check("deletable", NODE); 
 						}, 
-						action:pages_delete,
-						separator_after : true
-					},
+						'action':pages_delete,
+						'separator_after' : true
+					}
 				}
 			}
 		}
 	});
 	var div=$('<div><i>right-click for options</i><br /><br /></div>');
-	$('<button>add main page</button>').click(pages_add_main_page).appendTo(div);
+	$('<button>add main page</button>')
+		.click(pages_add_main_page)
+		.appendTo(div);
 	div.appendTo('#pages-wrapper');
 });

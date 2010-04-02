@@ -119,9 +119,6 @@ table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 #ajaxmenu_linkam_tables{background: url(/i/blank.gif) no-repeat 0% 50%!important; }
 .menu a{ padding-left: 26px!important;}
 
-#footer{position:fixed;bottom:0;left:0;right:0;clear:both;background:#ccc;border-top:1px solid #666;height:20px}
-#footer .maintainer{float:right}
-
 .ajaxmenu_expandable_item   {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -48px;width:32px !important;height:16px;float:left;display:block}
 .ajaxmenu_expandable_closed {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -64px;width:32px !important;height:16px;float:left;display:block}
 .ajaxmenu_expandable_opened {background:url(/ww.admin/theme/icons_16.png) no-repeat 0 -80px;width:32px !important;height:16px;float:left;display:block}
@@ -375,10 +372,10 @@ a.accordion-header{color: #000 !important;border-bottom:1px solid #000 !importan
 #menu-top ul ul{
 	display:none;
 }
-#menu-top>ul>li{
+#menu-top ul li{
 	float:left;
 }
-#menu-top>ul>li>a{
+#menu-top ul li a{
 	display:block;
 	width:100px;
 	text-align:center;
