@@ -37,11 +37,6 @@ function initialiseAdmin(){
 		$('.accordion0').accordion(accordionParams);
 	}
 	var page=document.location.toString().replace(/.*admin\/(.*)\.php.*/,'$1');
-	if(browser.isIE){
-		var el=newEl('div','firefoxAd');
-		el.innerHTML='<a href="http://www.spreadfirefox.com/?q=affiliates&id=0&t=203"><img border="0" alt="Upgrade to Firefox 1.5!" title="Upgrade to Firefox 1.5!" src="theme/getFirefox.gif"/><span>Download Firefox</span></a>';
-		document.body.appendChild(el);
-	}
 }
 function setSelection(el,val){
 	if(el.setSelectionRange){
