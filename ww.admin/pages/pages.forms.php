@@ -1,8 +1,9 @@
 <?php
 $translation=0;
 if(!allowedToEditPage($id)){
-	if($id)echo '<em>'.__('You do not have Edit rights for this page').'</em>';
-	else echo '<em>'.__('You cannot create a top-level page. Please choose a page to edit from the menu on the left.').'</em>';
+	if($id)$msgs.='<em>'.__('You do not have Edit rights for this page').'</em>';
+	else $msgs.='<em>'.__('You cannot create a top-level page. Please choose a page to edit from the menu on the left.').'</em>';
+	echo $msgs;
 }
 else{
 	if($id && $edit){ // check that page exists
@@ -10,6 +11,7 @@ else{
 		if(!$page)$edit=false;
 	}
 	$page_vars=array();
+	echo $msgs;
 	echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
 	echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
 	if($edit){

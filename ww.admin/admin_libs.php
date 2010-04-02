@@ -21,10 +21,13 @@ function addMenuItem(&$arr,$file,$nav){
 		$arr[$nav]=$file;
 	}
 }
-function admin_menu($list){
+function admin_menu($list,$this=''){
 	$arr=array();
-	foreach($list as $key=>$val)$arr[]='<a href="'.$val.'">'.$key.'</a>';
-	return '<div id="leftmenu">'.join('',$arr).'</div>';
+	foreach($list as $key=>$val){
+		if($val==$this)$arr[]='<a href="'.$val.'" class="thispage">'.$key.'</a>';
+		else $arr[]='<a href="'.$val.'">'.$key.'</a>';
+	}
+	return '<div class="left-menu">'.join('',$arr).'</div>';
 }
 function admin_verifypage($validlist,$default,$val){
 	foreach($validlist as $v)if($v==$val)return $val;

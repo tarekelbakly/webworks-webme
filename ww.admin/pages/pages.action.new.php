@@ -10,7 +10,7 @@ if(allowedToEditPage($parent)){
 	if(dbQuery("select id from pages where name='$name' and parent=$pid")->rowCount()){
 		$i=2;
 		while(dbQuery("select id from pages where name='$name$i' and parent=$pid")->rowCount())$i++;
-		echo '<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
+		$msgs.='<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
 		$name.=$i;
 	}
 	// { variables
@@ -40,11 +40,11 @@ if(allowedToEditPage($parent)){
 	dbQuery($q);
 	$id=dbOne('select last_insert_id() as id','id');
 	dbQuery('insert into permissions set id="'.$id.'", type=1, value="'.get_userid().'=7'."\n\n4".'"');
-	echo '<em>'.__('An item has been added to the database.').'</em>';
+	$msgs.='<em>'.__('New page created.').'</em>';
 	dbQuery('update page_summaries set rss=""');
 	cache_clear('menus');
 	cache_clear('pages');
 }
 else{
-	echo '<em>'.__('You do not have permissions for creating a document in that location.').'</em>';
+	$msgs.='<em>'.__('You do not have permissions for creating a document in that location.').'</em>';
 }

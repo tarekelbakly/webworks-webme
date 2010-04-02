@@ -19,18 +19,18 @@ $admin_vars=array();
 ?>
 <html>
 	<head>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
 		<script src="/js/"></script>
 		<script src="/j/ckeditor/ckeditor.js"></script>
 		<script src="/j/datatables/media/js/jquery.dataTables.js"></script>
 		<script src="/j/fg.menu.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" />
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/south-street/jquery-ui.css" type="text/css" />
 <?php
 foreach($PLUGINS as $pname=>$p){
-	if(file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin.css'))echo '<link rel="stylesheet" href="/ww.plugins/'.$pname.'/admin.css" type="text/css" />';
+	if(file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css'))echo '<link rel="stylesheet" href="/ww.plugins/'.$pname.'/admin/admin.css" type="text/css" />';
 }
 ?>
 		<script src="/ww.admin/j/admin.js"></script>
@@ -62,18 +62,20 @@ foreach($PLUGINS as $pname=>$p){
 	$menus['Log Out']=array('_link'=>'/?logout=1');
 	// }
 	// { display menu as UL list
-	function menu_show($items,$name=false,$prefix){
+	function menu_show($items,$name=false,$prefix,$depth=0){
 		if(isset($items['_link']))echo '<a href="'.$items['_link'].'">'.$name.'</a>';
 		else if($name!='top')echo '<a href="#'.$prefix.'-'.$name.'">'.$name.'</a>';
 		if(count($items)==1 && isset($items['_link']))return;
-		echo '<div id="'.$prefix.'-'.$name.'"><ul>';
+		if($depth<2)echo '<div id="'.$prefix.'-'.$name.'">';
+		echo '<ul>';
 		foreach($items as $iname=>$subitems){
 			if($iname=='_link')continue;
 			echo '<li>';
-			menu_show($subitems,$iname,$prefix.'-'.$name);
+			menu_show($subitems,$iname,$prefix.'-'.$name,$depth+1);
 			echo '</li>';
 		}
-		echo '</ul></div>';
+		echo '</ul>';
+		if($depth<2)echo '</div>';
 	}
 	menu_show($menus,'top','menu');
 	// }

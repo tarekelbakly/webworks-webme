@@ -8,7 +8,7 @@ echo admin_menu(array(
 	'Popular Pages'=>'stats.php?page=popular_pages'
 ));
 
-echo '<div id="hasleftmenu">';
+echo '<div class="has-left-menu">';
 $page=@$_REQUEST['page'];
 switch($page){
 	case 'popular_pages': // {

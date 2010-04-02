@@ -55,7 +55,7 @@ if(allowedToEditPage($id)){
 	if(dbQuery('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"')->rowCount()){
 		$i=2;
 		while(dbQuery('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' id!="'.$_POST['id'].'"')->rowCount())$i++;
-		echo '<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
+		$msgs.='<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
 		$name=$name.$i;
 	}
 	// }
@@ -99,10 +99,10 @@ if(allowedToEditPage($id)){
 		include_once(SCRIPTBASE.'/common/page.summaries.php');
 		displayPageSummaries($_POST['id']);
 	}
-	echo '<em>'.__('An item\'s details have been updated.').'</em>';
+	$msgs.='<em>'.__('An item\'s details have been updated.').'</em>';
 	cache_clear('menus');
 	cache_clear('pages');
 }
 else{
-	echo '<em>'.__('No update rights.').'</em>';
+	$msgs.='<em>'.__('No update rights.').'</em>';
 }

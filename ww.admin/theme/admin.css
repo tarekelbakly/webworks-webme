@@ -156,22 +156,22 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 #firefoxAd a, #firefoxAd a:visited { color: #fff; text-decoration: none; }
 #firefoxAd span { position: relative; bottom: 10px; left: 4px; color: #fff; }
 
-#leftmenu                           {width: 150px; background:#fff; float:left;border: 1px solid #ededed;padding: 5px;margin-bottom:40px}
-#leftmenu a,.leftmenu a             {display:block; color:#d36042; padding: 3px 0 3px 5px;text-decoration:none; border: 0;}
-#leftmenu a:hover,.leftmenu a:hover {background-color:#A6BFE2; color:#fff}
-#leftmenu a.showhideLink            {display:inline;padding-left:15px}
-#leftmenu a.showhideLink:hover      {background-color:inherit;color:#d36042}
-#leftmenu a.thispage                {background:#fff}
-#leftmenu a.thispage:hover          {color:#00f; background:#fff; }
-#leftmenu b                         {display:none}
-#leftmenu h4                        {margin:20px 0 0 0;padding:0;border-bottom:2px solid #999;font-weight:bold;background:#333}
-#leftmenu h5                        {margin:10px 0 0 0;padding:0;border-bottom:1px solid #ddd;font-style:italic;background:#eee}
-#leftmenu ul                        {margin:0;padding:0 0 0 20px }
-#leftmenu li                        {margin:0;padding:0;display:inline; }
-#leftmenu span                      {display: block; text-transform: capitalize; color: #666; margin: 0; padding: 3px 0 3px 10px; }
+.left-menu        {width: 150px; background:#fff; float:left;border: 1px solid #ededed;padding: 5px;margin-bottom:40px}
+.left-menu a      {display:block; color:#d36042; padding: 3px 0 3px 5px;text-decoration:none; border: 0;}
+.left-menu a:hover{background-color:#A6BFE2; color:#fff}
+.left-menu a.showhideLink{display:inline;padding-left:15px}
+.left-menu a.showhideLink:hover{background-color:inherit;color:#d36042}
+.left-menu a.thispage{background:#fff;font-weight:bold;font-style:italic;}
+.left-menu a.thispage:hover{color:#00f; background:#fff; }
+.left-menu b      {display:none}
+.left-menu h4     {margin:20px 0 0 0;padding:0;border-bottom:2px solid #999;font-weight:bold;background:#333}
+.left-menu h5     {margin:10px 0 0 0;padding:0;border-bottom:1px solid #ddd;font-style:italic;background:#eee}
+.left-menu ul     {margin:0;padding:0 0 0 20px }
+.left-menu li     {margin:0;padding:0;display:inline; }
+.left-menu span   {display: block; text-transform: capitalize; color: #666; margin: 0; padding: 3px 0 3px 10px; }
 
-#hasleftmenu{padding: 5px; border: 1px solid #ededed; background: #fff;margin-left:165px}
-#hasleftmenu input.checkbox {  width: auto !important; } 
+.has-left-menu{position:absolute;right:5px;left:180px;top:95px;padding: 5px;}
+.has-left-menu input.checkbox {  width: auto !important; } 
 
 #sc_cartridges_panel,#sc_clients_panel{height:100px;overflow:auto}
 #tablePopulate th textarea{background:#eee}
@@ -401,14 +401,40 @@ div.fg-menu-container{
 }
 div.fg-menu-container ul{
 	margin:0;
-	padding:10px;
+	padding:0;
 	list-style:none;
 }
 div.fg-menu-container ul li a{
 	display:block;
 	color:#fff;
-	padding:2px 5px;
+	padding:2px 15px;
 }
 div.fg-menu-container ul li a:hover{
 	font-style:italic;
+	background:#333;
+}
+.fg-menu-indicator{
+	position:relative;
+}
+a.fg-menu-indicator span{
+	color:#fff;
+}
+.fg-menu-indicator .ui-icon{
+	position:absolute;
+	right:0;
+	top:0;
+}
+.fg-menu ul{
+	position:absolute;
+	top:0;
+}
+.fg-menu li{
+	position:relative;
+}
+ul.fg-menu ul.ui-widget-content{
+	background:#000;
+}
+table.datatable{
+	width:90%;
+	clear:both;
 }
