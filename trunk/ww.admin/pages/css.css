@@ -60,3 +60,15 @@ li.placeholder{height:1px;background:#f00}
 	top:2px;
 	color:#bebebe;
 }
+#pages-wrapper{
+	overflow:auto;
+}
+#pages-wrapper ul{
+	display:none;
+}
+#pages-wrapper.tree ul{
+	display:block;
+}
+.tree li a{
+	font-size:10px;
+}

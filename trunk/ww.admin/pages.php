@@ -2,6 +2,7 @@
 require 'header.php';
 echo '<h1>'.__('Pages').'</h1>';
 $parent=(int)@$_REQUEST['parent'];
+$msg='';
 /*
 	PAGES PERMISSIONS:
 	1: insert
@@ -33,8 +34,11 @@ if(has_access_permissions(ACL_PAGES)){
 		if(!$id)$id=0;
 		if($id)$edit=1;
 	}
-	echo '<div style="width:21%;float:left" id="page_menu"></div>';
-	echo '<div id="pages_main">';
+#	echo '<div style="width:21%;float:left" id="page_menu"></div>';
+	echo '<div class="left-menu">';
+	include 'pages/menu.php';
+	echo '</div>';
+	echo '<div class="has-left-menu">';
 	include('pages/pages.forms.php');
 	echo '</div>';
 }else{
@@ -42,7 +46,7 @@ if(has_access_permissions(ACL_PAGES)){
 }
 echo '<script>window.page_menu_currentpage='.$id.';</script>',
 		'<script src="/j/jquery.remoteselectoptions.js"></script>',
-		'<script src="http://verens.com/demos/nested-sortables/ui.sortable.js"></script>',
-		'<script src="/ww.admin/pages/pages.js"></script>',
+#		'<script src="http://verens.com/demos/nested-sortables/ui.sortable.js"></script>',
+#		'<script src="/ww.admin/pages/pages.js"></script>',
 		'<style type="text/css">@import "pages/css.css";</style>';
 require 'footer.php';

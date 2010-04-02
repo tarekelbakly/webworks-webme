@@ -114,6 +114,12 @@ function getParentWithClass(e,t,c) {
 		e=e.parentNode;
 	}
 }
+function htmlspecialchars(str) {
+	var div=document.createElement('div');
+	var text=document.createTextNode(str);
+	div.appendChild(text);
+	return div.innerHTML;
+}
 function initialise(){
 	alert('function initialise() no longer needs to be called from the HTML template. please remove it');
 }

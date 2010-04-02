@@ -15,7 +15,7 @@ $page=admin_verifypage(
 	@$_REQUEST['page']
 );
 
-echo '<div id="hasleftmenu">';
+echo '<div class="has-left-menu">';
 require 'siteoptions/'.$page.'.php';
 echo '</div>';
 require 'footer.php';
