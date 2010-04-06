@@ -149,4 +149,9 @@ $(function(){
 		.click(pages_add_main_page)
 		.appendTo(div);
 	div.appendTo('#pages-wrapper');
+	$('#pages_form select[name=type]').remoteselectoptions({url:'/ww.admin/pages/get_types.php'});
+	$('#pages_form select[name=parent]').remoteselectoptions({
+		url:'/ww.admin/pages/get_parents.php',
+		other_GET_params:page_menu_currentpage
+	});
 });
