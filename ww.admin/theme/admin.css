@@ -435,3 +435,6 @@ table.datatable{
 	width:90%;
 	clear:both;
 }
+#pages-wrapper i{
+	display:block;
+}
