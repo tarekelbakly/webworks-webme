@@ -26,7 +26,7 @@ $admin_vars=array();
 		<script src="/j/datatables/media/js/jquery.dataTables.js"></script>
 		<script src="/j/fg.menu.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
-		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
+		<link rel="stylesheet" href="/ww.admin/theme/admin-20100406.css" type="text/css" />
 		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/south-street/jquery-ui.css" type="text/css" />
 <?php
 foreach($PLUGINS as $pname=>$p){
@@ -59,6 +59,7 @@ foreach($PLUGINS as $pname=>$p){
 	}
 	// }
 	// { add final items
+	$menus['Stats']=array('_link'=>'/ww.admin/stats.php');
 	$menus['Log Out']=array('_link'=>'/?logout=1');
 	// }
 	// { display menu as UL list
