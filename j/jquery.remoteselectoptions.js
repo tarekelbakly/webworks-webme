@@ -12,17 +12,19 @@
 		return this.each(function(){
 			var $this=$(this);
 			var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
-			$this.focus(function(){
-				if($('option',$this).length>1)return;
+			$this.hover(function(){
+				if($this.remoteselectoptions_applied)return;
+				$this.remoteselectoptions_applied=true;
 				var v=$this.val();
 				$.get(o.url,{'selected':v,'other_GET_params':o.other_GET_params},function(res){
 					$this.html(res);
 					setTimeout(function(){
 						var options=$('option',$this);
-						for(var i=0,found=0;i<options.length,!found;++i){
-							if(options[i].value!=v)continue;
-							$this.attr('selectedIndex',i);
-							found=1;
+						for(var i=0,found=0;i<options.length && !found;++i){
+							if(options[i].value==v){
+								$this.attr('selectedIndex',i);
+								found=1;
+							}
 						}
 					},1);
 				});
