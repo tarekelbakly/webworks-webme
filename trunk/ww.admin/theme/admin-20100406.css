@@ -437,4 +437,5 @@ table.datatable{
 }
 #pages-wrapper i{
 	display:block;
+	clear:left;
 }
