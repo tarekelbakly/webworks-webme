@@ -234,9 +234,9 @@ function userregistration_form($error='',$alert=''){
 	}
 	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions']){
 		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.<br />';
-		$c.='<script>function userlogin_t_and_c(){$("'.addslashes(str_replace(array("\n","\r"),' ',$PAGEDATA->vars['userlogin_terms_and_conditions'])).'").dialog({modal:true});}</script>';
+		$c.='<script>function userlogin_t_and_c(){$("<div>'.addslashes(str_replace(array("\n","\r"),' ',$PAGEDATA->vars['userlogin_terms_and_conditions'])).'</div>").dialog({modal:true,width:"90%"});}</script>';
 	}
-	if($alert)$c.='<script>$(document).ready(function(){$(\''.addslashes($alert).'\').dialog({modal:true});});</script>';
+	if($alert)$c.='<script>$(document).ready(function(){$(\'<div>'.addslashes($alert).'</div>\').dialog({modal:true});});</script>';
 	$c.='<input type="submit" name="a" value="Register" />'
 		.'</form></div>';
 	return $c;
