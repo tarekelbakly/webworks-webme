@@ -11,8 +11,32 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 	if($cache)return $cache;
 	$pageParentFound=0;
 	$PARENTDATA=Page::getInstance($parentid);
+	$PARENTDATA->initValues();
 	$filter=$isadmin?'':'&& !(special&2)';
-	$rs=dbAll("select id as subid,id,name,type,(select count(id) from pages where parent=subid $filter) as numchildren from pages where parent='".$parentid."' $filter order by ord,name");
+	// menu order
+	$order='ord,name';
+	if(isset($PARENTDATA->vars['order_of_sub_pages'])){
+		switch($PARENTDATA->vars['order_of_sub_pages']){
+			case 1: // { alphabetical
+				$order='name';
+				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				break;
+			// }
+			case 2: // { associated_date
+				$order='associated_date';
+				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				$order.=',name';
+				break;
+			// }
+			default: // { by admin order
+				$order='ord';
+				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				$order.=',name';
+			// }
+		}
+	}
+	// }
+	$rs=dbAll("select id as subid,id,name,type,(select count(id) from pages where parent=subid $filter) as numchildren from pages where parent='".$parentid."' $filter order by $order");
 	$menuitems=array();
 	// { optimise db retrieval of pages
 	$ids=array();

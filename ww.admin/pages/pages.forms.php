@@ -11,9 +11,10 @@ else{
 		if(!$page)$edit=false;
 	}
 	$page_vars=array();
-	echo $msgs;
+	if(isset($msgs) && $msgs!='')echo $msgs;
 	echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
 	echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
+	if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 	if($edit){
 		if(isset($_REQUEST['newpage_dialog']) && $page['special']&2)$page['special']-=2;
 		$pvq=dbAll("SELECT * FROM page_vars WHERE page_id=$id");
@@ -267,9 +268,20 @@ else{
 	// { other
 	echo '<h4>'.__('Other').'</h4>';
 	echo '<table>';
-	echo '<tr><td width="30%"></td><td width="50%"></td><td></td></tr>';
-	echo '<tr><th>'.__('Page Order').'</th><td colspan="2"><select name="page_order"><option value="-1">'.__('end of navigation').'</option><option value="0">'.__('start of navigation').'</option></select></td></tr>';
-	echo '<tr><th colspan="2">'.__('Recursively update page templates').'</th><td><input type="checkbox" name="recursively_update_page_templates" /></td></tr>';
+	// { order of sub-pages
+	echo '<tr><th>Order of sub-pages</th><td><select name="page_vars[order_of_sub_pages]">';
+	$arr=array('as shown in admin menu','alphabetically','by associated date');
+	foreach($arr as $k=>$v){
+		echo '<option value="'.$k.'"';
+		if(isset($page_vars['order_of_sub_pages']) && $page_vars['order_of_sub_pages']==$k)echo ' selected="selected"';
+		echo '>'.$v.'</option>';
+	}
+	echo '</select><select name="page_vars[order_of_sub_pages_dir]"><option value="0">ascending (a-z, 0-9)</option>';
+	echo '<option value="1"';
+	if(isset($page_vars['order_of_sub_pages_dir']) && $page_vars['order_of_sub_pages_dir']=='1')echo ' selected="selected"';
+	echo '>descending (z-a, 9-0)</option></select></td></tr>';
+	// }
+	echo '<tr><th>'.__('Recursively update page templates').'</th><td><input type="checkbox" name="recursively_update_page_templates" /></td></tr>';
 	echo '</table>';
 	// }
 	echo '</td></tr></table></div>';

@@ -3,7 +3,7 @@
 <script src="/ww.admin/pages/menu.js"></script>
 <?php
 echo '<div id="pages-wrapper">';
-$rs=dbAll('select id,special&2 as enabled,type,name,parent from pages order by ord,name');
+$rs=dbAll('select id,special&2 as disabled,type,name,parent from pages order by ord,name');
 $pages=array();
 foreach($rs as $r){
 	if(!isset($pages[$r['parent']]))$pages[$r['parent']]=array();
@@ -15,7 +15,7 @@ function show_pages($id){
 	echo '<ul>';
 	foreach($pages[$id] as $page){
 		echo '<li id="page_'.$page['id'].'"><a href="pages.php?id='.$page['id'].'"';
-		if($page['enabled']=='0')echo ' class="disabled"';
+		if($page['disabled']=='1')echo ' class="disabled"';
 		echo '><ins>&nbsp;</ins>'.htmlspecialchars($page['name']).'</a>';
 		show_pages($page['id']);
 		echo '</li>';

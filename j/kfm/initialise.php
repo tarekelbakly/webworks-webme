@@ -9,7 +9,7 @@
  * @license  docs/license.txt for licensing
  * @link     http://kfm.verens.com/
  */
-error_reporting(E_PARSE | E_WARNING);
+#error_reporting(E_PARSE | E_WARNING);
 if(!defined('KFM_BASE_PATH'))define('KFM_BASE_PATH', dirname(__FILE__).'/');
 if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))@date_default_timezone_set(date_default_timezone_get());
 
@@ -343,7 +343,7 @@ list($settings, $usersettings) = get_settings($uid); // $settings as database va
 foreach($usersettings as $usersetting) $kfm->addUserSetting($usersetting);
 if(!isset($settings['kfm_url'])){
  $kfm_url = str_replace($_SERVER['DOCUMENT_ROOT'],'',str_replace('\\','/',getcwd()));
- if(!$kfm_url[0] == '/') $kfm_url = '/'.$kfm_url; // Make the url absolute
+ if(!isset($kfm_url[0]) || !$kfm_url[0] == '/') $kfm_url = '/'.$kfm_url; // Make the url absolute
  $kfm->db->query('INSERT INTO '.KFM_DB_PREFIX.'settings (name, value, user_id) VALUES ("kfm_url", "'.mysql_escape_string($kfm_url).'",1)');
 }
 if(isset($settings['disabled_plugins'])){
