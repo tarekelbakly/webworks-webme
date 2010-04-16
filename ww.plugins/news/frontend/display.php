@@ -15,7 +15,7 @@ $p=isset($_REQUEST['news_page'])?(int)$_REQUEST['news_page']:0;
 if($p<0) $p=0;
 
 $num_stories=dbOne('select count(id) as num from pages where parent='.$GLOBALS['id'],'num');
-$rs=dbAll('select * from pages where parent='.$GLOBALS['id']." order by associated_date,cdate desc limit $p,$items_per_page");
+$rs=dbAll('select * from pages where parent='.$GLOBALS['id']." order by associated_date desc,cdate desc limit $p,$items_per_page");
 
 $nextprev=array();
 $nextprev[]='<span class="page_n_of_n">page '.(1+floor($p/$items_per_page)).' of '.(ceil($num_stories/$items_per_page)).'</span>';
