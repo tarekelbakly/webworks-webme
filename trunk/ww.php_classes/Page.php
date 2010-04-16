@@ -12,7 +12,7 @@ class Page{
 		# byField: 0=ID; 1=Name
 		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:($v?dbRow("select * from pages where id=$v limit 1"):array());
 		else if ($byField == 1){ // by name
-			if(preg_match('/[^a-zA-Z0-9 \-_]/',$name))return false;
+			if(preg_match('/[^a-zA-Z0-9 \-_]/',$v))return false;
 			$name=strtolower(str_replace('-','_',$v));
 			$fname='page_by_name_'.md5($name);
 			$r=cache_load('pages',$fname);

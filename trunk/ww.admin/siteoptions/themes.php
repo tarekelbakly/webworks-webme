@@ -6,6 +6,8 @@ if($action=='set_theme'){
 		$DBVARS['theme']=$_REQUEST['theme'];
 		$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
 		config_rewrite();
+		$dir=USERBASE.'/templates_c';
+		`rm $dir/*`;
 	}
 }
 // }
@@ -20,7 +22,17 @@ if($action=='set_theme'){
 		if($file==$DBVARS['theme'])echo 'background:#ff0;';
 		echo '"><form method="post" action="siteoptions.php"><input type="hidden" name="page" value="themes" /><input type="hidden" name="action" value="set_theme" />';
 		echo '<input type="hidden" name="theme" value="'.htmlspecialchars($file).'" />';
-		echo '<img src="/ww.skins/'.htmlspecialchars($file).'/screenshot.png" />';
+		$size=getimagesize('../ww.skins/'.$file.'/screenshot.png');
+		$w=$size[0]; $h=$size[1];
+		if($w>240){
+			$w=$w*(240/$w);
+			$h=$h*(240/$w);
+		}
+		if($h>172){
+			$w=$w*(172/$h);
+			$h=$h*(172/$h);
+		}
+		echo '<img src="/ww.skins/'.htmlspecialchars($file).'/screenshot.png" width="'.(floor($w)).'" height="'.(floor($h)).'" /><br />';
 		echo '<strong>',htmlspecialchars($file),'</strong><br />';
 		if(is_dir(THEME_DIR.'/'.$file.'/cs')){
 			$dir2=new DirectoryIterator(THEME_DIR.'/'.$file.'/cs');
