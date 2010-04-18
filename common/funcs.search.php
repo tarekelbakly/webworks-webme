@@ -25,7 +25,7 @@ function ww_showSearchResults(){
 			foreach($q as $r){
 				$title=($r['title']=='')?$r['name']:$r['title'];
 				$c.='<li><h4>'.htmlspecialchars($title).'</h4>';
-				$c.='<p>'.substr(preg_replace('/<[^>]*>/','', webmeParse( $r['body'])),0,200).'...';
+				$c.='<p>'.substr(preg_replace('/<[^>]*>/','', $r['body']),0,200).'...';
 				$c.='<br /><a href="/'.urlencode($r['name']).'?search='.$search.'">/'.htmlspecialchars($r['name']).'</a></p></li>';
 			}
 			$c.='</ol></div>';
