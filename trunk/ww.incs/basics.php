@@ -20,6 +20,7 @@ function cache_clear($type){
 	if(!is_dir(USERBASE.'/ww.cache/'.$type))return;
 	$d=new DirectoryIterator(USERBASE.'/ww.cache/'.$type);
 	foreach($d as $f){
+		$f=$f->getFilename();
 		if($f=='.' || $f=='..')continue;
 		unlink(USERBASE.'/ww.cache/'.$type.'/'.$f);
 	}

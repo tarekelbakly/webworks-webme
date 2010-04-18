@@ -11,7 +11,7 @@ $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 $page=getVar('page');
 // }
-#echo "load common vars ".(microtime(true)-START_TIME).'<br />';
+require_once SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 // { specials
 if($page=='' && isset($_GET['search'])){
 	$p=Page::getInstanceByType(5);
@@ -22,7 +22,6 @@ if($page=='' && isset($_GET['search'])){
 	$id=$p->id;
 }
 // }
-#echo "specials ".(microtime(true)-START_TIME).'<br />';
 // { get current page id
 if(!$id){
 	if($page){
@@ -41,7 +40,6 @@ if(!$id){
 	}
 }
 // }
-#echo "get current page id ".(microtime(true)-START_TIME).'<br />';
 // { load page data
 if($id){
     $PAGEDATA=Page::getInstance($id)->initValues();
@@ -52,7 +50,6 @@ else{
 	exit;
 }
 // }
-#echo "load page data ".(microtime(true)-START_TIME).'<br />';
 // { main content
 $c='';
 // { check if page is protected
@@ -128,7 +125,6 @@ else{
 if($PAGEDATA->special&64)$c.='<div id="webmeComments"></div>';
 $pagecontent=$c;
 // }
-#echo "main content ".(microtime(true)-START_TIME).'<br />';
 // { load page template
 if(file_exists(THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html')){
 	$template=THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html';
@@ -147,7 +143,6 @@ else{
 }
 if($template=='')die('no template created. please create a template first');
 // }
-#echo "load page template ".(microtime(true)-START_TIME).'<br />';
 function template_get_metadata($template,$PAGEDATA){
 	global $DBVARS;
 	// { page title
@@ -205,9 +200,11 @@ function logoDisplay($vars){
 }
 function show_page($template,$pagecontent,$PAGEDATA){
 	global $DBVARS,$PLUGINS;
-	include_once SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 	$smarty = new Smarty;
 	$smarty->compile_dir=USERBASE . '/templates_c';
+	$smarty->left_delimiter = '{{';
+	$smarty->right_delimiter = '}}';
+	$smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
 
 	// { some straight replaces
 	$smarty->assign('PAGECONTENT','<div id="__webmePageContent">'.$pagecontent.'</div>');
@@ -240,4 +237,3 @@ function show_page_breadcrumbs($id=0) {
 }
 
 show_page($template,$pagecontent,$PAGEDATA);
-#echo "flush buffer and log ".(microtime(true)-START_TIME).'<br />';
