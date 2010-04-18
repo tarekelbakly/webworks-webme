@@ -233,23 +233,28 @@ else{
 	// { template
 	echo '<th>'.__('template').'</th><td>';
 	$d=array();
-	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
-	foreach($dir as $f){
-		if($f->isDot())continue;
-		$n=$f->getFilename();
-		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
+	if(!file_exists(THEME_DIR.'/'.THEME.'/h/')){
+		echo 'SELECTED THEME DOES NOT EXIST<br />Please <a href="/ww.admin/siteoptions.php?page=themes">select a theme</a>';
 	}
-	asort($d);
-	if(count($d)>1){
-		echo '<select name="template">';
-		foreach($d as $name){
-			echo '<option ';
-			if($name==$page['template'])echo ' selected="selected"';
-			echo '>'.$name.'</option>';
+	else{
+		$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
+		foreach($dir as $f){
+			if($f->isDot())continue;
+			$n=$f->getFilename();
+			if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
 		}
-		echo '</select>';
+		asort($d);
+		if(count($d)>1){
+			echo '<select name="template">';
+			foreach($d as $name){
+				echo '<option ';
+				if($name==$page['template'])echo ' selected="selected"';
+				echo '>'.$name.'</option>';
+			}
+			echo '</select>';
+		}
+		else echo 'no options available';
 	}
-	else echo 'no options available';
 	echo '</td>';
 	// }
 	echo '</tr>';
