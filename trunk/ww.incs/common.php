@@ -82,13 +82,6 @@ function config_rewrite(){
 	$config="<?php\n\$DBVARS=array(\n	".join(",\n	",$tmparr2)."\n);";
 	file_put_contents(CONFIG_FILE,$config);
 }
-function sanitise_html($html) {
-	$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
-	$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
-	$html = str_replace('</font>', '</span>', $html);
-	$html = html_fixImageResizes($html);
-	return $html;
-}
 function webmeMail($from, $to, $subject, $message, $files = false) {
 	inc_common('mail.php');
 	send_mail($from, $to, $subject, $message, $files);

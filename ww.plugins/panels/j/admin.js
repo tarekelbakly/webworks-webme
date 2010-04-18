@@ -248,7 +248,7 @@ $(document).ready(function(){
 			var p=ww.widgetsByName[$('h4',ui.item).text()];
 			var clone=buildRightWidget({'type':p.type});
 			showWidgetForm(clone);
-			clone.insertBefore(ui.item);
+			clone.insertBefore('.panel-body br:last',panel);
 			$(this).sortable('cancel');
 			updateWidgets(panel);
 		}

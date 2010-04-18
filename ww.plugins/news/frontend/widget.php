@@ -16,7 +16,7 @@ foreach($rs as $r){
 	$page=Page::getInstance($r['id']);
 	$body='';
 	if($vars->characters_shown){
-		$body=preg_replace('#<h1[^<]*</h1>#','',$page->body);
+		$body=preg_replace('#<h1[^<]*</h1>#','',$page->render());
 		$body=preg_replace('/<[^>]*>/','',$body);
 		$body='<br /><i>'.substr($body,0,$vars->characters_shown).'...</i>';
 	}

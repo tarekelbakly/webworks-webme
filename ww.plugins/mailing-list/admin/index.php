@@ -12,7 +12,7 @@ echo admin_menu(array(
 	'Form Options'=>$_url.'&mailing_list=form_options'
 ));
 
-echo '<div id="hasleftmenu">';
+echo '<div class="has-left-menu">';
 
 $page=@$_GET['mailing_list'];
 $dir=dirname(__FILE__);

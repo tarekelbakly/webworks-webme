@@ -97,6 +97,14 @@ function getAdminVar($name,$default=''){
 function ckeditor($name,$value='',$fullpage=false,$css='',$height=250){
 	return '<textarea style="width:100%;height:'.$height.'px" name="'.addslashes($name).'">'.htmlspecialchars($value).'</textarea><script>$(document).ready(function(){CKEDITOR.replace("'.addslashes($name).'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME"});});</script>';
 }
+function sanitise_html($html) {
+	$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
+	$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
+	$html = str_replace('</font>', '</span>', $html);
+	$html = html_fixImageResizes($html);
+	$html=str_replace('&quot;','"',$html);
+	return $html;
+}
 function setAdminVar($name,$value){
 	dbQuery("delete from admin_vars where varname='".$name."' and admin_id=".get_userid());
 	dbQuery("insert into admin_vars (varname,varvalue,admin_id) values('".addslashes($name)."','".addslashes($value)."',".get_userid().")");

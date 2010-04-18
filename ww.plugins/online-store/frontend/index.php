@@ -43,6 +43,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']){
 }
 else{
 	$c.='<form method="post">';
-	$c.=$PAGEDATA->body;
+	$c.=$PAGEDATA->render();
 	$c.='<input type="submit" name="action" value="Proceed to Payment" /></form>';
 }

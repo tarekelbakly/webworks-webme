@@ -49,7 +49,7 @@ function userloginandregistrationDisplay(){
 		}
 		else unset($_SESSION['userdata']);
 	}
-	if($c=='')$c=webmeParse($PAGEDATA->body);
+	if($c=='')$c=$PAGEDATA->render();
 	if($action=='Remind'){
 		// { variables
 			$email=getVar('email');

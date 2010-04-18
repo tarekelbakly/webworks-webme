@@ -20,5 +20,5 @@ function form_admin_page_form($page,$vars){
 }
 function form_frontend($PAGEDATA){
 	require dirname(__FILE__).'/frontend/show.php';
-	return $PAGEDATA->body . form_show($PAGEDATA->dbVals,$PAGEDATA->vars);
+	return $PAGEDATA->render().form_show($PAGEDATA->dbVals,$PAGEDATA->vars);
 }

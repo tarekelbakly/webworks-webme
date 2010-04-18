@@ -4,7 +4,7 @@ echo admin_menu(array(
 	'View All'=>$_url
 ));
 
-echo '<div id="hasleftmenu">';
+echo '<div class="has-left-menu">';
 $edit=($action==__('editPoll'))?1:0;
 $dir=dirname(__FILE__);
 switch($action){

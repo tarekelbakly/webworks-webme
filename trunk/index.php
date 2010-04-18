@@ -72,7 +72,7 @@ else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
 else{
 	switch($PAGEDATA->type){
 		case '0': // { normal page
-			$c.=$PAGEDATA->body;
+			$c.=$PAGEDATA->render();
 			break;
 		// }
 		case '2': // { events
@@ -91,12 +91,12 @@ else{
 			break;
 		// }
 		case '5': // { search results
-			$c.=$PAGEDATA->body.showSearchResults();
+			$c.=$PAGEDATA->render().showSearchResults();
 			break;
 		// }
 		case '9': // { table of contents
 			$kids=Pages::getInstancesByParent($PAGEDATA->id);
-			$c.=$PAGEDATA->body;
+			$c.=$PAGEDATA->render();
 			if(!count($kids->pages))$c.='<em>no sub-pages</em>';
 			else{
 				$c.='<ul class="subpages">';
@@ -198,19 +198,13 @@ function logoDisplay($vars){
 	}
 	return '<img src="/f/skin_files/logo-'.$geometry.'.png" />';
 }
-function show_page($template,$pagecontent,$PAGEDATA){
+function smarty_setup(){
 	global $DBVARS,$PLUGINS;
 	$smarty = new Smarty;
-	$smarty->compile_dir=USERBASE . '/templates_c';
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
-	$smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
-
-	// { some straight replaces
-	$smarty->assign('PAGECONTENT','<div id="__webmePageContent">'.$pagecontent.'</div>');
 	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
 	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
-	$smarty->assign('PAGEDATA',$PAGEDATA);
 	$smarty->register_function('BREADCRUMBS','show_page_breadcrumbs');
 	$smarty->register_function('LOGO', 'logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
@@ -221,6 +215,15 @@ function show_page($template,$pagecontent,$PAGEDATA){
 			}
 		}
 	}
+	return $smarty;
+}
+function show_page($template,$pagecontent,$PAGEDATA){
+	$smarty=smarty_setup();
+	$smarty->compile_dir=USERBASE . '/templates_c';
+	$smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
+	// { some straight replaces
+	$smarty->assign('PAGECONTENT',$pagecontent);
+	$smarty->assign('PAGEDATA',$PAGEDATA);
 	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
 	// { display the document
 	ob_start();
