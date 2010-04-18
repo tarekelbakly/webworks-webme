@@ -135,10 +135,6 @@ function sitemap($a=0){
 	include_once SCRIPTBASE . 'common/sitemap.php';
 	return ww_showSitemap($a);
 }
-function webmeParse($a=0){
-	include_once SCRIPTBASE . 'common/funcs.textfilter.php';
-	return textObjectsFilter($a);
-}
 // { user authentication
 if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 	// { variables

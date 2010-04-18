@@ -72,7 +72,7 @@ else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
 else{
 	switch($PAGEDATA->type){
 		case '0': // { normal page
-			$c.=webmeParse($PAGEDATA->body);
+			$c.=$PAGEDATA->body;
 			break;
 		// }
 		case '2': // { events
@@ -91,12 +91,12 @@ else{
 			break;
 		// }
 		case '5': // { search results
-			$c.=webmeParse($PAGEDATA->body.showSearchResults());
+			$c.=$PAGEDATA->body.showSearchResults();
 			break;
 		// }
 		case '9': // { table of contents
 			$kids=Pages::getInstancesByParent($PAGEDATA->id);
-			$c.=webmeParse($PAGEDATA->body);
+			$c.=$PAGEDATA->body;
 			if(!count($kids->pages))$c.='<em>no sub-pages</em>';
 			else{
 				$c.='<ul class="subpages">';
