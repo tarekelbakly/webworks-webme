@@ -254,7 +254,4 @@ $(document).ready(function(){
 		}
 	})
 	$('<br style="clear:both" />').appendTo(widget_column);
-	$('#splitter-wrapper').splitter({
-		'sizeRight':230
-	});
 });
