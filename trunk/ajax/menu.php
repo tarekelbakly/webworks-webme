@@ -1,7 +1,7 @@
 <?php
-require '../ww.incs/basics.php';
-require '../common/menus.php';
-require '../common/kaejax.php';
+require_once '../ww.incs/basics.php';
+require_once '../common/menus.php';
+require_once '../common/kaejax.php';
 function ajaxmenu_getChildren($parentid,$currentpage=0,$topParent=0,$search_options=0){
 	return array($parentid,menu_getChildren($parentid,$currentpage,0,$topParent,$search_options));
 }

@@ -32,7 +32,9 @@ foreach($PLUGINS as $n=>$p){
 echo join(',',$ws);
 echo '};';
 // }
-echo '</script><script src="/ww.plugins/panels/j/admin.js"></script>';
-echo '<script src="/ww.plugins/panels/j/jquery.inlinemultiselect.js"></script>';
-echo '<script src="/ww.plugins/panels/j/splitter/splitter.js"></script>';
 // }
+?>
+</script><script src="/ww.plugins/panels/j/admin.js"></script>
+<script src="/ww.plugins/panels/j/jquery.inlinemultiselect.js"></script>
+<script type="text/javascript" src="/j/farbtastic/farbtastic.js"></script>
+<link rel="stylesheet" href="/j/farbtastic/farbtastic.css" type="text/css" />

@@ -4,3 +4,26 @@
 }
 .menuBarLeft a{display:block}
 .tier-two{clear:left}
+
+/*
+.ui-menu ul{
+	background:#999;
+	opacity:.95;
+	margin:0;
+	padding:5px;
+}
+ul.ui-menu li{
+	margin:0 !important;
+	padding:3px !important;
+	border:1px solid transparent;
+}
+ul.ui-menu .ui-state-hover{
+	border:none;
+	background:inherit;
+	color:inherit;
+}
+.menu_ui .ui-widget-content{
+	background:inherit;
+	border:inherit;
+}
+*/

@@ -23,11 +23,11 @@ $.fn.menu = function(options){
 	.mousedown(function(){
 		if (!m.menuOpen) { m.showLoading(); };
 	})	
-	.click(function(){
+	.mouseover(function(){
 		if (m.menuOpen == false) { m.showMenu(); }
 		else { m.kill(); };
 		return false;
-	});	
+	});
 };
 
 function Menu(caller, options){
@@ -191,7 +191,7 @@ function Menu(caller, options){
 	};
 	
 	this.create = function(){	
-		container.css({ width: options.width }).appendTo('body').find('ul:first').not('.fg-menu-breadcrumb').addClass('fg-menu');
+		container.css({ width: options.width }).appendTo('body').find('ul:first,table:first>tbody>tr>td>ul').not('.fg-menu-breadcrumb').addClass('fg-menu');
 		container.find('ul, li a').addClass('ui-corner-all');
 		
 		// aria roles & attributes
@@ -360,7 +360,7 @@ Menu.prototype.drilldown = function(container, options) {
 			$(this)
 				.addClass('fg-menu-indicator')
 				.each(function(){ $(this).html('<span>' + $(this).text() + '</span><span class="ui-icon '+options.nextMenuLink+'"></span>'); })
-				.click(function(){ // ----- show the next menu			
+				.mouseover(function(){ // ----- show the next menu			
 					var nextList = $(this).next();
 		    		var parentUl = $(this).parents('ul:eq(0)');   		
 		    		var parentLeft = (parentUl.is('.fg-menu-content')) ? 0 : parseFloat(topList.css('left'));    		
@@ -465,14 +465,14 @@ Menu.prototype.setPosition = function(widget, caller, options) {
 	var dims = {
 		refX: referrer.offset().left,
 		refY: referrer.offset().top,
-		refW: referrer.getTotalWidth(),
-		refH: referrer.getTotalHeight()
+		refW: referrer.outerWidth(),
+		refH: referrer.outerHeight()
 	};	
 	var options = options;
 	var xVal, yVal;
 	
 	var helper = $('<div class="positionHelper"></div>');
-	helper.css({ position: 'absolute', left: dims.refX, top: dims.refY, width: dims.refW, height: dims.refH });
+	helper.css({ position: 'absolute', left: dims.refX, top: dims.refY, width: dims.refW, height: 1 });
 	el.wrap(helper);
 	
 	// get X pos
@@ -545,14 +545,6 @@ Menu.prototype.setPosition = function(widget, caller, options) {
 /* Utilities to sort and find viewport dimensions */
 
 function sortBigToSmall(a, b) { return b - a; };
-
-jQuery.fn.getTotalWidth = function(){
-	return $(this).width() + parseInt($(this).css('paddingRight')) + parseInt($(this).css('paddingLeft')) + parseInt($(this).css('borderRightWidth')) + parseInt($(this).css('borderLeftWidth'));
-};
-
-jQuery.fn.getTotalHeight = function(){
-	return $(this).height() + parseInt($(this).css('paddingTop')) + parseInt($(this).css('paddingBottom')) + parseInt($(this).css('borderTopWidth')) + parseInt($(this).css('borderBottomWidth'));
-};
 
 function getScrollTop(){
 	return self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;

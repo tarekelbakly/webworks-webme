@@ -439,3 +439,6 @@ table.datatable{
 	display:block;
 	clear:left;
 }
+span.ui-button-text{
+	color:#000;
+}

@@ -2,7 +2,7 @@
 date_default_timezone_set('Eire');
 session_start();
 require 'Log.php';
-define('START_TIME',microtime(true));
+if(!defined('START_TIME'))define('START_TIME',microtime(true));
 function __() {
 	$str = gettext(func_get_arg(0));
 	for($i = func_num_args()-1 ; $i ; --$i){
@@ -152,7 +152,7 @@ if(!defined('CONFIG_FILE'))define('CONFIG_FILE',SCRIPTBASE.'.private/config.php'
 define('WORKDIR_IMAGERESIZES', USERBASE.'/f/.files/image_resizes/');
 define('WORKURL_IMAGERESIZES', '/f/.files/image_resizes/');
 define('CKEDITOR','ckeditor');
-define('KFM_BASE_PATH', SCRIPTBASE.'j/kfm/');
+if(!defined('KFM_BASE_PATH'))define('KFM_BASE_PATH', SCRIPTBASE.'j/kfm/');
 set_include_path(SCRIPTBASE.'ww.php_classes'.PATH_SEPARATOR.KFM_BASE_PATH.'classes'.PATH_SEPARATOR.get_include_path());
 // { theme variables
 if(isset($DBVARS['theme_dir']))define('THEME_DIR',$DBVARS['theme_dir']);

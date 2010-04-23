@@ -55,7 +55,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 
 if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
 else $id=0;
-echo '<a href="javascript:;" id="image_transition_editlink_'.$id.'" class="image_transition_editlink">view or edit snippet</a>';
+echo '<a href="javascript:;" id="image_transition_editlink_'.$id.'" class="image_transition_editlink">view or edit image transition details</a>';
 ?>
 <script>
 if(!ww.image_transition)ww.image_transition={

@@ -105,8 +105,8 @@ function imageDisplay($a=0){
 	return func_image_display($a);
 }
 function menuDisplay($a=0){
-	include_once SCRIPTBASE . 'common/menus.php';
-	return ww_menuDisplay($a);
+	require_once SCRIPTBASE . 'common/menus.php';
+	return menu_show($a);
 }
 function scrollingEventsDisplay($a=0){
 	include_once SCRIPTBASE . 'common/funcs.events.php';

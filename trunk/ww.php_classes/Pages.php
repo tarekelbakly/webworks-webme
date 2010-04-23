@@ -14,8 +14,8 @@ class Pages{
     }
     function getInstancesByParent($pid=0){
         if (!is_numeric($pid)) return false;
-        if (!@array_key_exists($pid,$instancesByParent)) $instancesByParent[$pid]=new Pages($pid);
-        return $instancesByParent[$pid];
+        if (!@array_key_exists($pid,$instancesByParent))new Pages($pid);
+        return Pages::$instancesByParent[$pid];
     }
 		function precache($ids){
 			if(count($ids)){

@@ -24,7 +24,8 @@ $admin_vars=array();
 		<script src="/js/"></script>
 		<script src="/j/ckeditor/ckeditor.js"></script>
 		<script src="/j/datatables/media/js/jquery.dataTables.js"></script>
-		<script src="/j/fg.menu.js"></script>
+		<script src="/j/jquery.remoteselectoptions.js"></script>
+		<script src="/j/fg.menu/fg.menu.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin-20100406.css" type="text/css" />
 		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/south-street/jquery-ui.css" type="text/css" />
@@ -63,7 +64,7 @@ foreach($PLUGINS as $pname=>$p){
 	$menus['Log Out']=array('_link'=>'/?logout=1');
 	// }
 	// { display menu as UL list
-	function menu_show($items,$name=false,$prefix,$depth=0){
+	function admin_menu_show($items,$name=false,$prefix,$depth=0){
 		if(isset($items['_link']))echo '<a href="'.$items['_link'].'">'.$name.'</a>';
 		else if($name!='top')echo '<a href="#'.$prefix.'-'.$name.'">'.$name.'</a>';
 		if(count($items)==1 && isset($items['_link']))return;
@@ -72,13 +73,13 @@ foreach($PLUGINS as $pname=>$p){
 		foreach($items as $iname=>$subitems){
 			if($iname=='_link')continue;
 			echo '<li>';
-			menu_show($subitems,$iname,$prefix.'-'.$name,$depth+1);
+			admin_menu_show($subitems,$iname,$prefix.'-'.$name,$depth+1);
 			echo '</li>';
 		}
 		echo '</ul>';
 		if($depth<2)echo '</div>';
 	}
-	menu_show($menus,'top','menu');
+	admin_menu_show($menus,'top','menu');
 	// }
 ?>
 		</div>
