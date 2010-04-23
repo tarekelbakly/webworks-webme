@@ -51,7 +51,6 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 		$c[]=($parentid==$topParent)?'menuItemTop':'menuItem';
 		if(!$i++)$c[]='first';
 		if($r['numchildren'])$c[]='ajaxmenu_hasChildren';
-		if(($search_options&1) && $PAGEDATA->type==8)$c[]='ajaxmenu_hasChildren';
 		if($r['id']==$currentpage){
 			$c[]='ajaxmenu_currentPage';
 			$pageParentFound=1;
@@ -66,37 +65,10 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 		$rs[$k]['parent']=$parentid;
 		$menuitems[]=$rs[$k];
 	}
-	if(isset($PARENTDATA->type) && $PARENTDATA->type==8 && ($search_options&1)){
-		$PARENTDATA->initValues();
-		if(isset($PARENTDATA->property_type) && $PARENTDATA->property_type)$filter="where enabled and product_type_id='".$PARENTDATA->property_type."'";
-		else $filter="where enabled";
-		$rs2=dbAll("select id,name from products $filter order by name");
-		$rs2=Products::getByFilter($filter.' order by name');
-		foreach($rs2 as $r2){
-			$rs[]=array('link'=>$PARENTDATA->getRelativeURL().'&product_id='.$r2->id,'name'=>$r2->name,'parent'=>$parentid);
-		}
-	}
 	cache_save('menus',$md5,$menuitems);
 	return $menuitems;
 }
-function menu_setup_main_menu($template){
-	$a=array("\n","\r");
-	$b=array('WWNLRT','WWNLRT');
-	$template=str_replace($a,$b,$template);
-	do{
-		$change=0;
-		if(ereg('%MENU{[^}]*}%',$template)){
-			$tmp=preg_replace('/.*%MENU{(.*?)}%.*/','\1',$template);
-			$old='%MENU{'.$tmp.'}%';
-			$new=str_replace($a,$b,menuDisplay($tmp));
-			$template=str_replace($old,$new,$template);
-			$change++;
-		}
-	}while($change);
-	$template=str_replace('WWNLRT',"\n",$template);
-	return $template;
-}
-function ww_menuDisplay($b){
+function menu_show($b){
 	global $PAGEDATA;
 	if(!$PAGEDATA->id)return '';
 	$md5=md5('ww_menudisplay|'.print_r($b,true));
@@ -172,3 +144,127 @@ function ww_menuDisplay($b){
 	cache_save('menus',$md5,$c);
 	return $c;
 }
+function menu_build_fg($parentid,$depth,$options){
+	$PARENTDATA=Page::getInstance($parentid);
+	$PARENTDATA->initValues();
+	// menu order
+	$order='ord,name';
+	if(isset($PARENTDATA->vars['order_of_sub_pages'])){
+		switch($PARENTDATA->vars['order_of_sub_pages']){
+			case 1: // { alphabetical
+				$order='name';
+				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				break;
+			// }
+			case 2: // { associated_date
+				$order='associated_date';
+				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				$order.=',name';
+				break;
+			// }
+			default: // { by admin order
+				$order='ord';
+				if($PARENTDATA->vars['order_of_sub_pages_dir'])$order.=' desc';
+				$order.=',name';
+			// }
+		}
+	}
+	// }
+	$rs=dbAll("select id as subid,id,name,type from pages where parent='".$parentid."' order by $order");
+	if($rs===false || !count($rs))return '';
+
+	$items=array();
+	foreach($rs as $r){
+		$item='<li>';
+		$page=Page::getInstance($r['id']);
+		$item.='<a href="'.$page->getRelativeUrl().'">'.htmlspecialchars($page->name).'</a>';
+		$item.=menu_build_fg($r['id'],$depth+1,$options);
+		$item.='</li>';
+		$items[]=$item;
+	}
+	$options['columns']=(int)$options['columns'];
+
+	// return top-level menu
+	if(!$depth)return '<ul>'.join('',$items).'</ul>';
+
+	$s='';
+	if($options['background'])$s.='background:'.$options['background'].';';
+	if($options['opacity'])$s.='opacity:'.$options['opacity'].';';
+	if($s){
+		$s=' style="'.$s.'"';
+	}
+
+	// return 1-column sub-menu
+	if($options['columns']<2)return '<ul'.$s.'>'.join('',$items).'</ul>';
+
+	// return multi-column submenu
+	$items_count=count($items);
+	$items_per_column=ceil($items_count/$options['columns']);
+	$c='<table'.$s.'><tr><td><ul>';
+	for($i=1;$i<$items_count+1;++$i){
+		$c.=$items[$i-1];
+		if($i!=$items_count && !($i%$items_per_column))$c.='</ul></td><td><ul>';
+	}
+	$c.='</ul></td></tr></table>';
+	return $c;
+}
+function menu_show_fg($opts){
+	$md5=md5('menu_fg|'.print_r($opts,true));
+	$cache=cache_load('menus',$md5);
+	if($cache)return $cache;
+
+	$options=array(
+		'direction' => 0,  // 0: horizontal, 1: vertical
+		'parent'    => 0,  // top-level
+		'background'=> '', // sub-menu background colour
+		'columns'   => 1,  // for wide drop-down sub-menus
+		'opacity'   => 0   // opacity of the sub-menu
+	);
+	foreach($opts as $k=>$v){
+		if(isset($options[$k]))$options[$k]=$v;
+	}
+	if(!is_numeric($options['parent'])){
+		$r=Page::getInstanceByName($options['parent']);
+		if($r)$options['parent']=$r->id;
+	}
+	if(is_numeric($options['direction'])){
+		if($options['direction']=='0')$options['direction']='horizontal';
+		else $options['direction']='vertical';
+	}
+	$c.='<script src="/j/fg.menu/fg.menu.js"></script>';
+	$c.='<link rel="stylesheet" type="text/css" href="/j/fg.menu/fg.menu.css" />';
+	$items=array();
+	$menuid=$GLOBALS['fg_menus']++;
+	$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'.$menuid.'">'.menu_build_fg($options['parent'],0,$options).'</div>';
+	if($options['direction']=='vertical'){
+		$posopts="positionOpts: { posX: 'left', posY: 'top',
+			offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',
+			detectH: true, detectV: true, linkToFront: false },";
+	}
+	else{
+		$posopts='';
+	}
+	$c.="<script>
+jQuery.fn.outer = function() {
+  return $( $('<div></div>').html(this.clone()) ).html();
+
+}
+$(function(){
+	$('#menu-fg-$menuid>ul>li>a').each(function(){
+		if(!$(this).next().length)return; // empty
+		$(this).menu({
+			content:$(this).next().outer(),
+			choose:function(ev,ui){
+				document.location=ui.item[0].childNodes(0).href;
+			},
+			$posopts
+			flyOut:true
+		});
+	});
+});
+</script>";
+	return $c;
+	cache_save('menus',$md5,$c);
+	return $c;
+}
+$fg_menus=0;

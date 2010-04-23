@@ -208,6 +208,7 @@ function smarty_setup(){
 	$smarty->register_function('BREADCRUMBS','show_page_breadcrumbs');
 	$smarty->register_function('LOGO', 'logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
+	$smarty->register_function('nuMENU', 'menu_show_fg');
 	foreach($PLUGINS as $pname=>$plugin){
 		if(isset($plugin['frontend']['template_functions'])){
 			foreach($plugin['frontend']['template_functions'] as $fname=>$vals){
@@ -219,7 +220,7 @@ function smarty_setup(){
 }
 function show_page($template,$pagecontent,$PAGEDATA){
 	$smarty=smarty_setup();
-	$smarty->compile_dir=USERBASE . '/templates_c';
+	$smarty->compile_dir=USERBASE . '/ww.cache/pages';
 	$smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
 	// { some straight replaces
 	$smarty->assign('PAGECONTENT',$pagecontent);

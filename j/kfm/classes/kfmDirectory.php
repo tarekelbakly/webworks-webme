@@ -203,7 +203,7 @@ class kfmDirectory extends kfmObject{
     * replaced by $dir->path();
     */
   function path(){
-    if(!$this->cached_path) $this->cached_path = $this->getPath();
+    if(!isset($this->cached_path) || !$this->cached_path) $this->cached_path = $this->getPath();
     return $this->cached_path;
   }
   /**
