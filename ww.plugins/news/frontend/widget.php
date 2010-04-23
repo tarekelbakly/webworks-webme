@@ -22,7 +22,6 @@ foreach($rs as $r){
 	}
 	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'.htmlspecialchars($page->name).'</strong><div class="date">'.date_m2h($page->associated_date).'</div>'.$body.'</a>';
 }
-$style='';
 if(isset($vars->scrolling) && $vars->scrolling){
 	$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
 	if(isset($vars->scrolling) && $vars->scrolling)$html.='<script src="/ww.plugins/news/j/jquery.vticker.js"></script><script>$(document).ready(function(){
@@ -33,6 +32,6 @@ if(isset($vars->scrolling) && $vars->scrolling){
 		animation: "",
 		mousePause: true
 	});
-});</script>';
+});</script><style>@import "/ww.plugins/news/c/scroller.css";</style>';
 }
 $html.='<div class="news_excerpts_wrapper"><ul class="news_excerpts"><li>'.join('</li><li>',$links).'</li></ul></div>';
