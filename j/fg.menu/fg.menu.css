@@ -25,10 +25,7 @@ div.menu-fg a{
 .menu-fg-horizontal>ul>li{
 	display:inline-block;
 	margin:0;
-}
-*:first-child+html .menu-fg-horizontal>ul>li{
-	/* IE7 is annoying... */
-	float:left;
+	*float:left;
 }
 .fg-menu-container table table{
 	display:none;

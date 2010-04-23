@@ -575,6 +575,7 @@ function fitHorizontal(el, leftOffset){
 };
 
 function fitVertical(el, topOffset){
+return true;
 	var topVal = parseInt(topOffset) || $(el).offset().top;
 	return (topVal + $(el).height() <= getWindowHeight() + getScrollTop() && topVal - getScrollTop() >= 0);
 };
