@@ -8,7 +8,6 @@ div.fg-menu-container{
 }
 div.fg-menu-container ul li a{
 	display:block;
-	padding:2px 15px;
 }
 div.fg-menu-container ul li a:hover{
 	font-style:italic;
@@ -25,7 +24,6 @@ div.menu-fg a{
 }
 .menu-fg-horizontal>ul>li{
 	display:inline-block;
-	padding:0 5px;
 	margin:0;
 }
 *:first-child+html .menu-fg-horizontal>ul>li{

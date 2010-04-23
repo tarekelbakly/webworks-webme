@@ -161,7 +161,6 @@ function template_get_metadata($template,$PAGEDATA){
 	if(strpos($template,'class="scrollingNews"')!==false)$GLOBALS['plugins_to_load'][]='"scrollingNews":1';
 	// }
 	// { show stylesheet and javascript links
-	$c.='<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" />';
 	if($DBVARS['theme_variant'])$c.='<link rel="stylesheet" href="/css/'.$DBVARS['theme'].'/'.$DBVARS['theme_variant'].'" type="text/css" />';
 	else $c.='<link rel="stylesheet" href="/css" type="text/css" />';
 	$c.='<style type="text/css">.loggedin{display:'.(is_logged_in()?'block':'none').'} .loggedinCell{display:'.(is_logged_in()?'table-cell':'none').'}</style>';
