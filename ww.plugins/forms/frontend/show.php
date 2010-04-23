@@ -191,7 +191,6 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 		}
 		$cnt++;
 	}
-	if($vars['forms_template'])$vars['forms_template']=webmeParse($vars['forms_template']);
 	if($vars['forms_captcha_required'] && !$only_show_contents){
 		$row='<tr><td><script type="text/javascript">document.write("<img"+" src=\"/p/cap"+"tcha.php\" />");</script></td><td>'.__('Please type the word you see on the left.').'<br /><input name="captcha" /></td></tr>';
 		if($vars['forms_template'])$vars['forms_template'].='<table>'.$row.'</table>';
