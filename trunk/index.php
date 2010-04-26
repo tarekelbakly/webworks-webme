@@ -130,6 +130,9 @@ $pagecontent=$c;
 if(file_exists(THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html')){
 	$template=THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html';
 }
+else if(file_exists(THEME_DIR.'/'.THEME.'/h/_default.html')){
+	$template=THEME_DIR.'/'.THEME.'/h/_default.html';
+}
 else{
 	$d=array();
 	$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
