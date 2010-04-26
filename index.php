@@ -13,7 +13,8 @@ $page=getVar('page');
 // }
 require_once SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 // { specials
-if($page=='' && isset($_GET['search'])){
+if($page=='' && isset($_GET['search']) || isset($_GET['s'])){
+	if(isset($_GET['s']))$_GET['search']=$_GET['s'];
 	$p=Page::getInstanceByType(5);
 	if(!$p || !isset($p->id)){
 		dbQuery('insert into pages set cdate=now(),edate=now(),name="__search",body="",type=5,special=2,ord=5000');

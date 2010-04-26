@@ -15,6 +15,7 @@ echo file_get_contents('lightbox.css');
 echo file_get_contents('tabs.css');
 echo file_get_contents('news_scroller.css');
 echo file_get_contents('product_reviews.css');
+echo file_get_contents('jquery-ui.css');
 
 if(isset($_GET['skin']) && isset($_GET['variant'])){
 	if(strpos($_GET['skin'],'.')!==false || strpos($_GET['variant'],'.')!==false)exit;

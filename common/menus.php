@@ -261,6 +261,7 @@ $(function(){
 			flyOut:true
 		});
 	});
+	$('.menu-fg>ul>li').addClass('fg-menu-top-level');
 });
 </script>";
 	return $c;

@@ -1,2 +1,2 @@
 <?php
-include('pages.php');
+require 'pages.php';
