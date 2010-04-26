@@ -3,19 +3,6 @@ require 'header.php';
 echo '<h1>'.__('Pages').'</h1>';
 $parent=(int)@$_REQUEST['parent'];
 $msgs='';
-/*
-	PAGES PERMISSIONS:
-	1: insert
-	2: edit
-	4: delete
-	8: create/delete in some
-	16: edit some
-	32: panels
-	64: shortcuts
-	128: specials
-	256: **unused**
-	512: htmlinput
-*/
 include('pages/pages.funcs.php');
 if(has_access_permissions(ACL_PAGES)){
 	# actions
@@ -46,7 +33,5 @@ if(has_access_permissions(ACL_PAGES)){
 }
 echo '<script>window.page_menu_currentpage='.$id.';</script>',
 		'<script src="/j/jquery.remoteselectoptions.js"></script>',
-#		'<script src="http://verens.com/demos/nested-sortables/ui.sortable.js"></script>',
-#		'<script src="/ww.admin/pages/pages.js"></script>',
 		'<style type="text/css">@import "pages/css.css";</style>';
 require 'footer.php';

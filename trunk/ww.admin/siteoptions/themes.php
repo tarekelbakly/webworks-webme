@@ -6,8 +6,7 @@ if($action=='set_theme'){
 		$DBVARS['theme']=$_REQUEST['theme'];
 		$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
 		config_rewrite();
-		$dir=USERBASE.'/templates_c';
-		`rm $dir/*`;
+		cache_clear('pages');
 	}
 }
 // }
