@@ -39,7 +39,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	$pause=(int)$_REQUEST['pause'];
 	if(!$pause)$pause=3000;
 	$sql="image_transitions set directory='$directory',trans_type='$trans_type',pause=$pause";
-	if($id){
+	if($id && dbOne('select id from image_transitions where id='.$id,'id')){
 		$sql="update $sql where id=$id";
 		dbQuery($sql);
 	}
