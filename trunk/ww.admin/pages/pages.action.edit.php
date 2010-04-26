@@ -51,16 +51,18 @@ if(allowedToEditPage($id)){
 	);
 	$body=preg_replace('#</?([ovw]|st1):[^>]*>#','',$body);
 	$body=sanitise_html($body);
+echo '.';
 	// { check that name is not duplicate of existing page
-	if(dbQuery('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"')->rowCount()){
+	if(dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id')){
 		$i=2;
-		while(dbQuery('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' id!="'.$_POST['id'].'"')->rowCount())$i++;
+		while(dbOne('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id'))$i++;
 		$msgs.='<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
 		$name=$name.$i;
 	}
 	// }
 	$category1=getVar('category1');
 	$category2=getVar('category2');
+echo '.';
 	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
 	$q='update pages set importance="'.$importance.'",category="'.$category.'",template="'.$template.'",edate=now(),type="'.$_POST['type'].'",associated_date="'.addslashes($associated_date).'"';
@@ -99,6 +101,7 @@ if(allowedToEditPage($id)){
 		include_once(SCRIPTBASE.'/common/page.summaries.php');
 		displayPageSummaries($_POST['id']);
 	}
+echo '.';
 	$msgs.='<em>'.__('An item\'s details have been updated.').'</em>';
 	cache_clear('menus');
 	cache_clear('pages');
