@@ -170,7 +170,7 @@ function menu_build_fg($parentid,$depth,$options){
 		}
 	}
 	// }
-	$rs=dbAll("select id as subid,id,name,type from pages where parent='".$parentid."' order by $order");
+	$rs=dbAll("select id as subid,id,name,type from pages where parent='".$parentid."' and !(special&2) order by $order");
 	if($rs===false || !count($rs))return '';
 
 	$items=array();
