@@ -207,7 +207,7 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 	$c.='</fieldset>';
 	if(!$only_show_contents && $show_submit)$c.='</form>';
 	$c.='<script>$(document).ready(function(){'
-		.'$(".date").datepicker({'
+		.'$("input.date").datepicker({'
 			.'"dateFormat":"yy-mm-dd"'
 		.'});'
 		.'$(".ccdate").datepicker({'
