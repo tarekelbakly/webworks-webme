@@ -49,5 +49,6 @@ function showPanel($vars){
 		}
 		else $h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
 	}
-	return $h;
+	$name=preg_replace('/[^a-z0-9\-]/','-',$name);
+	return '<div class="panel panel-'.$name.'">'.$h.'</div>';
 }
