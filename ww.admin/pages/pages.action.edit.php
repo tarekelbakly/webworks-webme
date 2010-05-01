@@ -51,7 +51,6 @@ if(allowedToEditPage($id)){
 	);
 	$body=preg_replace('#</?([ovw]|st1):[^>]*>#','',$body);
 	$body=sanitise_html($body);
-echo '.';
 	// { check that name is not duplicate of existing page
 	if(dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id')){
 		$i=2;
@@ -62,7 +61,6 @@ echo '.';
 	// }
 	$category1=getVar('category1');
 	$category2=getVar('category2');
-echo '.';
 	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
 	$q='update pages set importance="'.$importance.'",category="'.$category.'",template="'.$template.'",edate=now(),type="'.$_POST['type'].'",associated_date="'.addslashes($associated_date).'"';
@@ -101,7 +99,6 @@ echo '.';
 		include_once(SCRIPTBASE.'/common/page.summaries.php');
 		displayPageSummaries($_POST['id']);
 	}
-echo '.';
 	$msgs.='<em>'.__('An item\'s details have been updated.').'</em>';
 	cache_clear('menus');
 	cache_clear('pages');
