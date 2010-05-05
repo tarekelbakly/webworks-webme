@@ -16,9 +16,17 @@ function show_image_transition($vars){
 				if($height>$max[1])$max[1]=$height;
 				$imgs[]=$f->getFilename();
 			}
+			asort($imgs);
 			if(!count($imgs))return '<em>no images in selected directory</em>';
-			$html='<div style="width:'.$width.'px;height:'.$height.'px;" id="image_transitions_'.$vars->id.'">';
-			$html.='<img src="/f'.$r['directory'].'/'.join('" /><img style="display:none" src="/f'.$r['directory'].'/',$imgs).'" /></div>';
+			if($r['url']){
+				$url=PAGE::getInstance($r['url'])->getRelativeUrl();
+				$html.='<a href="'.$url.'"';
+			}
+			else $html.='<div';
+			$html.=' style="display:block;width:'.$width.'px;height:'.$height.'px;" id="image_transitions_'.$vars->id.'">';
+			$html.='<img src="/f'.$r['directory'].'/'.join('" /><img style="display:none" src="/f'.$r['directory'].'/',$imgs).'" />';
+			if($r['url'])$html.='</a>';
+			else $html.='</div>';
 			$html.='<script src="/ww.plugins/image-transition/j/jquery.cycle.all.min.js"></script><script>$(document).ready(function(){$("#image_transitions_'.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'.$r['pause'].'})});</script>';
 			return $html;
 		}

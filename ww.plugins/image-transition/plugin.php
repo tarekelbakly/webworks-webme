@@ -10,7 +10,7 @@ $plugin=array(
 	'frontend' => array(
 		'widget' => 'showImageTransition'
 	),
-	'version' => '1'
+	'version' => '2'
 );
 function showImageTransition($vars=null){
 	include_once SCRIPTBASE.'ww.plugins/image-transition/frontend/index.php';

@@ -1,5 +1,4 @@
 <?php
-// var_dump($_REQUEST);
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if(!is_admin())die('access denied');
 
@@ -23,6 +22,8 @@ function image_transition_get_subdirs($base,$dir){
 
 if(isset($_REQUEST['get_image_transition'])){
 	$r=dbRow('select * from image_transitions where id='.(int)$_REQUEST['get_image_transition']);
+	if(!$r['url'])$r['pagename']=' -- none -- ';
+	else $r['pagename']=Page::getInstance($r['url'])->name;
 	$dirs=image_transition_get_subdirs(USERBASE.'f','');
 	if($r===false)$r=array('pause'=>3000);
 	echo json_encode(array(
@@ -37,8 +38,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	$directory=addslashes($_REQUEST['directory']);
 	$trans_type=addslashes($_REQUEST['trans_type']);
 	$pause=(int)$_REQUEST['pause'];
+	$url=(int)$_REQUEST['url'];
 	if(!$pause)$pause=3000;
-	$sql="image_transitions set directory='$directory',trans_type='$trans_type',pause=$pause";
+	$sql="image_transitions set directory='$directory',trans_type='$trans_type',pause=$pause,url=$url";
 	if($id && dbOne('select id from image_transitions where id='.$id,'id')){
 		$sql="update $sql where id=$id";
 		dbQuery($sql);
@@ -68,7 +70,7 @@ function image_transition_edit(ev){
 	var el=ev.target;
 	var id=el.id.replace(/image_transition_editlink_/,'');
 	var trans_types=["none", "fade", "scrollUp", "scrollDown", "scrollLeft", "scrollRight", "scrollHorz", "scrollVert", "slideX", "slideY", "shuffle", "turnUp", "turnDown", "turnLeft", "turnRight", "zoom", "fadeZoom", "blindX", "blindY", "blindZ", "growX", "growY", "curtainX", "curtainY", "cover", "uncover", "toss", "wipe"];
-	var d=$('<table id="image_transition_form"><tr><th>Folder holding the images to transition</th><td><select id="image_transition_folder"></select></td></tr><tr><th>Manage images in the folder</th><td><a href="javascript:image_transition_file_manager()">manage images</a></td></tr><tr><th>Transition Type</th><td><select id="image_transition_type"><option>'+trans_types.join('</option><option>')+'</select></td></tr><tr><th>Pause time in milliseconds</th><td><input class="small" id="image_transition_pause" /></td></tr></table>');
+	var d=$('<table id="image_transition_form"><tr><th>Folder holding the images to transition</th><td><select id="image_transition_folder"></select></td></tr><tr><th>Manage images in the folder</th><td><a href="javascript:image_transition_file_manager()">manage images</a></td></tr><tr><th>Transition Type</th><td><select id="image_transition_type"><option>'+trans_types.join('</option><option>')+'</select></td></tr><tr><th>Pause time in milliseconds</th><td><input class="small" id="image_transition_pause" /></td></tr><tr><th>Link to page</th><td><select id="image_transition_url"></select></th></tr></table>');
 	$.getJSON('/ww.plugins/image-transition/admin/widget-form.php',{'get_image_transition':id},function(res){
 		d.dialog({
 			minWidth:630,
@@ -84,7 +86,8 @@ function image_transition_edit(ev){
 							'action':'save',
 							'directory':$('#image_transition_folder').val(),
 							'trans_type':$('#image_transition_type').val(),
-							'pause':+$('#image_transition_pause').val()
+							'pause':+$('#image_transition_pause').val(),
+							'url':+$('#image_transition_url').val()
 						},
 						function(ret){
 							if(ret.id!=ret.was_id){
@@ -115,6 +118,12 @@ function image_transition_edit(ev){
 		sel.val(res.data.directory);
 		$('#image_transition_type').val(res.data.trans_type);
 		$('#image_transition_pause').val(res.data.pause);
+		$('#image_transition_url').html('<option value="'+res.data.url+'">'+htmlspecialchars(res.data.pagename)+'</option>');
+		setTimeout(function(){
+			$('#image_transition_url').remoteselectoptions({
+				url:'/ww.admin/pages/get_parents.php'
+			});
+		},1);
 	});
 }
 $('.image_transition_editlink').each(function(){
