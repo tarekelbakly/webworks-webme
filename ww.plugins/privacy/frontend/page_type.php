@@ -330,4 +330,4 @@ function loginBox(){
 	}
 	return $c;
 }
-$html=userloginandregistrationDisplay().'<script>$(document).ready(function(){$(".tabs").tabs()});</script>';
+$html=userloginandregistrationDisplay().'<script>$(function(){$(".tabs").tabs()});</script>';
