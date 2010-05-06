@@ -5,25 +5,10 @@
 .menuBarLeft a{display:block}
 .tier-two{clear:left}
 
-/*
-.ui-menu ul{
-	background:#999;
-	opacity:.95;
-	margin:0;
-	padding:5px;
+.fg-menu-container .ui-corner-all{
+	border-radius:0;
+	-moz-border-radius:0;
 }
-ul.ui-menu li{
-	margin:0 !important;
-	padding:3px !important;
-	border:1px solid transparent;
+.fg-menu-container a.ui-state-hover{
+	background:transparent;
 }
-ul.ui-menu .ui-state-hover{
-	border:none;
-	background:inherit;
-	color:inherit;
-}
-.menu_ui .ui-widget-content{
-	background:inherit;
-	border:inherit;
-}
-*/

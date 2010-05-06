@@ -9,9 +9,6 @@ div.fg-menu-container{
 div.fg-menu-container ul li a{
 	display:block;
 }
-div.fg-menu-container ul li a:hover{
-	font-style:italic;
-}
 div.menu-fg ul table{
 	display:none;
 }
