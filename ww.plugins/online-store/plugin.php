@@ -12,8 +12,14 @@ $plugin=array(
 		'widget' => 'online_store_show_basket_widget',
 		'page_type' => 'online_store_frontend'
 	),
-	'version' => '3'
+	'version' => '4'
 );
+// { currency symbols
+$online_store_currencies=array(
+	'EUR'=>array('&euro;','Euro'),
+	'GBP'=>array('&pound;','Pound Sterling')
+);
+// }
 function online_store_frontend($PAGEDATA){
 	require dirname(__FILE__).'/frontend/index.php';
 	return $c;
@@ -23,6 +29,8 @@ function online_store_admin_page_form($page,$vars){
 	return $c;
 }
 function online_store_show_basket_widget($vars=null){
+	global $DBVARS,$online_store_currencies;
+	$csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 	$html='<div class="online-store-basket-widget">';
 	if(!isset($_SESSION['online-store']))$_SESSION['online-store']=array('items'=>array(),'total'=>0);
 	if(count($_SESSION['online-store']['items'])){
@@ -36,13 +44,13 @@ function online_store_show_basket_widget($vars=null){
 			if($item['url'])$html.='</a>';
 			$html.='</td></tr>';
 			// }
-			$html.='<tr class="os_item_numbers" id="'.$md5.'"><td>&nbsp;</td><td>€'.$item['cost'].'</td>';
+			$html.='<tr class="os_item_numbers" id="'.$md5.'"><td>&nbsp;</td><td>'.$csym.$item['cost'].'</td>';
 			// { amount
 			$html.='<td class="amt">'.$item['amt'].'</td>';
 			// }
-			$html.='<td class="item-total">€'.($item['cost']*$item['amt']).'</td></tr>';
+			$html.='<td class="item-total">'.$csym.($item['cost']*$item['amt']).'</td></tr>';
 		}
-		$html.='<tr class="os_total"><th colspan="3">Total</th><td class="total">€'.$_SESSION['online-store']['total'].'</td></tr>';
+		$html.='<tr class="os_total"><th colspan="3">Total</th><td class="total">'.$csym.$_SESSION['online-store']['total'].'</td></tr>';
 		$html.='</table>';
 		$html.='<a href="/common/redirector.php?type=online-store">Proceed to Checkout</a>';
 	}

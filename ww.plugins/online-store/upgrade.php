@@ -18,6 +18,10 @@ if($version==2){ // status
 	dbQuery('alter table online_store_orders add status smallint default 0');
 	$version=3;
 }
+if($version==3){ // currency
+	$DBVARS['online_store_currency']='EUR';
+	$version=4;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

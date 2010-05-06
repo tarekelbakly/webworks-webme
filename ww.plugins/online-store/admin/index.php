@@ -1,4 +1,10 @@
 <?php
+global $online_store_currencies,$DBVARS;
+if(isset($_REQUEST['online_store_currency']) && isset($online_store_currencies[$_REQUEST['online_store_currency']])){
+	$DBVARS['online_store_currency']=$_REQUEST['online_store_currency'];
+	config_rewrite();
+}
+$csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 $c='<div class="tabs">';
 // { orders
 $c.='<div class="tabPage"><h2>Orders</h2>';
@@ -18,7 +24,7 @@ if(is_array($rs) && count($rs)){
 	$c.='<div style="margin:0 20%"><table width="100%" class="datatable"><thead><tr><th>Date</th><th>Amount</th><th>Invoice</th><th>Checkout Form</th><th>Status</th></tr></thead><tbody>';
 	foreach($rs as $r){
 		$c.='<tr><td><span style="display:none">'.$r['date_created'].'</span>'.date_m2h($r['date_created']).'</td>'
-			.'<td>&euro;'.$r['total'].'</td><td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a></td>'
+			.'<td>'.$csym.$r['total'].'</td><td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a></td>'
 			.'<td><a href="javascript:os_form_vals('.$r['id'].')">Checkout Form</a></td>'
 			.'<td><a href="javascript:os_status('.$r['id'].','.(int)$r['status'].')" id="os_status_'.$r['id'].'">'.htmlspecialchars($arr[(int)$r['status']]).'</a></td></tr>';
 	}
@@ -60,18 +66,24 @@ if(!isset($vars['online_stores_invoice']) || $vars['online_stores_invoice']=='')
 $c.=ckeditor('page_vars[online_stores_invoice]',$vars['online_stores_invoice']);
 $c.='</div>';
 // }
-// { payment types
-$c.='<div class="tabPage"><h2>Payment Types</h2>';
-$c.='<p>Fill in the details of those you wish to use. Leave the rest empty.</p>';
-$c.='<div class="tabs">';
+// { payment details
+$c.='<div class="tabPage"><h2>Payment Details</h2>';
+$c.='<table width="100%">';
 // { paypal
-$c.='<div class="tabPage"><h2>PayPal</h2>';
-$c.='<table width="100%"><th>PayPal email address</th><td><input class="email" name="page_vars[online_stores_paypal_address]"';
+$c.='<tr><th>PayPal email address</th><td><input class="email" name="page_vars[online_stores_paypal_address]"';
 if(isset($vars['online_stores_paypal_address']))$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
-$c.=' /></td></tr></table></div>';
+$c.=' /></td></tr>';
 // }
-$c.='</div>';
-$c.='</div>';
+// { currency
+$c.='<tr><th>Currency</th><td><select name="online_store_currency">';
+foreach($online_store_currencies as $key=>$val){
+	$c.= '<option value="'.$key.'"';
+	if($key==$DBVARS['online_store_currency'])$c.= ' selected="selected"';
+	$c.= '>'.$val[0].': '.htmlspecialchars($val[1]).'</option>';
+}
+$c.= '</select></td></tr>';
+// }
+$c.='</table></div>';
 // }
 $c.='</div>';
 $c.='<script src="/ww.plugins/online-store/j/admin.js"></script>';

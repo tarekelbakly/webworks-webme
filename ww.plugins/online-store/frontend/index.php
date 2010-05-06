@@ -1,5 +1,7 @@
 <?php
 $c='';
+global $DBVARS,$online_store_currencies;
+$csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 if(isset($_REQUEST['action']) && $_REQUEST['action']){
 	unset($_REQUEST['action']);
 	unset($_REQUEST['page']);
@@ -19,9 +21,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']){
 	// { table of items
 	$table='<table width="100%"><tr><th class="quantityheader">Quantity</th><th class="descriptionheader">Description</th><th class="unitamountheader">Unit Price</th><th class="amountheader">Amount</th></tr>';
 	foreach($_SESSION['online-store']['items'] as $key=>$item){
-		$table.='<tr><td class="quantitycell">'.$item['amt'].'</td><td class="descriptioncell"><a href="'.$item['url'].'">'.preg_replace('/<[^>]*>/','',$item['short_desc']).'</td><td class="unitamountcell">&euro;'.($item['cost']/$item['amt']).'</td><td class="amountcell">&euro;'.$item['cost'].'</td></tr>';
+		$table.='<tr><td class="quantitycell">'.$item['amt'].'</td><td class="descriptioncell"><a href="'.$item['url'].'">'.preg_replace('/<[^>]*>/','',$item['short_desc']).'</td><td class="unitamountcell">'.$csym.($item['cost']/$item['amt']).'</td><td class="amountcell">'.$csym.$item['cost'].'</td></tr>';
 	}
-	$table.='<tr class="os_basket_totals"><td colspan="3" style="text-align:right">Subtotal</td><td class="totals">&euro;'.$total.'</td></tr>';
+	$table.='<tr class="os_basket_totals"><td colspan="3" style="text-align:right">Subtotal</td><td class="totals">'.$csym.$total.'</td></tr>';
 	$table.='</table>';
 	$smarty->assign('_invoice_table',$table);
 	$smarty->assign('_invoicenumber',$id);
@@ -36,7 +38,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']){
 			.'<input type="hidden" value="Purchase made from '.$_SERVER['HTTP_HOST'].'" name="item_name"/>'
 			.'<input type="hidden" value="'.$id.'" name="item_number"/>'
 			.'<input type="hidden" value="'.$total.'" name="amount"/>'
-			.'<input type="hidden" value="EUR" name="currency_code"/><input type="hidden" value="1" name="no_shipping"/><input type="hidden" value="1" name="no_note"/>'
+			.'<input type="hidden" value="'.$DBVARS['online_store_currency'].'" name="currency_code"/><input type="hidden" value="1" name="no_shipping"/><input type="hidden" value="1" name="no_note"/>'
 			.'<input type="hidden" value="http://'.$_SERVER['HTTP_HOST'].'/ww.plugins/online-checkout/verify/paypal.php" name="notify_url"/>'
 			.'<input type="hidden" value="IC_Sample" name="bn"/><input type="image" alt="Make payments with payPal - it\'s fast, free and secure!" name="submit" src="https://www.paypal.com/en_US/i/btn/x-click-but23.gif"/><img width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt=""/></form>';
 	// }
