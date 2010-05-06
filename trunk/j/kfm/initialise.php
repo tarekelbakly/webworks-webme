@@ -86,7 +86,7 @@ $kfm->defaultSetting('log_level', 0);
 $kfm->defaultSetting('allow_user_file_associations',false);
 //display
 //$kfm->defaultSetting('theme', false); // must be overwritten
-$kfm->defaultSetting('show_admin_link', true);
+$kfm->defaultSetting('show_admin_link', file_exists(KFM_BASE_PATH.'admin'));
 $kfm->defaultSetting('time_format', '%T');
 $kfm->defaultSetting('date_format', '%x');
 $kfm->defaultSetting('listview',0);
