@@ -11,8 +11,10 @@ function userloginandregistrationDisplay(){
 		if(!count($r))die('that hash and email combination does not exist');
 		$password=Password::getNew();
 		dbQuery("update user_accounts set password=md5('$password'),verification_hash='',active=1 where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
-		$m='<h1>Thank you</h1><p>Your email address has been verified. Your login password is <strong>'.$password.'</strong>. Please take note of this password, and then log in.</p>';
-		$c.=$m.'<script>$(document).ready(function(){$("<div>'.$m.'</div>").dialog({modal:true});});</script>';
+		mail($_GET['email'],'['.$sitedomain.'] user password created',"Your new password:\n\n".$password,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
+		$action='Login';
+		$_REQUEST['email']=$_GET['email'];
+		$_REQUEST['password']=$password;
 	}
 	if($action=='Login' || $loggedin){
 		// { variables
@@ -21,8 +23,8 @@ function userloginandregistrationDisplay(){
 				$password=$_SESSION['userdata']['password'];
 			}
 			else{
-				$email=getVar('email');
-				$password=getVar('password');
+				$email=$_REQUEST['email'];
+				$password=$_REQUEST['password'];
 			}
 		// }
 		$sql='select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'") limit 1';
@@ -285,15 +287,14 @@ function userregistration_register(){
 				dbQuery("insert into users_groups set user_accounts_id=$id,groups_id=".(int)$k);
 			}
 		}
-		$sitedomain_s=str_replace('www.','',$GLOBALS['sitedomain']);
-		$sitedomain='www.'.$sitedomain_s;
+		$sitedomain=$_SERVER['HTTP_HOST'];
 		$long_url="http://$sitedomain".$page->getRelativeUrl()."?hash=".urlencode($hash)."&email=".urlencode($email).'#Login';
 		$short_url=md5($long_url);
 		$lesc=addslashes($long_url);
 		$sesc=urlencode($short_url);
 		dbQuery("insert into short_urls values(0,now(),'$lesc','$short_url')");
 		if(@$page->vars['userlogin_registration_type']=='Email-verified'){
-    	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain_s\nReply-to: noreply@$sitedomain_s");
+    	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nAfter clicking the link below, you will be logged into the server, and a new password will be emailed out to you.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain_s\nReply-to: noreply@$sitedomain_s");
 			if(1 || $page->vars['userlogin_send_admin_emails']){
 				$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');
 				foreach($admins as $admin){
