@@ -636,3 +636,23 @@ Number.prototype.pxToEm = String.prototype.pxToEm = function(settings){
 	var result = (settings.reverse == true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
 	return result;
 };
+
+$('.fg-menu,.fg-menu-top-level')
+	.live('mouseover',function(){
+		this.mouse_is_over=true;
+		clearTimeout(window.fgmenu_mouseout_timer);
+	})
+	.live('mouseout',function(){
+		this.mouse_is_over=false;
+		window.fgmenu_mouseout_timer=setTimeout(function(){
+			var o=0;
+			$('.fg-menu,.fg-menu-top-level').each(function(){
+				if (this.mouse_is_over) o++;
+			});
+			if(!o){
+				$.each(allUIMenus, function(i){
+					if (allUIMenus[i].menuOpen) { allUIMenus[i].kill(); };	
+				});
+			}
+		},2000);
+	});
