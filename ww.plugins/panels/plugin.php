@@ -40,7 +40,7 @@ function showPanel($vars){
 		if(isset($widget->visibility) && count($widget->visibility)){
 			if(!in_array($GLOBALS['PAGEDATA']->id,$widget->visibility))continue;
 		}
-		if(isset($widget->header_visibility) && $widget->header_visibility)$h.='<h4 class="panel-widget-header">'.htmlspecialchars($widget->name).'</h4>';
+		if(isset($widget->header_visibility) && $widget->header_visibility)$h.='<h4 class="panel-widget-header '.preg_replace('/[^a-z0-9A-Z\-]/','',$widget->name).'">'.htmlspecialchars($widget->name).'</h4>';
 		if(isset($PLUGINS[$widget->type])){
 			if(isset($PLUGINS[$widget->type]['frontend']['widget'])){
 				$h.=$PLUGINS[$widget->type]['frontend']['widget']($widget);
