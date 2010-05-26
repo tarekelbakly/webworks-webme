@@ -29,9 +29,9 @@ $links=array();
 foreach($rs as $r){
 	$page=Page::getInstance($r['id'],$r);
 	if(!isset($page->associated_date) || !$page->associated_date)$page->associated_date=$page->cdate;
-	$links[]='<h2><a href="'.$page->getRelativeURL().'">'.htmlspecialchars($page->name).'</a></h2>'
-		.'<a href="'.$page->getRelativeURL().'">posted on '.date_m2h($page->associated_date).'</a>'
-		.'<p>'.substr(preg_replace('/<[^>]*>/','',preg_replace('#<h1>[^<]*</h1>#','',$page->render())),0,600).'...</p>'
+	$links[]='<h2 class="news-header"><a href="'.$page->getRelativeURL().'">'.htmlspecialchars($page->name).'</a></h2>'
+		.'<a class="news-date" href="'.$page->getRelativeURL().'">posted on '.date_m2h($page->associated_date).'</a>'
+		.'<p class="news-paragraph">'.substr(preg_replace('/<[^>]*>/','',preg_replace('#<h1>[^<]*</h1>#','',$page->render())),0,600).'...</p>'
 	;
 }
 $html.=join('<div class="news-break"></div>',$links);
