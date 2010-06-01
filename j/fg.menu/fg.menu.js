@@ -25,8 +25,6 @@ $.fn.menu = function(options){
 	})	
 	.mouseover(function(){
 		if (m.menuOpen == false) { m.showMenu(); }
-		else { m.kill(); };
-		return false;
 	});
 };
 
@@ -654,5 +652,5 @@ $('.fg-menu,.fg-menu-top-level')
 					if (allUIMenus[i].menuOpen) { allUIMenus[i].kill(); };	
 				});
 			}
-		},2000);
+		},500);
 	});
