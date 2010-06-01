@@ -294,11 +294,11 @@ function userregistration_register(){
 		$sesc=urlencode($short_url);
 		dbQuery("insert into short_urls values(0,now(),'$lesc','$short_url')");
 		if(@$page->vars['userlogin_registration_type']=='Email-verified'){
-    	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nAfter clicking the link below, you will be logged into the server, and a new password will be emailed out to you.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain_s\nReply-to: noreply@$sitedomain_s");
+    	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nAfter clicking the link below, you will be logged into the server, and a new password will be emailed out to you.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 			if(1 || $page->vars['userlogin_send_admin_emails']){
 				$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');
 				foreach($admins as $admin){
-					mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain_s\nReply-to: noreply@$sitedomain_s");
+					mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 				}
 			}
 			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Please check your email for a verification URL. Once that\'s been followed, your account will be activated and a password supplied to you.</p>');
@@ -306,7 +306,7 @@ function userregistration_register(){
 		else{
 			$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');
 			foreach($admins as $admin){
-				mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user ($email) has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain_s\nReply-to: noreply@$sitedomain_s");
+				mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user ($email) has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 			}
 			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Our admins will moderate your registration, and you will receive an email with your new password when it is activated.</p>');
 		}
