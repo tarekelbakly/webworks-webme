@@ -35,6 +35,15 @@ function cache_save($type,$md5,$vals){
 	if(!is_dir(USERBASE.'/ww.cache/'.$type))mkdir(USERBASE.'/ww.cache/'.$type,0777,true);
 	file_put_contents(USERBASE.'/ww.cache/'.$type.'/'.$md5, json_encode($vals));
 }
+function config_rewrite(){
+	global $DBVARS;
+	$tmparr=$DBVARS;
+	$tmparr['plugins']=join(',',$DBVARS['plugins']);
+	$tmparr2=array();
+	foreach($tmparr as $name=>$val)$tmparr2[]='\''.addslashes($name).'\'=>\''.addslashes($val).'\'';
+	$config="<?php\n\$DBVARS=array(\n	".join(",\n	",$tmparr2)."\n);";
+	file_put_contents(CONFIG_FILE,$config);
+}
 function dbAll($query,$key='') {
 	$q = dbQuery($query);
 	$results=array();
@@ -133,7 +142,7 @@ if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 }
 require SCRIPTBASE . '.private/config.php';
 if(isset($DBVARS['userbase']))define('USERBASE', $DBVARS['userbase']);
-else define('USERBASE', $_SERVER['DOCUMENT_ROOT']);
+else define('USERBASE', SCRIPTBASE);
 // { built-in page types
 $pagetypes=array(
 	array(0,'normal',0),
@@ -163,21 +172,19 @@ else{
 	$themes_found=0;
 	$DBVARS['theme']='.default';
 	foreach($dir as $file){
-		if(strpos($file,'.')===0)continue;
-		$DBVARS['theme']=$file;
+		if($file->isDot())continue;
+		$DBVARS['theme']=$file->getFileName();
 		break;
 	}
 	define('THEME',$DBVARS['theme']);
 }
 // }
+// { plugins
 $PLUGINS=array();
-#echo "load ww.incs/basics.php7 ".(microtime(true)-START_TIME).'<br />';
 if(!isset($ignore_webme_plugins)){
 	foreach($DBVARS['plugins'] as $pname){
 		if(strpos('/',$pname)!==false)continue;
-	#echo "load ww.incs/basics.php8 ".(microtime(true)-START_TIME).'<br />';
 		require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
-	#echo "load ww.incs/basics.php9 ".(microtime(true)-START_TIME).'<br />';
 		if(@$plugin['version'] && (@$DBVARS[$pname.'|version']!=$plugin['version'])){
 			$version=(int)@$DBVARS[$pname.'|version'];
 			require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
@@ -187,4 +194,4 @@ if(!isset($ignore_webme_plugins)){
 		$PLUGINS[$pname]=$plugin;
 	}
 }
-#echo "load ww.incs/basics.php ".(microtime(true)-START_TIME).'<br />';
+// }
