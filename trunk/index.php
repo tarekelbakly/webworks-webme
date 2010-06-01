@@ -11,7 +11,6 @@ $id=getVar('pageid',0);
 $plugins_to_load=array(); // to be used by javascript
 $page=getVar('page');
 // }
-require_once SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 // { specials
 if($page=='' && isset($_GET['search']) || isset($_GET['s'])){
 	if(isset($_GET['s']))$_GET['search']=$_GET['s'];
@@ -139,7 +138,6 @@ else{
 	foreach($dir as $f){
 		if($f->isDot())continue;
 		$n=$f->getFilename();
-		if(strpos($n,'.')===0)continue;
 		if(preg_match('/\.html$/',$n))$d[]=preg_replace('/\.html$/','',$n);
 	}
 	asort($d);
@@ -201,41 +199,6 @@ function logoDisplay($vars){
 	}
 	return '<img src="/f/skin_files/logo-'.$geometry.'.png" />';
 }
-function smarty_setup(){
-	global $DBVARS,$PLUGINS;
-	$smarty = new Smarty;
-	$smarty->left_delimiter = '{{';
-	$smarty->right_delimiter = '}}';
-	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
-	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
-	$smarty->register_function('BREADCRUMBS','show_page_breadcrumbs');
-	$smarty->register_function('LOGO', 'logoDisplay');
-	$smarty->register_function('MENU', 'menuDisplay');
-	$smarty->register_function('nuMENU', 'menu_show_fg');
-	foreach($PLUGINS as $pname=>$plugin){
-		if(isset($plugin['frontend']['template_functions'])){
-			foreach($plugin['frontend']['template_functions'] as $fname=>$vals){
-				$smarty->register_function($fname,$vals['function']);
-			}
-		}
-	}
-	return $smarty;
-}
-function show_page($template,$pagecontent,$PAGEDATA){
-	$smarty=smarty_setup();
-	$smarty->compile_dir=USERBASE . '/ww.cache/pages';
-	$smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
-	// { some straight replaces
-	$smarty->assign('PAGECONTENT',$pagecontent);
-	$smarty->assign('PAGEDATA',$PAGEDATA);
-	$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
-	// { display the document
-	ob_start();
-	if(strpos($template,'/')===false)$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
-	$smarty->display($template);
-	ob_show_and_log('page','Content-type: text/html; Charset=utf-8');
-	// }
-}
 function show_page_breadcrumbs($id=0) {
 	if($id)$page=Page::getInstance($id);
 	else $page=$GLOBALS['PAGEDATA'];
@@ -243,4 +206,16 @@ function show_page_breadcrumbs($id=0) {
 	return $c . '<a href="' . $page->getRelativeURL() . '" title="' . htmlspecialchars($page->title) . '">' . htmlspecialchars($page->name) . '</a>';
 }
 
-show_page($template,$pagecontent,$PAGEDATA);
+$smarty=smarty_setup();
+$smarty->compile_dir=USERBASE . '/ww.cache/pages';
+$smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
+// { some straight replaces
+$smarty->assign('PAGECONTENT',$pagecontent);
+$smarty->assign('PAGEDATA',$PAGEDATA);
+$smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
+// { display the document
+ob_start();
+if(strpos($template,'/')===false)$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
+$smarty->display($template);
+ob_show_and_log('page','Content-type: text/html; Charset=utf-8');
+// }

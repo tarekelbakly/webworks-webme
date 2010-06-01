@@ -45,7 +45,10 @@ foreach($PLUGINS as $pname=>$p){
 			'_link'=>'pages.php'
 		),
 		'Site Options'=>array(
-			'_link'=>'siteoptions.php'
+			'General'=> array('_link'=>'siteoptions.php'),
+			'Users'  => array('_link'=>'siteoptions.php?page=users'),
+			'Themes' => array('_link'=>'siteoptions.php?page=themes'),
+			'Plugins'=> array('_link'=>'siteoptions.php?page=plugins')
 		)
 	);
 	// }
