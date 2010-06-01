@@ -2,11 +2,11 @@
 function show_messaging_notifier($vars){
 	if(!is_array($vars) && isset($vars->id) && $vars->id){
 		$data=dbOne('select data from messaging_notifier where id='.$vars->id,'data');
-		if($data)return parse_messaging_notifier(json_decode($data));
+		if($data)return parse_messaging_notifier(json_decode($data),$vars);
 	}
-	return '<p>this Messaging Notifier is not yet defined.</p>';
+	return '<!-- this Messaging Notifier is not yet defined. -->';
 }
-function parse_messaging_notifier($data){
+function parse_messaging_notifier($data,$vars){
 	$altogether=array();
 	foreach($data as $r){
 		$md5=md5($r->url);
@@ -33,7 +33,7 @@ function parse_messaging_notifier($data){
 		}
 		$altogether=array_merge($altogether,$f);
 	}
-	$html='<ul class="messaging-notifier">';
+	$html='<div id="messaging-notifier-'.$vars->id.'"'.$height.'><ul class="messaging-notifier">';
 	$i=0;
 	$ordered=array();
 	foreach($altogether as $r){
@@ -42,9 +42,29 @@ function parse_messaging_notifier($data){
 	krsort($ordered);
 	foreach($ordered as $r){
 		if(++$i > 10)continue;
-		$html.='<li class="messaging-notifier-'.$r['type'].'"><a href="'.$r['link'].'">'.htmlspecialchars($r['title']).'</a><br /><i>'.date('Y M jS H:i',$r['unixtime']).'</i></li>';
+		$description='';
+		if($vars->characters_shown){
+			$description=preg_replace('/<[^>]*>/','',$r['description']);
+			if(strlen($description)>$vars->characters_shown)$description=substr($description,0,$vars->characters_shown).'...';
+		}
+		$target=$vars->load_in_other_tab?' target="_blank"':'';
+		$title=$vars->hide_story_title?'':'<strong>'.htmlspecialchars($r['title']).'</strong><br />';
+		$html.='<li class="messaging-notifier-'.$r['type'].'"><a'.$target.' href="'.$r['link'].'">'.$title.$description.'</a><br /><i>'.date('Y M jS H:i',$r['unixtime']).'</i></li>';
 	}
-	$html.='</ul><style type="text/css">@import "/ww.plugins/messaging-notifier/c/styles.css";</style>';
+	$html.='</ul></div><style type="text/css">@import "/ww.plugins/messaging-notifier/c/styles.css";</style>';
+	if(isset($vars->scrolling) && $vars->scrolling){
+		$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
+		if(isset($vars->scrolling) && $vars->scrolling)$html.='<script src="/ww.plugins/messaging-notifier/j/jquery.vticker.js"></script><script>$(function(){
+			$("#messaging-notifier-'.$vars->id.'").vTicker({
+				speed: 4000,
+				pause: 5000,
+				showItems: '.$n_items.',
+				animation: "",
+				mousePause: true
+			});
+		});</script><style>@import "/ww.plugins/messaging-notifier/c/scroller.css";</style>';
+	}
+	$height=$vars->height_in_px?' style="height:'.((int)$vars->height_in_px).'px"':'';
 	return $html;
 }
 function messaging_notifier_get_rss($r){
@@ -59,6 +79,8 @@ function messaging_notifier_get_rss($r){
 		$i['title']=$title->item(0)->nodeValue;
 		$link=$item->getElementsByTagName('link');
 		$i['link']=$link->item(0)->nodeValue;
+		$description=$item->getElementsByTagName('description');
+		$i['description']=$description->item(0)->nodeValue;
 		$unixtime=$item->getElementsByTagName('pubDate');
 		$i['unixtime']=strtotime($unixtime->item(0)->nodeValue);
 		$arr[]=$i;

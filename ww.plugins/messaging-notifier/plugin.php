@@ -7,7 +7,7 @@ $plugin=array(
 			'form_url' => '/ww.plugins/messaging-notifier/admin/widget-form.php'
 		)
 	),
-	'description' => 'Show a list of recent tweets',
+	'description' => 'Show messages from feeds such as twitter, rss, phpbb3',
 	'frontend' => array(
 		'widget' => 'messaging_notifier_show_widget',
 //		'page_type' => 'online_store_frontend'

@@ -44,7 +44,40 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 
 if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
 else $id=0;
-echo '<a href="javascript:;" id="messaging_notifier_editlink_'.$id.'" class="messaging_notifier_editlink">view or edit notifications</a>';
+
+echo '<a href="javascript:;" id="messaging_notifier_editlink_'.$id.'" class="button messaging_notifier_editlink">view or edit feeds</a><br />';
+// { show story title
+echo '<strong>hide story title</strong><br /><select name="hide_story_title">';
+echo '<option value="0">No</option>';
+echo '<option value="1"';
+if(isset($_REQUEST['hide_story_title']) && $_REQUEST['hide_story_title']==1) echo ' selected="selected"';
+echo '>Yes</option></select><br />';
+// }
+// { characters shown per story
+echo '<strong>characters shown</strong><br />';
+if(!isset($_REQUEST['characters_shown']) || $_REQUEST['characters_shown']=='')$_REQUEST['characters_shown']=200;
+echo '<input class="small" name="characters_shown" value="'.((int)$_REQUEST['characters_shown']).'" /><br />';
+// }
+// { scrolling
+echo '<strong>scrolling</strong><br /><select name="scrolling">';
+echo '<option value="0">No</option>';
+echo '<option value="1"';
+if(isset($_REQUEST['scrolling']) && $_REQUEST['scrolling']==1) echo ' selected="selected"';
+echo '>Yes</option></select><br />';
+// }
+// { load in tab
+echo '<strong>load in other tab</strong><br /><select name="load_in_other_tab">';
+echo '<option value="1">Yes</option>';
+echo '<option value="0"';
+if(isset($_REQUEST['load_in_other_tab']) && $_REQUEST['load_in_other_tab']==0) echo ' selected="selected"';
+echo '>No</option></select><br />';
+// }
+// { stories to show
+$i=isset($_REQUEST['stories_to_show'])?(int)$_REQUEST['stories_to_show']:10;
+if($i<1)$i=10;
+echo '<strong>stories to show</strong><br />';
+echo '<input class="small" name="stories_to_show" value="'.$i.'" />';
+// }
 ?>
 <script>
 if(!ww.messaging_notifier)ww.messaging_notifier={
