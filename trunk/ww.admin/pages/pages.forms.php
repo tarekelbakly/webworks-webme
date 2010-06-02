@@ -302,5 +302,8 @@ else{
 	// }
 	echo '</div>';
 	echo wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details')));
+	if(isset($_REQUEST['frontend-admin'])){
+		echo '<input type="hidden" name="frontend-admin" value="1" />';
+	}
 	echo '</form>';
 }

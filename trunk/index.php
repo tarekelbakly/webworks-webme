@@ -176,6 +176,9 @@ function template_get_metadata($template,$PAGEDATA){
 	$c.='plugins_to_load={'.join(',',$GLOBALS['plugins_to_load']).'};';
 	$c.='document.write("<"+"style type=\'text/css\'>a.nojs{display:none !important}<"+"/style>");';
 	$c.='</script>';
+	if(is_admin()){
+		$c.='<script src="/ww.admin/j/admin-frontend.js"></script><link rel="stylesheet" href="/ww.admin/theme/admin-frontend.css" />';
+	}
 	// }
 	// { meta tags
 	$c.='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
