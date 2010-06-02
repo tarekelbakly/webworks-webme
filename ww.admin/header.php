@@ -36,7 +36,9 @@ foreach($PLUGINS as $pname=>$p){
 ?>
 		<script src="/ww.admin/j/admin.js"></script>
 	</head>
-	<body>
+	<body<?php
+	if(isset($_REQUEST['frontend-admin']))echo ' class="frontend-admin"';
+	?>>
 		<div id="header"> 
 <?php
 	// { setup standard menu items

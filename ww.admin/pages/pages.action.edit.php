@@ -106,3 +106,6 @@ if(allowedToEditPage($id)){
 else{
 	$msgs.='<em>'.__('No update rights.').'</em>';
 }
+if(isset($_REQUEST['frontend-admin'])){
+	echo '<script type="text/javascript">parent.location=parent.location;</script>';
+}
