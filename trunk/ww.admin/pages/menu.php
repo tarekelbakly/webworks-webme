@@ -23,4 +23,4 @@ function show_pages($id){
 	echo '</ul>';
 }
 show_pages(0);
-echo '<script>selected_page='.$pages[0][0]['id'].';</script></div>';
+if(count($pages))echo '<script>selected_page='.$pages[0][0]['id'].';</script></div>';
