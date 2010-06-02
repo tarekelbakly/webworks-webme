@@ -178,6 +178,8 @@ function template_get_metadata($template,$PAGEDATA){
 	$c.='</script>';
 	if(is_admin()){
 		$c.='<script src="/ww.admin/j/admin-frontend.js"></script><link rel="stylesheet" href="/ww.admin/theme/admin-frontend.css" />';
+		$c.='<script src="/j/ckeditor/ckeditor.js"></script>';
+		$c.='<script src="/j/ckeditor/adapters/jquery.js"></script>';
 	}
 	// }
 	// { meta tags
@@ -213,7 +215,7 @@ $smarty=smarty_setup();
 $smarty->compile_dir=USERBASE . '/ww.cache/pages';
 $smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
 // { some straight replaces
-$smarty->assign('PAGECONTENT',$pagecontent);
+$smarty->assign('PAGECONTENT','<div id="ww-pagecontent">'.$pagecontent.'</div>');
 $smarty->assign('PAGEDATA',$PAGEDATA);
 $smarty->assign('METADATA',template_get_metadata($template,$PAGEDATA));
 // { display the document

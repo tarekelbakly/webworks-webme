@@ -95,7 +95,7 @@ function getAdminVar($name,$default=''){
 	return $default;
 }
 function ckeditor($name,$value='',$height=250){
-	return '<textarea style="width:100%;height:'.$height.'px" name="'.addslashes($name).'">'.htmlspecialchars($value).'</textarea><script>$(function(){CKEDITOR.replace("'.addslashes($name).'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME"});});</script>';
+	return '<textarea style="width:100%;height:'.$height.'px" name="'.addslashes($name).'">'.htmlspecialchars($value).'</textarea><script>$(function(){CKEDITOR.replace("'.addslashes($name).'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME",scayt_autoStartup:false});});</script>';
 }
 function sanitise_html($html) {
 	$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
