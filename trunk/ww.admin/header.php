@@ -65,12 +65,14 @@ foreach($PLUGINS as $pname=>$p){
 	}
 	// }
 	// { add final items
-	$menus['Stats']=array('_link'=>'/ww.admin/stats.php');
-	$menus['Log Out']=array('_link'=>'/?logout=1');
+	$menus['Stats']=    array('_link'=>'/ww.admin/stats.php');
+	$menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
+	$menus['Log Out']=  array('_link'=>'/?logout=1');
 	// }
 	// { display menu as UL list
 	function admin_menu_show($items,$name=false,$prefix,$depth=0){
-		if(isset($items['_link']))echo '<a href="'.$items['_link'].'">'.$name.'</a>';
+		$target=(isset($items['_target']))?' target="'.$items['_target'].'"':'';
+		if(isset($items['_link']))echo '<a href="'.$items['_link'].'"'.$target.'>'.$name.'</a>';
 		else if($name!='top')echo '<a href="#'.$prefix.'-'.$name.'">'.$name.'</a>';
 		if(count($items)==1 && isset($items['_link']))return;
 		if($depth<2)echo '<div id="'.$prefix.'-'.$name.'">';
