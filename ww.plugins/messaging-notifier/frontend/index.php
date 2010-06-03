@@ -45,7 +45,7 @@ function parse_messaging_notifier($data,$vars){
 		$description='';
 		if($vars->characters_shown){
 			$description=preg_replace('/<[^>]*>/','',$r['description']);
-			if(strlen($description)>$vars->characters_shown)$description=substr($description,0,$vars->characters_shown).'...';
+			if(strlen($description)>(int)$vars->characters_shown)$description=substr($description,0,$vars->characters_shown).'...';
 		}
 		$target=$vars->load_in_other_tab?' target="_blank"':'';
 		$title=$vars->hide_story_title?'':'<strong>'.htmlspecialchars($r['title']).'</strong><br />';
