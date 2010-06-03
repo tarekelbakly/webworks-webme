@@ -7,7 +7,7 @@ function ig_setup_ad_store(){
 		html+='<tr><th>Type</th><td><select id="ig-ad-desc"><option value=""> -- please choose -- </option>';
 		for(i=0;i<ig_prices.length;++i){
 			var j=ig_prices[i];
-			html+='<option value="'+i+'">€'+j[1]+' - '+j[0]+'</option>';
+			html+='<option value="'+i+'">'+currency+j[1]+' - '+j[0]+'</option>';
 		}
 		html+='</select></td></tr>';
 		// }
