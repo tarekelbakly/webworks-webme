@@ -17,7 +17,7 @@ function image_gallery_get_subdirs($base,$dir){
 	return $arr;
 }
 $gvars=array(
-	'image_gallery_directory'    =>'/',
+	'image_gallery_directory'    =>'',
 	'image_gallery_x'            =>3,
 	'image_gallery_y'            =>2,
 	'image_gallery_autostart'    =>0,
@@ -30,13 +30,36 @@ $gvars=array(
 foreach($gvars as $n=>$v)if(isset($vars[$n]))$gvars[$n]=$vars[$n];
 $cssurl=false;
 $c='<div class="tabs">';
+// { images
+$c.='<div class="tabPage"><h2>Images</h2>';
+if(!$gvars['image_gallery_directory'] || !is_dir(USERBASE.'f/'.$gvars['image_gallery_directory'])){
+	mkdir(USERBASE.'f/image-galleries');
+	$gvars['image_gallery_directory']='/image-galleries/page-'.$page['id'];
+	mkdir(USERBASE.'f/'.$gvars['image_gallery_directory']);
+}
+$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$gvars['image_gallery_directory']));
+$images=kfm_loadFiles($dir_id);
+$images=$images['files'];
+$n=count($images);
+$c.='<iframe src="/ww.plugins/image_gallery/admin/uploader.php?image_gallery_directory='.urlencode($gvars['image_gallery_directory']).'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe><script>window.kfm={alert:function(){}};window.kfm_vars={};function x_kfm_loadFiles(){}function kfm_dir_openNode(){document.location=document.location;}</script>';
+if($n){
+	$c.='<div id="image-gallery-wrapper">';
+	for($i=0;$i<$n;$i++){
+		$c.='<div><img src="/kfmget/'.$images[$i]['id'].',width=64,height=64" title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" /><br /><input type="checkbox" id="image-gallery-dchk-'.$images[$i]['id'].'" /><a href="javascript:;" id="image-gallery-dbtn-'.$images[$i]['id'].'">delete</a></div>';
+	}
+	$c.='</div>';
+}else{
+	$c.='<em>no images yet. please upload some.</em>';
+}
+$c.='</div>';
+// }
 // { header
 $c.='<div class="tabPage"><h2>Header</h2>';
 $c.=ckeditor('body',$page['body'],0,$cssurl);
 $c.='</div>';
 // }
-// { gallery details
-$c.='<div class="tabPage"><h2>Gallery Details</h2>';
+// { advanced settings
+$c.='<div class="tabPage"><h2>Advanced Settings</h2>';
 $c.='<table><tr><th>Image Directory</th><td><select id="image_gallery_directory" name="page_vars[image_gallery_directory]"><option value="/">/</option>';
 foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 	$c.='<option value="'.htmlspecialchars($d).'"';
@@ -108,3 +131,4 @@ if(isset($GLOBALS['PLUGINS']['online-store'])){
 // }
 $c.='</div>';
 $c.='<script src="/ww.plugins/image_gallery/j/admin.js"></script>';
+$c.='<link rel="stylesheet" href="/ww.plugins/image_gallery/admin/admin.css" />';
