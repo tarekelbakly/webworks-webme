@@ -33,6 +33,50 @@ function admin_verifypage($validlist,$default,$val){
 	foreach($validlist as $v)if($v==$val)return $val;
 	return $default;
 }
+function html_fixImageResizes($src){
+	// checks for image resizes done with HTML parameters or inline CSS
+	//   and redirects those images to pre-resized versions held elsewhere
+
+	preg_match_all('/<img [^>]*>/im',$src,$matches);
+	if(!count($matches))return $src;
+	foreach($matches[0] as $match){
+		$width=0;
+		$height=0;
+		if(preg_match('#width="[0-9]*"#i',$match) && preg_match('/height="[0-9]*"/i',$match)){
+			$width=preg_replace('#.*width="([0-9]*)".*#i','\1',$match);
+			$height=preg_replace('#.*height="([0-9]*)".*#i','\1',$match);
+		}
+		else if(preg_match('/style="[^"]*width: *[0-9]*px/i',$match) && preg_match('/style="[^"]*height: *[0-9]*px/i',$match)){
+			$width=preg_replace('#.*style="[^"]*width: *([0-9]*)px.*#i','\1',$match);
+			$height=preg_replace('#.*style="[^"]*height: *([0-9]*)px.*#i','\1',$match);
+		}
+		if(!$width || !$height)continue;
+		$imgsrc=preg_replace('#.*src="([^"]*)".*#i','\1',$match);
+		$dir=preg_replace('/[^a-z0-9\-_A-Z]/','_',$imgsrc);
+
+		// get absolute address of img (naive, but will work for most cases)
+		if(!preg_match('/^http/i',$imgsrc))$imgsrc=USERBASE.'/'.$imgsrc;
+
+		list($x,$y)=getimagesize($imgsrc);
+		if(!$x || !$y || ($x==$width && $y==$height))continue;
+
+		// create address of resized image and update HTML
+		$newURL=WORKURL_IMAGERESIZES.$dir.'/'.$width.'x'.$height.'.jpg';
+		$newImgHTML=preg_replace('/(.*src=")[^"]*(".*)/i',"$1$newURL$2",$match);
+		$src=str_replace($match,$newImgHTML,$src);
+
+		// create cached image
+		$imgdir=WORKDIR_IMAGERESIZES.$dir;
+		@mkdir(WORKDIR_IMAGERESIZES);
+		@mkdir($imgdir);
+		$imgfile=$imgdir.'/'.$width.'x'.$height.'.jpg';
+		if(file_exists($imgfile))continue;
+		$str='convert "'.addslashes($imgsrc).'" -geometry '.$width.'x'.$height.' "'.$imgfile.'"';
+		exec($str);
+	}
+
+	return $src;
+}
 function wInput($name,$type='text',$value='',$class=''){
 	switch($type){
 		case 'checkbox': {

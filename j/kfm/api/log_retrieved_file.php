@@ -1,5 +1,6 @@
 <?php
 require_once 'Log.php';
+if(!function_exists('ob_show_and_log')){
 function ob_show_and_log($type){
 	$log = &Log::singleton('file',USERBASE.'log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=$GLOBALS['filesize'];
@@ -32,5 +33,6 @@ function ob_show_and_log($type){
 		.'	'.$num_queries
 	);
 	ob_flush();
+}
 }
 ob_show_and_log('file');
