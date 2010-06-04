@@ -20,7 +20,7 @@ $admin_vars=array();
 <html>
 	<head>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
 		<script src="/js/"></script>
 		<script src="/j/ckeditor/ckeditor.js"></script>
 		<script src="/j/datatables/media/js/jquery.dataTables.js"></script>
@@ -28,7 +28,7 @@ $admin_vars=array();
 		<script src="/j/fg.menu/fg.menu.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin-20100406.css" type="text/css" />
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/south-street/jquery-ui.css" type="text/css" />
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" />
 <?php
 foreach($PLUGINS as $pname=>$p){
 	if(file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css'))echo '<link rel="stylesheet" href="/ww.plugins/'.$pname.'/admin/admin.css" type="text/css" />';
