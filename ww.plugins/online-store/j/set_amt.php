@@ -11,4 +11,4 @@ require '../libs.php';
 $total=online_store_calculate_total();
 $item_total=$amt?$_SESSION['online-store']['items'][$md5]['cost']*$amt:0;
 
-echo '{amt:'.$amt.',item_total:'.$item_total.',total:'.$total.'}';
+echo '{"amt":'.$amt.',"item_total":'.$item_total.',"total":'.$total.'}';
