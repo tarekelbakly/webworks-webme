@@ -132,6 +132,11 @@ function has_page_permissions($val){
 function has_access_permissions($val){
 	return true;
 }
+function plugin_trigger($trigger_name){
+	global $PLUGIN_TRIGGERS,$PAGEDATA;
+	if(!isset($PLUGIN_TRIGGERS[$trigger_name]))return;
+	foreach($PLUGIN_TRIGGERS[$trigger_name] as $fn)$fn($PAGEDATA);
+}
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>No configuration file found</p>';
@@ -181,6 +186,7 @@ else{
 // }
 // { plugins
 $PLUGINS=array();
+$PLUGINS_TRIGGERS=array();
 if(!isset($ignore_webme_plugins)){
 	foreach($DBVARS['plugins'] as $pname){
 		if(strpos('/',$pname)!==false)continue;
@@ -192,6 +198,12 @@ if(!isset($ignore_webme_plugins)){
 			exit;
 		}
 		$PLUGINS[$pname]=$plugin;
+		if(isset($plugin['triggers'])){
+			foreach($plugin['triggers'] as $name=>$fn){
+				if(!isset($PLUGIN_TRIGGERS[$name]))$PLUGIN_TRIGGERS[$name]=array();
+				$PLUGIN_TRIGGERS[$name][]=$fn;
+			}
+		}
 	}
 }
 // }
