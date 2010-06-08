@@ -4,6 +4,10 @@ if(!file_exists(USERBASE.'/ww.cache/products')){
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
+function products_get_add_to_cart_button(){
+	return '<form method="POST"><input type="hidden" name="products_action" value="add_to_cart" /><input type="submit" value="Add to Cart" />'
+		.'<input type="hidden" name="product_id" value="'.$GLOBALS['smarty_vars']['product_id'].'" /></form>';
+}
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
 	switch($PAGEDATA->vars['products_what_to_show']){
@@ -49,6 +53,7 @@ function products_setup_smarty(){
 	$smarty->compile_dir=USERBASE.'/ww.cache/products/templates_c';
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
+	$smarty->register_function('PRODUCTS_BUTTON_ADD_TO_CART','products_get_add_to_cart_button');
 	$smarty->template_dir='/ww.cache/products/templates';
 	return $smarty;
 }
@@ -122,8 +127,10 @@ class Products{
 		$c='';
 		foreach($this->product_ids as $pid){
 			$product=Product::getInstance($pid);
-			$type=ProductType::getInstance($product->get('product_type_id'));
-			$c.=$type->render($product,'multiview');
+			if($product){
+				$type=ProductType::getInstance($product->get('product_type_id'));
+				$c.=$type->render($product,'multiview');
+			}
 		}
 		return $c;
 	}
@@ -161,6 +168,9 @@ class ProductType{
 	}
 	function render($product,$template='singleview'){
 		$smarty=products_setup_smarty();
+		$GLOBALS['smarty_vars']=array(
+			'product_id'=>$product->get('id')
+		);
 		foreach($this->data_fields as $f){
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/','_',$f->n);
 			$val=$product->get($f->n);
