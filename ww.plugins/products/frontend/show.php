@@ -1,5 +1,4 @@
 <?php
-require_once SCRIPTBASE . 'common/Smarty/Smarty.class.php';
 if(!file_exists(USERBASE.'/ww.cache/products')){
 	mkdir(USERBASE.'/ww.cache/products');
 	mkdir(USERBASE.'/ww.cache/products/templates');
