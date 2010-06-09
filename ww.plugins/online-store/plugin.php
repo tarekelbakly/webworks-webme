@@ -1,32 +1,52 @@
 <?php
+// { define $plugin
 $plugin=array(
 	'name' => 'Online Store',
 	'admin' => array(
 		'page_type' => 'online_store_admin_page_form'
-#		'widget' => array(
-#			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
-#		)
 	),
 	'description' => 'Add online-shopping capabilities to a number of other plugins.',
 	'frontend' => array(
 		'widget' => 'online_store_show_basket_widget',
 		'page_type' => 'online_store_frontend'
 	),
+	'triggers' => array(
+		'displaying-pagedata' => 'online_store_pagedata'
+	),
 	'version' => '4'
 );
+// }
 // { currency symbols
 $online_store_currencies=array(
 	'EUR'=>array('&euro;','Euro'),
 	'GBP'=>array('&pound;','Pound Sterling')
 );
 // }
-function online_store_frontend($PAGEDATA){
-	require dirname(__FILE__).'/frontend/index.php';
-	return $c;
+function online_store_add_to_cart($cost=0,$amt=0,$short_desc='',$long_desc='',$md5='',$url=''){
+	// { add item to session
+	if(!isset($_SESSION['online-store']))$_SESSION['online-store']=array('items'=>array(),'total'=>0);
+	$item=(isset($_SESSION['online-store']['items'][$md5]))?$_SESSION['online-store']['items'][$md5]:array('cost'=>0,'amt'=>0,'short_desc'=>$short_desc,'long_desc'=>$long_desc,'url'=>$url);
+	$item['cost']=$cost;
+	$item['amt']+=$amt;
+	$item['short_desc']=$short_desc;
+	$item['url']=$url;
+	$_SESSION['online-store']['items'][$md5]=$item;
+	// }
+	require dirname(__FILE__).'/libs.php';
+	online_store_calculate_total();
 }
 function online_store_admin_page_form($page,$vars){
 	require dirname(__FILE__).'/admin/index.php';
 	return $c;
+}
+function online_store_frontend($PAGEDATA){
+	require dirname(__FILE__).'/frontend/index.php';
+	return $c;
+}
+function online_store_pagedata(){
+	$currency=$GLOBALS['DBVARS']['online_store_currency'];
+	$currency_symbols=array('EUR'=>'€','GBP'=>'£');
+	return ',"currency":"'.$currency_symbols[$currency].'"';
 }
 function online_store_show_basket_widget($vars=null){
 	global $DBVARS,$online_store_currencies;
@@ -57,17 +77,4 @@ function online_store_show_basket_widget($vars=null){
 	else $html.='<em>empty</em>';
 	$html.='</div><script src="/ww.plugins/online-store/j/basket.js"></script>';
 	return $html;
-}
-function online_store_add_to_cart($cost=0,$amt=0,$short_desc='',$long_desc='',$md5='',$url=''){
-	// { add item to session
-	if(!isset($_SESSION['online-store']))$_SESSION['online-store']=array('items'=>array(),'total'=>0);
-	$item=(isset($_SESSION['online-store']['items'][$md5]))?$_SESSION['online-store']['items'][$md5]:array('cost'=>0,'amt'=>0,'short_desc'=>$short_desc,'long_desc'=>$long_desc,'url'=>$url);
-	$item['cost']=$cost;
-	$item['amt']+=$amt;
-	$item['short_desc']=$short_desc;
-	$item['url']=$url;
-	$_SESSION['online-store']['items'][$md5]=$item;
-	// }
-	require dirname(__FILE__).'/libs.php';
-	online_store_calculate_total();
 }

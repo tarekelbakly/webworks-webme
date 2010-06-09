@@ -32,8 +32,6 @@ function image_gallery_show($PAGEDATA){
 		}
 		if($vars['image_gallery_forsale']){
 			$prices=array();
-			$currency=$GLOBALS['DBVARS']['online_store_currency'];
-			$currency_symbols=array('EUR'=>'€','GBP'=>'£');
 			for($i=0;isset($vars['image_gallery_prices_'.$i]);++$i){
 				$price=(float)preg_replace('/[^0-9.]/','',$vars['image_gallery_prices_'.$i]);
 				if(!$price)continue;
@@ -42,7 +40,7 @@ function image_gallery_show($PAGEDATA){
 					$price
 				);
 			}
-			$c.='<script>var ig_prices='.json_encode($prices).',currency="'.$currency_symbols[$currency].'";</script>';
+			$c.='<script>var ig_prices='.json_encode($prices).';</script>';
 			$c.='<script src="/ww.plugins/image_gallery/j/online-store.js"></script>';
 		}
 		return $c;
