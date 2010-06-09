@@ -169,7 +169,9 @@ function template_get_metadata($template,$PAGEDATA){
 	$c.='<script type="text/javascript" src="/j/jquery-ui/js/jquery-1.4.2.min.js"></script><script src="/j/jquery-ui/js/jquery-ui-1.8.1.custom.min.js"></script>';
 	$c.='<link rel="stylesheet" href="/j/jquery-ui/css/smoothness/jquery-ui-1.8.1.custom.css" />';
 	$c.='<script type="text/javascript" src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
-	$c.='<script type="text/javascript">var pagedata={id:'.$PAGEDATA->id.',url:"'.$PAGEDATA->getRelativeURL().'",country:"'.(isset($_SESSION['os_country'])?$_SESSION['os_country']:'').'"},';
+	$c.='<script type="text/javascript">var pagedata={id:'.$PAGEDATA->id.',url:"'.$PAGEDATA->getRelativeURL().'",country:"'.(isset($_SESSION['os_country'])?$_SESSION['os_country']:'').'"';
+	$c.=plugin_trigger('displaying-pagedata');
+	$c.='},';
 	$c.='userdata={isAdmin:'.(is_admin()?1:0);
 	if(isset($_SESSION['userdata']) && isset($_SESSION['userdata']['discount']))$c.=',discount:'.(int)$_SESSION['userdata']['discount'];
 	$c.='},';

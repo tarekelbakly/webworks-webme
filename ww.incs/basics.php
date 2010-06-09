@@ -135,7 +135,9 @@ function has_access_permissions($val){
 function plugin_trigger($trigger_name){
 	global $PLUGIN_TRIGGERS,$PAGEDATA;
 	if(!isset($PLUGIN_TRIGGERS[$trigger_name]))return;
-	foreach($PLUGIN_TRIGGERS[$trigger_name] as $fn)$fn($PAGEDATA);
+	$c='';
+	foreach($PLUGIN_TRIGGERS[$trigger_name] as $fn)$c.=$fn($PAGEDATA);
+	return $c;
 }
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
@@ -207,3 +209,4 @@ if(!isset($ignore_webme_plugins)){
 	}
 }
 // }
+plugin_trigger('initialisation-completed');
