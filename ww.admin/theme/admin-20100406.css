@@ -181,7 +181,7 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 .borderedtable td,table.bordered td{border:solid #000;border-width:0 1px 1px 0}
 .box{width:130px;padding:10px;margin:5px;border:1px solid #000;float:left;clear:right;text-align:center;}
 .button{
-	display:block;
+	display:inline-block;
 	text-align:center;
 	text-decoration:none;
 	background:#F6F6F5;
@@ -191,6 +191,7 @@ a.external{background:url("/ww.admin/theme/10x10_external.png") no-repeat right;
 	border-radius:5px;
 	box-shadow:1px 1px 2px #666;
 	-moz-box-shadow:1px 1px 2px #666;
+	padding:2px 5px;
 }
 .clickable{cursor:pointer; padding: 0 5px; }
 .clickable em{display:inline}
