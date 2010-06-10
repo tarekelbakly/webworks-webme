@@ -75,16 +75,6 @@ else{
 			$c.=$PAGEDATA->render();
 			break;
 		// }
-		case '2': // { events
-			$c.='<div id="events_'.$PAGEDATA->id.'" class="events">please wait - loading...</div>';
-			$plugins_to_load[]='"eventcalendar":1';
-			break;
-		// }
-		case '3': // { user login/registration
-			include_once(SCRIPTBASE.'common/user.login.and.registration.php');
-			$c.=userloginandregistrationDisplay();
-			break;
-		// }
 		case '4': // { sub-page summaries
 			include_once('common/page.summaries.php');
 			$c.=displayPageSummaries($PAGEDATA->id);
@@ -105,6 +95,7 @@ else{
 				}
 				$c.='</ul>';
 			}
+			$c.=$PAGEDATA->vars['footer'];
 			break;
 		// }
 		default: // { plugins, and unknown
