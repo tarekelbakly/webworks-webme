@@ -43,8 +43,8 @@ function image_gallery_show($PAGEDATA){
 			$c.='<script>var ig_prices='.json_encode($prices).';</script>';
 			$c.='<script src="/ww.plugins/image_gallery/j/online-store.js"></script>';
 		}
-		return $c;
+		return $c.$vars['footer'];
 	}else{
-		return $c.'<em>gallery "'.$vars['image_gallery_directory'].'" not found.</em>';
+		return $c.'<em>gallery "'.$vars['image_gallery_directory'].'" not found.</em>'.$vars['footer'];
 	}
 }

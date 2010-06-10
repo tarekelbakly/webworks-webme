@@ -54,8 +54,13 @@ if($n){
 $c.='</div>';
 // }
 // { header
-$c.='<div class="tabPage"><h2>Header</h2>';
+$c.='<div class="tabPage"><h2>Header</h2><p>This text will appear above the gallery.</p>';
 $c.=ckeditor('body',$page['body'],0,$cssurl);
+$c.='</div>';
+// }
+// { footer
+$c.='<div class="tabPage"><h2>Footer</h2><p>This text will appear below the gallery.</p>';
+$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''),0,$cssurl);
 $c.='</div>';
 // }
 // { advanced settings
