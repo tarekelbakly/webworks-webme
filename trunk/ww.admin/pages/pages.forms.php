@@ -104,98 +104,32 @@ else{
 	// }
 	// { page-type-specific data
 	switch($page['type']){
-		case '0': case '1': case '5': case '6': case '9': case '10': // { normal
-		echo '<tr><th>'.__('body').'</th><td colspan="5">';
-		echo ckeditor('body',$page['body']);
-		echo '</td></tr>';
-		break;
-		// }
-		case '2': // { events 
-		echo '<tr><td colspan="6" style="height:290px" class="eventsAdmin" id="eventsAdmin">'.__('please wait - loading...').'</td></tr>';
-		$plugins_to_load[]='"eventsAdmin":1';
-		break;
-		// }
-		case '3': // { user login 
-		echo '<tr><th>'.__('Visibility').'</th><td>'.wInput('page_vars[userlogin_visibility]','select',array(
-			'3'=>__('Login and Register forms'),
-			'1'=>__('Login form'),
-			'2'=>__('Register form')
-		),$page_vars['userlogin_visibility']).'</td>';
-		echo '<th>'.__('Registration type:').'</th><td><select name="page_vars[userlogin_registration_type]"><option>Moderated</option>';
-		echo '<option';
-		if(isset($page_vars['userlogin_registration_type']) && $page_vars['userlogin_registration_type']=='Email-verified')echo ' selected="selected"';
-		echo '>Email-verified</option>';
-		echo '</select></td>';
-		echo '<th>'.__('redirect on login:').'</th><td>';
-		echo '<select name="page_vars[userlogin_redirect_to]">';
-		$tmp=(!$page_vars['userlogin_redirect_to'])?' selected="selected"':'';
-		echo '<option value="0"'.$tmp.'>--  '.__('none').'  --</option>';
-		selectkiddies(0,0,$page_vars['userlogin_redirect_to'],$id);
-		echo '</select></td>';
-		echo '</td></tr>';
-		echo '<tr><th>'.__('body').'</th><td colspan="5">';
-		echo ckeditor('body',$page['body'],false,$cssurl);
-		echo '</td></tr>';
-		break;
+		case '0': case '5': // { normal
+			echo '<tr><th>'.__('body').'</th><td colspan="5">';
+			echo ckeditor('body',$page['body']);
+			echo '</td></tr>';
+			break;
 		// }
 		case '4': // { page summaries
-		echo '<tr><th>pages summarised from</th><td><select name="page_summary_parent"><option value="0">--  none  --</option>';
-		$r2=dbRow('select parent_id from page_summaries where page_id="'.$id.'" limit 1');
-		if(count($r2)){
-			$page_summary_pageid=$r2['parent_id'];
-		}
-		else $page_summary_pageid=$id;
-		selectkiddies(0,0,$page_summary_pageid,-1);
-		echo '</select></td>'.
-		'<td colspan="4">Where do you want to start summarising your pages from? If you want this summary to list excerpts from all '.
-		'the pages on your site, then choose "<strong>none</strong>". Otherwise, choose the page which <strong>contains</strong> '.
-		'the pages you want summarised.</td></tr>';
-		break;
+			echo '<tr><th>pages summarised from</th><td><select name="page_summary_parent"><option value="0">--  none  --</option>';
+			$r2=dbRow('select parent_id from page_summaries where page_id="'.$id.'" limit 1');
+			if(count($r2)){
+				$page_summary_pageid=$r2['parent_id'];
+			}
+			else $page_summary_pageid=$id;
+			selectkiddies(0,0,$page_summary_pageid,-1);
+			echo '</select></td>'.
+			'<td colspan="4">Where do you want to start summarising your pages from? If you want this summary to list excerpts from all '.
+			'the pages on your site, then choose "<strong>none</strong>". Otherwise, choose the page which <strong>contains</strong> '.
+			'the pages you want summarised.</td></tr>';
+			break;
 		// }
-		case '7': // { news 
-		echo '<tr><td colspan="6" style="height:290px" class="newsAdmin" id="newsAdmin">'.__('please wait - loading...').'</td></tr>';
-		$plugins_to_load[]='"newsAdmin":1';
-		break;
-		// }
-		case '8': // { products
-		echo '<tr><th>'.__('content header').'</th><td colspan="4">';
-		echo ckeditor('page_vars[content_header]',$page_vars['content_header'],false,$cssurl);
-		echo '</textarea></td>';
-		echo '<td>';
-		// { specify a product category
-		echo __('category to show').'<br /><select name="page_vars[category_to_show]"><option value="0">'.__('all categories').'</option>';
-		$r3=ProductCategories::getAll();
-		foreach($r3 as $r2){
-			echo '<option value="'.$r2->id.'"';
-			if($r2->id==$page_vars['category_to_show'])echo' selected="selected"';
-			echo '>'.htmlspecialchars($r2->name).'</option>';
-		}
-		echo '</select><input type="checkbox" name="page_vars[category_to_show_searchable]" title="searchable"';
-		if(isset($page_vars['category_to_show_searchable']) && $page_vars['category_to_show_searchable'])echo ' "checked="checked"';
-		echo '" /><br />';
-		// }
-		// { specify a product
-		echo __('product to show').'<br /><select name="page_vars[product_to_show]"><option value="0">'.__('all products').'</option>';
-		$r3=Products::getAll(false);
-		foreach($r3 as $r2){
-			echo '<option value="'.$r2->id.'"';
-			if($r2->id==$page_vars['product_to_show'])echo' selected="selected"';
-			echo '>'.htmlspecialchars($r2->name).'</option>';
-		}
-		echo '</select><br />';
-		// }
-		// { product template
-		echo __('product template').'<br /><select name="page_vars[product_type]"><option value="0">'.__('all types').'</option>';
-		$r3=ProductTypes::getAll();
-		foreach($r3 as $r2){
-			echo '<option value="'.$r2->id.'"';
-			if($r2->id==$page_vars['product_type'])echo' selected="selected"';
-			echo '>'.htmlspecialchars($r2->name).'</option>';
-		}
-		echo '</select>';
-		// }
-		echo '</td></tr>';
-		break;
+		case '9': // { table of contents
+			echo '<tr><td colspan="6"><div class="tabs">';
+			echo '<div class="tabPage"><h2>Header</h2><p>This will appear above the table of contents.</p>'.ckeditor('body',$page['body']).'</div>';
+			echo '<div class="tabPage"><h2>Footer</h2><p>This will appear below the table of contents.</p>'.ckeditor('page_vars[footer]',$page_vars['footer']).'</div>';
+			echo '</div></td></tr>';
+			break;
 		// }
 		default: // { plugin
 			if($plugin && isset($plugin['admin']['page_type']) && function_exists($plugin['admin']['page_type'])){
