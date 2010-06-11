@@ -291,16 +291,6 @@ function loadArray(k,v){
 	});
 	return a;
 }
-function loadDateClass(){
-	if(!window.inputdate_ids)window.inputdate_ids=[];
-	var els=$('.inputdate');
-	els.each(function(key,el){
-		$(el).removeClass('inputdate');
-		if(!el.id)el.id='inputdate'+window.inputdate_ids.length;
-		window.inputdate_ids.push(el.id);
-		$(el).datepicker({dateFormat:'dd/mm/yy'});
-	});
-}
 function loadFormValidation(skipload){
 	if(skipload){
 		if(!window.formvalidation_ids)window.formvalidation_ids=[];
@@ -703,25 +693,13 @@ window.ww={
 	//	$("img").lazyload({ threshold : 20, effect : "fadeIn" });
 	//	if(getEls('select').length)ms_convert();
 		var p=window.plugins_to_load;
-		if(p.adblock)            loadScript('/ajax/ads.php?pageid='+pagedata.id);
 		if(p.ajaxmenu)           loadAjaxMenu();
 		if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
-		if(p.dbase)              loadScript('/ajax/table.php?pageid='+pagedata.id);
-		if(p.eventcalendar)      loadScript('/ajax/events.php?pageid='+pagedata.id);
 		if(p.formvalidation)     loadFormValidation();
 		if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
 		if(p.tabs)               tabs_init();
 		if(p.showhide)           initShowHide();
 		if(p.fontsize_controls)  loadScript('/j/fonts.js');
-		if(p.imagefader)         loadScript('/j/imagefader.js');
-		if(p.inputdate)          loadDateClass();
-		if(p.product_review)     loadScript('/ajax/product_review.php');
-		if(p.os_basket)          loadScript('/ajax/os_basket.php');
-		if(p.os_countries)       loadScript('/j/os_countries.js');
-		if(p.os_discount_codes)  loadScript('/j/os_discount_codes.js');
-		if(p.os_payment_types)   loadScript('/j/os_payment_types.js');
-		if(p.os_payment_vouchers)loadScript('/ajax/os_vouchers.php');
-		if(p.os_quickfind)       loadScript('/ajax/os_quickfind.php?pageid='+pagedata.id);
 		if(p.removeRowIfEmpty)   removeRowIfEmpty();
 		if(p.scrollingEvents)    loadScript('/j/scrollingEvents.js');
 		if(p.scrollingNews)      loadScript('/j/scroller.js');

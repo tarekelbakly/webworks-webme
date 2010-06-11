@@ -32,14 +32,12 @@ else{
 			$js.=file_get_contents('getwindowscrollat.ie.js');
 			$js.=file_get_contents('getwindowsize.ie.js');
 			$js.=file_get_contents('newel.ie.js');
-			$js.=file_get_contents('newform.ie.js');
 			$js.=file_get_contents('xmlhttprequest.ie.js');
 		}
 		else{
 			$js.=file_get_contents('getwindowscrollat.js');
 			$js.=file_get_contents('getwindowsize.js');
 			$js.=file_get_contents('newel.js');
-			$js.=file_get_contents('newform.js');
 		}
 	}
 	

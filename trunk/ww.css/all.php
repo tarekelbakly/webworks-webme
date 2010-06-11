@@ -9,12 +9,10 @@ echo file_get_contents('language_flags.css');
 echo file_get_contents('ui.datepicker.css');
 echo file_get_contents('forms.css');
 echo file_get_contents('comments.css');
-echo file_get_contents('os_basket.css');
 echo file_get_contents('contextmenu.css');
 echo file_get_contents('lightbox.css');
 echo file_get_contents('tabs.css');
 echo file_get_contents('news_scroller.css');
-echo file_get_contents('product_reviews.css');
 
 if(isset($_GET['skin']) && isset($_GET['variant'])){
 	if(strpos($_GET['skin'],'.')!==false || strpos($_GET['variant'],'.')!==false)exit;
