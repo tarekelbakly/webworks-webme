@@ -146,8 +146,6 @@ function template_get_metadata($template,$PAGEDATA){
 	if(strpos($template,'class="tabs"')!==false)$GLOBALS['plugins_to_load'][]='"tabs":1';
 	if(strpos($template,'class="showhide"')!==false)$GLOBALS['plugins_to_load'][]='"showhide":1';
 	if(strpos($template,'class="fontsize_controls"')!==false)$GLOBALS['plugins_to_load'][]='"fontsize_controls":1';
-	if(strpos($template,'class="imagefader"')!==false)$GLOBALS['plugins_to_load'][]='"imagefader":1';
-	if(strpos($template,'class="inputdate"')!==false)$GLOBALS['plugins_to_load'][]='"inputdate":1';
 	if(strpos($template,'class="removeRowIfEmpty"')!==false)$GLOBALS['plugins_to_load'][]='"removeRowIfEmpty":1';
 	if(strpos($template,'class="sc_ssearch"')!==false)$GLOBALS['plugins_to_load'][]='"sc_ssearch":1';
 	if(strpos($template,'class="scrollingEvents"')!==false)$GLOBALS['plugins_to_load'][]='"scrollingEvents":1';

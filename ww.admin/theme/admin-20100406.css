@@ -65,13 +65,6 @@ table.user_input_table {  width: 85%; }
 table.user_input_table td { width: 95%; }
 table.user_input_table th { background: none; }
 
-div.dbase table tr.draggable td{cursor:pointer;cursor:hand}  
-div.dbase_cellwrapper{ display: block; height: 30px; overflow: hidden; }
-table.dbase td.th a, table.dbase td.th a:visited {  padding-left: 12px; background: url(/ww.admin/theme/icons_arrow_default.png) no-repeat 0% 50%; font-size: 11px; }
-table.dbase a.dbase_field_arrowup {  display: block; height: 10px; padding-left: 12px; background: url(/ww.admin/theme/icons_arrow_up.png) no-repeat 0% 50% !important; }
-table.dbase a.dbase_field_arrowdown { display: block; height: 10px; padding-left: 12px;  background: url(/ww.admin/theme/icons_arrow_down.png) no-repeat 0% 50% !important; }
-table.dbase a.dbase_field_sorted { color: #999; }
-
 tr.zebrarow1 td{  background:#f7f7f7;}  
 
 table.draggable_active { border: 1px solid #416ba7; /*width: 60% !important; */ }
