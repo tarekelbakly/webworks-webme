@@ -6,7 +6,7 @@ if(!isset($vars->id)){
 	return;
 }
 if(!$vars->stories_to_show)$vars->stories_to_show=10;
-$rs=dbAll('select id from pages where parent='.$vars->id.' order by associated_date desc,cdate desc limit '.$vars->stories_to_show);
+$rs=dbAll('select id from pages where parent='.$vars->id.' order by associated_date desc,cdate desc limit 20');
 if(!count($rs)){
 	$html='<em>No news items to display.</em>';
 	return;
