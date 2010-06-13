@@ -40,4 +40,21 @@ $(function(){
 			flyOutOnState: ''
 		});
 	});
+	if($('.help').length){
+		$('<div id="help-opener"></div>')
+			.appendTo('#header')
+			.toggle(function(){
+				$('.help').css('display','block');
+			},
+			function(){
+				$('.help').css('display','none');
+			});
+		a=$('.help');
+		a.each(function(){
+			var id=this.className.split(' ')[1];
+			this.rel='/ww.help/'+id+'.html';
+			if(!this.title)this.title=$(this).text();
+		});
+		$('.help').cluetip();
+	}
 });

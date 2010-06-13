@@ -47,7 +47,7 @@ else{
 		$parent=isset($_REQUEST['parent'])?(int)$_REQUEST['parent']:0;
 		$special=0;
 		if(isset($_REQUEST['hidden']))$special+=2;
-		$page=array('parent'=>$parent,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>$special,'template'=>'','stylesheet'=>'','category'=>'','importance'=>0.5);
+		$page=array('parent'=>$parent,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>$special,'template'=>'','stylesheet'=>'','importance'=>0.5);
 		$id=0;
 	}
 	echo wInput('id','hidden',$page['id']);
@@ -57,10 +57,10 @@ else{
 	// { name, title, url
 	echo '<tr>';
 	// { name
-	echo '<th width="5%">'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
+	echo '<th width="6%"><div class="help name"></div>'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
 	// }
 	// { title
-	echo '<th width="10%">'.__('title').'</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
+	echo '<th width="10%"><div class="help title"></div>'.__('title').'</th><td width="23%">'.wInput('title','',htmlspecialchars($page['title'])).'</td>';
 	// }
 	// { url 
 	echo '<th colspan="2">';
@@ -75,7 +75,7 @@ else{
 	// }
 	// { page type, parent, associated date
 	// { type
-	echo '<tr><th>'.__('type').'</th><td><select name="type">';
+	echo '<tr><th><div class="help type"></div>'.__('type').'</th><td><select name="type">';
 	if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
 		if(has_access_permissions($a[2]) || !$a[2]){
 			if($a[0]==$page['type'])echo '<option value="',$a[0],'" selected="selected">',htmlspecialchars($a[1]),'</option>';
@@ -91,7 +91,7 @@ else{
 	echo '</select></td>';
 	// }
 	// { parent
-	echo '<th>',__('parent'),'</th><td>',"\n\n",'<select name="parent">';
+	echo '<th><div class="help parent"></div>',__('parent'),'</th><td>',"\n\n",'<select name="parent">';
 	if($page['parent']){
 		$parent=Page::getInstance($page['parent']);
 		echo '<option value="',$parent->id,'">',htmlspecialchars($parent->name),'</option>';
@@ -99,13 +99,15 @@ else{
 	else echo '<option value="0"> -- ',__('none'),' -- </option>';
 	echo '</select>',"\n\n",'</td>';
 	// }
-	echo '<th>Associated Date</th><td><input name="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td>';
+	// { associated date
+	echo '<th><div class="help associated-date"></div>Associated Date</th><td><input name="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td>';
 	echo '</tr>';
+	// }
 	// }
 	// { page-type-specific data
 	switch($page['type']){
 		case '0': case '5': // { normal
-			echo '<tr><th>'.__('body').'</th><td colspan="5">';
+			echo '<tr><th><div class="help body"></div>'.__('body').'</th><td colspan="5">';
 			echo ckeditor('body',$page['body']);
 			echo '</td></tr>';
 			break;
@@ -149,18 +151,6 @@ else{
 	echo '<tr><th>'.__('keywords').'</th><td>'.wInput('keywords','',htmlspecialchars($page['keywords'])).'</td></tr>';
 	echo '<tr><th>'.__('description').'</th><td>'.wInput('description','',htmlspecialchars($page['description'])).'</td></tr>';
 	echo '<tr title="'.__('used by Google. importance of page relative to other pages on site. values 0.0 to 1.0').'"><th>importance</th><td>'.wInput('importance','',htmlspecialchars($page['importance'])).'</td></tr>';
-	echo '<tr><th title="'.__('This is especially useful for large sites').'">category</th><td>';
-	$categories=dbAll('select distinct category from pages where category!="" order by category desc');
-	if(count($categories)){
-		$arr=array();
-		foreach($categories as $cat){
-			$sel=$cat['category']==$page['category']?' selected="selected"':'';
-			$arr[]='<option'.$sel.'>'.htmlspecialchars($cat['category']).'</option>';
-		}
-		echo '<select name="category1"><option value=""> -- '.__('none').' -- </option>'.join('',$arr).'</select> '.__('or').' <input style="width:50% !important" onclick="this.value=\'\';" value="'.__('add another').'" />';
-	}
-	else echo wInput('category2');
-	echo '</td></tr>';
 	echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars(@$page_vars['google-site-verification']).'" /></td></tr>';
 	if(!isset($page['associated_date']) || !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$page['associated_date']) || $page['associated_date']=='0000-00-00')$page['associated_date']=date('Y-m-d');
 	echo '<tr>';
