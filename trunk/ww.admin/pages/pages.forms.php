@@ -100,6 +100,8 @@ else{
 	echo '</select>',"\n\n",'</td>';
 	// }
 	// { associated date
+	if(!isset($page['associated_date']) || !preg_match('/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/',$page['associated_date']) || $page['associated_date']=='0000-00-00')
+		$page['associated_date']=date('Y-m-d');
 	echo '<th><div class="help associated-date"></div>Associated Date</th><td><input name="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td>';
 	echo '</tr>';
 	// }
@@ -152,7 +154,6 @@ else{
 	echo '<tr><th>'.__('description').'</th><td>'.wInput('description','',htmlspecialchars($page['description'])).'</td></tr>';
 	echo '<tr title="'.__('used by Google. importance of page relative to other pages on site. values 0.0 to 1.0').'"><th>importance</th><td>'.wInput('importance','',htmlspecialchars($page['importance'])).'</td></tr>';
 	echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars(@$page_vars['google-site-verification']).'" /></td></tr>';
-	if(!isset($page['associated_date']) || !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$page['associated_date']) || $page['associated_date']=='0000-00-00')$page['associated_date']=date('Y-m-d');
 	echo '<tr>';
 	// { template
 	echo '<th>'.__('template').'</th><td>';
