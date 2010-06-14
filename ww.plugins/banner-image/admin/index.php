@@ -20,7 +20,8 @@ if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 if(isset($_POST['save_banner'])){
 	$id=(int)@$_POST['id'];
 	$pages=@$_POST['pages_'.$id];
-	$sql='set html="'.addslashes(@$_POST['html_'.$id]).'",name="'.addslashes($_POST['name']).'",pages='.(count($pages)?1:0);
+	$html=sanitise_html($_POST['html_'.$id);
+	$sql='set html="'.addslashes($html).'",name="'.addslashes($_POST['name']).'",pages='.(count($pages)?1:0);
 	if($id){
 		dbQuery("update banners_images $sql where id=$id");
 	}
@@ -68,7 +69,7 @@ function banner_image_drawForm($id=0){
 	echo '</select> pages. <span style="color:red;font-weight:bold">If no pages are specified, then the banner will be shown on all pages.</span></td></tr>';
 	// }
 	// { show HTML form
-	echo '<tr><th>Banner</th><td><div id="banner_image_html">',ckeditor('html_'.$fdata['id'],$fdata['html'],0,'',180),'</div></td></tr>';
+	echo '<tr><th>Banner</th><td><div id="banner_image_html">',ckeditor('html_'.$fdata['id'],html_unfixImageResizes($fdata['html']),0,'',180),'</div></td></tr>';
 	// }
 	// { show submit button and end form
 	echo '<tr><td><a href="./plugin.php?_plugin=banner-image&_page=index&delete_banner='.$fdata['id'].'" onclick="return confirm(\'are you sure you want to remove this banner?\');" title="remove banner">[x]</a></td><td><input type="submit" name="save_banner" value="',__('Update'),'" /></td></tr>';
