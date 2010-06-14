@@ -107,6 +107,14 @@ else{
 	// }
 	// }
 	// { page-type-specific data
+	// { replace resized images with their originals
+	$count=preg_match_all('#/f/.files/image_resizes/(@_@[^"]*)(/[^"]*)"#',$page['body'],$matches);
+	if($count){
+		foreach($matches[1] as $key=>$match){
+			$page['body']=str_replace('/f/.files/image_resizes/'.$match.$matches[2][$key],str_replace('@_@','/',$match),$page['body']);
+		}
+	}
+	// }
 	switch($page['type']){
 		case '0': case '5': // { normal
 			echo '<tr><th><div class="help body"></div>'.__('body').'</th><td colspan="5">';
