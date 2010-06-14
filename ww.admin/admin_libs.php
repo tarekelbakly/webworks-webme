@@ -77,6 +77,15 @@ function html_fixImageResizes($src){
 
 	return $src;
 }
+function html_unfixImageResizes($src){
+	// replace resized images with their originals
+	$count=preg_match_all('#/f/.files/image_resizes/(@_@[^"]*)(/[^"]*)"#',$src,$matches);
+	if(!$count)return $src;
+	foreach($matches[1] as $key=>$match){
+		$src=str_replace('/f/.files/image_resizes/'.$match.$matches[2][$key],str_replace('@_@','/',$match),$src);
+	}
+	return $src;
+}
 function wInput($name,$type='text',$value='',$class=''){
 	switch($type){
 		case 'checkbox': {
@@ -146,6 +155,7 @@ function sanitise_html($html) {
 	$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
 	$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
 	$html = str_replace('</font>', '</span>', $html);
+	$html = preg_replace("/<p>[\s]*(<img[^>]*>)<\/p>/",'\1',$html);
 	$html = html_fixImageResizes($html);
 	$html=str_replace('&quot;','"',$html);
 	return $html;
