@@ -1,5 +1,5 @@
 <?php
-require '../ww.incs/basics.php';
+require_once '../ww.incs/basics.php';
 if(!isset($_REQUEST['filename']))exit;
 $file=USERBASE.'/f/'.$_REQUEST['filename'];
 if(
