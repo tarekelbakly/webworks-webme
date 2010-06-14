@@ -52,7 +52,7 @@ function html_fixImageResizes($src){
 		}
 		if(!$width || !$height)continue;
 		$imgsrc=preg_replace('#.*src="([^"]*)".*#i','\1',$match);
-		$dir=preg_replace('/[^a-z0-9\-_A-Z]/','_',$imgsrc);
+		$dir=str_replace('/','@_@',$imgsrc);
 
 		// get absolute address of img (naive, but will work for most cases)
 		if(!preg_match('/^http/i',$imgsrc))$imgsrc=USERBASE.'/'.$imgsrc;
