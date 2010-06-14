@@ -79,6 +79,7 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 	else if(!$only_show_contents)$plugins_to_load[]='"formvalidation":1';
 	$c.='<fieldset>';
 	if($err)$c.='<div class="errorbox">'.$err.'</div>';
+	if($vars['forms_template'] && strpos($vars['forms_template'],'%')===false)$vars['forms_template']='';
 	if(!$vars['forms_template']||$vars['forms_template']=='&nbsp;')$c.='<table>';
 	$required=array();
 	$q2=dbAll('select * from forms_fields where formsId="'.$page['id'].'" order by id');
