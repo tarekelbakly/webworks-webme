@@ -10,13 +10,13 @@ $plugin=array(
 	'frontend'=>array(
 		'template_functions'=>array(
 			'PANEL'=>array(
-				'function' => 'showPanel'
+				'function' => 'panels_show'
 			)
 		)
 	),
 	'version'=>4
 );
-function showPanel($vars){
+function panels_show($vars){
 	global $PLUGINS;
 	$name=isset($vars['name'])?$vars['name']:'';
 	$p=cache_load('panels',md5($name));
