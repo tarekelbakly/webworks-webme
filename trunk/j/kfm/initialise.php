@@ -35,7 +35,7 @@ function setting_array($str){
 }
 function sql_escape($sql) {
     global $kfm_db_type;
-    $sql = addslashes($sql);
+    $sql = mysql_escape_string($sql);
     if ($kfm_db_type=='sqlite'||$kfm_db_type=='sqlitepdo')$sql = str_replace("\\'", "''", $sql);
     return $sql;
 }
@@ -74,9 +74,7 @@ define('KFM_DB_PREFIX', $kfm_db_prefix);
 // }
 // { variables
 // structure
-$kfm->defaultSetting('kfm_url','/'
-	.str_replace($_SERVER['DOCUMENT_ROOT'],'',str_replace('\\','/',getcwd()))
-	.'/');
+$kfm->defaultSetting('kfm_url','');
 $kfm->defaultSetting('file_url','url'); # Unsecure, but better for people setting the userfiles_output
 $kfm->defaultSetting('user_root_folder','');
 $kfm->defaultSetting('startup_folder','');
@@ -85,7 +83,7 @@ $kfm->defaultSetting('hidden_panels',array('logs','file_details','directory_prop
 $kfm->defaultSetting('log_level', 0);
 $kfm->defaultSetting('allow_user_file_associations',false);
 //display
-//$kfm->defaultSetting('theme', false); // must be overwritten
+$kfm->defaultSetting('theme', 'default'); // must be overwritten
 $kfm->defaultSetting('show_admin_link', file_exists(KFM_BASE_PATH.'admin'));
 $kfm->defaultSetting('time_format', '%T');
 $kfm->defaultSetting('date_format', '%x');
@@ -128,7 +126,7 @@ $kfm->defaultSetting('use_multiple_file_upload',1);
 $kfm->defaultSetting('default_upload_permission',644);
 $kfm->defaultSetting('banned_upload_extensions',array());
 $kfm->defaultSetting('max_image_upload_width', 1601);
-$kfm->defaultSetting('max_image_upload_height',1601);
+$kfm->defaultSetting('max_image_upload_height', 1601);
 // plugins
 $kfm->defaultSetting('disabled_plugins',array());
 // depricated
@@ -288,9 +286,7 @@ if (!function_exists('json_encode')) { // php-json is not installed
 // }
 // { start session
 $session_id  = (isset($_REQUEST['kfm_session']))?$_REQUEST['kfm_session']:'';
-#define('NOW',microtime(true));
 $kfm_session = new kfmSession($session_id);
-#die(microtime(true)-NOW);
 if (isset($_GET['logout'])||isset($_GET['log_out'])) $kfm_session->set('loggedin',0);
 $kfm->defaultSetting('kfm_session_id', $kfm_session->key);
 // }
@@ -299,7 +295,7 @@ if (isset($use_kfm_security) && !$use_kfm_security)$kfm_session->setMultiple(arr
 if (!$kfm_session->get('loggedin') && (!isset($kfm_api_auth_override)||!$kfm_api_auth_override)) {
     $err = '';
     if (isset($_POST['username'])&&isset($_POST['password'])) {
-        $res=db_fetch_row('SELECT id, username, password, status FROM '.KFM_DB_PREFIX.'users WHERE username="'.$_POST['username'].'" AND password="'.sha1($_POST['password']).'"');
+        $res=db_fetch_row('SELECT id, username, password, status FROM '.KFM_DB_PREFIX.'users WHERE username="'.sql_escape($_POST['username']).'" AND password="'.sha1($_POST['password']).'"');
         if($res && count($res)){
             $kfm_session->setMultiple(array('user_id'=>$res['id'],'username'=>$_POST['username'], 'password'=>$_POST['password'],'user_status'=>$res['status'], 'loggedin'=>1));
         }else $err = '<em>Incorrect Password. Please try again, or check your <code>configuration.php</code>.</em>';
@@ -344,7 +340,7 @@ foreach($usersettings as $usersetting) $kfm->addUserSetting($usersetting);
 if(!isset($settings['kfm_url'])){
  $kfm_url = str_replace($_SERVER['DOCUMENT_ROOT'],'',str_replace('\\','/',getcwd()));
  if(!isset($kfm_url[0]) || !$kfm_url[0] == '/') $kfm_url = '/'.$kfm_url; // Make the url absolute
- $kfm->db->query('INSERT INTO '.KFM_DB_PREFIX.'settings (name, value, user_id) VALUES ("kfm_url", "'.mysql_escape_string($kfm_url).'",1)');
+ $kfm->db->query('INSERT INTO '.KFM_DB_PREFIX.'settings (name, value, user_id) VALUES ("kfm_url", "'.sql_escape($kfm_url).'",1)');
 }
 if(isset($settings['disabled_plugins'])){
     $kfm->setting('disabled_plugins',setting_array($settings['disabled_plugins']));
