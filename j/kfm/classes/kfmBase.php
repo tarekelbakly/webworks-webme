@@ -129,7 +129,7 @@ class kfmBase extends kfmObject{
 	 */
 	function setting($name,$value='novaluegiven', $freeze = false){
 		if($value=='novaluegiven'){
-			if(!isset($this->settings[$name]))return $this->error('Setting '.$name.' does not exists');
+			if(!isset($this->settings[$name]))return $this->error('Setting '.$name.' does not exist');
 			return $this->settings[$name];
 		}
 		if(!in_array($name, $this->settings_frozen))$this->settings[$name]=$value;
@@ -193,7 +193,7 @@ class kfmBase extends kfmObject{
 	 */
 	function isAdmin($uid = false){
     if($uid){
-      $res=db_fetch_row('SELECT id, username, password, status FROM '.KFM_DB_PREFIX.'users WHERE id='.mysql_escape_string($uid));
+      $res=db_fetch_row('SELECT id, username, password, status FROM '.KFM_DB_PREFIX.'users WHERE id='.((int)$uid));
       if($res && $res['status'] == 1) return true;
       else return false;
     }
