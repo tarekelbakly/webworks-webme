@@ -7,7 +7,6 @@ echo '<strong>upgrades detected. running upgrade script.</strong>';
 	if(isset($DBVARS['userbase']))$userbase=$DBVARS['userbase'];
 	else $userbase=SCRIPTBASE;
 // }
-
 if($version==0){ // missing user accounts and groups
 	// { user_accounts
 	dbQuery('create table user_accounts(
@@ -50,7 +49,7 @@ if($version==3){ // pages
 		`cdate` datetime NOT NULL default "0000-00-00 00:00:00", `special` bigint(20) default NULL, `edate` datetime default NULL, `title` text,
 		`htmlheader` text, `template` text, `type` smallint(6) default 0, `keywords` text, `description` text, `category` text NOT NULL, `importance` float default 0.5,
 		PRIMARY KEY  (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8');
-	dbQuery("INSERT INTO `pages` VALUES (1,'Home','<h1>Welcome</h1>\\r\\n<p>This is your new website. To administer it, please go to <a href=\\\"/ww.admin/\\\">/ww.admin</a> and log in using your email address and password. If you have forgotten your password, please use the reminder form to have a new password sent to you.</p>\\r\\n<p>If you don\\'t like the default theme, please choose a different one in the Site Options page.</p>',0,1,now(),1,now(),'Welcome','','',0,'','','',0.5)");
+	dbQuery("INSERT INTO `pages` VALUES (1,'Home','<h1>Welcome</h1>\\r\\n<p>This is your new website. To administer it, please go to <a href=\\\"/ww.admin/\\\">/ww.admin</a> and log in using your email address and password. If you have forgotten your password, please use the reminder form to have a new password sent to you.</p>\\r\\n<p>If you don\\'t like the default theme, please choose a different one in the Site Options page.</p>\\r\\n<p>To keep uptodate with new developments in the CMS, please bookmark <a href=\\\"http://webme.eu/whats-new\\\">http://webme.eu/whats-new</a>.</p>',0,1,now(),1,now(),NULL,'',NULL,'',0,'','','',0.5)");
 	$version=4;
 }
 if($version==4){ // page_vars
@@ -128,7 +127,10 @@ if($version==13){ // set default theme
 	$version=14;
 }
 if($version==14){ // set USERBASE define
-	if(!isset($DBVARS['userbase']))$DBVARS['userbase']=SCRIPTBASE;
+	if(!isset($DBVARS['userbase'])){
+		$DBVARS['userbase']=SCRIPTBASE;
+		if(!defined('USERBASE'))define('USERBASE',SCRIPTBASE);
+	}
 	$version=15;
 }
 if($version==15){ // page summaries
@@ -176,6 +178,27 @@ if($version==25){ // change page_type to char string in Pages table
 if($version==26){ // add "extras" to user_account, in case more are wanted later
 	dbQuery('alter table user_accounts add extras text');
 	$version=27;
+}
+function recurse_copy($src,$dst) {
+	$dir = opendir($src);
+	@mkdir($dst);
+	while(false !== ( $file = readdir($dir)) ) {
+		if (( $file != '.' ) && ( $file != '..' )) {
+			if ( is_dir($src . '/' . $file) ) {
+				recurse_copy($src . '/' . $file,$dst . '/' . $file);
+			}
+			else {
+				copy($src . '/' . $file,$dst . '/' . $file);
+			}
+		}
+	}
+	closedir($dir);
+} 
+if($version==27){ // create personal copy of theme
+	mkdir(USERBASE.'/themes-personal');
+	recurse_copy(THEME_DIR.'/'.THEME,USERBASE.'themes-personal/'.THEME);
+	$DBVARS['theme_dir_personal']=USERBASE.'themes-personal';
+	$version=28;
 }
 
 $DBVARS['version']=$version;

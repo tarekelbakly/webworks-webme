@@ -6,8 +6,11 @@ $file=THEME_DIR.'/'.$_REQUEST['filename'];
 if( strpos($file,'..')!==false || strpos($file,'/.')!==false )exit;
 
 if(!file_exists($file) || !is_file($file)){
-	header("HTTP/1.0 404 Oh No!");
-	exit;
+	$file=$DBVARS['theme_dir'].'/'.$_REQUEST['filename'];
+	if(!file_exists($file) || !is_file($file)){
+		header("HTTP/1.0 404 Oh No!");
+		exit;
+	}
 }
 
 header('Content-Description: File Transfer');
