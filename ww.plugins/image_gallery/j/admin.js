@@ -14,3 +14,7 @@ $('#image-gallery-wrapper a').bind('click',function(){
 		$this.closest('div').remove();
 	});
 });
+$('#image_gallery_directory').remoteselectoptions({
+	url:'/ww.plugins/image_gallery/admin/get-directories.php',
+	always_retrieve:true
+});

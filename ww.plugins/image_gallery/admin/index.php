@@ -65,7 +65,9 @@ $c.='</div>';
 // }
 // { advanced settings
 $c.='<div class="tabPage"><h2>Advanced Settings</h2>';
-$c.='<table><tr><th>Image Directory</th><td><select id="image_gallery_directory" name="page_vars[image_gallery_directory]"><option value="/">/</option>';
+if(!isset($gvars['image_gallery_directory']) || !$gvars['image_gallery_directory'])$gvars['image_gallery_directory']='/';
+$c.='<table><tr><th>Image Directory</th><td><select id="image_gallery_directory" name="page_vars[image_gallery_directory]"><option value="'.htmlspecialchars($gvars['image_gallery_directory']).'">'.htmlspecialchars($gvars['image_gallery_directory']).'</option>';
+echo '</select></td></tr>';
 foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 	$c.='<option value="'.htmlspecialchars($d).'"';
 	if($d==@$gvars['image_gallery_directory'])$c.=' selected="selected"';
