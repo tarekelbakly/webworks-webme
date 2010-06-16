@@ -1,6 +1,29 @@
 <h1>Theme Editor</h1>
 <?php
 
+function recurse_copy($src,$dst) {
+	$dir = opendir($src);
+	@mkdir($dst);
+	while(false !== ( $file = readdir($dir)) ) {
+		if (( $file != '.' ) && ( $file != '..' )) {
+			if ( is_dir($src . '/' . $file) ) {
+				recurse_copy($src . '/' . $file,$dst . '/' . $file);
+			}
+			else {
+				copy($src . '/' . $file,$dst . '/' . $file);
+			}
+		}
+	}
+	closedir($dir);
+} 
+if(isset($_REQUEST['other']) && $_REQUEST['other']=='update'){
+	global $DBVARS;
+	if(is_dir($DBVARS['theme_dir'].'/'.$DBVARS['theme'])){
+		recurse_copy($DBVARS['theme_dir'].'/'.$DBVARS['theme'],$DBVARS['theme_dir_personal'].'/'.$DBVARS['theme']);
+		cache_clear('pages');
+	}
+}
+
 // { menu
 echo '<div class="left-menu">';
 // { html templates
@@ -33,6 +56,11 @@ echo '<h2>CSS</h2>';
 echo '<ul>';
 foreach($files as $file)
 	echo '<li><a href="/ww.admin/plugin.php?_plugin=theme-editor&amp;_page=index&amp;name='.urlencode($file).'&amp;type=c">'.htmlspecialchars($file).'</a></li>';
+echo '</ul>';
+// }
+// { other
+echo '<h2>other</h2><ul>';
+echo '<li><a href="/ww.admin/plugin.php?_plugin=theme-editor&amp;_page=index&amp;other=update" onclick="return confirm(\'Updating your private copy of the theme\nwill overwrite any changes made here\');">update</a></li>';
 echo '</ul>';
 // }
 echo '</div>';
