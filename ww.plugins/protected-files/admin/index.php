@@ -36,7 +36,7 @@ if(isset($_REQUEST['action'])){
 $r=dbRow('select * from protected_files where id='.$id);
 echo '<form method="post" action="',$_url,'"><table style="width:90%">';
 if(!isset($r['directory']))$r['directory']='/';
-echo '<tr><th>Directory containing the files</th><td><select id="directory" name="directory"><option value="'.htmlspecialchars($r['directory']).'">/</option>';
+echo '<tr><th>Directory containing the files</th><td><select id="directory" name="directory"><option value="'.htmlspecialchars($r['directory']).'">'.htmlspecialchars($r['directory']).'</option>';
 echo '</select></td></tr>';
 echo '<tr><td>&nbsp;</td><td><a class="button" href="#page_vars[directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Files</a></td></tr>';
 echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td></tr>';
