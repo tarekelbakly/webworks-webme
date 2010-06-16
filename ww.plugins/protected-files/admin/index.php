@@ -35,12 +35,8 @@ if(isset($_REQUEST['action'])){
 
 $r=dbRow('select * from protected_files where id='.$id);
 echo '<form method="post" action="',$_url,'"><table style="width:90%">';
-echo '<tr><th>Directory containing the files</th><td><select id="directory" name="directory"><option value="/">/</option>';
-foreach(get_subdirs(USERBASE.'f','') as $d){
-	echo '<option value="',htmlspecialchars($d),'"';
-	if($d==@$r['directory'])echo ' selected="selected"';
-	echo '>',htmlspecialchars($d),'</option>';
-}
+if(!isset($r['directory']))$r['directory']='/';
+echo '<tr><th>Directory containing the files</th><td><select id="directory" name="directory"><option value="'.htmlspecialchars($r['directory']).'">/</option>';
 echo '</select></td></tr>';
 echo '<tr><td>&nbsp;</td><td><a class="button" href="#page_vars[directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Files</a></td></tr>';
 echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td></tr>';
@@ -48,3 +44,10 @@ echo '<tr><th colspan="2"><input type="hidden" name="id" value="',$id,'" />';
 echo '<input type="submit" name="action" value="Save Protected Files" />';
 if($id)echo '<a style="margin-left:20px;" href="/ww.admin/plugin.php?_plugin=protected_files&amp;id='.$id.'&amp;action=delete" onclick="return confirm(\'are you sure you want to remove this?\')" title="delete">[x]</a>';
 echo '</th></tr></table></form>';
+?>
+<script>
+	$('#directory').remoteselectoptions({
+		url:'/ww.plugins/protected-files/admin/get-directories.php',
+		always_retrieve:true
+	});
+</script>
