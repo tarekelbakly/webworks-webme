@@ -92,7 +92,7 @@ function pages_menu_record_stop(ev,ui){
 	setTimeout("window.pages_menu_vars.dontfollow=false",200);
 }
 window.pages_menu_vars={};
-$(document).ready(function(){
+$(function(){
 	pages_menu_init();
 	$('.newtoppage,.newsubpage').click(pages_new);
 	$('.deletepage').click(pages_delete);
