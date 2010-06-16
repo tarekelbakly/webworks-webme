@@ -85,6 +85,7 @@ function pages_new(p){
 		modal:true,
 		buttons:{
 			'Create Page': function() {
+				if($('#newpage_dialog input[name="name"]').val()=='')return alert('Name must be provided');
 				document.getElementById('newpage_dialog').submit();
 			},
 			'Cancel': function() {
