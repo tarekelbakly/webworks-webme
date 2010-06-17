@@ -13,6 +13,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 	}
 	else{
 		$sql='set name="'.addslashes($_REQUEST['name']).'",product_type_id='.((int)$_REQUEST['product_type_id']);
+		$sql.=',enabled='.(int)$_REQUEST['enabled'];
 		foreach($tabs as $tab){
 			$sql.=','.$tab[0].'='.(isset($_REQUEST[$tab[0]])?1:0);
 		}
@@ -56,7 +57,10 @@ echo '<form action="'.$_url.'&amp;id='.$id.'&amp;action=save" method="post">';
 echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a href="#data-fields">Data Fields</a></li></ul>';
 // { main details
 echo '<div id="main-details"><table>';
+// { name
 echo '<tr><th>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($pdata['name']).'" /></td></tr>';
+// }
+// { type
 echo '<tr><th>Type</th><td>';
 $ptypes=dbAll('select id,name from products_types order by name');
 if($ptypes===false){
@@ -73,6 +77,12 @@ else{
 	echo '</select>';
 }
 echo '</td></tr>';
+// }
+// { enabled
+echo '<tr><th>Enabled</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
+if(!$pdata['enabled'])echo ' selected="selected"';
+echo '>No</option></select></td></tr>';
+// }
 echo '</table></div>';
 // }
 // { data fields
