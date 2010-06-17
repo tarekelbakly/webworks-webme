@@ -4,6 +4,7 @@ require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 $plugin=array(
 	'name' => 'Image Gallery',
+	'hide_from_admin' => true,
 	'admin' => array(
 		'page_type' => 'image_gallery_admin_page_form'
 	),

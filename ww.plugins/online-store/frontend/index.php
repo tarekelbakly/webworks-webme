@@ -42,6 +42,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']){
 			.'<input type="hidden" value="http://'.$_SERVER['HTTP_HOST'].'/ww.plugins/online-checkout/verify/paypal.php" name="notify_url"/>'
 			.'<input type="hidden" value="IC_Sample" name="bn"/><input type="image" alt="Make payments with payPal - it\'s fast, free and secure!" name="submit" src="https://www.paypal.com/en_US/i/btn/x-click-but23.gif"/><img width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt=""/></form>';
 	// }
+	// { unset the shopping cart data
+	unset($_SESSION['online-store']);
+	// }
 }
 else{
 	$c.='<form method="post">';

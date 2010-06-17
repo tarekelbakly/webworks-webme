@@ -5,6 +5,7 @@ if($version==0){ // rename plugin to "image-gallery"
 	unset($DBVARS['plugins'][$key]);
 	$DBVARS['plugins'][]='image-gallery';
 	config_rewrite();
+	cache_clear('pages');
 	header('Location: '.$_SERVER['REQUEST_URI']);
 	exit;
 }
