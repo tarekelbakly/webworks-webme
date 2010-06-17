@@ -10,7 +10,7 @@ if($amt<1)die('{error:"cannot add less than one item to basket"}');
 // { check page id
 $pid=(int)$_REQUEST['pid'];
 $page=Page::getInstance($pid);
-if($page->type != 'image_gallery')die('{error:"incorrect pid given"}');
+if($page->type != 'image-gallery')die('{error:"incorrect pid given"}');
 $page->initValues();
 $vars=$page->vars;
 // }

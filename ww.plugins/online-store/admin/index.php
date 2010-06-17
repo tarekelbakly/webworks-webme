@@ -57,6 +57,15 @@ if($page['body']=='' || $page['body']=='<h1>'.htmlspecialchars($page['name']).'<
 $c.=ckeditor('body',$page['body']);
 $c.='</div>';
 // }
+// { form fields
+if(!isset($vars['online_stores_fields'])||!$vars['online_stores_fields'])$vars['online_stores_fields']='{}';
+$c.='<div class="tabPage"><h2>Fields</h2>';
+$c.='<div id="online-stores-fields">'
+	.'<script>var os_fields='.$vars['online_stores_fields'].';</script>'
+	.'<input type="hidden" name="page_vars[online_stores_fields]" value="'.htmlspecialchars($vars['online_stores_fields']).'" />'
+	.'</div>';
+$c.='</div>';
+// }
 // { invoice details
 $c.='<div class="tabPage"><h2>Invoice</h2>';
 $c.='<p>This is what will be sent out to the buyer after the payment succeeds.</p>';
