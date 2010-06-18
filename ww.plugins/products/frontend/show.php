@@ -30,7 +30,7 @@ function products_show_by_id($PAGEDATA,$id=0){
 	if(!$type)return '<em>product type '.$product->get('product_type_id').' does not exist.</em>';
 	return $type->render($product);
 }
-function products_show_by_category($PAGEDATA){
+function products_show_by_category($PAGEDATA,$id=0){
 	if($id==0){
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
 	}
@@ -107,8 +107,8 @@ class Products{
 		if(!is_numeric($id)) return false;
 		if(!array_key_exists($id,self::$instances)){
 			$product_ids=array();
-			$rs=dbAll('select product_id from products_categories_products where enabled and category_id='.$id);
-			foreach($rs as $r)$product_ids[]=$r['product_id'];
+			$rs=dbAll('select id from products,products_categories_products where id=product_id and enabled and category_id='.$id);
+			foreach($rs as $r)$product_ids[]=$r['id'];
 			new Products($product_ids,$id);
 		}
 		return self::$instances[$id];
