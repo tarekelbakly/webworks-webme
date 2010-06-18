@@ -12,11 +12,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
+		// { save main data
 		$sql='set name="'.addslashes($_REQUEST['name']).'",product_type_id='.((int)$_REQUEST['product_type_id']);
 		$sql.=',enabled='.(int)$_REQUEST['enabled'];
-		foreach($tabs as $tab){
-			$sql.=','.$tab[0].'='.(isset($_REQUEST[$tab[0]])?1:0);
-		}
 		$dfs=array();
 		if(!isset($_REQUEST['data_fields']))$_REQUEST['data_fields']=array();
 		foreach($_REQUEST['data_fields'] as $n=>$v){
@@ -33,6 +31,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			dbQuery("insert into products $sql,date_created=now()");
 			$id=dbOne('select last_insert_id() as id','id');
 		}
+		// }
+		// { save categories
+		dbQuery('delete from products_categories_products where product_id='.$id);
+		foreach($_REQUEST['product_categories'] as $key=>$val)dbQUery('insert into products_categories_products set product_id='.$id.',category_id='.$key);
+		// }
 		echo '<em>Product saved</em>';
 	}
 }
@@ -54,7 +57,7 @@ else{
 	);
 }
 echo '<form action="'.$_url.'&amp;id='.$id.'&amp;action=save" method="post">';
-echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a href="#data-fields">Data Fields</a></li></ul>';
+echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a href="#data-fields">Data Fields</a></li><li><a href="#categories">Categories</a></ul>';
 // { main details
 echo '<div id="main-details"><table>';
 // { name
@@ -121,6 +124,34 @@ foreach($dfdefs as $def){
 	product_dfs_show(array('v'=>''),$def);
 }
 echo '</table></div>';
+// }
+// { categories
+echo '<div id="categories">';
+// { build array of categories
+$rs=dbAll('select id,name,parent_id from products_categories');
+$cats=array();
+foreach($rs as $r)$cats[$r['id']]=$r;
+// }
+// { add selected categories to the list
+$rs=dbAll('select * from products_categories_products where product_id='.$id);
+foreach($rs as $r)$cats[$r['category_id']]['selected']=true;
+// }
+function show_sub_cats($parent){
+	global $cats;
+	$found=array();
+	foreach($cats as $id=>$cat){
+		if(isset($cat['parent_id']) && $cat['parent_id']==$parent && isset($cat['name'])){
+			$l='<li><input type="checkbox" name="product_categories['.$id.']"';
+			if(isset($cat['selected']))$l.=' checked="checked"';
+			$l.='>'.htmlspecialchars($cat['name']);
+			$l.=show_sub_cats($id);
+			$found[]=$l;
+		}
+	}
+	return '<ul>'.join('',$found).'</ul>';
+}
+echo show_sub_cats(0);
+echo '</div>';
 // }
 echo '</div><input type="submit" value="Save" /></form>';
 echo '<script>$("#tabs").tabs();</script>';
