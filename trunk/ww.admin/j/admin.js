@@ -51,8 +51,9 @@ $(function(){
 			});
 		a=$('.help');
 		a.each(function(){
-			var id=this.className.split(' ')[1];
-			this.rel='/ww.help/'+id+'.html';
+			var hpages=this.className.split(' ')[1].split('/');
+			if(hpages.length==1)this.rel='/ww.help/'+hpages[0]+'.html';
+			if(hpages.length==2)this.rel='/ww.plugins/'+hpages[0]+'/h/'+hpages[1]+'.html';
 			if(!this.title)this.title=$(this).text();
 		});
 		$('.help').cluetip();

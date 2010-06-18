@@ -58,10 +58,10 @@ echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a
 // { main details
 echo '<div id="main-details"><table>';
 // { name
-echo '<tr><th>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($pdata['name']).'" /></td></tr>';
+echo '<tr><th><div class="help products/name"></div>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($pdata['name']).'" /></td></tr>';
 // }
 // { type
-echo '<tr><th>Type</th><td>';
+echo '<tr><th><div class="help products/type"></div>Type</th><td>';
 $ptypes=dbAll('select id,name from products_types order by name');
 if($ptypes===false){
 	echo '<em>No product types created yet. Please <a href="plugin.php?_plugin=products&amp;_page=types-edit">create one</a> before you go any further!</em>';
@@ -79,7 +79,7 @@ else{
 echo '</td></tr>';
 // }
 // { enabled
-echo '<tr><th>Enabled</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
+echo '<tr><th><div class="help products/enabled"></div>Enabled</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
 if(!$pdata['enabled'])echo ' selected="selected"';
 echo '>No</option></select></td></tr>';
 // }
