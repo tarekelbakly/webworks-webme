@@ -122,4 +122,5 @@ foreach($dfdefs as $def){
 }
 echo '</table></div>';
 // }
-echo '</div><script>$(function(){$("#tabs").tabs();});</script><input type="submit" value="Save" /></form>';
+echo '</div><input type="submit" value="Save" /></form>';
+echo '<script>$("#tabs").tabs();</script>';

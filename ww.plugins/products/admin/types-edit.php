@@ -78,4 +78,4 @@ echo '<div id="singleview-template"><p>This template is for how the product look
 echo ckeditor('singleview_template',$tdata['singleview_template']);
 echo '</div>';
 // }
-echo '</div><script>$(function(){$("#tabs").tabs();});</script><input type="submit" value="Save" /></form><script src="/ww.plugins/products/admin/types-edit.js"></script>';
+echo '</div><input type="submit" value="Save" /></form><script src="/ww.plugins/products/admin/types-edit.js"></script>';
