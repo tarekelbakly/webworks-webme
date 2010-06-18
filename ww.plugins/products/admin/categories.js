@@ -87,7 +87,9 @@ function products_categories_add_main_category(){
 	$.getJSON('/ww.plugins/products/admin/add-new-category.php',{
 		"parent_id":0,
 		"name":name
-	},products_categories_show_attrs);
+	},function(){
+		document.location=document.location;
+	});
 }
 function products_categories_delete(){
 	if(!confirm("Are you sure you want to delete this category?"))return;
