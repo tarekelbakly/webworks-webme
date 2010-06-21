@@ -76,20 +76,13 @@ if(isset($vars['products_add_a_search_box']) && $vars['products_add_a_search_box
 $c.='>Yes</option></select></td></tr>';
 // }
 // { order by
-$c.='<tr id="products_order_by"><th>Order By</th><td><select name="page_vars[products_order_by]">';
-$fields=array();
-$rs=dbAll('select data_fields from products_types');
-foreach($rs as $r){
-	$fs=json_decode($r['data_fields']);
-	foreach($fs as $f)$fields[]=$f->n;
+$c.='<tr id="products_order_by"><th>Order By</th><td><select id="products_order_by_select" name="page_vars[products_order_by]">';
+if(!isset($vars['products_order_by'])){
+	$fs=json_decode(dbOne('select data_fields from products_types limit 1','data_fields'));
+	var_dump($fs);
+	$c.='<option>'.htmlspecialchars($fs[0]->n).'</option>';
 }
-$fields=array_unique($fields);
-asort($fields);
-foreach($fields as $field){
-	$c.='<option';
-	if($field==$vars['products_order_by'])$c.=' selected="selected"';
-	$c.='>'.htmlspecialchars($field).'</option>';
-}
+else $c.='<option>'.htmlspecialchars($vars['products_order_by']).'</option>';
 $c.='</select>';
 $c.='<select name="page_vars[products_order_direction]">';
 $c.='<option value="0">Ascending (A-Z)</option><option value="1"';

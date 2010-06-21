@@ -10,4 +10,17 @@ function products_what_to_show_change(){
 $(function(){
 	$('#products_what_to_show').change(products_what_to_show_change);
 	products_what_to_show_change();
+	$('#products_order_by_select').remoteselectoptions({
+		url:'/ww.plugins/products/admin/get-order-fields.php',
+		other_GET_params:function(){
+			if($('#products_what_to_show').val()=='1'){
+				return $('#products_what_to_show_1 select').val();
+			}
+			return '';
+		},
+		always_retrieve:true
+	});
+	$('#products_what_to_show_1 select').change(function(){
+		$('#products_order_by_select').trigger('mousedown');
+	});
 });

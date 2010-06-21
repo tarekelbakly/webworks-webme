@@ -18,7 +18,8 @@
 					$this.remoteselectoptions_applied=true;
 				}
 				var v=$this.val();
-				$.get(o.url,{'selected':v,'other_GET_params':o.other_GET_params},function(res){
+				var other=$.isFunction(o.other_GET_params)?o.other_GET_params():o.other_GET_params;
+				$.get(o.url,{'selected':v,'other_GET_params':other},function(res){
 					$this.html(res);
 					setTimeout(function(){
 						var options=$('option',$this);
