@@ -99,8 +99,8 @@ $c.='</td></tr>';
 // }
 // { products per page
 $c.='<tr id="products_per_page"><th>Products per page</th><td><input name="page_vars[products_per_page]" class="small" value="';
-$i=isset($vars['products_per_page'])?(int)$vars['products_per_page']:10;
-if($i<1)$i=10;
+$i=isset($vars['products_per_page'])?(int)$vars['products_per_page']:0;
+if($i<0)$i=0;
 $c.=$i.'" /></td></tr>';
 // }
 $c.= '</table></div>';
