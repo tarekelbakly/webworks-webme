@@ -10,15 +10,20 @@ function products_get_add_to_cart_button(){
 }
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
+	// { set limit variables
+	$limit=isset($PAGEDATA->vars['products_per_page'])?(int)$PAGEDATA->vars['products_per_page']:0;
+	$start=isset($_REQUEST['start'])?(int)$_REQUEST['start']:0;
+	if($start<0)$start=0;
+	// }
 	switch($PAGEDATA->vars['products_what_to_show']){
 		case '1':
-			return products_show_by_type($PAGEDATA);
+			return products_show_by_type($PAGEDATA,0,$start,$limit);
 		case '2':
-			return products_show_by_category($PAGEDATA);
+			return products_show_by_category($PAGEDATA,0,$start,$limit);
 		case '3':
 			return products_show_by_id($PAGEDATA);
 	}
-	return products_show_all($PAGEDATA);
+	return products_show_all($PAGEDATA,$start,$limit);
 }
 function products_show_by_id($PAGEDATA,$id=0){
 	if($id==0){
@@ -30,23 +35,23 @@ function products_show_by_id($PAGEDATA,$id=0){
 	if(!$type)return '<em>product type '.$product->get('product_type_id').' does not exist.</em>';
 	return $type->render($product);
 }
-function products_show_by_category($PAGEDATA,$id=0){
+function products_show_by_category($PAGEDATA,$id=0,$start=0,$limit=0){
 	if($id==0){
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
 	}
 	$products=Products::getByCategory($id);
-	return $products->render();
+	return $products->render($PAGEDATA,$start,$limit);
 }
-function products_show_by_type($PAGEDATA,$id=0){
+function products_show_by_type($PAGEDATA,$id=0,$start=0,$limit=0){
 	if($id==0){
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
 	$products=Products::getByType($id);
-	return $products->render();
+	return $products->render($PAGEDATA,$start,$limit);
 }
-function products_show_all($PAGEDATA){
+function products_show_all($PAGEDATA,$start=0,$limit=0){
 	$products=Products::getAll();
-	return $products->render();
+	return $products->render($PAGEDATA,$start,$limit);
 }
 function products_setup_smarty(){
 	$smarty=new Smarty();
@@ -123,9 +128,34 @@ class Products{
 		}
 		return self::$instances[$id];
 	}
-	function render(){
+	function render($PAGEDATA,$start=0,$limit=0){
 		$c='';
-		foreach($this->product_ids as $pid){
+		// { sanitise the limits
+		$cnt=count($this->product_ids);
+		if(!$limit){
+			$limit=$cnt;
+			$start=0;
+		}
+		else{
+			if($start && $start>=count($this->product_ids))$start=$cnt-$limit-1;
+		}
+		// }
+		// { build array of items
+		$prevnext='';
+		if($cnt==$limit){
+			$prods=&$this->product_ids;
+		}
+		else{
+			$prods=array();
+			for($i=$start;$i<$limit+$start;++$i)if(isset($this->product_ids[$i]))$prods[]=$this->product_ids[$i];
+			if($start)$prevnext.='<a class="products-prev" href="'.$PAGEDATA->getRelativeUrl().'?start='.($start-$limit).'">&lt;-- prev</a>';
+			if($limit && $start+$limit<$cnt){
+				if($start)$prevnext.=' | ';
+				$prevnext.='<a class="products-next" href="'.$PAGEDATA->getRelativeUrl().'?start='.($start+$limit).'">next --&gt;</a>';
+			}
+		}
+		// }
+		foreach($prods as $pid){
 			$product=Product::getInstance($pid);
 			if($product){
 				$type=ProductType::getInstance($product->get('product_type_id'));
@@ -133,7 +163,7 @@ class Products{
 				else $c.=$type->render($product,'multiview');
 			}
 		}
-		return $c;
+		return $prevnext.$c.$prevnext;
 	}
 }
 class ProductType{
