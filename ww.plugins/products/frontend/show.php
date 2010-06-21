@@ -141,14 +141,15 @@ class Products{
 			foreach($prods as $key=>$pid){
 				$prod=$product=Product::getInstance($pid);
 				if($product->get($order_by)){
-					$tmpprods1[$product->get($order_by)]=$pid;
+					if(!isset($tmpprods1[$product->get($order_by)]))$tmpprods1[$product->get($order_by)]=array();
+					$tmpprods1[$product->get($order_by)][]=$pid;
 					unset($prods[$key]);
 				}
 			}
 			if($order_dir)krsort($tmpprods1);
 			else ksort($tmpprods1);
 			$tmpprods=array();
-			foreach($tmpprods1 as $pid)$tmpprods[]=$pid;
+			foreach($tmpprods1 as $pids)foreach($pids as $pid)$tmpprods[]=$pid;
 			foreach($prods as $key=>$pid){
 				$tmpprods[]=$pid;
 			}
