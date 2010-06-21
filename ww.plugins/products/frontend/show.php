@@ -134,16 +134,6 @@ class Products{
 	}
 	function render($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0){
 		$c='';
-		// { sanitise the limits
-		$cnt=count($this->product_ids);
-		if(!$limit){
-			$limit=$cnt;
-			$start=0;
-		}
-		else{
-			if($start && $start>=count($this->product_ids))$start=$cnt-$limit-1;
-		}
-		// }
 		// { sort based on $order_by
 		if($order_by!=''){
 			$tmpprods1=array();
@@ -164,6 +154,16 @@ class Products{
 			}
 		}
 		else $tmpprods=&$this->product_ids;
+		// }
+		// { sanitise the limits
+		$cnt=count($tmpprods);
+		if(!$limit){
+			$limit=$cnt;
+			$start=0;
+		}
+		else{
+			if($start && $start>=count($this->product_ids))$start=$cnt-$limit-1;
+		}
 		// }
 		// { build array of items
 		$prevnext='';
