@@ -15,15 +15,19 @@ function products_show($PAGEDATA){
 	$start=isset($_REQUEST['start'])?(int)$_REQUEST['start']:0;
 	if($start<0)$start=0;
 	// }
+	// { set order fields
+	$order_by=isset($PAGEDATA->vars['products_order_by'])?$PAGEDATA->vars['products_order_by']:'';
+	$order_dir=isset($PAGEDATA->vars['products_order_direction'])?(int)$PAGEDATA->vars['products_order_direction']:0;
+	// }
 	switch($PAGEDATA->vars['products_what_to_show']){
 		case '1':
-			return products_show_by_type($PAGEDATA,0,$start,$limit);
+			return products_show_by_type($PAGEDATA,0,$start,$limit,$order_by,$order_dir);
 		case '2':
-			return products_show_by_category($PAGEDATA,0,$start,$limit);
+			return products_show_by_category($PAGEDATA,0,$start,$limit,$order_by,$order_dir);
 		case '3':
 			return products_show_by_id($PAGEDATA);
 	}
-	return products_show_all($PAGEDATA,$start,$limit);
+	return products_show_all($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
 function products_show_by_id($PAGEDATA,$id=0){
 	if($id==0){
@@ -35,23 +39,23 @@ function products_show_by_id($PAGEDATA,$id=0){
 	if(!$type)return '<em>product type '.$product->get('product_type_id').' does not exist.</em>';
 	return $type->render($product);
 }
-function products_show_by_category($PAGEDATA,$id=0,$start=0,$limit=0){
+function products_show_by_category($PAGEDATA,$id=0,$start=0,$limit=0,$order_by='',$order_dir=0){
 	if($id==0){
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
 	}
 	$products=Products::getByCategory($id);
-	return $products->render($PAGEDATA,$start,$limit);
+	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
-function products_show_by_type($PAGEDATA,$id=0,$start=0,$limit=0){
+function products_show_by_type($PAGEDATA,$id=0,$start=0,$limit=0,$order_by='',$order_dir=0){
 	if($id==0){
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
 	$products=Products::getByType($id);
 	return $products->render($PAGEDATA,$start,$limit);
 }
-function products_show_all($PAGEDATA,$start=0,$limit=0){
+function products_show_all($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0){
 	$products=Products::getAll();
-	return $products->render($PAGEDATA,$start,$limit);
+	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
 function products_setup_smarty(){
 	$smarty=new Smarty();
@@ -85,7 +89,7 @@ class Product{
 	function getInstance($id=0,$r=false,$enabled=true){
 		if (!is_numeric($id)) return false;
 		if (!array_key_exists($id,self::$instances))return new Product($id,$r,$enabled);
-		return false;
+		return self::$instances[$id];
 	}
 	function get($name){
 		if(isset($this->vals[$name]))return $this->vals[$name];
@@ -128,7 +132,7 @@ class Products{
 		}
 		return self::$instances[$id];
 	}
-	function render($PAGEDATA,$start=0,$limit=0){
+	function render($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0){
 		$c='';
 		// { sanitise the limits
 		$cnt=count($this->product_ids);
@@ -140,14 +144,35 @@ class Products{
 			if($start && $start>=count($this->product_ids))$start=$cnt-$limit-1;
 		}
 		// }
+		// { sort based on $order_by
+		if($order_by!=''){
+			$tmpprods1=array();
+			$prods=$this->product_ids;
+			foreach($prods as $key=>$pid){
+				$prod=$product=Product::getInstance($pid);
+				if($product->get($order_by)){
+					$tmpprods1[$product->get($order_by)]=$pid;
+					unset($prods[$key]);
+				}
+			}
+			if($order_dir)krsort($tmpprods1);
+			else ksort($tmpprods1);
+			$tmpprods=array();
+			foreach($tmpprods1 as $pid)$tmpprods[]=$pid;
+			foreach($prods as $key=>$pid){
+				$tmpprods[]=$pid;
+			}
+		}
+		else $tmpprods=&$this->product_ids;
+		// }
 		// { build array of items
 		$prevnext='';
 		if($cnt==$limit){
-			$prods=&$this->product_ids;
+			$prods=&$tmpprods;
 		}
 		else{
 			$prods=array();
-			for($i=$start;$i<$limit+$start;++$i)if(isset($this->product_ids[$i]))$prods[]=$this->product_ids[$i];
+			for($i=$start;$i<$limit+$start;++$i)if(isset($tmpprods[$i]))$prods[]=$tmpprods[$i];
 			if($start)$prevnext.='<a class="products-prev" href="'.$PAGEDATA->getRelativeUrl().'?start='.($start-$limit).'">&lt;-- prev</a>';
 			if($limit && $start+$limit<$cnt){
 				if($start)$prevnext.=' | ';
