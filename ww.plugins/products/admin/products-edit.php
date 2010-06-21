@@ -99,6 +99,10 @@ foreach($dfjson as $d)$dfdefs[$d['n']]=$d;
 function product_dfs_show($df,$def){
 	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
 	switch($def['t']){
+		case 'date': // {
+			echo '<input class="date-human" name="data_fields['.htmlspecialchars($def['n']).']" value="'.htmlspecialchars($df['v']).'" />';
+			break;
+		// }
 		case 'textarea': // {
 			echo ckeditor('data_fields['.htmlspecialchars($def['n']).']',$df['v']);
 			break;
