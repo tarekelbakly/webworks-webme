@@ -12,7 +12,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
-		// { save main data
+		// { save main data and data fields
 		$sql='set name="'.addslashes($_REQUEST['name']).'",product_type_id='.((int)$_REQUEST['product_type_id']);
 		$sql.=',enabled='.(int)$_REQUEST['enabled'];
 		$dfs=array();
@@ -99,6 +99,12 @@ foreach($dfjson as $d)$dfdefs[$d['n']]=$d;
 function product_dfs_show($df,$def){
 	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
 	switch($def['t']){
+		case 'checkbox': // {
+			echo '<input name="data_fields['.htmlspecialchars($def['n']).']" type="checkbox"';
+			if($df['v'])echo ' checked="checked"';
+			echo ' />';
+			break;
+		// }
 		case 'date': // {
 			echo '<input class="date-human" name="data_fields['.htmlspecialchars($def['n']).']" value="'.htmlspecialchars($df['v']).'" />';
 			break;

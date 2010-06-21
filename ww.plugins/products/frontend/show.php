@@ -232,6 +232,14 @@ class ProductType{
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/','_',$f->n);
 			$val=$product->get($f->n);
 			switch($f->t){
+				case 'checkbox': // {
+					$smarty->assign($f->n,$val?'Yes':'No');
+					break;
+				// }
+				case 'date': // {
+					$smarty->assign($f->n,date_m2h($val));
+					break;
+				// }
 				default: // { everything else
 					$smarty->assign($f->n,$val);
 				// }
