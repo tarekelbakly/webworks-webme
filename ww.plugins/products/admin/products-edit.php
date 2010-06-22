@@ -63,10 +63,10 @@ echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a
 // { main details
 echo '<div id="main-details"><table>';
 // { name
-echo '<tr><th><div class="help products/name"></div>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($pdata['name']).'" /></td></tr>';
+echo '<tr><th><div class="help products/name"></div>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($pdata['name']).'" /></td>';
 // }
 // { type
-echo '<tr><th><div class="help products/type"></div>Type</th><td>';
+echo '<th><div class="help products/type"></div>Type</th><td>';
 $ptypes=dbAll('select id,name from products_types order by name');
 if($ptypes===false){
 	echo '<em>No product types created yet. Please <a href="plugin.php?_plugin=products&amp;_page=types-edit">create one</a> before you go any further!</em>';
@@ -81,15 +81,15 @@ else{
 	}
 	echo '</select>';
 }
-echo '</td></tr>';
+echo '</td>';
 // }
 // { enabled
-echo '<tr><th><div class="help products/enabled"></div>Enabled</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
+echo '<th><div class="help products/enabled"></div>Enabled</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
 if(!$pdata['enabled'])echo ' selected="selected"';
 echo '>No</option></select></td></tr>';
 // }
 // { images
-echo '<tr><td colspan="6">';
+echo '<tr><th>Images</th><td colspan="5">';
 if(!$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
 	if(!file_exists(USERBASE.'f/product-images'))mkdir(USERBASE.'f/product-images');
 	$pdata['images_directory']='/product-images/'.md5(rand().microtime());
