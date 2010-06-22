@@ -11,3 +11,6 @@
 div.default{
 	background:#ff0;
 }
+ul,li{
+	list-style:none;
+}

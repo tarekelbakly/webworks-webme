@@ -89,7 +89,7 @@ if(!$pdata['enabled'])echo ' selected="selected"';
 echo '>No</option></select></td></tr>';
 // }
 // { images
-echo '<tr><th>Images</th><td colspan="5">';
+echo '<tr><th><div class="help products/images"></div>Images</th><td colspan="5">';
 if(!$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
 	if(!file_exists(USERBASE.'f/product-images'))mkdir(USERBASE.'f/product-images');
 	$pdata['images_directory']='/product-images/'.md5(rand().microtime());
