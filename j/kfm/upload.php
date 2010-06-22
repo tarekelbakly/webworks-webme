@@ -135,7 +135,7 @@ if (isset($_REQUEST['swf']) && $_REQUEST['swf']==1) {
 <head>
 <script type="text/javascript">
 <?php
-$js = isset($_REQUEST['js'])?$js:'';
+$js = isset($_REQUEST['js'])?$_REQUEST['js']:'';
 if (isset($_REQUEST['onload'])) echo $_REQUEST['onload'];
 else if (isset($_REQUEST['onupload'])) echo $_REQUEST['onupload'];
 else if (count($errors)) echo 'parent.kfm.alert("'.addslashes(join("\n", $errors)).'");';
