@@ -53,6 +53,10 @@ if($version==5){ // products_categories
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8');
 	$version=6;
 }
+if($version==6){ // product images
+	dbQuery('alter table products add images_directory text');
+	$version=7;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

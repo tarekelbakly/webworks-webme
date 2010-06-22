@@ -1,0 +1,6 @@
+#product-images-wrapper div{
+	display:inline-block;
+	width:70px;
+	height:80px;
+	text-align:center;
+}

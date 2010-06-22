@@ -4,3 +4,4 @@ echo admin_menu(array(
 	'Categories'=>'/ww.admin/plugin.php?_plugin=products&amp;_page=categories',
 	'Types'=>   '/ww.admin/plugin.php?_plugin=products&amp;_page=types'
 ),$_url);
+echo '<link rel="stylesheet" type="text/css" href="/ww.plugins/products/admin/products.css" />';

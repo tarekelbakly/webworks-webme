@@ -22,7 +22,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'products_add_to_cart'
 	),
-	'version' => '6'
+	'version' => '7'
 );
 // }
 
