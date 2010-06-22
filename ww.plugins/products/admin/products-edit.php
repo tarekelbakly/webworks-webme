@@ -58,7 +58,7 @@ else{
 		'data_fields'=>'{}'
 	);
 }
-echo '<form action="'.$_url.'&amp;id='.$id.'" method="post"><input type="hidden" name="action" value="save" />';
+echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" method="post"><input type="hidden" name="action" value="save" />';
 echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a href="#data-fields">Data Fields</a></li><li><a href="#categories">Categories</a></ul>';
 // { main details
 echo '<div id="main-details"><table>';
@@ -99,11 +99,12 @@ $dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$pdata['images_directory'
 $images=kfm_loadFiles($dir_id);
 $images=$images['files'];
 $n=count($images);
-echo '<iframe src="/ww.plugins/products/admin/uploader.php?images_directory='.urlencode($pdata['images_directory']).'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe><script>window.kfm={alert:function(){}};window.kfm_vars={};function x_kfm_loadFiles(){}function kfm_dir_openNode(){document.location=document.location;}</script>';
+echo '<iframe src="/ww.plugins/products/admin/uploader.php?images_directory='.urlencode($pdata['images_directory']).'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe><script>window.kfm={alert:function(){}};window.kfm_vars={};function x_kfm_loadFiles(){}function kfm_dir_openNode(){$("#products-form").submit();}var product_id='.$id.';</script>';
 if($n){
 	echo '<div id="product-images-wrapper">';
 	for($i=0;$i<$n;$i++){
-		echo '<div><img src="/kfmget/'.$images[$i]['id'].',width=64,height=64" title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" /><br /><input type="checkbox" id="products-dchk-'.$images[$i]['id'].'" /><a href="javascript:;" id="products-dbtn-'.$images[$i]['id'].'">delete</a></div>';
+		$default=($images[$i]['id']==$pdata['image_default'])?' class="default"':'';
+		echo '<div'.$default.'><img src="/kfmget/'.$images[$i]['id'].',width=64,height=64" title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" /><br /><input type="checkbox" id="products-dchk-'.$images[$i]['id'].'" /><a class="delete" href="javascript:;" id="products-dbtn-'.$images[$i]['id'].'">delete</a><br /><a class="mark-as-default" href="javascript:;" id="products-dfbtn-'.$images[$i]['id'].'">set default</a></div>';
 	}
 	echo '</div>';
 }else{

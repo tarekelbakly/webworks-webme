@@ -4,3 +4,10 @@
 	height:80px;
 	text-align:center;
 }
+#product-images-wrapper div a{
+	text-decoration:none;
+	font-size:9px;
+}
+div.default{
+	background:#ff0;
+}

@@ -1,4 +1,12 @@
-$('#product-images-wrapper a').bind('click',function(){
+$('#product-images-wrapper a.mark-as-default').bind('click',function(){
+	var $this=$(this);
+	var id=$this[0].id.replace('products-dfbtn-','');
+	$.get('/ww.plugins/products/admin/set-default-image.php?product_id='+product_id+'&id='+id,function(ret){
+		$('div.default').removeClass('default');
+		$this.closest('div').addClass('default');
+	});
+});
+$('#product-images-wrapper a.delete').bind('click',function(){
 	var $this=$(this);
 	var id=$this[0].id.replace('products-dbtn-','');
 	if(!$('#products-dchk-'+id+':checked').length){

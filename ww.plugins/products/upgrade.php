@@ -57,6 +57,10 @@ if($version==6){ // product images
 	dbQuery('alter table products add images_directory text');
 	$version=7;
 }
+if($version==7){ // default image
+	dbQuery('alter table products change default_image image_default int default 0');
+	$version=8;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();
