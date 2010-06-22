@@ -10,6 +10,16 @@ function products_get_add_to_cart_button(){
 }
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
+	$c='';
+	// { search
+	$search=isset($_REQUEST['products-search'])?$_REQUEST['products-search']:'';
+	if(isset($PAGEDATA->vars['products_add_a_search_box']) && $PAGEDATA->vars['products_add_a_search_box']){
+		$c.='<form action="'.$PAGEDATA->getRelativeUrl()
+			.'" class="products-search"><input name="products-search" value="'
+			.htmlspecialchars($search)
+			.'" /><input type="submit" value="Search" /></form>';
+	}
+	// }
 	// { set limit variables
 	$limit=isset($PAGEDATA->vars['products_per_page'])?(int)$PAGEDATA->vars['products_per_page']:0;
 	$start=isset($_REQUEST['start'])?(int)$_REQUEST['start']:0;
@@ -21,13 +31,13 @@ function products_show($PAGEDATA){
 	// }
 	switch($PAGEDATA->vars['products_what_to_show']){
 		case '1':
-			return products_show_by_type($PAGEDATA,0,$start,$limit,$order_by,$order_dir);
+			return $c.products_show_by_type($PAGEDATA,0,$start,$limit,$order_by,$order_dir,$search);
 		case '2':
-			return products_show_by_category($PAGEDATA,0,$start,$limit,$order_by,$order_dir);
+			return $c.products_show_by_category($PAGEDATA,0,$start,$limit,$order_by,$order_dir,$search);
 		case '3':
-			return products_show_by_id($PAGEDATA);
+			return $c.products_show_by_id($PAGEDATA);
 	}
-	return products_show_all($PAGEDATA,$start,$limit,$order_by,$order_dir);
+	return $c.products_show_all($PAGEDATA,$start,$limit,$order_by,$order_dir,$search);
 }
 function products_show_by_id($PAGEDATA,$id=0){
 	if($id==0){
@@ -39,22 +49,22 @@ function products_show_by_id($PAGEDATA,$id=0){
 	if(!$type)return '<em>product type '.$product->get('product_type_id').' does not exist.</em>';
 	return $type->render($product);
 }
-function products_show_by_category($PAGEDATA,$id=0,$start=0,$limit=0,$order_by='',$order_dir=0){
+function products_show_by_category($PAGEDATA,$id=0,$start=0,$limit=0,$order_by='',$order_dir=0,$search=''){
 	if($id==0){
 		$id=(int)$PAGEDATA->vars['products_category_to_show'];
 	}
-	$products=Products::getByCategory($id);
+	$products=Products::getByCategory($id,$search);
 	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
-function products_show_by_type($PAGEDATA,$id=0,$start=0,$limit=0,$order_by='',$order_dir=0){
+function products_show_by_type($PAGEDATA,$id=0,$start=0,$limit=0,$order_by='',$order_dir=0,$search=''){
 	if($id==0){
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
-	$products=Products::getByType($id);
-	return $products->render($PAGEDATA,$start,$limit);
+	$products=Products::getByType($id,$search);
+	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
-function products_show_all($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0){
-	$products=Products::getAll();
+function products_show_all($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0,$search=''){
+	$products=Products::getAll($search);
 	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
 function products_setup_smarty(){
@@ -95,40 +105,60 @@ class Product{
 		if(isset($this->vals[$name]))return $this->vals[$name];
 		return false;
 	}
+	function search($search){
+		$pt=ProductType::getInstance($this->vals['product_type_id']);
+		foreach($pt->data_fields as $df){
+			if($df->s && strpos($this->get($df->n),$search)!==false)return true;
+		}
+		return false;
+	}
 }
 class Products{
 	static $instances=array();
-	function __construct($v,$id){
-		$this->product_ids=$v;
+	function __construct($vs,$id,$search=''){
+		if($search!=''){
+			$arr=array();
+			foreach($vs as $v){
+				$p=Product::getInstance($v);
+				if(!$p)continue;
+				if(!$p->search($search))continue;
+				$arr[]=$v;
+			}
+			$vs=$arr;
+		}
+		$this->product_ids=$vs;
 		self::$instances[$id]=& $this;
 		return $this;
 	}
-	function getAll(){
-		if(!array_key_exists('all',self::$instances)){
+	function getAll($search=''){
+		$id=md5('all|'.$search);
+		if(!array_key_exists($id,self::$instances)){
 			$product_ids=array();
 			$rs=dbAll('select id from products where enabled');
 			foreach($rs as $r)$product_ids[]=$r['id'];
-			new Products($product_ids,'all');
+			new Products($product_ids,$id,$search);
 		}
-		return self::$instances['all'];
+		return self::$instances[$id];
 	}
-	function getByCategory($id){
+	function getByCategory($id,$search=''){
 		if(!is_numeric($id)) return false;
+		$id=md5($id.'|'.$search);
 		if(!array_key_exists($id,self::$instances)){
 			$product_ids=array();
 			$rs=dbAll('select id from products,products_categories_products where id=product_id and enabled and category_id='.$id);
 			foreach($rs as $r)$product_ids[]=$r['id'];
-			new Products($product_ids,$id);
+			new Products($product_ids,$id,$search);
 		}
 		return self::$instances[$id];
 	}
-	function getByType($id){
+	function getByType($id,$search=''){
 		if(!is_numeric($id)) return false;
+		$id=md5($id.'|'.$search);
 		if(!array_key_exists($id,self::$instances)){
 			$product_ids=array();
 			$rs=dbAll('select id from products where enabled and product_type_id='.$id);
 			foreach($rs as $r)$product_ids[]=$r['id'];
-			new Products($product_ids,$id);
+			new Products($product_ids,$id,$search);
 		}
 		return self::$instances[$id];
 	}
@@ -179,6 +209,14 @@ class Products{
 				if($start)$prevnext.=' | ';
 				$prevnext.='<a class="products-next" href="'.$PAGEDATA->getRelativeUrl().'?start='.($start+$limit).'">next --&gt;</a>';
 			}
+		}
+		// }
+		// { see if there are search results
+		if(isset($PAGEDATA->vars['products_add_a_search_box']) && $PAGEDATA->vars['products_add_a_search_box']){
+			if(!count($prods)){
+				return '<div class="error">No products found matching that search. Try using less specific terms.</div>';
+			}
+			else $c.='<div class="products-num-results"><strong>'.count($prods).'</strong> results found.</div>';
 		}
 		// }
 		foreach($prods as $pid){

@@ -95,7 +95,7 @@ else{
 				}
 				$c.='</ul>';
 			}
-			$c.=$PAGEDATA->vars['footer'];
+			if(isset($PAGEDATA->vars['footer']))$c.=$PAGEDATA->vars['footer'];
 			break;
 		// }
 		default: // { plugins, and unknown

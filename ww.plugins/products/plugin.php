@@ -34,7 +34,7 @@ function products_admin_page_form($page,$vars){
 }
 function products_frontend($PAGEDATA){
 	require_once dirname(__FILE__).'/frontend/show.php';
-	return $PAGEDATA->render().products_show($PAGEDATA);
+	return $PAGEDATA->render().products_show($PAGEDATA).$PAGEDATA->vars['footer'];
 }
 function products_add_to_cart($PAGEDATA){
 	if(!isset($_REQUEST['products_action']))return;

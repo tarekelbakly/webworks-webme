@@ -16,7 +16,7 @@ function recurse_copy($src,$dst) {
 	}
 	closedir($dir);
 } 
-if(isset($_REQUEST['other']) && $_REQUEST['other']=='update'){
+if(isset($_REQUEST['other']) && $_REQUEST['other']=='restore'){
 	global $DBVARS;
 	if(is_dir($DBVARS['theme_dir'].'/'.$DBVARS['theme'])){
 		recurse_copy($DBVARS['theme_dir'].'/'.$DBVARS['theme'],$DBVARS['theme_dir_personal'].'/'.$DBVARS['theme']);
@@ -60,7 +60,7 @@ echo '</ul>';
 // }
 // { other
 echo '<h2>other</h2><ul>';
-echo '<li><a href="/ww.admin/plugin.php?_plugin=theme-editor&amp;_page=index&amp;other=update" onclick="return confirm(\'Updating your private copy of the theme\nwill overwrite any changes made here\');">update</a></li>';
+echo '<li><a href="/ww.admin/plugin.php?_plugin=theme-editor&amp;_page=index&amp;other=restore" onclick="return confirm(\'This will overwrite your local changes by restoring the original version of the theme.\');">restore</a></li>';
 echo '</ul>';
 // }
 echo '</div>';

@@ -1,10 +1,5 @@
 <?php
 $c.= '<div class="tabs">';
-// { header
-$c.='<div class="tabPage"><h2>Header</h2><p>Text to be shown above the product/product list</p>';
-$c.=ckeditor('body',$page['body']);
-$c.='</div>';
-// }
 // { main details
 $c.= '<div class="tabPage"><h2>Main Details</h2><table class="tab-table">';
 // { what should be shown
@@ -97,6 +92,16 @@ if($i<0)$i=0;
 $c.=$i.'" /></td></tr>';
 // }
 $c.= '</table></div>';
+// }
+// { header
+$c.='<div class="tabPage"><h2>Header</h2><p>Text to be shown above the product/product list</p>';
+$c.=ckeditor('body',$page['body']);
+$c.='</div>';
+// }
+// { footer
+$c.='<div class="tabPage"><h2>Footer</h2><p>Text to be shown below the product/product list</p>';
+$c.=ckeditor('page_vars[footer]',isset($vars['footer'])?$vars['footer']:'');
+$c.='</div>';
 // }
 $c.= '</div>';
 $c.='<script type="text/javascript" src="/ww.plugins/products/admin/page-form.js"></script>';
