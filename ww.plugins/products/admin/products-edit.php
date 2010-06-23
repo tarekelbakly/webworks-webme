@@ -91,8 +91,8 @@ echo '>No</option></select></td></tr>';
 // { images
 echo '<tr><th><div class="help products/images"></div>Images</th><td colspan="5">';
 if(!$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
-	if(!file_exists(USERBASE.'f/product-images'))mkdir(USERBASE.'f/product-images');
-	$pdata['images_directory']='/product-images/'.md5(rand().microtime());
+	if(!file_exists(USERBASE.'f/products/product-images'))mkdir(USERBASE.'f/products/product-images',0777,true);
+	$pdata['images_directory']='/product/product-images/'.md5(rand().microtime());
 	mkdir(USERBASE.'f/'.$pdata['images_directory']);
 }
 $dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$pdata['images_directory']));

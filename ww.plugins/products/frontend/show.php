@@ -4,18 +4,18 @@ if(!file_exists(USERBASE.'/ww.cache/products')){
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
-function products_get_add_to_cart_button($params, &$smarty){
+function products_get_add_to_cart_button($params,&$smarty){
 	return '<form method="POST"><input type="hidden" name="products_action" value="add_to_cart" /><input type="submit" value="Add to Cart" />'
 		.'<input type="hidden" name="product_id" value="'. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
-function products_image($params, &$smarty){
+function products_image($params,&$smarty){
 	$params=array_merge(array(
 		'width'=>128,
 		'height'=>128
 	),$params);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
-	if(!$vals['images_directory'])return ''; // TODO: no-image here
+	if(!$vals['images_directory'])return products_image_not_found($params,$smarty);
 	$iid=0;
 	if($vals['image_default']){
 		$iid=$vals['image_default'];
@@ -24,14 +24,18 @@ function products_image($params, &$smarty){
 	}
 	if(!$iid){
 		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$vals['images_directory']));
-		if(!$dir_id)return ''; // TODO: no-image here
+		if(!$dir_id)return products_image_not_found($params,$smarty);
 		$images=kfm_loadFiles($dir_id);
 		if(count($images['files']))$iid=$images['files'][0]['id'];
 	}
-	if(!$iid)return ''; // TODO: no-image here
+	if(!$iid)return products_image_not_found($params,$smarty);
 	return '<a class="products-lightbox" href="/kfmget/'.$iid.'"><img src="/kfmget/'.$iid.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" /></a>';
 }
-function products_images($params, &$smarty){
+function products_image_not_found($params,&$smarty){
+	$s=$params['width']<$params['height']?$params['width']:$params['height'];
+	return '<img src="/ww.plugins/products/i/not-found-250.gif" style="width:'.$s.'px;height:'.$s.'" />';
+}
+function products_images($params,&$smarty){
 	$params=array_merge(array(
 		'width'=>48,
 		'height'=>48
