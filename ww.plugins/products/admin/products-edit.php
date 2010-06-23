@@ -90,10 +90,12 @@ echo '>No</option></select></td></tr>';
 // }
 // { images
 echo '<tr><th><div class="help products/images"></div>Images</th><td colspan="5">';
-if(!$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
-	if(!file_exists(USERBASE.'f/products/product-images'))mkdir(USERBASE.'f/products/product-images',0777,true);
-	$pdata['images_directory']='/product/product-images/'.md5(rand().microtime());
-	mkdir(USERBASE.'f/'.$pdata['images_directory']);
+if(!isset($pdata['images_directory']) || !$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
+	if(!is_dir(USERBASE.'f/products/product-images')){
+		mkdir(USERBASE.'f/products/product-images',0,true);
+	}
+	$pdata['images_directory']='/products/product-images/'.md5(rand().microtime());
+	mkdir(USERBASE.'f'.$pdata['images_directory']);
 }
 $dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$pdata['images_directory']));
 $images=kfm_loadFiles($dir_id);
@@ -127,12 +129,15 @@ function product_dfs_show($df,$def){
 	switch($def['t']){
 		case 'checkbox': // {
 			echo '<input name="data_fields['.htmlspecialchars($def['n']).']" type="checkbox"';
+			if($def['r'])echo ' class="required"';
 			if($df['v'])echo ' checked="checked"';
 			echo ' />';
 			break;
 		// }
 		case 'date': // {
-			echo '<input class="date-human" name="data_fields['.htmlspecialchars($def['n']).']" value="'.htmlspecialchars($df['v']).'" />';
+			echo '<input class="date-human';
+			if($def['r'])echo ' required';
+			echo '" name="data_fields['.htmlspecialchars($def['n']).']" value="'.htmlspecialchars($df['v']).'" />';
 			break;
 		// }
 		case 'textarea': // {
@@ -140,7 +145,9 @@ function product_dfs_show($df,$def){
 			break;
 		// }
 		default: // { inputbox
-			echo '<input name="data_fields['.htmlspecialchars($def['n']).']" value="'.htmlspecialchars($df['v']).'" />';
+			echo '<input name="data_fields['.htmlspecialchars($def['n']).']"';
+			if($def['r'])echo ' class="required"';
+			echo ' value="'.htmlspecialchars($df['v']).'" />';
 		// }
 	}
 	echo '</td></tr>';
