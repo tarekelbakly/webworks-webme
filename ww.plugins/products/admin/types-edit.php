@@ -18,8 +18,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
-		$datafields=str_replace(array("\n","\r"),array('\n',''),$_REQUEST['data_fields']);
-		$sql='set name="'.addslashes($_REQUEST['name']).'",data_fields="'.addslashes($_REQUEST['data_fields']).'",multiview_template="'.addslashes($_REQUEST['multiview_template']).'",singleview_template="'.addslashes($_REQUEST['singleview_template']).'"';
+		$data_fields=str_replace(array("\n","\r"),array('\n',''),$_REQUEST['data_fields']);
+		$sql='set name="'.addslashes($_REQUEST['name']).'",data_fields="'.addslashes($data_fields).'",multiview_template="'.addslashes($_REQUEST['multiview_template']).'",singleview_template="'.addslashes($_REQUEST['singleview_template']).'"';
 		foreach($tabs as $tab){
 			$sql.=','.$tab[0].'='.(isset($_REQUEST[$tab[0]])?1:0);
 		}
