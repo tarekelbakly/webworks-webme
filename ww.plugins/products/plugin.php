@@ -3,6 +3,11 @@
 	Webme Products Plugin
 	report bugs to Kae (kae@webworks.ie)
 */
+
+$kfm_do_not_save_session=true;
+require_once KFM_BASE_PATH.'/api/api.php';
+require_once KFM_BASE_PATH.'/initialise.php';
+
 // { plugin declaration
 $plugin=array(
 	'name' => 'Products',
@@ -17,7 +22,15 @@ $plugin=array(
 	),
 	'description' => 'Product catalogue.',
 	'frontend' => array(
-		'page_type' => 'products_frontend'
+		'page_type' => 'products_frontend',
+		'template_functions' => array(
+			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
+				'function' => 'products_get_add_to_cart_button'
+			),
+			'PRODUCTS_IMAGE' => array(
+				'function' => 'products_image'
+			)
+		)
 	),
 	'triggers' => array(
 		'initialisation-completed' => 'products_add_to_cart'
@@ -34,6 +47,7 @@ function products_admin_page_form($page,$vars){
 }
 function products_frontend($PAGEDATA){
 	require_once dirname(__FILE__).'/frontend/show.php';
+	if(!isset($PAGEDATA->vars['footer']))$PAGEDATA->vars['footer']='';
 	return $PAGEDATA->render().products_show($PAGEDATA).$PAGEDATA->vars['footer'];
 }
 function products_add_to_cart($PAGEDATA){

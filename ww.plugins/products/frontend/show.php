@@ -4,13 +4,35 @@ if(!file_exists(USERBASE.'/ww.cache/products')){
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
-function products_get_add_to_cart_button(){
+function products_get_add_to_cart_button($params, &$smarty){
 	return '<form method="POST"><input type="hidden" name="products_action" value="add_to_cart" /><input type="submit" value="Add to Cart" />'
-		.'<input type="hidden" name="product_id" value="'.$GLOBALS['smarty_vars']['product_id'].'" /></form>';
+		.'<input type="hidden" name="product_id" value="'. $smarty->_tpl_vars['product']->id .'" /></form>';
+}
+function products_image($params, &$smarty){
+	$params=array_merge(array(
+		'width'=>128,
+		'height'=>128
+	),$params);
+	$product=$smarty->_tpl_vars['product'];
+	$vals=$product->vals;
+	if(!$vals['images_directory'])return ''; // TODO: no-image here
+	$iid=0;
+	if($vals['image_default']){
+		$iid=$vals['image_default'];
+		$image=kfmImage::getInstance($iid);
+		if(!$image->exists())$iid=0;
+	}
+	if(!$iid){
+		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$vals['images_directory']));
+		$images=kfm_loadFiles($dir_id);
+		if(count($images['files']))$iid=$images['files'][0]['id'];
+	}
+	if(!$iid)return ''; // TODO: no-image here
+	return '<a class="products-lightbox" href="/kfmget/'.$iid.'"><img src="/kfmget/'.$iid.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" /></a>';
 }
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
-	$c='';
+	$c='<script src="/ww.plugins/products/j/jquery.lightbox-0.5.min.js"></script><script src="/ww.plugins/products/j/js.js"></script><link rel="stylesheet" type="text/css" href="/ww.plugins/products/c/jquery.lightbox-0.5.css" />';
 	// { search
 	$search=isset($_REQUEST['products-search'])?$_REQUEST['products-search']:'';
 	if(isset($PAGEDATA->vars['products_add_a_search_box']) && $PAGEDATA->vars['products_add_a_search_box']){
@@ -68,11 +90,8 @@ function products_show_all($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0
 	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
 function products_setup_smarty(){
-	$smarty=new Smarty();
+	$smarty=smarty_setup();
 	$smarty->compile_dir=USERBASE.'/ww.cache/products/templates_c';
-	$smarty->left_delimiter = '{{';
-	$smarty->right_delimiter = '}}';
-	$smarty->register_function('PRODUCTS_BUTTON_ADD_TO_CART','products_get_add_to_cart_button');
 	$smarty->template_dir='/ww.cache/products/templates';
 	return $smarty;
 }
@@ -142,14 +161,14 @@ class Products{
 	}
 	function getByCategory($id,$search=''){
 		if(!is_numeric($id)) return false;
-		$id=md5($id.'|'.$search);
-		if(!array_key_exists($id,self::$instances)){
+		$md5=md5($id.'|'.$search);
+		if(!array_key_exists($md5,self::$instances)){
 			$product_ids=array();
 			$rs=dbAll('select id from products,products_categories_products where id=product_id and enabled and category_id='.$id);
 			foreach($rs as $r)$product_ids[]=$r['id'];
-			new Products($product_ids,$id,$search);
+			new Products($product_ids,$md5,$search);
 		}
-		return self::$instances[$id];
+		return self::$instances[$md5];
 	}
 	function getByType($id,$search=''){
 		if(!is_numeric($id)) return false;
@@ -263,9 +282,8 @@ class ProductType{
 	}
 	function render($product,$template='singleview'){
 		$smarty=products_setup_smarty();
-		$GLOBALS['smarty_vars']=array(
-			'product_id'=>$product->get('id')
-		);
+		$smarty->assign('product',$product);
+		$smarty->assign('product_id',$product->get('id'));
 		foreach($this->data_fields as $f){
 			$f->n=preg_replace('/[^a-zA-Z0-9\-_]/','_',$f->n);
 			$val=$product->get($f->n);

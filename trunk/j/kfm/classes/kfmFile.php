@@ -21,6 +21,7 @@ class kfmFile extends kfmObject{
 			$this->id=(int)func_get_arg(0);
 			parent::__construct();
 			$filedata=db_fetch_row("SELECT id,name,directory FROM ".KFM_DB_PREFIX."files WHERE id=".$this->id);
+			if($filedata===false)return false; // does not exist in database
 			$this->name=$filedata['name'];
 			$this->parent=$filedata['directory'];
 			$dir=kfmDirectory::getInstance($this->parent);
@@ -28,7 +29,6 @@ class kfmFile extends kfmObject{
 			$this->directory=$dir->path();
 			$this->path=$this->directory.'/'.$filedata['name'];
 			if(!$this->exists()){
-//				$this->error(kfm_lang('File cannot be found')); // removed because it is causing false errors
 				$this->delete();
 				return false;
 			}
