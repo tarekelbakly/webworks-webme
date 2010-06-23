@@ -52,10 +52,11 @@ else{
 		'name'=>'',
 		'data_fields'=>'',
 		'product_type_id'=>0,
-		'default_image'=>'',
+		'image_default'=>0,
 		'enabled'=>1,
 		'date_created'=>date('Y-m-d'),
-		'data_fields'=>'{}'
+		'data_fields'=>'{}',
+		'images_directory'=>''
 	);
 }
 echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" method="post"><input type="hidden" name="action" value="save" />';
@@ -92,7 +93,7 @@ echo '>No</option></select></td></tr>';
 echo '<tr><th><div class="help products/images"></div>Images</th><td colspan="5">';
 if(!isset($pdata['images_directory']) || !$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
 	if(!is_dir(USERBASE.'f/products/product-images')){
-		mkdir(USERBASE.'f/products/product-images',0,true);
+		mkdir(USERBASE.'f/products/product-images',0777,true);
 	}
 	$pdata['images_directory']='/products/product-images/'.md5(rand().microtime());
 	mkdir(USERBASE.'f'.$pdata['images_directory']);

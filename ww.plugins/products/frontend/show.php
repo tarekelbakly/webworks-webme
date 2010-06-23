@@ -194,14 +194,14 @@ class Products{
 	}
 	function getByType($id,$search=''){
 		if(!is_numeric($id)) return false;
-		$id=md5($id.'|'.$search);
+		$md5=md5($id.'|'.$search);
 		if(!array_key_exists($id,self::$instances)){
 			$product_ids=array();
 			$rs=dbAll('select id from products where enabled and product_type_id='.$id);
 			foreach($rs as $r)$product_ids[]=$r['id'];
-			new Products($product_ids,$id,$search);
+			new Products($product_ids,$md5,$search);
 		}
-		return self::$instances[$id];
+		return self::$instances[$md5];
 	}
 	function render($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0){
 		$c='';
