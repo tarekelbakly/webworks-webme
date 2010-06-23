@@ -121,6 +121,7 @@ echo '<div id="data-fields"><table>';
 $dfs=json_decode($pdata['data_fields'],true);
 $dfjson=dbOne('select data_fields from products_types where id='.$pdata['product_type_id'],'data_fields');
 if($dfjson=='')$dfjson='[]';
+$dfjson=str_replace(array("\n","\r"),array('\n',''),$dfjson);
 $dfjson=json_decode($dfjson,true);
 $dfdefs=array();
 foreach($dfjson as $d)$dfdefs[$d['n']]=$d;
@@ -138,6 +139,17 @@ function product_dfs_show($df,$def){
 			echo '<input class="date-human';
 			if($def['r'])echo ' required';
 			echo '" name="data_fields['.htmlspecialchars($def['n']).']" value="'.htmlspecialchars($df['v']).'" />';
+			break;
+		// }
+		case 'selectbox': // {
+			$opts=explode("\n",$def['e']);
+			echo '<select name="data_fields['.htmlspecialchars($def['n']).']">';
+			foreach($opts as $opt){
+				echo '<option';
+				if($opt==$df['v'])echo ' selected="selected"';
+				echo '>'.htmlspecialchars($opt).'</option>';
+			}
+			echo '</select>';
 			break;
 		// }
 		case 'textarea': // {

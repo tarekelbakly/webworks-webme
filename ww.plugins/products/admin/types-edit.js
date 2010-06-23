@@ -32,6 +32,9 @@ function products_data_fields_add_row(rdata,i){
 	row+=' /></td>';
 	// }
 	// { extra
+	if(rdata.t=='selectbox'){
+		row+='<td><textarea id="product_type_fd'+i+'_extra" class="small">'+htmlspecialchars(rdata.e)+'</textarea></td>';
+	}
 	row+='<td>&nbsp;</td>';
 	// }
 	return row;
@@ -63,7 +66,8 @@ function products_data_fields_reset_value(){
 			'n':$('#product_type_fd'+i+'_name').val(),
 			't':$('#product_type_fd'+i+'_type').val(),
 			's':$('#product_type_fd'+i+'_searchable')[0].checked?1:0,
-			'r':$('#product_type_fd'+i+'_required')[0].checked?1:0
+			'r':$('#product_type_fd'+i+'_required')[0].checked?1:0,
+			'e':$('#product_type_fd'+i+'_extra').val()
 		};
 		vals.push(val);
 	}

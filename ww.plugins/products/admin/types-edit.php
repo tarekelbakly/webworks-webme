@@ -18,6 +18,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
+		$datafields=str_replace(array("\n","\r"),array('\n',''),$_REQUEST['data_fields']);
 		$sql='set name="'.addslashes($_REQUEST['name']).'",data_fields="'.addslashes($_REQUEST['data_fields']).'",multiview_template="'.addslashes($_REQUEST['multiview_template']).'",singleview_template="'.addslashes($_REQUEST['singleview_template']).'"';
 		foreach($tabs as $tab){
 			$sql.=','.$tab[0].'='.(isset($_REQUEST[$tab[0]])?1:0);
@@ -65,7 +66,7 @@ echo '</table></div>';
 // }
 // { data fields
 echo '<div id="data-fields"><p>Create the data fields of your product type here. Examples: colour, size, weight, description.</p>';
-echo '<textarea name="data_fields" id="data_fields">'.htmlspecialchars($tdata['data_fields']).'</textarea>';
+echo '<textarea name="data_fields" id="data_fields">'.htmlspecialchars(str_replace(array("\n","\r"),array('\n','\r'),$tdata['data_fields'])).'</textarea>';
 echo '</div>';
 // }
 // { multi-view template
