@@ -24,11 +24,29 @@ function products_image($params, &$smarty){
 	}
 	if(!$iid){
 		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$vals['images_directory']));
+		if(!$dir_id)return ''; // TODO: no-image here
 		$images=kfm_loadFiles($dir_id);
 		if(count($images['files']))$iid=$images['files'][0]['id'];
 	}
 	if(!$iid)return ''; // TODO: no-image here
 	return '<a class="products-lightbox" href="/kfmget/'.$iid.'"><img src="/kfmget/'.$iid.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" /></a>';
+}
+function products_images($params, &$smarty){
+	$params=array_merge(array(
+		'width'=>48,
+		'height'=>48
+	),$params);
+	$product=$smarty->_tpl_vars['product'];
+	$vals=$product->vals;
+	if(!$vals['images_directory'])return ''; // TODO: no-image here
+	$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$vals['images_directory']));
+	if(!$dir_id)return ''; // TODO: no-image here
+	$images=kfm_loadFiles($dir_id);
+	$arr=array();
+	foreach($images['files'] as $image){
+		$arr[]='<img src="/kfmget/'.$image['id'].'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';
+	}
+	return '<div class="product-images">'.join('',$arr).'</div>';
 }
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';

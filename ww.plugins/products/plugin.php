@@ -29,6 +29,9 @@ $plugin=array(
 			),
 			'PRODUCTS_IMAGE' => array(
 				'function' => 'products_image'
+			),
+			'PRODUCTS_IMAGES' => array(
+				'function' => 'products_images'
 			)
 		)
 	),
@@ -53,7 +56,7 @@ function products_frontend($PAGEDATA){
 function products_add_to_cart($PAGEDATA){
 	if(!isset($_REQUEST['products_action']))return;
 	$id=(int)$_REQUEST['product_id'];
-	require dirname(__FILE__).'/frontend/show.php';
+	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
 	if(!$product)return;
 	online_store_add_to_cart((float)$product->get('price'),1,$product->get('name'),'','products_'.$id,$_SERVER['HTTP_REFERER']);
