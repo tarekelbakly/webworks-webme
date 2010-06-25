@@ -171,6 +171,10 @@ function template_get_metadata($template,$PAGEDATA){
 		$c.='<script src="/ww.admin/j/admin-frontend.js"></script><link rel="stylesheet" href="/ww.admin/theme/admin-frontend.css" />';
 		$c.='<script src="/j/ckeditor/ckeditor.js"></script>';
 		$c.='<script src="/j/ckeditor/adapters/jquery.js"></script>';
+		foreach($GLOBALS['PLUGINS'] as $p){
+			if(!isset($p['frontend']['admin-script']))continue;
+			$c.='<script src="'.$p['frontend']['admin-script'].'"></script>';
+		}
 	}
 	// }
 	// { meta tags
