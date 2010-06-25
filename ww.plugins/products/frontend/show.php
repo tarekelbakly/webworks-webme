@@ -323,6 +323,6 @@ class ProductType{
 				// }
 			}
 		}
-		return $smarty->fetch(USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id);
+		return '<div class="products-product" id="products-'.$product->get('id').'">'.$smarty->fetch(USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id).'</div>';
 	}
 }

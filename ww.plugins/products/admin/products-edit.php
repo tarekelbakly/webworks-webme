@@ -39,6 +39,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		foreach($_REQUEST['product_categories'] as $key=>$val)dbQUery('insert into products_categories_products set product_id='.$id.',category_id='.$key);
 		// }
 		echo '<em>Product saved</em>';
+		if(isset($_REQUEST['frontend-admin'])){
+			echo '<script type="text/javascript">parent.location=parent.location;</script>';
+		}
 	}
 }
 
@@ -209,5 +212,8 @@ function show_sub_cats($parent){
 echo show_sub_cats(0);
 echo '</div>';
 // }
+if(isset($_REQUEST['frontend-admin'])){
+	echo '<input type="hidden" name="frontend-admin" value="1" />';
+}
 echo '</div><input type="submit" value="Save" /></form>';
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';

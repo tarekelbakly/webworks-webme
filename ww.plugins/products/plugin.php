@@ -22,6 +22,7 @@ $plugin=array(
 	),
 	'description' => 'Product catalogue.',
 	'frontend' => array(
+		'admin-script' => '/ww.plugins/products/j/frontend-admin.js',
 		'page_type' => 'products_frontend',
 		'template_functions' => array(
 			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
