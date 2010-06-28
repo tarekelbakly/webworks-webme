@@ -63,7 +63,8 @@
 	  		$questionID = $result['id'];
 	  		echo '<li>'.$result['question'];
 	  		echo '   <a href="'.$_url.'&amp;action=editQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">edit</a>';
-	  		echo '   <a href="'.$_url.'&amp;action=deleteQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">x</a></li>';
+	  		echo '   <a href="'.$_url.'&amp;action=deleteQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'"'
+				.' onclick="return confirm (\'Are you sure you want to delete this?\');">x</a></li>';
 		}
     	echo '</ul>';
     }
@@ -86,7 +87,7 @@
 				else {
 					dbQuery("INSERT INTO quiz_quizzes(name, description) VALUES('$quizName', '$quizTopic')");
 				}
-				include ($dir.'/formAddQuestion.php');
+				require_once $dir.'/formAddQuestion.php';
 			}
 		}
 		
@@ -97,33 +98,29 @@
       }
     }
 
-    if (isset($_POST['addQuestion'])) {
-	  $id = $_POST['quiz_id'];
-	  $topic= $_POST['topic'];
-      $question=addslashes($_POST['question']);
-      $answers=$_POST['answers'];
-      for($i=0; $i<count($answers); $i++) {
+  if (isset($_POST['addQuestion'])) {
+	$id = $_POST['quiz_id'];
+	$topic= $_POST['topic'];
+    $question=addslashes($_POST['question']);
+    $answers=$_POST['answers'];
+    for($i=0; $i<count($answers); $i++) {
 		$answers[$i]=addslashes($answers[$i]);
-      }
-      $correctAnswer = $_POST['isCorrect'];
-      if (empty($question)) {
-		echo 'Please type a question';
-		include ($dir.'/formAddQuestion.php');
-      }
-      elseif (empty($answers[0])||empty($answers[1])) {
-		echo 'You need to provide at least two possible answers in fields 1 and 2';
-		include ($dir.'/formAddQuestion.php');
-      }
-      elseif (!checkCorrectAnswer($answers, $correctAnswer)) {
-		echo 'One of the answers must be marked as correct';
-		include ($dir.'/formAddQuestion.php');
-      }
-      else {//Input is valid
-		dbQuery("INSERT INTO quiz_questions(quiz_id, question, topic, answer1, answer2, answer3, answer4, correctAnswer) VALUES('$id', '$question', '$topic', '$answers[0]', '$answers[1]', '$answers[2]', '$answers[3]', '$correctAnswer')");
-		include ($dir.'/formAddQuestion.php'); 
-      }
-      
     }
+    $correctAnswer = $_POST['isCorrect'];
+    if (empty($question)) {
+		echo 'Please type a question';
+    }
+    elseif (empty($answers[0])||empty($answers[1])) {
+		echo 'You need to provide at least two possible answers in fields 1 and 2';
+    }
+    elseif (!checkCorrectAnswer($answers, $correctAnswer)) {
+		echo 'One of the answers must be marked as correct';
+    }
+    else {//Input is valid
+		dbQuery("INSERT INTO quiz_questions(quiz_id, question, topic, answer1, answer2, answer3, answer4, correctAnswer) VALUES('$id', '$question', '$topic', '$answers[0]', '$answers[1]', '$answers[2]', '$answers[3]', '$correctAnswer')");
+    }
+    require_once $dir.'/formAddQuestion.php';  
+  }
   echo '</div>';//Ends the tabs div
   if (!(isset($_POST['action']))||$isInvalidInput){
   	if (!isset($_POST['addQuestion'])){
@@ -141,18 +138,18 @@
 	}
   }
   if (isset($_POST['add'])) {
-  	include ($dir.'/formAddQuestion.php');
+  	require_once ($dir.'/formAddQuestion.php');
   }
   echo '</form>';//End form
   echo '</div>';
 
   function checkCorrectAnswer ($array, $correctAnswer) {
-  //First check that a selection was made
+  	//First check that a selection was made
     $selectionIsValid=true;
     if (($correctAnswer<0)||($correctAnswer>5)) {
       $selectionIsValid=false;
     }
-  // Check that there is an answer at the selection
+  	// Check that there is an answer at the selection
     elseif (empty($array[$correctAnswer-1])) {
       $selectionIsValid=false;
     }

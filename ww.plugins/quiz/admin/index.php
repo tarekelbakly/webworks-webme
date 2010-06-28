@@ -1,9 +1,10 @@
 <?php
 	echo admin_menu (
 		array(
-			'New Quiz' => $_url.'&action=new'
+			'New Quiz' => $_url.'&action=newQuiz'
 		)
 	);
+	echo '<div class="has-left-menu">';
 	$dir = dirname(__FILE__);
 	switch ($action){
 	  case 'deleteQuestion'://{
@@ -14,24 +15,24 @@
 			$id=$result['quiz_id'];
 		}
 	//}
-	  case 'new':
-	  case 'edit'://{
-	    include ($dir.'/form.php');
+	  case 'newQuiz':
+	  case 'editQuiz':// { What to do if the user want to enter a new quiz or edit a quiz
+	    require_once $dir.'/form.php';
 	    break;
-	  //}
-	  case 'delete'://{
+	  // }
+	  case 'deleteQuiz':// { What to do if the user wants to delete a quiz and confirms it
 	  	dbQuery("DELETE FROM quiz_quizzes WHERE id = '$id'");
 		dbQuery("DELETE FROM quiz_questions WHERE quiz_id = '$id'");
 		//Not breaking because I want the quizzes to display
-	  //}
-		default://{
-			$quizzes = dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions WHERE quiz_quizzes.id=quiz_questions.quiz_id");
+	  // }
+		default:// { Display the quizzes
+			$quizzes = dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
 			foreach ($quizzes as $quiz) {
 				echo $quiz['name'];
-				echo '   <a href= "'.$_url.'&amp;action=edit&amp;id='.$quiz['id'].'">edit</a>';
-				echo '   <a href="'.$_url.'&amp;action=delete&amp;id='.$quiz['id'].'"'
+				echo '   <a href= "'.$_url.'&amp;action=editQuiz&amp;id='.$quiz['id'].'">edit</a>';
+				echo '   <a href="'.$_url.'&amp;action=deleteQuiz&amp;id='.$quiz['id'].'"'
 					.' onclick="return confirm(\'are you sure you want to delete this?\');">x</a><br/>';
 			}
-		//}
+		// }
 	  }
-?>	
+	  echo '</div>';
