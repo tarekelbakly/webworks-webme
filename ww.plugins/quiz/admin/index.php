@@ -7,8 +7,14 @@
 	echo '<div class="has-left-menu">';
 	$dir = dirname(__FILE__);
 	switch ($action){
-	  case 'deleteQuestion'://{
-	  	$questionid=$_GET['questionid'];
+	  case 'editQuestion': // {What to do if the user wants to edit a question
+	  	$questionID= $_GET['questionid'];
+		require_once $dir.'/form.php';
+		require_once $dir.'/formAddQuestion.php';
+		break;
+	  // }
+	  case 'deleteQuestion'://{What to do if the user wants to delete a question
+	  	$questionid= $_GET['questionid'];
 	  	dbQuery("DELETE FROM quiz_questions WHERE id = '$questionid'");
 		$results= dbAll ("SELECT quiz_id FROM quiz_questions WHERE id = '$id'");
 		foreach ($results as $result) {

@@ -14,7 +14,7 @@
 		'version'=>3
 	);
 	// }
-	
+
 	function quiz_display_page () {
 		$dir= dirname(__FILE__);
 		require_once $dir.'/frontend/display.php';

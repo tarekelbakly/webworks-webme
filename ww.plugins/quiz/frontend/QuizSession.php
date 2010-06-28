@@ -1,5 +1,4 @@
 <?php
-// {
 	class QuizSession {
 		private $name;
 		private $numQuestions;
@@ -49,15 +48,14 @@
 			for ($i=0; $i<$numQuestionsToBeAnswered; $i++) {
 				$index=rand(0,($numQuestions-1));
 				while (in_array($index, $indices)) {//Don't repeat questions
-					$index=rand(0, $numQuestions);
+					$index=rand(0, ($numQuestions-1));
 				}
 				$indices[$i] = $index;
 				$questionsToBeAsked[$i]=$allQuestions[$index];
 			}
 			$_SESSION['questions']=$questionsToBeAsked;
 		}
-//Displays the questions and answers as a list using radio buttons for the answers
-		function getQuestionPageHtml () {
+		function getQuestionPageHtml () {//Displays the questions and possible answers
 			global $questionsToBeAsked;
 			$quizString='<form method="post"><ol>';
 			for ($i=0; $i<count($questionsToBeAsked); $i++) {
@@ -76,24 +74,21 @@
 			return $quizString;
 		}
 
-		function checkAnswers ($questions, $answers) {
-		      $score = $this->score;//I'm using global because I want to change the value of this->score
-		      $numQuestionsToBeAnswered= count($questions);; //Not changing this
-		      for ($i=0; $i<$numQuestionsToBeAnswered; $i++) {
-			    $question= $questions[$i]['question'];
-			    $correctAnswer= $questions[$i]['correctAnswer'];
-				$key= $questions[$i]['id'];
-				$answer= $answers[$key];
-			    $returnString= $returnString.'You answered '.$answer.'<br/>';
-				$returnString= $returnString.'The correct answer was '.$correctAnswer.'<br/>';
-				if($answer==$correctAnswer) {
-				$score++;
-			    }
+		function checkAnswers ($questions, $answers) { //Checks the Answers
+		    $score = $this->score; // I may be changing the object but the score always defaults to 0
+		    $numQuestionsToBeAnswered= count($questions);; //Not changing this
+		    for ($i=0; $i<$numQuestionsToBeAnswered; $i++) {
+			   $question= $questions[$i]['question'];
+			   $correctAnswer= $questions[$i]['correctAnswer'];
+			   $key= $questions[$i]['id'];
+			   $answer= $answers[$key];
+			   $returnString= $returnString.'You answered '.$answer.'<br/>';
+			   $returnString= $returnString.'The correct answer was '.$correctAnswer.'<br/>';
+			   if($answer==$correctAnswer) {
+				  $score++;
+			   }
 		    }
 		    $returnString= $returnString.'You scored '.$score;
 			return $returnString;
 		}
-		
-	
 	}
-// }

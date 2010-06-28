@@ -6,7 +6,6 @@
 		echo '$("#tabs").tabs();';
 	echo '});';
   echo '</script>';
-  echo '<div class="has-left-menu">';
   echo '<h3>';
   if ($id) {
   	echo 'Edit Quiz';
@@ -86,8 +85,8 @@
 				}
 				else {
 					dbQuery("INSERT INTO quiz_quizzes(name, description) VALUES('$quizName', '$quizTopic')");
+					require_once $dir.'/formAddQuestion.php';
 				}
-				require_once $dir.'/formAddQuestion.php';
 			}
 		}
 		
@@ -98,7 +97,7 @@
       }
     }
 
-  if (isset($_POST['addQuestion'])) {
+  if (isset($_POST['questionAction'])) {
 	$id = $_POST['quiz_id'];
 	$topic= $_POST['topic'];
     $question=addslashes($_POST['question']);
@@ -117,31 +116,40 @@
 		echo 'One of the answers must be marked as correct';
     }
     else {//Input is valid
-		dbQuery("INSERT INTO quiz_questions(quiz_id, question, topic, answer1, answer2, answer3, answer4, correctAnswer) VALUES('$id', '$question', '$topic', '$answers[0]', '$answers[1]', '$answers[2]', '$answers[3]', '$correctAnswer')");
+		$questionID = $_GET['questionid'];
+		if ($questionID) {
+			dbQuery ("UPDATE quiz_questions SET question = '$question', topic = '$topic', answer1 = '$answers[0]', answer2 = '$answers[1]', answer3 = '$answers[2]', answer4 = '$answers[3]', correctAnswer = '$correctAnswer' WHERE id = '$questionID'");
+		}
+		else {
+			dbQuery("INSERT INTO quiz_questions(quiz_id, question, topic, answer1, answer2, answer3, answer4, correctAnswer) VALUES('$id', '$question', '$topic', '$answers[0]', '$answers[1]', '$answers[2]', '$answers[3]', '$correctAnswer')");
+		}
     }
     require_once $dir.'/formAddQuestion.php';  
   }
   echo '</div>';//Ends the tabs div
-  if (!(isset($_POST['action']))||$isInvalidInput){
-  	if (!isset($_POST['addQuestion'])){
-    	echo '<input type="submit" name="action" value="';
-		if ($id) {
-			echo 'Edit Quiz';
+  $questionID= $_GET['questionid'];
+  if (!$questionID) {
+  	if (!(isset($_POST['action']))||$isInvalidInput){
+  		if (!isset($_POST['questionAction'])){
+    		echo '<input type="submit" name="action" value="';
+			if ($id) {
+				echo 'Edit Quiz';
+			}	
+			else {
+				echo 'Add Quiz';
+			}
+			echo'"/>';
 		}
-		else {
-			echo 'Add Quiz';
+
+		if ($id && !isset($_POST['questionAction'])) {
+			echo '<input type="submit" name="add" value="Add Question"/>';
 		}
-		echo'"/>';
-	}
-	if ($id && !isset($_POST['addQuestion'])) {
-		echo '<input type="submit" name="add" value="Add Question"/>';
-	}
+  	}
+  	if (isset($_POST['add'])) {
+  		require_once ($dir.'/formAddQuestion.php');
+  	}
   }
-  if (isset($_POST['add'])) {
-  	require_once ($dir.'/formAddQuestion.php');
-  }
-  echo '</form>';//End form
-  echo '</div>';
+  	echo '</form>';//End form
 
   function checkCorrectAnswer ($array, $correctAnswer) {
   	//First check that a selection was made
