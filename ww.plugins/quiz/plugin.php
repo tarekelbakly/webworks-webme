@@ -16,7 +16,8 @@
 
 	
 	function quiz_display_page () {
-		include (__DIR__.'/frontend/display.php');
+		$dir= dirname(__FILE__);
+		include ($dir'/frontend/display.php');
 		return getPageHtml();
 	}
 
