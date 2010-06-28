@@ -1,11 +1,13 @@
 <?php
   echo '<form method="post">';
   // { Question Tab
+  $quizName= addSlashes($quizName);
   $result = dbAll("SELECT id FROM quiz_quizzes WHERE name='$quizName';");
   foreach ($result as $r) {
 	$id = $r['id'];
   }
   $questionID= $_GET['questionid'];
+  $questionID= addslashes($questionID);
   if ($questionID) {
   	$question= dbAll ("SELECT * FROM quiz_questions WHERE id='$questionID'");
   }
@@ -19,9 +21,9 @@
   }
   echo '</h2>';
   echo '<input type="hidden" name="quiz_id" value="';
-  echo $id.'"/>';
+  echo htmlspecialchars($id).'"/>';
   echo '<input type="hidden" name="question_id" value="';
-  echo $_GET['questionid'].'"';
+  echo htmlspecialchars($_GET['questionid']).'"';
   echo '"/>';
   echo '<br/>';
   echo 'Question';

@@ -34,7 +34,8 @@
 		default:// { Display the quizzes
 			$quizzes = dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
 			foreach ($quizzes as $quiz) {
-				echo $quiz['name'];
+				echo htmlspecialchars($quiz['name']);
+				$quiz['id']=addslashes($quiz['id']);
 				echo '   <a href= "'.$_url.'&amp;action=editQuiz&amp;id='.$quiz['id'].'">edit</a>';
 				echo '   <a href="'.$_url.'&amp;action=deleteQuiz&amp;id='.$quiz['id'].'"'
 					.' onclick="return confirm(\'are you sure you want to delete this?\');">x</a><br/>';

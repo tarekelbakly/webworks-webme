@@ -47,11 +47,12 @@
 
 		}*/
 		if (isset($_POST['take'])) {
-		 $id = $_POST['take'];
-		 $quiz = new QuizSession($id, 10);
-		 $_SESSION['id']=$id;
-		 $quiz->chooseQuestions();
-		 $displayString = $quiz->getQuestionPageHtml();
+			$id= $_POST['take'];
+			$id= addSlashes($id);
+		 	$quiz = new QuizSession($id, 10);
+		 	$_SESSION['id']=$id;
+		 	$quiz->chooseQuestions();
+		 	$displayString = $quiz->getQuestionPageHtml();
 		 }
 		 if (isset($_POST['check'])) {
 			$quiz = new QuizSession ($_SESSION['id'], 10);

@@ -9,15 +9,12 @@
 		private $allQuestions;
 
 		function __construct ($num, $questionsToBeAnswered) {
-			$this->id= $num;
+			$this->id= addslashes($num);
 			$id= $this->id;
 			$this->score= 0;
 			$this->numQuestionsToBeAnswered = $questionsToBeAnswered;
-			$quizzes= dbAll ("SELECT * FROM quiz_quizzes WHERE id = '".addslashes($id)."'");
-			foreach ($quizzes as $q) {
-				$this->id = $q['id'];
-			}
-			$rows = dbAll("SELECT * FROM quiz_questions WHERE quiz_id = '$this->id' AND question IS NOT NULL");
+			$quizzes= dbAll ("SELECT * FROM quiz_quizzes WHERE id = '".$id."'");
+			$rows = dbAll("SELECT * FROM quiz_questions WHERE quiz_id = '$id' AND question IS NOT NULL");
 			if (count($rows)!=0) {
 			// I want the questions to be in an indexed array
 				$this->allQuestions=array();

@@ -9,6 +9,7 @@
   echo '<h3>';
   if ($id) {
   	echo 'Edit Quiz';
+	$id= addslashes($id);
 	$quiz = dbAll ("SELECT * FROM quiz_quizzes, quiz_questions WHERE quiz_quizzes.id='$id' AND quiz_questions.quiz_id ='$id'");
   }
   else {
@@ -128,6 +129,7 @@
   }
   echo '</div>';//Ends the tabs div
   $questionID= $_GET['questionid'];
+  $questionID= addslashes($questionID);
   if (!$questionID) {
   	if (!(isset($_POST['action']))||$isInvalidInput){
   		if (!isset($_POST['questionAction'])){
