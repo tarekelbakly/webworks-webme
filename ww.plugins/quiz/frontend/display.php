@@ -55,7 +55,7 @@
 		 $displayString = $quiz->getQuestionPageHtml();
 		 }
 		 if (isset($_POST['check'])) {
-		 	include_once (__DIR__.'/QuizSession.php');
+		 	include_once ($dir.'/display.php');
 			$quiz = new QuizSession ($_SESSION['id'], 10);
 		 	$displayString= $quiz->checkAnswers($_SESSION['questions'], $_POST);
 		 }
