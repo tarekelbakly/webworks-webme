@@ -9,7 +9,9 @@ $plugin=array(
 	'description' => 'Create your own polls with this plugin.',
 	'frontend' => array(
 		'template_functions' => array(
+			'POLL' => array(
 				'function' => 'pollDisplay'
+			)
 		),
 		'widget' => 'pollDisplay'
 	)
