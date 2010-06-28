@@ -82,13 +82,16 @@
 			   $correctAnswer= $questions[$i]['correctAnswer'];
 			   $key= $questions[$i]['id'];
 			   $answer= $answers[$key];
+			   $questionNum= $i+1;
+			   $returnString= $returnString.'Question '.$questionNum.'<br/>';
 			   $returnString= $returnString.'You answered '.$answer.'<br/>';
 			   $returnString= $returnString.'The correct answer was '.$correctAnswer.'<br/>';
+			   $returnString= $returnString.'<br/>';
 			   if($answer==$correctAnswer) {
 				  $score++;
 			   }
 		    }
-		    $returnString= $returnString.'You scored '.$score;
+		    $returnString= $returnString.'You scored '.$score.' out of '.$numQuestionsToBeAnswered;
 			return $returnString;
 		}
 	}
