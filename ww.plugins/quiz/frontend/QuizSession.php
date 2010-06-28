@@ -1,5 +1,5 @@
 <?php
-//{
+// {
 	class QuizSession {
 		private $name;
 		private $numQuestions;
@@ -14,14 +14,13 @@
 			$id= $this->id;
 			$this->score= 0;
 			$this->numQuestionsToBeAnswered = $questionsToBeAnswered;
-			$quizzes= dbAll ("SELECT * FROM quiz_quizzes WHERE name = '".addslashes($id)."'");
+			$quizzes= dbAll ("SELECT * FROM quiz_quizzes WHERE id = '".addslashes($id)."'");
 			foreach ($quizzes as $q) {
 				$this->id = $q['id'];
 			}
 			$rows = dbAll("SELECT * FROM quiz_questions WHERE quiz_id = '$this->id' AND question IS NOT NULL");
-			echo count($rows);
-				if (count($rows)!=0) {
-				// I want the questions to be in an indexed array
+			if (count($rows)!=0) {
+			// I want the questions to be in an indexed array
 				$this->allQuestions=array();
 				$i=0;
 				foreach ($rows as $row) {
@@ -97,4 +96,4 @@
 		
 	
 	}
-//}
+// }

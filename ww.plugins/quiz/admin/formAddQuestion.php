@@ -9,6 +9,8 @@
 	  echo '<h2>New Question</h2>';
 	  echo '<input type="hidden" name="quiz_id" value="';
 	  echo $id.'"';
+	  echo '<input type="hidden" name="question_id" value="';
+	  echo $_GET['questionid'].'"';
 	  echo '"/>';
 	  echo '<br/>';
 	  echo 'Question';

@@ -1,4 +1,5 @@
 <?php
+// {
   if($version==0){//Create the tables
   	dbQuery('CREATE TABLE IF NOT EXISTS `quiz_quizzes` (
 							`id` int (11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -29,4 +30,4 @@
   }
   $DBVARS[$pname.'|version']=$version;
   config_rewrite();
-
+// }

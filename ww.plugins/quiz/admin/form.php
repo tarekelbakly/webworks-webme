@@ -63,7 +63,9 @@
 	echo '<ul>';
 	foreach ($results as $result) {
 	  $questionID = $result['id'];
-	  echo '<li>'.$result['question'].'   <a href="'.$_url.'&amp;action=deleteQuestion&amp;questionID='.$questionID.'">x</a></li>';
+	  echo '<li>'.$result['question'];
+	  echo '   <a href="'.$_url.'&amp;action=editQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">edit</a>';
+	  echo '   <a href="'.$_url.'&amp;action=deleteQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">x</a></li>';
 	}
       echo '</ul>';
     }
