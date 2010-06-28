@@ -1,5 +1,5 @@
 <?php 
-// {
+	// { The plugin array
 	$plugin = array (
 		'name' =>'Quizzes',
 		'hide_from_admin' => true,
@@ -13,13 +13,10 @@
 		'description'=>'Create a quiz with this plugin',
 		'version'=>3
 	);
-
+	// }
 	
 	function quiz_display_page () {
 		$dir= dirname(__FILE__);
-		include ($dir'/frontend/display.php');
+		require_once $dir.'/frontend/display.php';
 		return getPageHtml();
 	}
-
-// }
-

@@ -47,27 +47,27 @@
       echo ' value="'.stripslashes(htmlspecialchars($_POST['description'])).'"';
     }
     if ($id) {
-	echo ' value="';
-	foreach ($quiz as $q) {
-	  echo htmlspecialchars($q['description']);
-	  break;
-	}
-	echo '"';
+		echo ' value="';
+		foreach ($quiz as $q) {
+	  		echo htmlspecialchars($q['description']);
+	  		break;
+		}
+		echo '"';
     }
     echo '/>';
     echo '</div>';//Ends the tabpage div}
   //Questions tab {
     echo '<div id="Questions">';
-      if ($id) {
-	$results=dbAll("SELECT * FROM quiz_questions WHERE quiz_id='".$id."'");
-	echo '<ul>';
-	foreach ($results as $result) {
-	  $questionID = $result['id'];
-	  echo '<li>'.$result['question'];
-	  echo '   <a href="'.$_url.'&amp;action=editQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">edit</a>';
-	  echo '   <a href="'.$_url.'&amp;action=deleteQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">x</a></li>';
-	}
-      echo '</ul>';
+    if ($id) {
+		$results=dbAll("SELECT * FROM quiz_questions WHERE quiz_id='".$id."'");
+		echo '<ul>';
+		foreach ($results as $result) {
+	  		$questionID = $result['id'];
+	  		echo '<li>'.$result['question'];
+	  		echo '   <a href="'.$_url.'&amp;action=editQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">edit</a>';
+	  		echo '   <a href="'.$_url.'&amp;action=deleteQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">x</a></li>';
+		}
+    	echo '</ul>';
     }
     echo '</div>';
     if (isset($_POST['action'])) {
@@ -125,7 +125,7 @@
 		include ($dir.'/formAddQuestion.php'); 
       }
       
-    }//
+    }
   echo '</div>';//Ends the tabs div
   if (!(isset($_POST['action']))||$isInvalidInput){
   	if (!isset($_POST['addQuestion'])){
