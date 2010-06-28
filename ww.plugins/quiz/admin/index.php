@@ -1,8 +1,9 @@
 <?php
-	echo admin_menu (array(
-			  	 'New Quiz' => $_url.'&action=new'
-				)
-			);
+	echo admin_menu (
+		array(
+			'New Quiz' => $_url.'&action=new'
+		)
+	);
 	$dir = dirname(__FILE__);
 	switch ($action){
 	  case 'deleteQuestion'://{
@@ -28,7 +29,8 @@
 			foreach ($quizzes as $quiz) {
 				echo $quiz['name'];
 				echo '   <a href= "'.$_url.'&amp;action=edit&amp;id='.$quiz['id'].'">edit</a>';
-				echo '   <a href="'.$_url.'&amp;action=delete&amp;id='.$quiz['id'].'">x</a><br/>';
+				echo '   <a href="'.$_url.'&amp;action=delete&amp;id='.$quiz['id'].'"'
+					.' onclick="return confirm(\'are you sure you want to delete this?\');">x</a><br/>';
 			}
 		//}
 	  }

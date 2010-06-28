@@ -8,8 +8,6 @@
   echo '</script>';
   echo '<div class="has-left-menu">';
   echo '<h3>';
-  if (!$id)
-  	$id = $_POST['id'];
   if ($id) {
   	echo 'Edit Quiz';
 	$quiz = dbAll ("SELECT * FROM quiz_quizzes, quiz_questions WHERE quiz_quizzes.id='$id' AND quiz_questions.quiz_id ='$id'");
