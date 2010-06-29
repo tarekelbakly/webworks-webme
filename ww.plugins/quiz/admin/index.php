@@ -32,14 +32,34 @@
 		//Not breaking because I want the quizzes to display
 	  // }
 		default:// { Display the quizzes
-			$quizzes = dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
-			foreach ($quizzes as $quiz) {
-				echo htmlspecialchars($quiz['name']);
-				$quiz['id']=addslashes($quiz['id']);
-				echo '   <a href= "'.$_url.'&amp;action=editQuiz&amp;id='.$quiz['id'].'">edit</a>';
-				echo '   <a href="'.$_url.'&amp;action=deleteQuiz&amp;id='.$quiz['id'].'"'
-					.' onclick="return confirm(\'are you sure you want to delete this?\');">x</a><br/>';
-			}
+			// {The javascript to display the table
+			echo '<script>';
+			echo '$(document).ready(function(){';
+			echo '$(\'#quizTable\').dataTable();';
+			echo '});';
+			echo '</script>';
 		// }
-	  }
-	  echo '</div>';
+			$quizzes = dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
+			// { The quiz Table
+			echo '<div id="quiz-table-wrapper" style="width:400px"><table id="quizTable" style="width:100%">';
+			echo '<thead>';
+			echo '<tr>';
+			echo '<th>Name</th>';
+			echo '<th>&nbsp;</th>';
+			echo '<th>&nbsp</th>';
+			echo '</tr></thead>';
+			echo '<tbody>';
+			foreach ($quizzes as $quiz) {
+				echo '<tr>';
+				echo '<td>'.htmlspecialchars($quiz['name']).'</td>';
+				$quiz['id']=addslashes($quiz['id']);
+				echo '<td><a href= "'.$_url.'&amp;action=editQuiz&amp;id='.$quiz['id'].'">edit</a></td>';
+				echo '<td><a href="'.$_url.'&amp;action=deleteQuiz&amp;id='.$quiz['id'].'"'
+					.' onclick="return confirm(\'are you sure you want to delete this?\');">x</a></td>';
+				echo '</tr>';
+			}
+			echo '</tbody></table></div>';
+			// }
+		// }
+	}
+	echo '</div>';
