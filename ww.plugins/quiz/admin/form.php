@@ -10,7 +10,7 @@
   if ($id) {
   	echo 'Edit Quiz';
 	$id= addslashes($id);
-	$quiz = dbAll ("SELECT * FROM quiz_quizzes, quiz_questions WHERE quiz_quizzes.id='$id' AND quiz_questions.quiz_id ='$id'");
+	$quiz = dbAll ("SELECT * FROM quiz_quizzes WHERE quiz_quizzes.id='$id'");
   }
   else {
   	echo 'New Quiz';
@@ -35,8 +35,12 @@
 		echo htmlspecialchars($q['name']);
 		break;
       }
+	  
       echo '"';
     }
+	else {
+	  echo 'value="Hi"';
+	}
     echo ' />';
     echo '<br/>';
     echo 'Description';

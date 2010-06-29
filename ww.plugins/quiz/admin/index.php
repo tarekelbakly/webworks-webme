@@ -38,7 +38,7 @@
 			echo '$(\'#quizTable\').dataTable();';
 			echo '});';
 			echo '</script>';
-		// }
+			// }
 			$quizzes = dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
 			// { The quiz Table
 			echo '<div id="quiz-table-wrapper" style="width:400px"><table id="quizTable" style="width:100%">';
