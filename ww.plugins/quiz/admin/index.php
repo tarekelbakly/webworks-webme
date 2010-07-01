@@ -1,8 +1,16 @@
 <?php
+	$menuItems= array ();
+	$quizzes= dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
+	$pageQuizzes= dbAll("SELECT name from quiz_quizzes LIMIT 0,15");
+	foreach ($pageQuizzes as $quiz) {
+		$menuItems[$quiz['name']]= $_url.'&amp;action=editQuiz&amp;id='.$quiz['id'];
+	}
+	$menuItems['New Quiz']= $_url.'&amp;action=newQuiz';
+	if (count($quizzes)>count($pageQuizzes)){
+		$menuItems['More Quizzes']= $_url;
+	}
 	echo admin_menu (
-		array(
-			'New Quiz' => $_url.'&action=newQuiz'
-		)
+		$menuItems
 	);
 	echo '<div class="has-left-menu">';
 	$dir = dirname(__FILE__);
@@ -39,7 +47,6 @@
 			echo '});';
 			echo '</script>';
 			// }
-			$quizzes = dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
 			// { The quiz Table
 			echo '<div id="quiz-table-wrapper" style="width:400px"><table id="quizTable" style="width:100%">';
 			echo '<thead>';

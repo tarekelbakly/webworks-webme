@@ -38,9 +38,6 @@
 	  
       echo '"';
     }
-	else {
-	  echo 'value="Hi"';
-	}
     echo ' />';
     echo '<br/>';
     echo 'Description';
@@ -121,6 +118,9 @@
 		echo 'One of the answers must be marked as correct';
     }
     else {//Input is valid
+		echo '<script>';
+		echo '#Questions.append($question);';
+		echo '</script>';
 		$questionID = $_GET['questionid'];
 		if ($questionID) {
 			dbQuery ("UPDATE quiz_questions SET question = '$question', topic = '$topic', answer1 = '$answers[0]', answer2 = '$answers[1]', answer3 = '$answers[2]', answer4 = '$answers[3]', correctAnswer = '$correctAnswer' WHERE id = '$questionID'");
@@ -132,9 +132,7 @@
     require_once $dir.'/formAddQuestion.php';  
   }
   echo '</div>';//Ends the tabs div
-  $questionID= $_GET['questionid'];
-  $questionID= addslashes($questionID);
-  if (!$questionID) {
+  if (!isset($_GET['questionid'])){
   	if (!(isset($_POST['action']))||$isInvalidInput){
   		if (!isset($_POST['questionAction'])){
     		echo '<input type="submit" name="action" value="';
@@ -155,7 +153,10 @@
   		require_once ($dir.'/formAddQuestion.php');
   	}
   }
-  	echo '</form>';//End form
+  else {
+  	$questionID= addslashes($_GET['questionid']);
+  }
+  echo '</form>';//End form
 
   function checkCorrectAnswer ($array, $correctAnswer) {
   	//First check that a selection was made

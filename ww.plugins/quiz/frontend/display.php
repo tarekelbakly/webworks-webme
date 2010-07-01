@@ -2,14 +2,14 @@
 	$dir= dirname(__FILE__);
     require_once ($dir.'/QuizSession.php');
 	function displayQuizInfo ($name, $topic, $id) {
-		$returnString = $returnString.'<td>'.htmlspecialchars($name).'</td>';
+		$returnString = '<td>'.htmlspecialchars($name).'</td>';
 		$returnString = $returnString.'<td>'.htmlspecialchars($topic).'</td>';
 		$returnString = $returnString.'<td><button type="submit" value="'.htmlspecialchars($id).'" name="take">Take Quiz</button></td>';
 		return $returnString;
 	}
 
 	function getPageHtml () {
-		$displayString= $displayString.'<script src="/j/datatables/media/js/jquery.dataTables.js"></script>';
+		$displayString= '<script src="/j/datatables/media/js/jquery.dataTables.js"></script>';
 		$displayString= $displayString.'<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />';
 		$displayString= $displayString.'<style> * .dataTables_wrapper{clear:none;';
 		$displayString= $displayString.'padding:10px;}</style>';
@@ -30,7 +30,7 @@
 		$displayString= $displayString.'</tr></thead>';
 		$displayString= $displayString.'<tbody>';
 		foreach ($quizzes as $quiz) {
-			$quizId= $quiz['quiz_quizzes.id'];
+			$quizId= $quiz['id'];
 			$name = $quiz['name'];
 			$topic= $quiz['description'];
 			$id=$quiz['id'];

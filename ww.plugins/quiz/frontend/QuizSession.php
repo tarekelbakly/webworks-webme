@@ -73,7 +73,8 @@
 
 		function checkAnswers ($questions, $answers) { //Checks the Answers
 		    $score = $this->score; // I may be changing the object but the score always defaults to 0
-		    $numQuestionsToBeAnswered= count($questions);; //Not changing this
+		    $numQuestionsToBeAnswered= count($questions);
+			$returnString="";
 		    for ($i=0; $i<$numQuestionsToBeAnswered; $i++) {
 			   $question= $questions[$i]['question'];
 			   $correctAnswer= $questions[$i]['correctAnswer'];
