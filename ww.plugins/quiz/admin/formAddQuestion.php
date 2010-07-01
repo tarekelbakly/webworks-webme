@@ -59,12 +59,26 @@
   	echo 'New Answers';
   }
   echo '</h2>';
+  echo '<table>';
+  echo '<thead>';
+  echo '<tr>';
+  echo '<th>';
+  echo 'Possible Answers';
+  echo '</th>';
+  echo '<th>';
+  echo 'Correct Answer';
+  echo '</th>';
+  echo '</tr>';
+  echo '</thead>';
+  echo '<tbody>';
   for ($i=0; $i<'4'; $i++) {
 	$num=$i+1;
-	echo 'Possible Answer '.$num.' ';
+	echo '<tr>';
 	addAnswer($num);
-	echo '<br/>';
-  }	 
+	echo '</tr>';
+  }
+  echo '</tbody>';
+  echo '</table>';
   echo '</div>';
   // }
   echo '<input type="submit" name="questionAction" value="';
@@ -81,6 +95,7 @@
   function addAnswer($num) {
   	global $questionID;
 	global $question;
+	echo '<td>';
 	echo '<input type="text" name="answers[]"';
 	if (isset ($_POST['answers'])) {
 	  $answers = $_POST['answers'];
@@ -99,6 +114,8 @@
 	}
 	echo '/>';
 	pad();
+	echo '</td>';
+	echo '<td>';
 	echo '<input type="radio" name="isCorrect" value="'.$num.'"';
 	if ($questionID) {
 		foreach ($question as $q) {
@@ -108,7 +125,9 @@
 			}
 		}
 		echo '/>';
-  } 
+		echo '</td>';
+	}
+   
 
   function pad () {
 	echo '   ';
