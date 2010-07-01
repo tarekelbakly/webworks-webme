@@ -1,7 +1,7 @@
 <?php
 	$menuItems= array ();
 	$quizzes= dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
-	$pageQuizzes= dbAll("SELECT name from quiz_quizzes LIMIT 0,15");
+	$pageQuizzes= dbAll("SELECT name,id from quiz_quizzes LIMIT 0,15");
 	foreach ($pageQuizzes as $quiz) {
 		$menuItems[$quiz['name']]= $_url.'&amp;action=editQuiz&amp;id='.$quiz['id'];
 	}

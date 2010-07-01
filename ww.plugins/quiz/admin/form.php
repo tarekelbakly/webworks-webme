@@ -68,7 +68,10 @@
 				.' onclick="return confirm (\'Are you sure you want to delete this?\');">x</a></li>';
 		}
     	echo '</ul>';
-    }
+   } 
+   if ($id && !isset($_POST['questionAction'])) {
+		echo '<input type="submit" name="add" value="Add Question"/>';
+   }
     echo '</div>';
     if (isset($_POST['action'])) {
       if (!empty($_POST['name'])) {
@@ -145,9 +148,6 @@
 			echo'"/>';
 		}
 
-		if ($id && !isset($_POST['questionAction'])) {
-			echo '<input type="submit" name="add" value="Add Question"/>';
-		}
   	}
   	if (isset($_POST['add'])) {
   		require_once ($dir.'/formAddQuestion.php');
