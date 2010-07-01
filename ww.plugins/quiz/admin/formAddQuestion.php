@@ -1,20 +1,12 @@
 <?php
   echo '<form method="post">';
   // { Question Tab
-  $quizName= addSlashes($quizName);
-  $result = dbAll("SELECT id FROM quiz_quizzes WHERE name='$quizName';");
-  foreach ($result as $r) {
-	$id = $r['id'];
-  }
-  $questionID= $_GET['questionid'];
-  $questionID= addslashes($questionID);
-  if ($questionID) {
-  	$question= dbAll ("SELECT * FROM quiz_questions WHERE id='$questionID'");
-  }
   echo '<div class="tabpage">';
   echo '<h2>';
-  if ($questionID) {
+  if (isset($_GET['questionid'])) {
+  	$questionID= addslashes($_GET['questionid']);
   	echo 'Edit Question';
+	$question= dbAll("SELECT * FROM quiz_questions WHERE id='$questionID'");
   }
   else {
   	echo 'New Question';
@@ -22,9 +14,11 @@
   echo '</h2>';
   echo '<input type="hidden" name="quiz_id" value="';
   echo htmlspecialchars($id).'"/>';
-  echo '<input type="hidden" name="question_id" value="';
-  echo htmlspecialchars($_GET['questionid']).'"';
-  echo '"/>';
+  if (isset($questionID)){
+  	echo '<input type="hidden" name="question_id" value="';
+  	echo htmlspecialchars($questionID).'"';
+  	echo '"/>';
+  }
   echo '<br/>';
   echo 'Question';
   pad();
@@ -32,11 +26,10 @@
   if (isset($_POST['question'])) {
 	echo 'value="'.htmlspecialchars($_POST['question']).'"';
   }
-  if ($questionID) {
+  if (isset($questionID)) {
   	echo 'value="';
 	foreach ($question as $q) {
-		echo htmlspecialchars($q['question']);
-		echo '"';
+		echo htmlspecialchars($q['question']).'"';
 	}
   }
   echo '/>';
@@ -46,7 +39,7 @@
   if (isset($_POST['topic'])) {
 	echo 'value="'.htmlspecialchars($_POST['topic']).'"';
   }
-  if ($questionID) {
+  if (isset($questionID)) {
   	echo 'value="';
   	foreach ($question as $q) {
 		echo $q['topic'];
@@ -59,7 +52,7 @@
   // { Answers Tab
   echo '<div class="tabpage">';
   echo '<h2>';
-  if ($questionID) {
+  if (isset($questionID)) {
   	echo 'Edit Answers';
   }
   else {
@@ -75,7 +68,7 @@
   echo '</div>';
   // }
   echo '<input type="submit" name="questionAction" value="';
-  if ($questionID) {
+  if (isset($questionID)) {
   	echo 'Edit';
   }
   else {
