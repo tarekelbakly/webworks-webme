@@ -4,10 +4,8 @@ require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
 	$date = explode(' ', $date);
-	if ($type == 'date') {
-		if( isset($_SESSION['__webme_language']) && $_SESSION['__webme_language'] == 'fr' )return $date[2].'.'.$date[1].'.'.$date[0];
-		return @date('l jS F, Y', mktime(0, 0, 0, $date[1], $date[2], $date[0]));
-	}
+	if ($type == 'date') return @date('l jS F, Y', mktime(0, 0, 0, $date[1], $date[2], $date[0]));
+	if ($type == 'shortdate') return @date('D jS M, Y', mktime(0, 0, 0, $date[1], $date[2], $date[0]));
 	return @date(DATE_RFC822, mktime($date[5], $date[4], $date[3], $date[1], $date[2], $date[0]));
 }
 function getVar($v, $d = '') {
