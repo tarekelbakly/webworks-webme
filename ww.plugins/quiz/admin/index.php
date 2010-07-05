@@ -18,7 +18,6 @@
 	  case 'editQuestion': // {What to do if the user wants to edit a question
 	  	$questionID= $_GET['questionid'];
 		require_once $dir.'/form.php';
-		require_once $dir.'/formAddQuestion.php';
 		break;
 	  // }
 	  case 'deleteQuestion'://{What to do if the user wants to delete a question
