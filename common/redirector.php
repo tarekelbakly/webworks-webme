@@ -31,9 +31,12 @@ switch($type){
 		break;
 	// }
 	default: // {
+		$get=array();
+		foreach($_GET as $k=>$v)if($k!='type')$get[]=urlencode($k).'='.urlencode($v);
 		$p=Page::getInstanceByType($type);
 		if(!$p)$url='/';
 		else $url=$p->getRelativeUrl();
+		if(count($get))$url.='?'.join('&',$get);
 	// }
 }
 redirect($url);
