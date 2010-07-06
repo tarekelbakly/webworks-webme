@@ -22,7 +22,6 @@ function os_set_amt(md5,amt,tr){
 		$('.amt-number',tr).text(amt);
 		$('.item-total',tr).text(pagedata.currency+ret.item_total);
 		$('.total',tr.closest('table')).text(pagedata.currency+ret.total);
-		document.title="test"+amt;
 		if(amt<1){
 			tr.prev().fadeOut("normal",function(){
 				$(this).remove();

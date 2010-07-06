@@ -19,20 +19,13 @@ if (!$fp) {
 	while (!feof($fp)) {
 		$res = fgets ($fp, 1024);
 		if (strcmp ($res, "VERIFIED") == 0) {
-
-			// TODO
-			// check the payment_status is Completed
-			// check that txn_id has not been previously processed
-
 			require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-			list($userid,$id)=explode('|',$_POST['item_number']);
-			$userid=(int)$userid;
-			$id=(int)$id;
-			if(!$id || !$userid)exit;
+			$id=(int)$_POST['item_number'];
+			if($id<1)exit;
 
 			// check that payment_amount/payment_currency are correct
 			$order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
-			if($order['cost'] != $_POST['mc_gross']){
+			if($order['total'] != $_POST['mc_gross']){
 				$str='';
 				foreach($_POST as $key => $value){
 					$str.=$key." = ". $value."\n";
@@ -44,14 +37,25 @@ if (!$fp) {
 			// process payment
 			require dirname(__FILE__).'/process-order.php';
 			process_order($id,$order);
-//			$db->query("UPDATE online_store_orders SET status='1' WHERE id=$id");
-//			$form_vals=json_decode($order['form_vals']);
-//			$from='noreply@'.str_replace('www.',$_SERVER['HTTP_HOST']);
-//			$headers = "From: $from\r\nReply-To: $from\r\nX-Mailer: PHP/" . phpversion();
-//			$headers.='MIME-Version: 1.0' . "\r\n";
-//			$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-//			$headers .= 'To: '.$form_vals['Email']. "\r\n";
-//			mail($form_vals['Email'],'['.str_replace('www.',$_SERVER['HTTP_HOST']).'] invoice #'.$id, $order['invoice'], $headers);
+			dbQuery("UPDATE online_store_orders SET status='1' WHERE id=$id");
+			$form_vals=json_decode($order['form_vals']);
+			$page=Page::getInstanceByType('online-store');
+			$page->initValues();
+			$from='noreply@'.str_replace('www.','',$_SERVER['HTTP_HOST']);
+			$bcc='';
+			$page=Page::getInstanceByType('online-store');
+			if($page && isset($page->vars['online_stores_admin_email']) && $page->vars['online_stores_admin_email']){
+				$from=$page->vars['online_stores_admin_email'];
+				$bcc=$page->vars['online_stores_admin_email'];
+			}
+			if(isset($form_vals->Email)){
+				$headers = "From: $from\r\nReply-To: $from\r\nX-Mailer: PHP/" . phpversion();
+				$headers.='MIME-Version: 1.0' . "\r\n";
+				$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+				$headers .= 'To: '.$form_vals->Email. "\r\n";
+				if($bcc)$headers.='BCC: '.$bcc."\r\n";
+				mail($form_vals->Email,'['.str_replace('www.','',$_SERVER['HTTP_HOST']).'] invoice #'.$id, $order['invoice'], $headers);
+			}
 		}
 		else if (strcmp ($res, "INVALID") == 0) {
 			// echo the response

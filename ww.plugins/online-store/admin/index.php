@@ -78,6 +78,11 @@ $c.='</div>';
 // { payment details
 $c.='<div class="tabPage"><h2>Payment Details</h2>';
 $c.='<table width="100%">';
+// { admin email address
+$c.='<tr><th>Admin email address</th><td><input class="email" name="page_vars[online_stores_admin_email]"';
+if(isset($vars['online_stores_admin_email']))$c.=' value="'.htmlspecialchars($vars['online_stores_admin_email']).'"';
+$c.=' /></td></tr>';
+// }
 // { paypal
 $c.='<tr><th>PayPal email address</th><td><input class="email" name="page_vars[online_stores_paypal_address]"';
 if(isset($vars['online_stores_paypal_address']))$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';

@@ -44,7 +44,6 @@ function os_update_fields(force){
 	for(var i in os_fields){
 		if(typeof(os_fields[i])!="object")continue;
 		os_fields[i].show=0;
-		document.title=i;
 	}
 	var $inputs=$form.find('input,select,textarea');
 	var c=0,to_show=[];
