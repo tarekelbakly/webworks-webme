@@ -1,18 +1,25 @@
 <?php
   $dir= dirname(__FILE__);
   $isInvalidInput = false;
+  echo '<script src="/ww.plugins/quiz/admin/quickDelete.js"></script>';
   echo '<script>';
-  echo '$(document).ready(function(){';
+  echo '$(function(){';
   echo '$("#tabs").tabs({';
 	echo 'selected:';
-	if ($questionID||isset($_POST['add'])) {
-	  echo 1;
+	$action=$_GET['action'];
+	if ((strcmp($action, 'editQuestion')==0)
+		||(strcmp($action, 'newQuestion')==0)
+			||((strcmp($action,'newQuiz')==0)&&isset($_POST['action']))) {
+	 			 echo 1;
 	}
 	else {
 	  echo 0;
 	}
   echo '}';
   echo ');';
+  echo '});';
+  echo '$(function () {';
+  	echo '$(".deleteLink").click(deleteItem);';
   echo '});';
   echo '</script>';
   echo '<h3>';
@@ -71,25 +78,24 @@
 	else {
 		echo 'Add Quiz';
 	}
-	echo'"/>';
+	echo '"/>';
   }
   echo '</div>';//Ends the main tab}
   //Questions tab {
   echo '<div id="Questions">';
   if ($id) {
 	$results=dbAll("SELECT * FROM quiz_questions WHERE quiz_id='".$id."'");
-	echo '<ul>';
+	echo '<ul id="questionLinks">';
 	foreach ($results as $result) {
 	  $questionID = $result['id'];
-	  echo '<li>'.$result['question'];
+	  echo '<li id="'.$questionID.'">'.$result['question'];
 	  echo '   <a href="'.$_url.'&amp;action=editQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'">edit</a>';
-	  echo '   <a href="'.$_url.'&amp;action=deleteQuestion&amp;questionid='.$questionID.'&amp;id='.$id.'"'
-				.' onclick="return confirm (\'Are you sure you want to delete this?\');">x</a></li>';
+	  echo '   <a href="#" class="deleteLink" class="deleteLink">x</a></li>';
 	}
     echo '</ul>';
 	$questionID=null;
-	if($questionID||!isset($_POST['add'])) {
-		echo '<input type="submit" value="Add New Question" name="add"/>';
+	if($questionID||strcmp($action, 'newQuestion')!=0) {
+		echo '<input type="button" value="Add New Question" name="add" onClick="parent.location=\''.$_url.'\&amp;action=newQuestion&amp;id='.$id.'\'" />';
 	}
   } 
   echo '</div>';
@@ -146,8 +152,6 @@
 			echo 'One of the answers must be marked as correct';
     	}
     	else {//Input is valid
-			echo '<script>';
-			echo '</script>';
 			if (isset($_GET['questionid'])) {
 				$questionID=$_GET['questionid'];
 				dbQuery ("UPDATE quiz_questions SET question = '$question', topic = '$topic', answer1 = '$answers[0]', answer2 = '$answers[1]', answer3 = '$answers[2]', answer4 = '$answers[3]', correctAnswer = '$correctAnswer' WHERE id = '$questionID'");
@@ -156,21 +160,20 @@
 				dbQuery("INSERT INTO quiz_questions(quiz_id, question, topic, answer1, answer2, answer3, answer4, correctAnswer) VALUES('$id', '$question', '$topic', '$answers[0]', '$answers[1]', '$answers[2]', '$answers[3]', '$correctAnswer')");
 			}
     	}
-    	$addString= addQuestion;
+    	$addString= addQuestion();
 		echo '<script>';
 		echo '$("#Questions").append('.json_encode($addString).');';
 		echo '</script>';
   	}
   	echo '</div>';//Ends the tabs div
    	if (isset($_POST['add'])) {
-		$_GET['questionid']= null;
+		$questionID=null;
 		$addString= addQuestion();
   		echo '<script>';
 		echo '$("#Questions").append('.json_encode($addString).');';
 		echo '</script>';
   	}
-	$action= $_GET['action'];
-	if (strcmp($action,'editQuestion')==0) {
+	if ((strcmp($action,'editQuestion')==0)||(strcmp($action, 'newQuestion')==0)) {
 		$addString= addQuestion();
 		echo '<script>';
 		echo '$("#Questions").append('.json_encode($addString).');';

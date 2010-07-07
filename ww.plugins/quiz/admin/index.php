@@ -1,4 +1,5 @@
 <?php
+ 	echo '<script src="/ww.plugins/quiz/admin/quickDelete.js"></script>';
 	$menuItems= array ();
 	$quizzes= dbAll("SELECT DISTINCT name, quiz_quizzes.id FROM quiz_quizzes,quiz_questions");
 	$pageQuizzes= dbAll("SELECT name,id from quiz_quizzes LIMIT 0,15");
@@ -13,21 +14,17 @@
 		$menuItems
 	);
 	echo '<div class="has-left-menu">';
+	if (isset($_GET['action'])) {
+		$action=$_GET['action'];
+	}
 	$dir = dirname(__FILE__);
 	switch ($action){
-	  case 'editQuestion': // {What to do if the user wants to edit a question
+	  case 'newQuestion':
+	  case 'editQuestion': // {What to do if the user wants to add or edit a question
 	  	$questionID= $_GET['questionid'];
 		require_once $dir.'/form.php';
 		break;
 	  // }
-	  case 'deleteQuestion'://{What to do if the user wants to delete a question
-	  	$questionid= $_GET['questionid'];
-	  	dbQuery("DELETE FROM quiz_questions WHERE id = '$questionid'");
-		$results= dbAll ("SELECT quiz_id FROM quiz_questions WHERE id = '$id'");
-		foreach ($results as $result) {
-			$id=$result['quiz_id'];
-		}
-	//}
 	  case 'newQuiz':
 	  case 'editQuiz':// { What to do if the user want to enter a new quiz or edit a quiz
 	    require_once $dir.'/form.php';
