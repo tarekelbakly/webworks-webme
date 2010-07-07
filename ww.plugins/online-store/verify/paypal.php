@@ -37,7 +37,12 @@ if (!$fp) {
 			// process payment
 			require dirname(__FILE__).'/process-order.php';
 			process_order($id,$order);
+			// { mark order as paid
 			dbQuery("UPDATE online_store_orders SET status='1' WHERE id=$id");
+			// }
+			// { call the callback if it's supplied
+			if($order['callback'])file($order['callback']);
+			// }
 			$form_vals=json_decode($order['form_vals']);
 			$page=Page::getInstanceByType('online-store');
 			$page->initValues();

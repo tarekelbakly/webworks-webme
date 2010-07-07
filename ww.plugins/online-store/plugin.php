@@ -13,7 +13,7 @@ $plugin=array(
 	'triggers' => array(
 		'displaying-pagedata' => 'online_store_pagedata'
 	),
-	'version' => '4'
+	'version' => '5'
 );
 // }
 // { currency symbols

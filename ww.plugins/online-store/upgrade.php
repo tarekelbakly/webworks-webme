@@ -22,6 +22,11 @@ if($version==3){ // currency
 	$DBVARS['online_store_currency']='EUR';
 	$version=4;
 }
+if($version==4){ // callback
+	// allow a callback to be set in the database to be called when a payment has been completed
+	dbQuery('alter table online_store_orders add callback text');
+	$version=5;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();
