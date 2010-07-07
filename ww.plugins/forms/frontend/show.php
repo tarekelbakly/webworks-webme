@@ -97,7 +97,7 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 		if(!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']){
 			switch($name){
 				case 'Email': case '__ezine_subscribe': // {
-					$val=$_SESSION['userdata']['email'];
+					if(isset($_SESSION['userdata']['email']))$val=$_SESSION['userdata']['email'];
 					break;
 				// }
 				case 'FirstName': // {
