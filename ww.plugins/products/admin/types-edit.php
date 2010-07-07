@@ -50,18 +50,39 @@ else{
 		'data_fields'=>''
 	);
 }
-echo '<form action="'.$_url.'&amp;id='.$id.'&amp;action=save" method="post">';
+echo '<form action="'.$_url.'&amp;id='.$id.'" method="POST" enctype="multipart/form-data"><input type="hidden" name="action" value="save" />';
 echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a href="#data-fields">Data Fields</a></li><li><a href="#multiview-template">Multi-View Template</a></li><li><a href="#singleview-template">Single-View Template</a></li></ul>';
 // { main details
 echo '<div id="main-details"><table>';
-echo '<tr><th>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($tdata['name']).'" /></td></tr>';
-echo '<tr><th>Management tabs to use</th><td><p>When creating products with this type, what extra tabs do you want visible?</p>';
+// { name
+echo '<tr><th>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($tdata['name']).'" /></td>';
+echo '<th>&nbsp;</th><td>&nbsp;</td>';
+echo '</tr>';
+// }
+// { management tabs, image not found
+echo '<tr>';
+// { management tabs
+echo '<th>Management tabs to use</th><td>';
 foreach($tabs as $tab){
 	echo '<input type="checkbox" name="'.$tab[0].'"';
 	if($tdata[$tab[0]])echo ' checked="checked"';
 	echo ' /> '.$tab[1].'<br />';
 }
-echo '</td></tr>';
+echo '</td>';
+// }
+// { image not found
+echo '<th>image-not-found</th><td><input type="file" name="image_not_found" />';
+if($id){
+	if(!file_exists(USERBASE.'f/products/types/'.$id.'/image-not-found.png')){
+		@mkdir(USERBASE.'f/products/types/'.$id,0777,true);
+		copy(dirname(__FILE__).'/../i/not-found-250.png',USERBASE.'f/products/types/'.$id.'/image-not-found.png');
+	}
+	echo '<img src="/kfmgetfull/products/types/'.$id.'/image-not-found.png,width=64,height=64" />';
+}
+echo '</td>';
+// }
+echo '</tr>';
+// }
 echo '</table></div>';
 // }
 // { data fields

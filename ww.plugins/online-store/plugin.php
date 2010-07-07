@@ -9,20 +9,21 @@
 	* @author   Kae Verens <kae@webworks.ie>
 	* @license  GPL 2.0
 	* @link     None
-*/
+	*/
+
 // { define $plugin
 $plugin=array(
 	'name' => 'Online Store',
 	'admin' => array(
-		'page_type' => 'online_store_admin_page_form'
+		'page_type' => 'OnlineStore_adminPageForm'
 	),
 	'description' => 'Add online-shopping capabilities to a number of other plugins.',
 	'frontend' => array(
-		'widget' => 'online_store_show_basket_widget',
-		'page_type' => 'online_store_frontend'
+		'widget' => 'OnlineStore_showBasketWidget',
+		'page_type' => 'OnlineStore_frontend'
 	),
 	'triggers' => array(
-		'displaying-pagedata' => 'online_store_pagedata'
+		'displaying-pagedata' => 'OnlineStore_pagedata'
 	),
 	'version' => '5'
 );
@@ -33,6 +34,7 @@ $online_store_currencies=array(
 	'GBP'=>array('&pound;','Pound Sterling')
 );
 // }
+
 /**
 	* adds a product to the cart
 	*
@@ -45,12 +47,12 @@ $online_store_currencies=array(
 	*
 	* @return null
 	*/
-function online_store_add_to_cart(
+function OnlineStore_addToCart(
 				$cost=0, $amt=0, $short_desc='',
 				$long_desc='', $md5='', $url=''
 ) {
 	// { add item to session
-	if(!isset($_SESSION['online-store'])) {
+	if (!isset($_SESSION['online-store'])) {
 		$_SESSION['online-store']=array('items'=>array(),'total'=>0);
 	}
 	$item=(isset($_SESSION['online-store']['items'][$md5]))
@@ -64,25 +66,44 @@ function online_store_add_to_cart(
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';
-	online_store_calculate_total();
+	OnlineStore_calculateTotal();
 }
+
 /**
-	* admin are Page form
+	* admin area Page form
 	*
 	* @param object $page Page array from database
 	* @param array  $vars Page's custom variables
 	*
 	* @return string
 	*/
-function online_store_admin_page_form($page, $vars) {
+function OnlineStore_adminPageForm($page, $vars) {
 	require dirname(__FILE__).'/admin/index.php';
 	return $c;
 }
-function online_store_frontend($PAGEDATA) {
+
+/**
+	* stub function to load frontend page-type
+	*
+	* @param object $PAGEDATA the current page
+	*
+	* @return string
+	*/
+function OnlineStore_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/index.php';
 	return $c;
 }
-function online_store_generate_paypal_button($PAGEDATA, $id, $total) {
+
+/**
+	* return HTML for a PayPal button to pay for the current Online-Store order
+	*
+	* @param object $PAGEDATA the checkout page
+	* @param int    $id       the order ID
+	* @param float  $total    the order total
+	*
+	* @return string
+	*/
+function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total) {
 	global $DBVARS;
 	return '<form id="online-store-paypal" method="post" action="https://www.paypal.com'
 		.'/cgi-bin/webscr"><input type="hidden" value="_xclick" name="cmd"/>'
@@ -102,12 +123,24 @@ function online_store_generate_paypal_button($PAGEDATA, $id, $total) {
 		.'//www.paypal.com/en_US/i/btn/x-click-but23.gif"/><img width="1" height="1" src='
 		.'"https://www.paypal.com/en_US/i/scr/pixel.gif" alt=""/></form>';
 }
-function online_store_pagedata() {
+
+/**
+	* returns currency information to be added to global JS script
+	*
+	* @return string
+	*/
+function OnlineStore_pagedata() {
 	$currency=$GLOBALS['DBVARS']['online_store_currency'];
 	$currency_symbols=array('EUR'=>'€','GBP'=>'£');
 	return ',"currency":"'.$currency_symbols[$currency].'"';
 }
-function online_store_show_basket_widget($vars=null) {
+
+/**
+	* returns a HTML string to show the Online-Store basket
+	*
+	* @return string
+	*/
+function OnlineStore_showBasketWidget() {
 	global $DBVARS,$online_store_currencies;
 	$csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 	$html='<div class="online-store-basket-widget">';

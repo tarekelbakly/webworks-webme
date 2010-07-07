@@ -2,15 +2,13 @@
 $plugin=array(
 	'name' => 'Messaging Notifier',
 	'admin' => array(
-#		'page_type' => 'online_store_admin_page_form'
 		'widget' => array(
 			'form_url' => '/ww.plugins/messaging-notifier/admin/widget-form.php'
 		)
 	),
 	'description' => 'Show messages from feeds such as twitter, rss, phpbb3',
 	'frontend' => array(
-		'widget' => 'messaging_notifier_show_widget',
-//		'page_type' => 'online_store_frontend'
+		'widget' => 'messaging_notifier_show_widget'
 	),
 	'version' => '3'
 );

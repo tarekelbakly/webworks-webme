@@ -55,7 +55,9 @@ function os_reset_basket(res){
 	var html='<table><tr><th>&nbsp;</th><th>Price</th><th>Amount</th><th>Total</th></tr>';
 	for(var md5 in res.items){
 		var item=res.items[md5];
-		if(md5.length!='32' || !item.amt)continue;
+		if(md5.length!='32' || !item.amt){
+			continue;
+		}
 		html+='<tr class="os_item_name"><td colspan="4"><a href="'+item.url+'">'+item.short_desc+'</a></td></tr><tr class="os_item_numbers" id="'+md5+'"><td>&nbsp;</td><td>'+pagedata.currency+item.cost+'</td><td class="amt">'+item.amt+'</td><td class="item-total">'+(item.cost*item.amt)+'</td></tr>';
 	}
 	html+='<tr class="os_total"><th colspan="3">Total</th><td class="total">'+pagedata.currency+res.total+'</td></tr></table><a href="/common/redirector.php?type=online-store">Proceed to Checkout</a>';

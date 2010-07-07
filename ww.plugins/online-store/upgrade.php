@@ -10,6 +10,7 @@
 	* @license  GPL 2.0
 	* @link     None
 	*/
+
 if ($version==0) { // online_store_orders
 	dbQuery(
 					'CREATE TABLE IF NOT EXISTS `online_store_orders` (
@@ -41,6 +42,11 @@ if ($version==4) { // callback
 	 */
 	dbQuery('alter table online_store_orders add callback text');
 	$version=5;
+}
+if ($version==5) { // clear caches
+	cache_clear('pages');
+	cache_clear('products');
+	$version=6;
 }
 
 $DBVARS[$pname.'|version']=$version;

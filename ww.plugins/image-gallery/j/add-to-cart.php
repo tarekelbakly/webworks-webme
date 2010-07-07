@@ -37,9 +37,9 @@ $name=preg_replace('/\..*/','',$file['name']);
 $url=kfm_getFileUrl($img);
 // }
 // { add to cart
-if(!function_exists('online_store_add_to_cart'))die('{error:"online store plugin not enabled"}');
+if(!function_exists('OnlineStore_addToCart'))die('{error:"online store plugin not enabled"}');
 $short_desc=$name;
 if($desc!='')$short_desc.=' ('.$desc.')';
-online_store_add_to_cart($cost,$amt,'<img src="/kfmget/'.$img.',width=24,height=16" />'.htmlspecialchars($short_desc),$url,md5($url.'|'.$desc),$_SERVER['HTTP_REFERER']);
+OnlineStore_addToCart($cost,$amt,'<img src="/kfmget/'.$img.',width=24,height=16" />'.htmlspecialchars($short_desc),$url,md5($url.'|'.$desc),$_SERVER['HTTP_REFERER']);
 echo json_encode($_SESSION['online-store']);
 // }

@@ -27,7 +27,9 @@ function os_status(id,current_status){
 	var options=[];
 	for(var i=0;i<window.os_statuses.length;++i){
 		var html='<option value="'+i+'"';
-		if(i==current_status)html+=' selected="selected"';
+		if(i==current_status){
+			html+=' selected="selected"';
+		}
 		html+='>'+window.os_statuses[i]+'</option>';
 		options.push(html);
 	}
@@ -38,11 +40,15 @@ function os_status(id,current_status){
 	target.remove();
 }
 function os_update_fields(force){
-	if(!force && !window.ckeditor_body.checkDirty())return;
+	if(!force && !window.ckeditor_body.checkDirty()){
+		return;
+	}
 	var $wrapper=$('#online-stores-fields').empty();
 	var $form=$('<div id="online-stores-tester" style="display:none">'+window.ckeditor_body.getData()+'</div>').appendTo($wrapper);
 	for(var i in os_fields){
-		if(typeof(os_fields[i])!="object")continue;
+		if(typeof(os_fields[i])!="object"){
+			continue;
+		}
 		os_fields[i].show=0;
 	}
 	var $inputs=$form.find('input,select,textarea');
@@ -58,10 +64,14 @@ function os_update_fields(force){
 		to_show.push($inputs[i].name);
 	}
 	$wrapper.empty();
-	if(!c)$wrapper.append('<em>no fields defined. please create a form in the Form tab.</em>');
+	if(!c){
+		$wrapper.append('<em>no fields defined. please create a form in the Form tab.</em>');
+	}
 	else{
 		var table='<table id="online_stores_fields_table" style="width:100%"><tr><th>Name</th><th>Required</th></tr>';
-		for(var i=0;i<c;++i)table+='<tr><td></td><td></td><td></td></tr>';
+		for(var i=0;i<c;++i){
+			table+='<tr><td></td><td></td><td></td></tr>';
+		}
 		$wrapper.append(table+'</table>');
 		var $rows=$wrapper.find('tr');
 		for(var i=0;i<c;++i){
@@ -76,7 +86,9 @@ function os_update_fields(force){
 }
 function os_update_fields_value(){
 	var name=$(this).closest('tr').data('os_name');
-	if(this.className=='is-required')os_fields[name].required=this.checked?1:0;
+	if(this.className=='is-required'){
+		os_fields[name].required=this.checked?1:0;
+	}
 	$('#online_stores_fields_input').val(Json.toString(os_fields));
 }
 function os_status_change(ev){
