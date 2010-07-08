@@ -721,4 +721,4 @@ function X(d,s){
 	var function_urls=[],sc_supplements=[];
 	var kaejax_timeouts=[],kaejax_xhrinstances=[],ms_select_defaults=[],ms_show_toplinks=true;
 }
-$(document).ready(ww.webme_start);
+$(ww.webme_start);
