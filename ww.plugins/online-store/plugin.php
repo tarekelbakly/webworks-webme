@@ -25,7 +25,7 @@ $plugin=array(
 	'triggers' => array(
 		'displaying-pagedata' => 'OnlineStore_pagedata'
 	),
-	'version' => '5'
+	'version' => '6'
 );
 // }
 // { currency symbols
