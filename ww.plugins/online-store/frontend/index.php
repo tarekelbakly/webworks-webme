@@ -64,11 +64,11 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 			$table.='<tr><td class="quantitycell">'.$item['amt']
 				.'</td><td class="descriptioncell"><a href="'.$item['url'].'">'
 				.preg_replace('/<[^>]*>/', '', $item['short_desc'])
-				.'</td><td class="unitamountcell">'.$csym.($item['cost']/$item['amt'])
-				.'</td><td class="amountcell">'.$csym.$item['cost'].'</td></tr>';
+				.'</td><td class="unitamountcell">'.$csym.sprintf("%.2f",$item['cost'])
+				.'</td><td class="amountcell">'.$csym.sprintf("%.2f",$item['cost']*$item['amt']).'</td></tr>';
 		}
 		$table.='<tr class="os_basket_totals"><td colspan="3" style="text-align:right">'
-			.'Subtotal</td><td class="totals">'.$csym.$total.'</td></tr>';
+			.'Subtotal</td><td class="totals amountcell">'.$csym.sprintf("%.2f",$total).'</td></tr>';
 		$table.='</table>';
 		$smarty->assign('_invoice_table', $table);
 		$smarty->assign('_invoicenumber', $id);

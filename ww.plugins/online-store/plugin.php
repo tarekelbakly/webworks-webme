@@ -100,10 +100,11 @@ function OnlineStore_frontend($PAGEDATA) {
 	* @param object $PAGEDATA the checkout page
 	* @param int    $id       the order ID
 	* @param float  $total    the order total
+	* @param string $return   URL that the buyer should be returned to after a purchase
 	*
 	* @return string
 	*/
-function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total) {
+function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
 	global $DBVARS;
 	return '<form id="online-store-paypal" method="post" action="https://www.paypal.com'
 		.'/cgi-bin/webscr"><input type="hidden" value="_xclick" name="cmd"/>'
@@ -116,6 +117,7 @@ function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total) {
 		.'<input type="hidden" value="'.$DBVARS['online_store_currency']
 		.'" name="currency_code"/><input type="hidden" value="1" name="no_shipping"/>'
 		.'<input type="hidden" value="1" name="no_note"/>'
+		.'<input type="hidden" name="return" value="'.htmlspecialchars($return).'" />'
 		.'<input type="hidden" value="http://'.$_SERVER['HTTP_HOST']
 		.'/ww.plugins/online-store/verify/paypal.php" name="notify_url"/>'
 		.'<input type="hidden" value="IC_Sample" name="bn"/><input type="image" alt="Make'
