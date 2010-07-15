@@ -17,8 +17,20 @@ $plugin=array(
 	'admin' => array(
 		'menu' => array(
 			'Communications>SMS'=> 'dashboard'
+		),
+		'widget' => array(
+			'form_url' => '/ww.plugins/sms/admin/widget-form.php'
 		)
 	),
-	'description' => 'Add SMS capabilities to your site, using the textr.mobi service.'
+	'frontend' => array(
+		'widget' => 'sms_showWidget'
+	),
+	'description' => 'Add SMS capabilities to your site, using the textr.mobi service.',
+	'version' => 1
 );
 // }
+
+function sms_showWidget($vars){
+	require SCRIPTBASE.'ww.plugins/sms/frontend/widget.php';
+	return $html;
+}
