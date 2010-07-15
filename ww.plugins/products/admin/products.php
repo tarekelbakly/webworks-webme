@@ -5,7 +5,10 @@ if(isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])){
 	echo '<em>Product deleted.</em>';
 }
 $rs=dbAll('select id,name from products order by name');
-if(!count($rs)){
+$types= dbAll('select * from products_types');
+if (!count($types)) {
+	echo '<em>You can\'t create a product until you have created a type. <a href="plugin.php?_plugin=products&amp;_page=types-edit">Click here to create one</a></em>';
+}else if(!count($rs)){
 	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;_page=products-edit">Click here to create one</a>.</em>';
 }
 else{

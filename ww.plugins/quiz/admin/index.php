@@ -7,10 +7,10 @@
 		$menuItems[$quiz['name']]= $_url.'&amp;action=editQuiz&amp;id='.$quiz['id'];
 	}
 	$menuItems['New Quiz']= $_url.'&amp;action=newQuiz';
-	if (count($quizzes)>count($pageQuizzes)){
+	if (count($quizzes)>count($pageQuizzes)) {
 		$menuItems['More Quizzes']= $_url;
 	}
-	echo admin_menu (
+	echo admin_menu(
 		$menuItems
 	);
 	echo '<div class="has-left-menu">';

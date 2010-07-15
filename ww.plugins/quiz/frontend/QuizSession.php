@@ -1,12 +1,33 @@
 <?php
-	class QuizSession {
-		private $name;
-		private $numQuestions;
-		private $id;
-		private $score;
-		private $numQuestionsToBeAnswered;
-		private $questionsToBeAsked;
-		private $allQuestions;
+/**
+  *	The QuizSession Class holds the variables and method to deal with quizzes
+  *
+  * PHP Version 5.2.6
+  *
+  * It creates a quiz, 
+  * displays the questions 
+  * and shows the score once the answers have been submitted.
+  *
+  * @category   Quiz_Plugin
+  * @package    Webworks_WebME
+  * @subpackage QuizPlugin
+  * @author     Belinda Hamilton <bhamilton@webworks.ie>
+  * @license    This software is released under GPL version 2
+  * @link       www.webworks.ie
+*/
+
+	/**
+	  * The class
+	  *
+	*/
+	class QuizSession{
+		private $_name;
+		private $_numQuestions;
+		private $_id;
+		private $_score;
+		private $_numQuestionsToBeAnswered;
+		private $_questionsToBeAsked;
+		private $_allQuestions;
 
 		function __construct ($num, $questionsToBeAnswered) {
 			$this->id= addslashes($num);
