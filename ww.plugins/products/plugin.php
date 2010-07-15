@@ -11,7 +11,6 @@ require_once KFM_BASE_PATH.'/initialise.php';
 // { plugin declaration
 $plugin=array(
 	'name' => 'Products',
-	'hide_from_admin' => true,
 	'admin' => array(
 		'menu' => array(
 			'Products>Products'   => 'products',
