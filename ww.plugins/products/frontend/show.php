@@ -113,7 +113,13 @@ function products_show_by_type($PAGEDATA,$id=0,$start=0,$limit=0,$order_by='',$o
 	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
 function products_show_all($PAGEDATA,$start=0,$limit=0,$order_by='',$order_dir=0,$search=''){
-	$products=Products::getAll($search);
+	if (isset($_REQUEST['product_id'])) {
+		$product_id= $_REQUEST['product_id'];
+		$products= Products::getAll('', $product_id);
+	}
+	else {
+		$products=Products::getAll($search);
+	}
 	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
 function products_setup_smarty(){
@@ -176,11 +182,16 @@ class Products{
 		self::$instances[$id]=& $this;
 		return $this;
 	}
-	function getAll($search=''){
+	function getAll($search='', $product_id=''){
 		$id=md5('all|'.$search);
 		if(!array_key_exists($id,self::$instances)){
 			$product_ids=array();
-			$rs=dbAll('select id from products where enabled');
+			if ($product_id) {
+				$rs= dbRow("select id from products where id= $product_id");
+			}
+			else {
+				$rs=dbAll('select id from products where enabled');
+			}
 			foreach($rs as $r)$product_ids[]=$r['id'];
 			new Products($product_ids,$id,$search);
 		}
@@ -270,7 +281,7 @@ class Products{
 			if($product){
 				$type=ProductType::getInstance($product->get('product_type_id'));
 				if(!$type)$c.='Missing product type: '.$product->get('product_type_id');
-				else if (isset($_REQUEST['product_id'])) $c.= 'Single view template';//$type->render($product, 'singleview');
+				else if (isset($_REQUEST['product_id'])) $c.= $type->render($product, 'singleview');
 				else $c.=$type->render($product,'multiview');
 			}
 		}
