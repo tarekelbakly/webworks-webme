@@ -52,6 +52,11 @@ function products_images($params,&$smarty){
 	}
 	return '<div class="product-images">'.join('',$arr).'</div>';
 }
+function products_link ($params, &$smarty) {
+	$product= $smarty->_tpl_vars['product'];
+	$id= $product->id;
+	return $_SERVER['SCRIPTNAME'].'?product_id='.$id;
+}
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
 	$c='<script src="/ww.plugins/products/j/jquery.lightbox-0.5.min.js"></script><script src="/ww.plugins/products/j/js.js"></script><link rel="stylesheet" type="text/css" href="/ww.plugins/products/c/jquery.lightbox-0.5.css" />';
@@ -265,6 +270,7 @@ class Products{
 			if($product){
 				$type=ProductType::getInstance($product->get('product_type_id'));
 				if(!$type)$c.='Missing product type: '.$product->get('product_type_id');
+				else if (isset($_REQUEST['product_id'])) $c.= 'Single view template';//$type->render($product, 'singleview');
 				else $c.=$type->render($product,'multiview');
 			}
 		}

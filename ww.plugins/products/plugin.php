@@ -32,6 +32,9 @@ $plugin=array(
 			),
 			'PRODUCTS_IMAGES' => array(
 				'function' => 'products_images'
+			),
+			'PRODUCTS_LINK' => array (
+				'function' => 'products_link'
 			)
 		)
 	),
