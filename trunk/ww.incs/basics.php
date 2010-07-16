@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set('Eire');
 session_start();
 require 'Log.php';
 if(!defined('START_TIME'))define('START_TIME',microtime(true));
