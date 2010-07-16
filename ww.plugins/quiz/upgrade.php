@@ -13,18 +13,18 @@
 */
 if ($version==0) {
   	//Create the tables
-  	dbQuery(
-		'CREATE TABLE IF NOT EXISTS `quiz_quizzes` 
-		(
-			`id` int (11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			`name` text NOT NULL,
-			`topic` text NOT NULL
-		) 
-		ENGINE=MYISAM 
-		DEFAULT CHARSET=utf8'
+	dbQuery(
+		'CREATE TABLE IF NOT EXISTS `quiz_quizzes` '
+		.'( '
+		.'`id` int (11) NOT NULL AUTO_INCREMENT PRIMARY KEY,'
+		.'`name` text NOT NULL,'
+		.'`topic` text NOT NULL'
+		.') '
+		.'ENGINE=MYISAM '
+		.'DEFAULT CHARSET=utf8'
 	);
 
-    dbQuery(
+	dbQuery(
 		'CREATE TABLE IF NOT EXISTS `quiz_questions` 
 		(
 			`id` int (11) NOT NULL AUTO_INCREMENT PRIMARY KEY,

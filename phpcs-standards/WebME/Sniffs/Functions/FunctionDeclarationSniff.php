@@ -131,7 +131,7 @@ class WebME_Sniffs_Functions_FunctionDeclarationSniff implements PHP_CodeSniffer
                     // as the function.
                     $expectedIndent = $functionIndent;
                 } else {
-                    $expectedIndent = ($functionIndent + 4);
+                    $expectedIndent = ($functionIndent + 1);
                 }
 
                 // We changed lines, so this should be a whitespace indent token.
