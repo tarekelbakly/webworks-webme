@@ -12,24 +12,39 @@ function products_datatable ($params, &$smarty) {
 	}
 	$datafields= $type->data_fields;
 	$c = '<table>';
-	if (strcmp($params['align'],'horizontal')!=0) {
+	if ($params['align']!='horizontal') {
 		foreach ($datafields as $data) {
-			str_replace($data->n, '_', ' ');
-			$c.= '<tr><th>'.htmlspecialchars($data->n).'</th><td>'.htmlspecialchars($product->vals[$data->n]).'</td></tr>';
+			$name = str_replace('_', ' ', $data->n);
+			$c.= '<tr><th>'.(htmlspecialchars(ucfirst($name))).'</th><td>';
+			if (isset($product->vals [$data->n])) {
+				$c.=htmlspecialchars($product->vals[$data->n]);
+			}
+			else {
+				$c.= '&nbsp;';
+			}
+			$c.='</td></tr>';
 		}
 	}
 	else {
 		$c.= '<thead>';
 		$c.= '<tr>';
 		foreach ($datafields as $data) {
-			$c.= '<th>'.htmlspecialchars($data->n).'</th>';
+			$name= str_replace('_', ' ', $data->n);
+			$c.= '<th>'.htmlspecialchars(ucfirst($name)).'</th>';
 		}
 		$c.= '</tr>';
 		$c.= '</thead>';
 		$c.='<tbody>';
 		$c.= '<tr>';
 		foreach ($datafields as $data) {
-			$c.= '<td>'.htmlspecialchars($product->vals[$data->n]).'   </td>';
+			$c.= '<td>';
+			if (isset($product->vals[$data->n])) {
+				$c.=htmlspecialchars($product->vals[$data->n]);
+			}
+			else {
+				$c.='&nbsp;';
+			}
+			$c.='</td>';
 		}
 		$c.= '</tr>';
 		$c.= '</tbody>';
