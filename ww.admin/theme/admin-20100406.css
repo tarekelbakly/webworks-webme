@@ -383,10 +383,9 @@ a.accordion-header{color: #000 !important;border-bottom:1px solid #000 !importan
 }
 #menu-top ul li a{
 	display:block;
-	width:100px;
 	text-align:center;
 	text-decoration:none;
-	padding:2px 0;
+	padding:2px 10px;
 	color:#fff;
 	font-weight:bold;
 	font-size:12px;
