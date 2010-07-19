@@ -31,19 +31,6 @@ function ww_showSearchResults(){
 			$c.='</ol></div>';
 		}
 	// }
-	// { products
-	/*
-	$rs=Products::getBySearch($search);
-	if(count($rs)){
-		$totalfound+=count($rs);
-		$c.='<h2>Product Search Results</h2><em>'.count($rs).' results found</em> <div><ol>';
-		foreach($rs as $p){
-			$c.='<li><a href="'.$p->getRelativeURL().'&amp;search='.urlencode($search).'">'.htmlspecialchars($p->name).'</a></li>';
-		}
-		$c.='</ol></div>';
-	}
-	*/
-	// }
 	if(!$totalfound){
 		$c.='<em id="searchResultsTitle">no results found</em>';
 	}
