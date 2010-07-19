@@ -26,6 +26,43 @@ function sms_edit_showform(res){
 	$('#sms_wrapper button').click(sms_save);
 	window.sms_currently_editing=res;
 }
+function sms_edit_subscribers(){
+	var res=window.sms_currently_editing;
+	$.post('/ww.plugins/sms/admin/addressbooks-get-subscribers.php',{
+		"id":res.id
+	},sms_show_subscribers,'json');
+}
+function sms_show_subscribers(res){
+	var html='<div id="sms-show-subscribers">';
+	for(var i=0;i<res.length;++i){
+		var s=res[i];
+		html+='<input type="checkbox" id="subscriber-'+s.id+'"'
+			+(s.c?' checked="checked"':'')
+			+' />'
+			+htmlspecialchars(s.name+' ('+s.phone+')')
+			+'<br />';
+	}
+	html+='</div>';
+	$(html).dialog({
+		"modal":true,
+		"buttons":{
+			"save":function(){
+				var ids=[];
+				var $this=$(this);
+				$('#sms-show-subscribers input:checked').each(function(){
+					ids.push(this.id.replace(/subscriber-/,''));
+				});
+				$.post('/ww.plugins/sms/admin/addressbooks-save-subscribers.php',{
+					"aid":window.sms_currently_editing.id,
+					"subscribers":ids.join(',')
+				},function(){
+					sms_edit(window.sms_currently_editing.id);
+					$this.remove();
+				},'json');
+			}
+		}
+	});
+}
 function sms_save(){
 	var res=window.sms_currently_editing;
 	res.name=$('#sms_name').val();
