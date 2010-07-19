@@ -4,6 +4,39 @@ if(!file_exists(USERBASE.'/ww.cache/products')){
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
+function products_datatable ($params, &$smarty) {
+	$product= $smarty->_tpl_vars['product'];
+	$type= ProductType::getInstance($product->get('product_type_id'));
+	if (!$type) {
+		return 'Missing Product Type : '.$product->get('product_type_id');
+	}
+	$datafields= $type->data_fields;
+	$c = '<table>';
+	if (strcmp($params['align'],'horizontal')!=0) {
+		foreach ($datafields as $data) {
+			str_replace($data->n, '_', ' ');
+			$c.= '<tr><th>'.htmlspecialchars($data->n).'</th><td>'.htmlspecialchars($product->vals[$data->n]).'</td></tr>';
+		}
+	}
+	else {
+		$c.= '<thead>';
+		$c.= '<tr>';
+		foreach ($datafields as $data) {
+			$c.= '<th>'.htmlspecialchars($data->n).'</th>';
+		}
+		$c.= '</tr>';
+		$c.= '</thead>';
+		$c.='<tbody>';
+		$c.= '<tr>';
+		foreach ($datafields as $data) {
+			$c.= '<td>'.htmlspecialchars($product->vals[$data->n]).'   </td>';
+		}
+		$c.= '</tr>';
+		$c.= '</tbody>';
+	}
+	$c.= '</table>';
+	return $c;
+}
 function products_get_add_to_cart_button($params,&$smarty){
 	return '<form method="POST"><input type="hidden" name="products_action" value="add_to_cart" /><input type="submit" value="Add to Cart" />'
 		.'<input type="hidden" name="product_id" value="'. $smarty->_tpl_vars['product']->id .'" /></form>';
