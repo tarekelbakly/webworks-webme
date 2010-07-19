@@ -2,23 +2,48 @@ function sms_change_type(){
 	var val=$('#sms_send_type').val();
 	if(val=='Phone Number'){
 		$('#sms_addressbook_id').css('display','none');
-		$('#sms_to').css('display','inline-block');
+		$('#sms_single').css('display','block');
 	}
 	else{
-		$('#sms_addressbook_id').css('display','inline-block');
-		$('#sms_to').css('display','none');
+		$('#sms_addressbook_id').css('display','block');
+		$('#sms_single').css('display','none');
 	}
+}
+function sms_check_msg(){
+	var msg=$('#sms_msg').val();
+	var newmsg=msg.replace(/[^\[\]a-zA-Z0-9 !_\-.,:'"]*/g,'');
+	if(newmsg.length>160)newmsg=newmsg.substring(0,160);
+	if(msg!=newmsg)$('#sms_msg').val(newmsg);
 }
 function sms_check_to(){
 	var to=$('#sms_to').val();
 	var newto=to.replace(/[^0-9]*/g,'');
 	if(to!=newto)$('#sms_to').val(newto);
 }
-function sms_check_msg(){
-	var msg=$('#sms_msg').val();
-	var newmsg=msg.replace(/[^a-zA-Z0-9 !_\-.,:'"]*/g,'');
-	if(newmsg.length>160)newmsg=newmsg.substring(0,160);
-	if(msg!=newmsg)$('#sms_msg').val(newmsg);
+function sms_choose_from_addressbook(id){
+	if(id){
+		$.post('/ww.plugins/sms/admin/subscribers-get.php',{
+			"id":id
+		},function(res){
+			if(res){
+				$('#sms_to').val(res.phone);
+				$('#sms_to_name').val(res.name);
+			}
+			$('#sms-choose-from-addressbook').remove();
+		},'json');
+	}
+	else $.post('/ww.plugins/sms/admin/subscribers-get-all.php',function(res){
+		var links=[];
+		for(var i=0;i<res.length;++i){
+			links.push('<a href="javascript:sms_choose_from_addressbook('+res[i].id+');">'
+				+htmlspecialchars(res[i].name)
+				+'</a>');
+		}
+		$('<div id="sms-choose-from-addressbook"><p>Click a name.</p>'+links.join(', ')+'</div>')
+			.dialog({
+				"modal":true
+			});
+	},'json');
 }
 function sms_send(){
 	sms_check_msg();
@@ -28,6 +53,7 @@ function sms_send(){
 		sms_check_to();
 		$.post('/ww.plugins/sms/admin/send.php',{
 			"to":$('#sms_to').val(),
+			"to_name":$('#sms_to_name').val(),
 			"msg":msg
 		},sms_sent,'json');
 	}
@@ -62,7 +88,21 @@ function sms_sent_bulk(ret){
 }
 $(function(){
 	$('#sms-send-table button').click(sms_send);
-	$('#sms_to').keyup(sms_check_to);
+	$('#sms_to')
+		.blur(function(){
+			if($(this).val()=='')$(this).val('phone');
+		})
+		.focus(function(){
+			if($(this).val()=='phone')$(this).val('');
+		})
+		.keyup(sms_check_to);
+	$('#sms_to_name')
+		.blur(function(){
+			if($(this).val()=='')$(this).val('name (optional)');
+		})
+		.focus(function(){
+			if($(this).val()=='name (optional)')$(this).val('');
+		})
 	$('#sms_msg').keyup(sms_check_msg);
 	$('#sms_send_type').change(sms_change_type);
 });

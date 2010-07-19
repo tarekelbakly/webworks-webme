@@ -7,7 +7,7 @@ function SMS_callApi($command,$urifrag=''){
 		.'?a='.urlencode($command)
 		.'&email='.urlencode($DBVARS['sms_email'])
 		.'&password='.urlencode($DBVARS['sms_password'])
-		.$urifrag;
+		.str_replace(' ','+',$urifrag);
 	$f=file_get_contents($url);
 	if($f===false)return false;
 	return json_decode($f);
