@@ -20,7 +20,7 @@ if($rs===false || !count($rs)){
 	$c.='<p><strong>no types exist.</strong> <a href="/ww.admin/plugin.php?_plugin=products&_page=types">click here to create a product type</a>.</p>';
 }
 else{
-	$c.='<select name="page_vars[products_type_to_show]">';
+	$c.='<select name="page_vars[products_type_to_show]"><option value="0"> -- choose -- </option>';
 	foreach($rs as $r){
 		$c.='<option value="'.$r['id'].'"';
 		if($r['id']==$vars['products_type_to_show'])$c.=' selected="selected"';
@@ -37,7 +37,7 @@ if($rs===false || !count($rs)){
 	$c.='<p><strong>no categories exist.</strong> <a href="/ww.admin/plugin.php?_plugin=products&_page=categories">click here to create a product category</a>.</p>';
 }
 else{
-	$c.='<select name="page_vars[products_category_to_show]">';
+	$c.='<select name="page_vars[products_category_to_show]"><option value="0"> -- choose -- </option>';
 	foreach($rs as $r){
 		$c.='<option value="'.$r['id'].'"';
 		if($r['id']==$vars['products_category_to_show'])$c.=' selected="selected"';
@@ -55,7 +55,7 @@ if($rs===false || !count($rs)){
 	$c.='<p><strong>no products exist.</strong> <a href="/ww.admin/plugin.php?_plugin=products&_page=products">click here to create a product</a>.</p>';
 }
 else{
-	$c.='<select name="page_vars[products_product_to_show]">';
+	$c.='<select name="page_vars[products_product_to_show]"><option value="0"> -- choose -- </option>';
 	foreach($rs as $r){
 		$c.='<option value="'.$r['id'].'"';
 		if($r['id']==$vars['products_product_to_show'])$c.=' selected="selected"';
