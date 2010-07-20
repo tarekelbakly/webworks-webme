@@ -45,6 +45,7 @@ else{
 	}
 	$c.='</select>';
 }
+
 $c.='</td></tr>';
 // }
 // { product names

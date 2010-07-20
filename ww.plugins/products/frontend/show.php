@@ -103,7 +103,7 @@ function products_images($params,&$smarty){
 function products_link ($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	$id= $product->id;
-	return $_SERVER['SCRIPTNAME'].'?product_id='.$id;
+	return $product->getRelativeURL();
 }
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
@@ -126,6 +126,9 @@ function products_show($PAGEDATA){
 	$order_by=isset($PAGEDATA->vars['products_order_by'])?$PAGEDATA->vars['products_order_by']:'';
 	$order_dir=isset($PAGEDATA->vars['products_order_direction'])?(int)$PAGEDATA->vars['products_order_direction']:0;
 	// }
+	if (isset($_REQUEST['product_id'])) {
+		return $c.products_show_by_id ($PAGEDATA, $_REQUEST['product_id']);
+	}
 	switch($PAGEDATA->vars['products_what_to_show']){
 		case '1':
 			return $c.products_show_by_type($PAGEDATA,0,$start,$limit,$order_by,$order_dir,$search);
@@ -201,6 +204,36 @@ class Product{
 		if (!array_key_exists($id,self::$instances))return new Product($id,$r,$enabled);
 		return self::$instances[$id];
 	}
+	function getRelativeURL () {
+		//Does the product have a page assigned to display the product?
+		$page= dbOne('select page_id from page_vars where name=\'products_product_to_show\' and value='.$this->id, 'page_id');
+		if ($page) {
+			$pageName= dbOne ('select name from pages where id='.$page, 'name');
+			return '/'.$pageName;
+		}
+		//Is there a page designed to dislay it's category?
+		$pages= dbAll ('select id from pages where type= \'products\'', 'id');
+		$productCats= dbAll('select category_id from products_categories_products where product_id='.$this->id);
+		foreach ($pages as $page) {
+			$pageID= $page['id'];
+			$shownCats= dbAll ('select value from page_vars where name= \'products_category_to_show\' and page_id='.$pageID);
+			foreach ($shownCats as $shownCat) {
+				foreach ($productCats as $productCat) {
+					if ($shownCat['value']==$productCat['category_id']) {
+						$pageCatIsShownOn= $pageID;
+						//We've found a category no need to stay in any of the loops
+						break 3;
+					}
+				}
+			}
+		}
+		if (isset($pageCatIsShownOn)) {
+			$name= dbOne ('select name from pages where id='.$pageCatIsShownOn, 'name');
+			$name= str_replace(' ', '_', $name);
+			return '/'.$name.'?product_id='.$this->id;
+		}
+		return '/_r?type=products&amp;product_id='.$this->id;
+	}
 	function get($name){
 		if(isset($this->vals[$name]))return $this->vals[$name];
 		return false;
@@ -230,16 +263,11 @@ class Products{
 		self::$instances[$id]=& $this;
 		return $this;
 	}
-	function getAll($search='', $product_id=''){
+	function getAll($search=''){
 		$id=md5('all|'.$search);
 		if(!array_key_exists($id,self::$instances)){
 			$product_ids=array();
-			if ($product_id) {
-				$rs= dbRow("select id from products where id= $product_id");
-			}
-			else {
-				$rs=dbAll('select id from products where enabled');
-			}
+			$rs=dbAll('select id from products where enabled');
 			foreach($rs as $r)$product_ids[]=$r['id'];
 			new Products($product_ids,$id,$search);
 		}
