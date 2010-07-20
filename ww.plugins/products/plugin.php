@@ -27,6 +27,9 @@ $plugin=array(
 			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
 				'function' => 'products_get_add_to_cart_button'
 			),
+			'PRODUCTS_CATEGORIES' => array (
+				'function' => 'products_categories'
+			),
 			'PRODUCTS_DATATABLE' => array (
 				'function' => 'products_datatable'
 			),
@@ -56,6 +59,14 @@ function products_admin_page_form($page,$vars){
 }
 function products_frontend($PAGEDATA){
 	require_once dirname(__FILE__).'/frontend/show.php';
+	if (isset($_REQUEST['product_id'])) {
+		$PAGEDATA->vars['products_what_to_show']=3;
+		$PAGEDATA->vars['products_product_to_show']=(int)$_REQUEST['product_id'];
+	}
+	if (isset($_REQUEST['product_cid'])) {
+		$PAGEDATA->vars['products_what_to_show']=2;
+		$PAGEDATA->vars['products_category_to_show']=(int)$_REQUEST['product_cid'];
+	}
 	if(!isset($PAGEDATA->vars['footer']))$PAGEDATA->vars['footer']='';
 	return $PAGEDATA->render().products_show($PAGEDATA).$PAGEDATA->vars['footer'];
 }

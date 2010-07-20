@@ -4,6 +4,56 @@ if(!file_exists(USERBASE.'/ww.cache/products')){
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
+function products_categories ($params, &$smarty) {
+	$product= $smarty->_tpl_vars['product'];
+	$productID= $product->id;
+	$categoryIDs= dbAll('select category_id from products_categories_products where product_id='.$productID);
+	if (!count ($categoryIDs)) {
+		return '<div class="products-categories">No Categories exist for this product</div>';
+	}
+	$c= '<ul>';
+	$directCategoryPages= dbAll('select page_id from page_vars where name=\'products_what_to_show\' and value=2'); 
+	foreach ($categoryIDs as $catID) {
+		$pageFound= false;
+		$cid = $catID['category_id'];
+		$catName= dbOne('select name from products_categories where id='.$cid, 'name');
+		foreach ($directCategoryPages as $catPage) {
+			$pageID= $catPage['page_id'];
+			$shownCat= dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id='.$pageID, 'value');
+			if ($shownCat==$cid) {
+				$page= Page::getInstance($pageID);
+				$c.='<li><a href="'.$page->getRelativeUrl().'">'.htmlspecialchars($catName).'</a></li>';
+				$pageFound= true;
+				break;
+			}
+		}
+		if (!$pageFound) {
+			$parent = dbOne('select parent_id from products_categories where id='.$cid, 'parent_id');
+			while ($parent>0) {
+				foreach ($directCategoryPages as $catPage) {
+					$pageID= $catPage['page_id'];
+					$shownCat= dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id= '.$pageID, 'value');
+					if ($parent==$shownCat) {
+						$page = Page::getInstance($pageID);
+						$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='.$cid.'">';
+						$c.= htmlspecialchars($catName);
+						$c.='</a></li>';
+						$pageFound= true;
+						break;
+					}
+				}
+				$parent= dbOne('select parent_id from products_categories where id='.$parent, 'parent_id');
+			}
+		}
+		if (!$pageFound) {
+			$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">';
+			$c.=htmlspecialchars($catName);
+			$c.='</a></li>';
+		}
+	}
+	$c.= '</ul>';
+	return $c;
+}
 function products_datatable ($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	$type= ProductType::getInstance($product->get('product_type_id'));
@@ -126,9 +176,6 @@ function products_show($PAGEDATA){
 	$order_by=isset($PAGEDATA->vars['products_order_by'])?$PAGEDATA->vars['products_order_by']:'';
 	$order_dir=isset($PAGEDATA->vars['products_order_direction'])?(int)$PAGEDATA->vars['products_order_direction']:0;
 	// }
-	if (isset($_REQUEST['product_id'])) {
-		return $c.products_show_by_id ($PAGEDATA, $_REQUEST['product_id']);
-	}
 	switch($PAGEDATA->vars['products_what_to_show']){
 		case '1':
 			return $c.products_show_by_type($PAGEDATA,0,$start,$limit,$order_by,$order_dir,$search);
