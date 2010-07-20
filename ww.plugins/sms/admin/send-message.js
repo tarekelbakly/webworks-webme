@@ -20,7 +20,7 @@ function sms_check_to(){
 	var newto=to.replace(/[^0-9]*/g,'');
 	if(to!=newto)$('#sms_to').val(newto);
 }
-function sms_choose_from_addressbook(id){
+function sms_choose_from_subscribers(id){
 	if(id){
 		$.post('/ww.plugins/sms/admin/subscribers-get.php',{
 			"id":id
@@ -35,7 +35,7 @@ function sms_choose_from_addressbook(id){
 	else $.post('/ww.plugins/sms/admin/subscribers-get-all.php',function(res){
 		var links=[];
 		for(var i=0;i<res.length;++i){
-			links.push('<a href="javascript:sms_choose_from_addressbook('+res[i].id+');">'
+			links.push('<a href="javascript:sms_choose_from_subscribers('+res[i].id+');">'
 				+htmlspecialchars(res[i].name)
 				+'</a>');
 		}
