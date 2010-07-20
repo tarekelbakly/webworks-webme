@@ -206,13 +206,14 @@ class Product{
 	}
 	function getRelativeURL () {
 		//Does the product have a page assigned to display the product?
-		$page= dbOne('select page_id from page_vars where name=\'products_product_to_show\' and value='.$this->id, 'page_id');
-		if ($page) {
-			$pageName= dbOne ('select name from pages where id='.$page, 'name');
-			return '/'.$pageName;
+		$pageID= dbOne('select page_id from page_vars where name=\'products_product_to_show\' and value='.$this->id, 'page_id');
+		if ($pageID) {
+			$page= Page::getInstance($pageID);
+			return $page->getRelativeUrl();
+
 		}
-		//Is there a page designed to dislay it's category?
-		$pages= dbAll ('select id from pages where type= \'products\'', 'id');
+		// { Is there a page designed to display its category?
+		$pages= dbAll('select id from pages where type= \'products\'');
 		$productCats= dbAll('select category_id from products_categories_products where product_id='.$this->id);
 		foreach ($pages as $page) {
 			$pageID= $page['id'];
@@ -220,17 +221,11 @@ class Product{
 			foreach ($shownCats as $shownCat) {
 				foreach ($productCats as $productCat) {
 					if ($shownCat['value']==$productCat['category_id']) {
-						$pageCatIsShownOn= $pageID;
-						//We've found a category no need to stay in any of the loops
-						break 3;
+						$page=Page::getInstance($pageID);
+						return $page->getRelativeUrl().'?product_id='.$this->id;
 					}
 				}
 			}
-		}
-		if (isset($pageCatIsShownOn)) {
-			$name= dbOne ('select name from pages where id='.$pageCatIsShownOn, 'name');
-			$name= str_replace(' ', '_', $name);
-			return '/'.$name.'?product_id='.$this->id;
 		}
 		return '/_r?type=products&amp;product_id='.$this->id;
 	}
