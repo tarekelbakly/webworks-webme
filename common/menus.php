@@ -112,10 +112,6 @@ function menu_show($b){
 		if($r)$parent=$r->id;
 	}
 	$search_options=0;
-	if(isset($vals['products'])){
-		$classes.=' products';
-		$search_options+=1;
-	}
 	$ajaxmenu=@$vals['nodropdowns']?'':' ajaxmenu ';
 	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.$ajaxmenu.$classes.' parent'.$parent.'">';
 	$rs=menu_getChildren($parent,$PAGEDATA->id,0,$parent,$search_options);

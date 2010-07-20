@@ -282,7 +282,7 @@ function loadAjaxMenu(){
 	if(!el)return;
 	var id=el.id.replace(/ajaxmenu/,'');
 	if(id && id=='am_top')return;
-	loadScript('/ajax/menu.php?pageid='+pagedata.id+'&search_options='+($(el).hasClass('products')?1:0));
+	loadScript('/ajax/menu.php?pageid='+pagedata.id);
 }
 function loadArray(k,v){
 	var a=[],i;
