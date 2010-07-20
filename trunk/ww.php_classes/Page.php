@@ -87,19 +87,6 @@ class Page{
 		else self::$instancesByName[$nameIndex]=new Page($name,1);
 		return self::$instancesByName[$nameIndex];
 	}
-	function getInstanceByProductType($id=0){
-		if(!is_numeric($id))return false;
-		if(!@array_key_exists($id,$instancesByProductType)){
-			$page_id=dbOne('select page_id from page_vars where name="product_type" and value="'.$id.'"','page_id',0);
-			if(!$page_id){
-				dbQuery('insert into pages (ord,name,type,parent,cdate,edate,body,special) values(1000,"_product_page",8,0,now(),now(),"",2)');
-				$page_id=dbOne('select last_insert_id() as id','id');
-				dbQuery('insert into page_vars values('.$page_id.',"product_type",'.$id.')');
-			}
-			$instancesByProductType[$id]=& self::getInstance($page_id);
-		}
-		return $instancesByProductType[$id];
-	}
 	function getInstanceBySpecial($sp=0){
 		if (!is_numeric($sp)) return false;
 		if (!@array_key_exists($sp,$instancesBySpecial)) $instancesBySpecial[$sp]=new Page($sp,3);

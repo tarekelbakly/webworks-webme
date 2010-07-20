@@ -190,7 +190,6 @@ function ajaxmenu_queueClearMenus(){
 	_am.activeMenu=_am.topMenu;
 	_am.activeSetTimeout=0;
 	if(m.className.indexOf('preopen_menu')!=-1)_am.preopen_menu= +(document.location.toString().replace(/.*#am_open=([0-9]*)$/,'$1'));
-	if(/products/.test(m.className))_am.search_options+=1;
 	if(window.currentTop==undefined)currentTop=0;
 	_am.openMenus=[_am.topMenu,''+currentTop];
 // }
