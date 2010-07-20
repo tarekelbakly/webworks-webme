@@ -14,41 +14,45 @@ function products_categories ($params, &$smarty) {
 	$c= '<ul>';
 	$directCategoryPages= dbAll('select page_id from page_vars where name=\'products_what_to_show\' and value=2'); 
 	foreach ($categoryIDs as $catID) {
-		$pageFound= false;
+		$pageFound = false;
 		$cid = $catID['category_id'];
-		$catName= dbOne('select name from products_categories where id='.$cid, 'name');
-		foreach ($directCategoryPages as $catPage) {
-			$pageID= $catPage['page_id'];
-			$shownCat= dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id='.$pageID, 'value');
-			if ($shownCat==$cid) {
-				$page= Page::getInstance($pageID);
-				$c.='<li><a href="'.$page->getRelativeUrl().'">'.htmlspecialchars($catName).'</a></li>';
-				$pageFound= true;
-				break;
-			}
-		}
-		if (!$pageFound) {
-			$parent = dbOne('select parent_id from products_categories where id='.$cid, 'parent_id');
-			while ($parent>0) {
-				foreach ($directCategoryPages as $catPage) {
-					$pageID= $catPage['page_id'];
-					$shownCat= dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id= '.$pageID, 'value');
-					if ($parent==$shownCat) {
-						$page = Page::getInstance($pageID);
-						$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='.$cid.'">';
-						$c.= htmlspecialchars($catName);
-						$c.='</a></li>';
-						$pageFound= true;
-						break;
-					}
+		$catDetails = dbRow('select name, enabled from products_categories where id='.$cid);
+		$catIsEnabled = $catDetails['enabled'];
+		$catName = $catDetails['name'];
+		if ($catIsEnabled==1) {
+			foreach ($directCategoryPages as $catPage) {
+				$pageID = $catPage['page_id'];
+				$shownCat = dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id='.$pageID, 'value');
+				if ($shownCat==$cid) {
+					$page=  Page::getInstance($pageID);
+					$c.='<li><a href="'.$page->getRelativeUrl().'">'.htmlspecialchars($catName).'</a></li>';
+					$pageFound= true;
+					break;
 				}
-				$parent= dbOne('select parent_id from products_categories where id='.$parent, 'parent_id');
 			}
-		}
-		if (!$pageFound) {
-			$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">';
-			$c.=htmlspecialchars($catName);
-			$c.='</a></li>';
+			if (!$pageFound) {
+				$parent = dbOne('select parent_id from products_categories where id='.$cid, 'parent_id');
+				while ($parent>0) {
+					foreach ($directCategoryPages as $catPage) {
+						$pageID= $catPage['page_id'];
+						$shownCat= dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id= '.$pageID, 'value');
+						if ($parent==$shownCat) {
+							$page = Page::getInstance($pageID);
+							$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='.$cid.'">';
+							$c.= htmlspecialchars($catName);
+							$c.='</a></li>';
+							$pageFound= true;
+							break;
+						}
+					}
+					$parent= dbOne('select parent_id from products_categories where id='.$parent, 'parent_id');
+				}
+			}
+			if (!$pageFound) {
+				$c.='<li><a href="/_r?type=products&amp;product_cid='.$cid.'">';
+				$c.=htmlspecialchars($catName);
+				$c.='</a></li>';
+			}
 		}
 	}
 	$c.= '</ul>';
