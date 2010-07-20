@@ -174,7 +174,7 @@ function OnlineStore_showBasketWidget() {
 		$html.='<tr class="os_total"><th colspan="3">Total</th><td class="total">'
 			.$csym.$_SESSION['online-store']['total'].'</td></tr>';
 		$html.='</table>';
-		$html.='<a href="/common/redirector.php?type=online-store">'
+		$html.='<a href="/_r?type=online-store">'
 			.'Proceed to Checkout</a>';
 	}
 	else {

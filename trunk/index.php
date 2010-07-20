@@ -66,7 +66,7 @@ if(!$allowed){
 	if(isset($_SESSION['userdata'])){
 		$c.='<p>You are not in a user-group which has access to this page. If you think you should be, please contact the site administrator.</p>';
 	}
-	else $c.='<p>Click <a href="/common/redirector.php?type=loginpage">here</a> to log in.</p>';
+	else $c.='<p>Click <a href="/_r?type=loginpage">here</a> to log in.</p>';
 }
 else if(getVar('webmespecial')=='sitemap')$c.=sitemap('');
 else{
