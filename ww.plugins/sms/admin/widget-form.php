@@ -13,12 +13,28 @@ if(!count($cs)){
 	exit;
 }
 else{
-	echo '<select name="sms_addressbook_id"><option value=""> -- choose -- </option>';
+	$ids=explode(',',$sms_addressbook_id);
+	echo '<div class="sms_addressbooks">'
+		.'<input type="hidden" name="sms_addressbook_id" value="'.$sms_addressbook_id.'" />';
 	foreach($cs as $v){
-		echo '<option value="'.$v['id'].'"';
-		if($sms_addressbook_id==$v['id'])echo ' selected="selected"';
-		echo '>'.htmlspecialchars($v['name']).'</option>';
+		echo '<input type="checkbox" value="'.$v['id'].'"';
+		if(in_array($v['id'],$ids))echo ' checked="checked"';
+		echo '>'.htmlspecialchars($v['name']).'<br />';
 	}
-	echo '</select><br />';
+	echo '</div>';
 }
 // }
+?>
+<script>
+if(!window.sms_funcs_loaded){
+	window.sms_funcs_loaded=true;
+	$('.sms_addressbooks').live('click',function(){
+		var $div=$(this).closest('.sms_addressbooks');
+		var ids=[];
+		$div.find('input:checked').each(function(){
+			ids.push($(this).val());
+		});
+		$div.find('input[name=sms_addressbook_id]').val(ids.join(','));
+	});
+}
+</script>

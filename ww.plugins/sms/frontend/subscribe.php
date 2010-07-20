@@ -1,7 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 
-$aid=(int)$_REQUEST['id'];
 $name=$_REQUEST['name'];
 $phone=$_REQUEST['phone'];
 
@@ -21,15 +20,18 @@ if(!$sid){
 	dbQuery('insert into sms_subscribers (name,phone,date_created) values("'.addslashes($name).'","'.$phone.'",now())');
 	$sid=dbOne('select id from sms_subscribers where phone="'.$phone.'" limit 1','id');
 }
+$sid=(int)$sid;
 
-$subscribers=json_decode(dbOne('select subscribers from sms_addressbooks where id='.$aid,'subscribers'));
-
-if(in_array($sid,$subscribers)){
-	echo '{"err":3,"errmsg":"you are already subscribed to this list"}';
-	exit;
+$ids=explode(',',$_REQUEST['ids']);
+foreach($ids as $aid){
+	$aid=(int)$aid;
+	$subscribers=json_decode(dbOne('select subscribers from sms_addressbooks where id='.$aid,'subscribers'));
+	if(in_array($sid,$subscribers)){
+		continue;
+	}
+	$subscribers[]=$sid;
+	dbQuery('update sms_addressbooks set subscribers="'.addslashes(json_encode($subscribers)).'" where id='.$aid);
 }
 
-$subscribers[]=$sid;
-dbQuery('update sms_addressbooks set subscribers="'.addslashes(json_encode($subscribers)).'" where id='.$aid);
 
 echo '{"err":0}';

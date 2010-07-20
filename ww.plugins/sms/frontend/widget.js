@@ -13,13 +13,16 @@ $('input.sms-phone').live('change',function(){
 });
 $('.sms-subscribe button').live('click',function(){
 	var $container=$(this).closest('div.sms-subscribe');
-	var id=$container.attr('id').replace(/.*-/,'');
+	var ids=[];
+	$container.find('input:checked').each(function(){
+		ids.push($(this).val());
+	});
 	var name=$container.find('.sms-name').val();
 	var phone=$container.find('.sms-phone').val();
 	if(!name)return alert('Name must not be empty');
 	if(sms_get_phone_error(phone))return alert('please check the Phone field.');
 	$.post('/ww.plugins/sms/frontend/subscribe.php',{
-		"id":id,
+		"ids":ids.join(','),
 		"name":name,
 		"phone":phone
 	},function(res){
