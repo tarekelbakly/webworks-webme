@@ -24,7 +24,7 @@ if ((strcmp($action, 'editQuestion')==0)
 	||(strcmp($action, 'newQuestion')==0)
 	||((strcmp($action, 'newQuiz')==0) 
 	&& isset($_POST['action'])
-	&& empty($_POST['errors']))
+	&& !isset($_POST['errors']))
 ) {
 	echo 1;
 } else {
@@ -170,7 +170,6 @@ if (isset($_POST['action'])) {
 		$quizTopic=addslashes($_POST['description']);
 		$numberOfQuestions= (int)$_POST['number_of_questions'];
 		$enabled = (int)$_POST['enabled'];
-		var_dump($numberOfQuestions);
 		$result
 			= dbAll(
 				"SELECT COUNT(id) 
@@ -186,6 +185,7 @@ if (isset($_POST['action'])) {
 				$isInvalidInput= true;
 			} else {
 				if ($id) {
+					echo 'Updating';
 					dbQuery(
 						"UPDATE quiz_quizzes 
 						SET name = '$quizName', 
@@ -195,11 +195,12 @@ if (isset($_POST['action'])) {
 						WHERE id = '$id'"
 					);
 				} else {
+					echo 'Inserting';
 					dbQuery(
 						"INSERT INTO quiz_quizzes
 						(
-						name'
-						description'
+						name,
+						description,
 						number_of_questions,
 						enabled
 						)
@@ -211,14 +212,15 @@ if (isset($_POST['action'])) {
 						'$enabled'
 						)"
 					);
+					echo 'Inserted';
 					//$result
 					//	= dbAll(
 						//	"SELECT id FROM quiz_quizzes 
 						//	'WHERE name='$quizName'"
 					//	);
-					foreach ($result as $r) {
-						$id=$r['id'];
-					}
+					//foreach ($result as $r) {
+					//	$id=$r['id'];
+					//}
 					$addString= addQuestion();
 					echo '<script>';
 					echo '$("#Questions").append('.json_encode($addString).');';
