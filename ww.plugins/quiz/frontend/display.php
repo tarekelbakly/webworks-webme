@@ -47,7 +47,7 @@
 							href="/j/datatables/media/css/demo_table.css" />';
 		$displayString= $displayString.'<style> * .dataTables_wrapper{clear:none;';
 		$displayString= $displayString.'padding:10px;}</style>';
-		// {The Script
+		// { The Script
 		$displayString= $displayString.'<script>';
 		$displayString= $displayString.'$(document).ready(function(){';
 		$displayString= $displayString.'$(\'#quizzesFrontend\').dataTable();';
@@ -82,13 +82,13 @@
 		if (isset($_POST['take'])) {
 			$id= $_POST['take'];
 			$id= addSlashes($id);
-		 	$quiz = new QuizSession($id, 10);
+		 	$quiz = new QuizSession($id);
 		 	$_SESSION['id']=$id;
 		 	$quiz->chooseQuestions();
 		 	$displayString = $quiz->getQuestionPageHtml();
 		 }
 		 if (isset($_POST['check'])) {
-			$quiz = new QuizSession ($_SESSION['id'], 10);
+			$quiz = new QuizSession ($_SESSION['id']);
 		 	$displayString= $quiz->checkAnswers($_SESSION['questions'], $_POST);
 		 }
 		return $displayString;

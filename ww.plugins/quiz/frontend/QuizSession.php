@@ -29,12 +29,11 @@
 		private $_questionsToBeAsked;
 		private $_allQuestions;
 
-		function __construct ($num, $questionsToBeAnswered) {
-			$this->id= addslashes($num);
+		function __construct ($num) {
+			$this->id= (int)$num;
 			$id= $this->id;
 			$this->score= 0;
-			$this->numQuestionsToBeAnswered = $questionsToBeAnswered;
-			$quizzes= dbAll ("SELECT * FROM quiz_quizzes WHERE id = '".$id."'");
+			$quiz= dbRow ("SELECT * FROM quiz_quizzes WHERE id = '".$id."'");
 			$rows = dbAll("SELECT * FROM quiz_questions WHERE quiz_id = '$id' AND question IS NOT NULL");
 			if (count($rows)!=0) {
 			// I want the questions to be in an indexed array
@@ -44,7 +43,7 @@
 					$this->allQuestions[$i]=$row;
 					$i++;
 				}
-
+				$this->numQuestionsToBeAnswered = $quiz['number_of_questions'];
 				$this->numQuestions = count($rows);
 				if ($this->numQuestionsToBeAnswered > $this->numQuestions) {
 					$this->numQuestionsToBeAnswered = ceil($this->numQuestions/2);//Otherwise if there is only one available question it will be 0.
@@ -71,7 +70,7 @@
 				$indices[$i] = $index;
 				$questionsToBeAsked[$i]=$allQuestions[$index];
 			}
-			$_SESSION['questions']=$questionsToBeAsked;
+			$_SESSION['questions'] = $questionsToBeAsked;
 		}
 		function getQuestionPageHtml () {//Displays the questions and possible answers
 			global $questionsToBeAsked;
@@ -97,15 +96,15 @@
 		    $numQuestionsToBeAnswered = count($questions);
 			$returnString = "";
 		    for ($i=0; $i<$numQuestionsToBeAnswered; $i++) {
-			   $question= $questions[$i]['question'];
-			   $correctAnswer= $questions[$i]['correctAnswer'];
-			   $key= $questions[$i]['id'];
-			   $answer= $answers[$key];
-			   $questionNum= $i+1;
-			   $returnString= $returnString.'<b>Question '.$questionNum.'</b><br/>';
-			   $returnString= $returnString.'You answered '.$answer.'<br/>';
-			   $returnString= $returnString.'The correct answer was '.$correctAnswer.'<br/>';
-			   $returnString= $returnString.'<br/>';
+			   $question = $questions[$i]['question'];
+			   $correctAnswer = $questions[$i]['correctAnswer'];
+			   $key = $questions[$i]['id'];
+			   $answer = $answers[$key];
+			   $questionNum = $i+1;
+			   $returnString = $returnString.'<b>Question '.$questionNum.'</b><br/>';
+			   $returnString = $returnString.'You answered '.$answer.'<br/>';
+			   $returnString = $returnString.'The correct answer was '.$correctAnswer.'<br/>';
+			   $returnString = $returnString.'<br/>';
 			   if($answer==$correctAnswer) {
 				  $score++;
 			   }
@@ -119,3 +118,5 @@
 			return $returnString;
 		}
 	}
+
+

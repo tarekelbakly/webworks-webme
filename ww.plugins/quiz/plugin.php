@@ -22,7 +22,7 @@ $plugin = array (
 		'page_type' => 'Quiz_Display_page'
 	),
 	'description'=>'Create a quiz with this plugin',
-	'version'=>3
+	'version'=>4
 );
 
 /**

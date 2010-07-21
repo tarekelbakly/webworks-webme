@@ -43,11 +43,16 @@ if ($version==0) {
 }
 if ($version==1) {
   	dbQuery("ALTER TABLE quiz_questions CHANGE quiz quiz_id int default 0");
-	$version=2;
+	$version = 2;
 }
 if ($version==2) {
   	dbQuery("ALTER TABLE quiz_quizzes CHANGE topic description text");
 	$version = 3;
+}
+if ($version==3) {
+	dbQuery('ALTER TABLE quiz_quizzes ADD number_of_questions int');
+	dbQuery('ALTER TABLE quiz_quizzes ADD enabled int');
+	$version = 4;
 }
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

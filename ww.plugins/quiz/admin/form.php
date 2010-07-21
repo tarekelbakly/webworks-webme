@@ -23,10 +23,14 @@ $action=$_GET['action'];
 if ((strcmp($action, 'editQuestion')==0)
 	||(strcmp($action, 'newQuestion')==0)
 	||((strcmp($action, 'newQuiz')==0) 
-	&& isset($_POST['action']))
+	&& isset($_POST['action'])
+	&& empty($_POST['errors'])))
 {
-	echo '}';
+	echo 1;
+} else {
+	echo 0;
 }
+echo '}';
 echo ');';
 echo '});';
 echo '$(function() {';
@@ -37,11 +41,12 @@ echo '<h3>';
 if ($id) {
 	echo 'Edit Quiz';
 	$id= addslashes($id);
-	$quiz= dbAll("SELECT * FROM quiz_quizzes WHERE quiz_quizzes.id='$id'");
+	$quiz= dbRow("SELECT * FROM quiz_quizzes WHERE quiz_quizzes.id='$id'");
 } else {
  	echo 'New Quiz';
 }
 echo '</h3>';
+// {The Form
 echo '<form method="post">';
 echo '<div id="tabs">';
 echo '<ul>';
@@ -50,35 +55,53 @@ echo '<li><a href="#Questions">Questions</a></li>';
 echo '</ul>';
 // { Main Tab
 echo '<div id="Overview">';
-echo 'Title   ';
+// { Quiz Name
+echo 'Name   ';
 echo '<input type="text" name="name"';
 if (isset($_POST['name'])) {
 	echo ' value="'.stripslashes(htmlspecialchars($_POST['name'])).'"';
-}
-if ($id) {
+} else if ($id) {
 	echo ' value="';
-	foreach ($quiz as $q) {
-		echo htmlspecialchars($q['name']);
-		break;
-	}
+	echo htmlspecialchars($quiz['name']);
 	echo '"';
 }
 echo ' />';
 echo '<br/>';
+// }
+// {Quiz Description
 echo 'Description';
 echo '<input type="text" name="description"';
 if (isset($_POST['description'])) {
 	echo ' value="'.stripslashes(htmlspecialchars($_POST['description'])).'"';
-}
-if ($id) {
+} else if ($id) {
 	echo ' value="';
-	foreach ($quiz as $q) {
-		echo htmlspecialchars($q['description']);
-		break;
-	}
+	echo htmlspecialchars($quiz['description']);
 	echo '"';
 }
 echo '/>';
+echo '<br/>';
+// }
+// { Number of Questions
+echo 'Number of Questions to ask the User';
+echo pad();
+echo '<input type="text" name="number_of_questions" value="';
+if (isset($_POST['number_of_questions'])) {
+	echo $_POST['number_of_questions'];
+} else if ($id) {
+	echo $quiz['number_of_questions'];
+} else {
+	echo 1;
+}
+echo '"/>';
+// }
+// { Errors
+echo '<input type="hidden" name="errors[]"';
+if (isset($_POST['errors'])) {
+	echo ' value="'.$_POST['errors'].'"';
+}
+echo '/>';
+// }
+// { Submit
 if (!isset($_GET['questionid'])&&!(isset($_POST['add']))) {
 	echo '<br/>';
 	echo '<input type="submit" name="action" value="';
@@ -89,6 +112,7 @@ if (!isset($_GET['questionid'])&&!(isset($_POST['add']))) {
 	}
 	echo '"/>';
 }
+// }
 echo '</div>';//Ends the main tab}
 // { Questions tab
 echo '<div id="Questions">';
@@ -114,9 +138,12 @@ if ($id) {
 } 
 echo '</div>';
 if (isset($_POST['action'])) {
-	if (!empty($_POST['name'])) {
+	$errors = checkInput($_POST);
+	if (empty($errors)) {
+		unset ($_POST['errors']);
 		$quizName=addslashes($_POST['name']);
 		$quizTopic=addslashes($_POST['description']);
+		$numberOfQuestions= (int)$_POST['number_of_questions'];
 		$result= dbAll("SELECT COUNT(id) FROM quiz_quizzes WHERE name = '$quizName'");
 		foreach ($result as $r) {
 			if (($r['COUNT(id)']>0)&&!$id) {
@@ -130,13 +157,14 @@ if (isset($_POST['action'])) {
 					dbQuery(
 						"UPDATE quiz_quizzes 
 						SET name = '$quizName', 
-						description = '$quizTopic' 
+						description = '$quizTopic',
+						number_of_questions = '$numberOfQuestions'
 						WHERE id = '$id'"
 					);
 				} else {
 					dbQuery(
-						"INSERT INTO quiz_quizzes(name, description) 
-						VALUES('$quizName', '$quizTopic')"
+						"INSERT INTO quiz_quizzes(name, description, number_of_questions) 
+						VALUES('$quizName', '$quizTopic', '$numberOfQuestions')"
 					);
 					$result= dbAll("SELECT id FROM quiz_quizzes where name='$quizName'");
 					foreach ($result as $r) {
@@ -150,8 +178,10 @@ if (isset($_POST['action'])) {
 			}		
 		}
 	} else {
-		echo "Please give your quiz a name";
-		$isInvalidInput= true;
+		$_POST['errors'] = $errors;
+		foreach ($errors as $error) {
+			echo $error.'<br/>';
+		}
 	}
 }
 if (isset($_POST['questionAction'])) {
@@ -228,8 +258,40 @@ if ((strcmp($action, 'editQuestion')==0)||(strcmp($action, 'newQuestion')==0)) {
 	echo '$("#Questions").append('.json_encode($addString).');';
 	echo '</script>';
 }
-echo '</form>';//End form
-
+// }
+echo '</form>';
+// }
+/**
+  * Validates the add quiz form
+  *
+  * @param array $input The values that the user has entered
+  *
+  * @return array $errors Any error messages
+*/
+function checkInput ($input) {
+	$errors= array();
+	// { Does the quiz have a name?
+	if (empty($input['name'])) {
+		$errors[] = 'Please give your quiz a name';
+	}
+	// }
+	// { Is the number of questions set?
+	if (!isset($input['number_of_questions'])) {
+		$errors[] = 'You must enter the number of questions you want to be asked when the quiz is taken';
+	} 
+	// }
+	// { Is the number of questions a number?
+	else if (!is_numeric($input['number_of_questions'])) {
+		$errors[]  = 'The number of questions must be a number';
+	}
+	// }
+	// {Is the number of questions>0
+	else if (!($input['number_of_questions']>0)) {
+		$errors[] = 'The number of questions must be greater than 0';
+	}
+	// }
+	return $errors;
+}
 /**
   * This checks that a selection was made for the correct answer 
   * and that the selected answer is not null
@@ -240,16 +302,19 @@ echo '</form>';//End form
   * @return bool 
   * 	true if there is a non empty selected correct answer
   *     false otherwise
-*/
+*/	
 function checkCorrectAnswer ($array, $correctAnswer) {
-	//First check that a selection was made
+	// { First check that a selection was made
 	$selectionIsValid=true;
 	if (($correctAnswer<0)||($correctAnswer>5)) {
 		$selectionIsValid=false;
-	} else if (empty($array[$correctAnswer-1])) {
-		// Check that there is an answer at the selection
+	} 
+	// }
+	// { Check that the selection is not empty
+	else if (empty($array[$correctAnswer-1])) {
 		$selectionIsValid=false;
 	}
+	// }
 	return $selectionIsValid;
 }
 
