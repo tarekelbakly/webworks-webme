@@ -24,8 +24,8 @@ if ((strcmp($action, 'editQuestion')==0)
 	||(strcmp($action, 'newQuestion')==0)
 	||((strcmp($action, 'newQuiz')==0) 
 	&& isset($_POST['action'])
-	&& empty($_POST['errors'])))
-{
+	&& empty($_POST['errors']))
+) {
 	echo 1;
 } else {
 	echo 0;
@@ -46,7 +46,7 @@ if ($id) {
  	echo 'New Quiz';
 }
 echo '</h3>';
-// {The Form
+// { The Form
 echo '<form method="post">';
 echo '<div id="tabs">';
 echo '<ul>';
@@ -68,7 +68,7 @@ if (isset($_POST['name'])) {
 echo ' />';
 echo '<br/>';
 // }
-// {Quiz Description
+// { Quiz Description
 echo 'Description';
 echo '<input type="text" name="description"';
 if (isset($_POST['description'])) {
@@ -93,7 +93,27 @@ if (isset($_POST['number_of_questions'])) {
 	echo 1;
 }
 echo '"/>';
+echo pad();
 // }
+// { Enabled?
+echo 'Enable Quiz?';
+$options= array ('No'=>0, 'Yes'=>1);
+echo '<select name="enabled">';
+foreach ($options as $displayed=>$val) {
+	echo '<option value="'.$val.'"';
+	if (isset ($_POST['enabled'])) {
+		if ($val==$_POST['enabled']) {
+			echo ' selected="selected"';
+		}
+	} else if ($id) {
+		if ($val==$quiz['enabled']) {
+			echo ' selected="selected"';
+		}
+	}
+	echo '>'.htmlspecialchars($displayed).'</option>';
+}
+// }
+echo '</select>';
 // { Errors
 echo '<input type="hidden" name="errors[]"';
 if (isset($_POST['errors'])) {
@@ -113,7 +133,8 @@ if (!isset($_GET['questionid'])&&!(isset($_POST['add']))) {
 	echo '"/>';
 }
 // }
-echo '</div>';//Ends the main tab}
+echo '</div>';
+// }
 // { Questions tab
 echo '<div id="Questions">';
 if ($id) {
@@ -133,10 +154,14 @@ if ($id) {
 		echo '<input type="button" 
 			value="Add New Question" 
 			name="add" 
-			onClick="parent.location=\''.$_url.'\&amp;action=newQuestion&amp;id='.$id.'\'" />';
+			onClick="parent.location=
+				\''.$_url.'\&amp;action=newQuestion&amp;id='.$id.'\'" 
+			/>';
 	}
 } 
 echo '</div>';
+// }
+// { When the form is submitted
 if (isset($_POST['action'])) {
 	$errors = checkInput($_POST);
 	if (empty($errors)) {
@@ -144,7 +169,13 @@ if (isset($_POST['action'])) {
 		$quizName=addslashes($_POST['name']);
 		$quizTopic=addslashes($_POST['description']);
 		$numberOfQuestions= (int)$_POST['number_of_questions'];
-		$result= dbAll("SELECT COUNT(id) FROM quiz_quizzes WHERE name = '$quizName'");
+		$enabled = (int)$_POST['enabled'];
+		$result
+			= dbAll(
+				"SELECT COUNT(id) 
+				FROM quiz_quizzes 
+				WHERE name = '$quizName'"
+			);
 		foreach ($result as $r) {
 			if (($r['COUNT(id)']>0)&&!$id) {
 				//I have to get the id later so I need a unique name 
@@ -158,15 +189,28 @@ if (isset($_POST['action'])) {
 						"UPDATE quiz_quizzes 
 						SET name = '$quizName', 
 						description = '$quizTopic',
-						number_of_questions = '$numberOfQuestions'
+						number_of_questions = '$numberOfQuestions',
+						enabled = $enabled
 						WHERE id = '$id'"
 					);
 				} else {
 					dbQuery(
-						"INSERT INTO quiz_quizzes(name, description, number_of_questions) 
-						VALUES('$quizName', '$quizTopic', '$numberOfQuestions')"
+						"INSERT INTO quiz_quizzes
+						(name, 
+						description, 
+						number_of_questions, 
+						enabled) 
+						VALUES
+						('$quizName', 
+						'$quizTopic', 
+						'$numberOfQuestions', 
+						'$enabled')"
 					);
-					$result= dbAll("SELECT id FROM quiz_quizzes where name='$quizName'");
+					$result
+						= dbAll(
+							"SELECT id FROM quiz_quizzes 
+							'WHERE name='$quizName'"
+						);
 					foreach ($result as $r) {
 						$id=$r['id'];
 					}
@@ -196,7 +240,8 @@ if (isset($_POST['questionAction'])) {
 	if (empty($question)) {
 		echo 'Please type a question';
 	} else if (empty($answers[0])||empty($answers[1])) {
-		echo 'You need to provide at least two possible answers in fields 1 and 2';
+		echo 'You need to provide at least two possible answers 
+			in fields 1 and 2';
 	} else if (!checkCorrectAnswer($answers, $correctAnswer)) {
 		echo 'One of the answers must be marked as correct';
 	} else {//Input is valid
@@ -277,7 +322,8 @@ function checkInput ($input) {
 	// }
 	// { Is the number of questions set?
 	if (!isset($input['number_of_questions'])) {
-		$errors[] = 'You must enter the number of questions you want to be asked when the quiz is taken';
+		$errors[] = 'You must enter the number of questions 
+			you want to be asked when the quiz is taken';
 	} 
 	// }
 	// { Is the number of questions a number?
@@ -341,7 +387,9 @@ function addQuestion () {
 	$returnString= $returnString.'<input type="hidden" name="quiz_id" value="';
 	$returnString= $returnString.htmlspecialchars($id).'"/>';
 	if (isset($questionID)) {
-		$returnString= $returnString.'<input type="hidden" name="question_id" value="';
+		$returnString= $returnString.'<input type="hidden"';
+		$returnString= $returnString.'name="question_id"';
+		$returnString= $returnString.'value="';
 		$returnString= $returnString.htmlspecialchars($questionID).'"';
 		$returnString= $returnString.'"/>';
 	}
@@ -350,7 +398,8 @@ function addQuestion () {
 	$returnString= $returnString.pad();
 	$returnString= $returnString.'<input type="text" name="question"';
 	if (isset($_POST['question'])) {
-		$returnString= $returnString.'value="'.htmlspecialchars($_POST['question']).'"';
+		$returnString= $returnString.'value="';
+		$returnString= $returnString.htmlspecialchars($_POST['question']).'"';
 	}
 	if (isset($questionID)) {
 		$returnString= $returnString.'value="';
@@ -363,7 +412,8 @@ function addQuestion () {
 	$returnString= $returnString.'Topic';
 	$returnString= $returnString.'<input type="text" name="topic"'; 
 	if (isset($_POST['topic'])) {	
-		$returnString= $returnString.'value="'.htmlspecialchars($_POST['topic']).'"';
+		$returnString= $returnString.'value="';
+		$returnString= $returnString..htmlspecialchars($_POST['topic']).'"';
 	}
 	if (isset($questionID)) {
 		$returnString= $returnString.'value="';
@@ -406,7 +456,9 @@ function addQuestion () {
 	$returnString= $returnString.'</table>';
 	$returnString= $returnString.'</div>';
 	// }
-	$returnString= $returnString.'<input type="submit" name="questionAction" value="';
+	$returnString= $returnString.'<input type="submit"';
+	$returnString= $returnString.'name="questionAction"'
+	$returnString= $returnString.'value="';
 	if (isset($questionID)) {
 		$returnString= $returnString.'Edit';
 	} else {
@@ -434,7 +486,8 @@ function addAnswer($num) {
 		$answers = $_POST['answers'];
 		$i = $num-1;
 		if (!empty($answers[$i])) {
-			$returnString= $returnString.' value="'.htmlspecialchars($answers[$i]).'"';
+			$returnString= $returnString.' value="'
+			$returnString= $returnString.htmlspecialchars($answers[$i]).'"';
 		}
 	}
 	if ($questionID) {
