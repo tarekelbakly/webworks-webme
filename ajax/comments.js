@@ -23,13 +23,13 @@ function comments_init(){
 function comments_showAll(comments){
     if(!isArray(comments)||comments.length==0){
         if(!isArray(comments)&&comments!='')alert(comments);
-        else addEls(removeChildren('ww_wrapper'),newEl('em',0,0,'No comments'));
+				else $('#ww_wrapper').html('<em>No Comments</em>');
         return;
     }
 		var i,wrapper;
 		i=0;
-		wrapper=$M('ww_wrapper');
-		if(!comment_lastId)removeChildren('ww_wrapper');
+		$wrapper=$('#ww_wrapper');
+		if(!comment_lastId)$('#ww_wrapper').empty();
     for(;i<comments.length;++i){
         var c=comments[i],cwrapper=newEl('div','ww_comment'+c.id,'ww_commentWrapper');
         var name=c.name?c.name:'anonymous';
@@ -57,11 +57,11 @@ function comments_showAll(comments){
             cwrapper.appendChild(del);
         }
 				cwrapper.appendChild(new Element('hr'));
-        addEls(wrapper,cwrapper);
-        $M('ww_commentBody'+c.id).innerHTML=comments_parseComment(c.comment);
+				$wrapper.append(cwrapper);
+				$('#ww_commentBody'+c.id).html(comments_parseComment(c.comment));
     }
     comment_lastId=comments[i-1].id;
-    $M('ww_comment').value='';
+    $('#ww_comment').val('');
 }
 function comments_replaceAll(comments){
     $M('ww_wrapper').empty();

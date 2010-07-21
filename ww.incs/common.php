@@ -81,7 +81,7 @@ function smarty_setup(){
 	$smarty->right_delimiter = '}}';
 	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
 	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
-	$smarty->register_function('BREADCRUMBS','show_page_breadcrumbs');
+	$smarty->register_function('BREADCRUMBS','WW_getPageBreadcrumbs');
 	$smarty->register_function('LOGO', 'logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->register_function('nuMENU', 'menu_show_fg');

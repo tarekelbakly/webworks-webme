@@ -9,9 +9,11 @@ header('Pragma:');
 header('Content-type: text/javascript; charset=utf-8');
 
 $name=md5_of_dir('./');
-if(!is_dir(USERBASE . '/f/.files/j'))mkdir(USERBASE . '/f/.files/j');
+if(!is_dir(USERBASE . '/ww.cache/j'))mkdir(USERBASE . '/ww.cache/j');
 else{
 	$js=file_get_contents('mootools.v1.11.js');
+	$js.=file_get_contents('jquery-ui/js/jquery-1.4.2.min.js');
+	$js.=file_get_contents('jquery-ui/js/jquery-ui-1.8.1.custom.min.js');
 	$js.=file_get_contents('json.js');
 	$js.=file_get_contents('js.js');
 	$js.=file_get_contents('tabs.js');
@@ -49,8 +51,8 @@ else{
   if(isset($_REQUEST['minify'])){
     require '../common/jsmin-1.1.1.php';
     $js=JSMin::minify($js);
-    file_put_contents('../f/.files/j/'.$name,$js);
-    delete_old_md5s('../f/.files/j/');
+    file_put_contents('../ww.cache/j/'.$name,$js);
+    delete_old_md5s('../ww.cache/j/');
     exit;
   }
   else{

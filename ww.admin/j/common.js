@@ -28,7 +28,6 @@ function initialiseAdmin(){
 	}
 	if(classes['addressbook'])loadScript('/ww.admin/j/addressbook.php');
 	if(classes['adminmenu'])loadScript('/ww.admin/ajax/menu.php');
-	if(classes['ajaxmenu_expandable'])loadScript('/ww.admin/ajax/ajaxmenu_expandable.php');
 	if(classes['sc_supplements'])loadScript('/ww.admin/j/sc_supplements.php');
 	if(classes['draggable'])loadScript('/ww.admin/ajax/ajax_sortabletable.php');
 	if(classes['accordion']){ // accordion

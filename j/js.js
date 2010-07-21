@@ -75,13 +75,6 @@ function date_m2h(d,type){
 	if(type=='time')return time;
 	return time+', '+date;
 }
-function delEl(o){
-	if($type(o)=='array')for(var i=0;i<o.length;++i)delEl(o[i]);
-	else{
-		if($type(o)=='string')o=document.getElementById(o);
-		if(o&&o.parentNode)o.parentNode.removeChild(o);
-	}
-}
 function event_target(e){ // taken from http://www.quirksmode.org/js/events_properties.html
 	var targ;
 	if (!e) var e = window.event;
@@ -132,7 +125,7 @@ function initShowHide(vis,objName){
 		els[i].parentNode.insertBefore(link,els[i]);
 		els[i].id='showhideDiv'+showhideNum;
 		els[i].style.display=thisvis?'block':'none';
-		removeClassName(els[i],'showhide');
+		$(els[i]).removeClass('showhide');
 	}
 	return els.length-1;
 }
@@ -165,8 +158,7 @@ function kaejax_do_call(func_name,args){
 function kaejax_sendRequests(uri){
 	var throbber=document.getElementById('throbber');
 	if(!throbber){
-		var throbber=newEl('div','throbber');
-		document.body.appendChild(throbber);
+		$('<div id="throbber"></div>').appendTo(document.body);
 	}
 	var t=window.kaejax_timeouts[uri],callbacks=window.kaejax_timeouts[uri].callbacks;
 	t.callbacks=null;
@@ -546,9 +538,6 @@ function ms_updateBackground(el){
 	X(p.style,{backgroundColor:s.b,color:s.c});
 }
 // }
-function newImg(a,id,title){
-	return X(newEl('img'),{'src':a,'id':id,'title':title});
-}
 function newInput(n,t,v,cl){
 	var b;
 	if(!t)t='text';
@@ -635,32 +624,8 @@ function newSelectbox(name,keys,vals,s,f){
 function newText(a){
 	return document.createTextNode(a);
 }
-function removeChildren(a){
-	switch($type(a)){
-		case 'array':
-			for(var i=0;i<a.length;++i)removeChildren(a[i]);
-			return;
-		case 'string':
-			a=document.getElementById(a);
-	}
-	if(!a)return;
-	a.innerHTML='';
-	return a;
-}
-function removeClassName(el,name){
-	return $M(el).removeClass(name);
-}
 function replaceEl(f,t){
 	if(f)f.parentNode.replaceChild(t,f);
-}
-function removeRowIfEmpty(el){
-	if(!el){
-		el=$('.removeRowIfEmpty');
-		el.each(removeRowIfEmpty);
-		return;
-	}
-	if(el.innerHTML!='')return;
-	$(el).closest('tr').remove();
 }
 function setAttribute(o,n,v){
 	if(!n||!o)return;
@@ -700,7 +665,6 @@ window.ww={
 		if(p.tabs)               tabs_init();
 		if(p.showhide)           initShowHide();
 		if(p.fontsize_controls)  loadScript('/j/fonts.js');
-		if(p.removeRowIfEmpty)   removeRowIfEmpty();
 		if(p.scrollingEvents)    loadScript('/j/scrollingEvents.js');
 		if(p.scrollingNews)      loadScript('/j/scroller.js');
 		if(p.os_fader)           loadScript('/j/os_fader.js');

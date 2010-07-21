@@ -1,4 +1,4 @@
 function formHide(msg){
-	delEl(['shader','formWrapper']);
+	$('#shader,#formWrapper').remove();
 	if(msg)alert(msg);
 }
