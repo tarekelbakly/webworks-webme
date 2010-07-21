@@ -13,14 +13,14 @@
 
 if ($version==0) { // online_store_orders
 	dbQuery(
-					'CREATE TABLE IF NOT EXISTS `online_store_orders` (
-					`id` int(11) NOT NULL auto_increment,
-					`form_vals` text,
-					`invoice` text,
-					`total` float,
-					`date_created` datetime,
-					PRIMARY KEY  (`id`)
-					) ENGINE=MyISAM DEFAULT CHARSET=utf8'
+		'CREATE TABLE IF NOT EXISTS `online_store_orders` (
+		`id` int(11) NOT NULL auto_increment,
+		`form_vals` text,
+		`invoice` text,
+		`total` float,
+		`date_created` datetime,
+		PRIMARY KEY  (`id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8'
 	);
 	$version=1;
 }

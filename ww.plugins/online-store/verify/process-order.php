@@ -36,8 +36,8 @@ function OnlineStore_processOrder($id, $order) {
 	$bcc='';
 	$page=Page::getInstanceByType('online-store');
 	if ( $page
-					&& isset($page->vars['online_stores_admin_email'])
-					&& $page->vars['online_stores_admin_email']
+		&& isset($page->vars['online_stores_admin_email'])
+		&& $page->vars['online_stores_admin_email']
 	) {
 		$from=$page->vars['online_stores_admin_email'];
 		$bcc=$page->vars['online_stores_admin_email'];
@@ -51,10 +51,10 @@ function OnlineStore_processOrder($id, $order) {
 			$headers.='BCC: '.$bcc."\r\n";
 		}
 		mail(
-						$form_vals->Email,
-						'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] invoice #'. $id,
-						$order['invoice'],
-						$headers
+			$form_vals->Email,
+			'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] invoice #'. $id,
+			$order['invoice'],
+			$headers
 		);
 	}
 }

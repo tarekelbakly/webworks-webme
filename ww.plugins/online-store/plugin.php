@@ -48,8 +48,8 @@ $online_store_currencies=array(
 	* @return null
 	*/
 function OnlineStore_addToCart(
-				$cost=0, $amt=0, $short_desc='',
-				$long_desc='', $md5='', $url=''
+	$cost=0, $amt=0, $short_desc='',
+	$long_desc='', $md5='', $url=''
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {

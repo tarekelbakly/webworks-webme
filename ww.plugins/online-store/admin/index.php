@@ -13,7 +13,7 @@
 
 global $online_store_currencies,$DBVARS;
 if (isset($_REQUEST['online_store_currency'])
-				&& isset($online_store_currencies[$_REQUEST['online_store_currency']])
+	&& isset($online_store_currencies[$_REQUEST['online_store_currency']])
 ) {
 	$DBVARS['online_store_currency']=$_REQUEST['online_store_currency'];
 	config_rewrite();
@@ -42,8 +42,8 @@ foreach ($arr as $k=>$v) {
 }
 $c.='</select>.</p>';
 $rs=dbAll(
-				'select status,id,total,date_created from online_store_orders where status='
-				.((int)$_SESSION['online-store']['status']).' order by date_created desc'
+	'select status,id,total,date_created from online_store_orders where status='
+	.((int)$_SESSION['online-store']['status']).' order by date_created desc'
 );
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 20%"><table width="100%" class="datatable"><thead><tr>'
@@ -69,7 +69,7 @@ $c.='</div>';
 $c.='<div class="tabPage"><h2>Form</h2>';
 $c.='<p>This is the form that will be presented as the checkout.</p>';
 if ($page['body']==''
-				|| $page['body']=='<h1>'.htmlspecialchars($page['name']).'</h1><p>&nbsp;</p>'
+	|| $page['body']=='<h1>'.htmlspecialchars($page['name']).'</h1><p>&nbsp;</p>'
 ) {
 	$page['body']=file_get_contents(dirname(__FILE__).'/body_template_sample.html');
 }
@@ -78,7 +78,7 @@ $c.='</div>';
 // }
 // { form fields
 if (!isset($vars['online_stores_fields'])
-				|| !$vars['online_stores_fields']
+	|| !$vars['online_stores_fields']
 ) {
 	$vars['online_stores_fields']='{}';
 }
@@ -95,7 +95,7 @@ $c.='<div class="tabPage"><h2>Invoice</h2>';
 $c.='<p>This is what will be sent out to the buyer after the payment succeeds.</p>';
 if (!isset($vars['online_stores_invoice']) || $vars['online_stores_invoice']=='') {
 	$vars['online_stores_invoice']=file_get_contents(
-					dirname(__FILE__).'/invoice_template_sample.html'
+		dirname(__FILE__).'/invoice_template_sample.html'
 	);
 }
 $c.=ckeditor('page_vars[online_stores_invoice]', $vars['online_stores_invoice']);
@@ -143,6 +143,6 @@ if (file_exists(USERBASE.'ww.cache/online-store/'.$page['id'])) {
 	unlink(USERBASE.'ww.cache/online-store/'.$page['id']);
 }
 file_put_contents(
-				USERBASE.'ww.cache/online-store/'.$page['id'],
-				$vars['online_stores_invoice']
+	USERBASE.'ww.cache/online-store/'.$page['id'],
+	$vars['online_stores_invoice']
 );

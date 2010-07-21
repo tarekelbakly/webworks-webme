@@ -41,7 +41,7 @@ class WebME_Sniffs_Files_LineLengthSniff extends Generic_Sniffs_Files_LineLength
      *
      * @var int
      */
-    protected $lineLimit = 85;
+    public $lineLimit = 85;
 
     /**
      * The limit that the length of a line must not exceed.
@@ -50,7 +50,7 @@ class WebME_Sniffs_Files_LineLengthSniff extends Generic_Sniffs_Files_LineLength
      *
      * @var int
      */
-    protected $absoluteLineLimit = 0;
+    public $absoluteLineLimit = 0;
 
 }//end class
 

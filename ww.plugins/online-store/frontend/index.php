@@ -43,8 +43,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		$total=$_SESSION['online-store']['total'];
 		// { save data
 		dbQuery(
-						'insert into online_store_orders (form_vals,total,items,date_created)'
-						." values('$formvals', $total, '$items', now())"
+			'insert into online_store_orders (form_vals,total,items,date_created)'
+			." values('$formvals', $total, '$items', now())"
 		);
 		$id=dbOne('select last_insert_id() as id', 'id');
 		// }
@@ -64,17 +64,21 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 			$table.='<tr><td class="quantitycell">'.$item['amt']
 				.'</td><td class="descriptioncell"><a href="'.$item['url'].'">'
 				.preg_replace('/<[^>]*>/', '', $item['short_desc'])
-				.'</td><td class="unitamountcell">'.$csym.sprintf("%.2f",$item['cost'])
-				.'</td><td class="amountcell">'.$csym.sprintf("%.2f",$item['cost']*$item['amt']).'</td></tr>';
+				.'</td><td class="unitamountcell">'.$csym.sprintf("%.2f", $item['cost'])
+				.'</td><td class="amountcell">'.$csym.sprintf("%.2f", $item['cost']*$item['amt'])
+				.'</td></tr>';
 		}
 		$table.='<tr class="os_basket_totals"><td colspan="3" style="text-align:right">'
-			.'Subtotal</td><td class="totals amountcell">'.$csym.sprintf("%.2f",$total).'</td></tr>';
+			.'Subtotal</td><td class="totals amountcell">'.$csym.sprintf("%.2f", $total)
+			.'</td></tr>';
 		$table.='</table>';
 		$smarty->assign('_invoice_table', $table);
 		$smarty->assign('_invoicenumber', $id);
 		// }
 		$invoice=addslashes(
-						$smarty->fetch(USERBASE.'ww.cache/online-store/'.$PAGEDATA->id)
+			$smarty->fetch(
+				USERBASE.'ww.cache/online-store/'.$PAGEDATA->id
+			)
 		);
 		dbQuery("update online_store_orders set invoice='$invoice' where id=$id");
 		// }
