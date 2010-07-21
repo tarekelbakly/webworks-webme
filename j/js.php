@@ -18,9 +18,7 @@ else{
 	$js.=file_get_contents('js.js');
 	$js.=file_get_contents('tabs.js');
 	$js.=file_get_contents('addrow.js');
-	$js.=file_get_contents('formhide.js');
 	$js.=file_get_contents('getels.js');
-	$js.=file_get_contents('getmouseat.js');
 	$js.=file_get_contents('getoffset.js');
 	
 	{ # browser-specific functions
