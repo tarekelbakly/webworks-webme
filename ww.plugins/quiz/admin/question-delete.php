@@ -1,7 +1,8 @@
 <?php
 /**
-  * PHP Version 5.2.6
   * Contains code to delete a question. It uses quickDelete.js to remove the row
+  *
+  * PHP Version 5
   *
   * @category   Quiz_Plugin
   * @package    Webworks_WebME

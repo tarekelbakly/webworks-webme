@@ -48,7 +48,8 @@ switch ($action){
 	case 'editQuiz': // { If the user wants to create or edit a quiz
 		require_once $dir.'/form.php';
 	break; // }
-	case 'deleteQuiz': // { What to do if the user wants to delete a quiz and confirms it
+	case 'deleteQuiz': 
+		// { What to do if the user wants to delete a quiz and confirms it
 		dbQuery("DELETE FROM quiz_quizzes WHERE id = '$id'");
 		dbQuery("DELETE FROM quiz_questions WHERE quiz_id = '$id'");
 		//Not breaking because I want the quizzes to display after a quiz is
@@ -78,14 +79,15 @@ switch ($action){
 			$quiz['id']=addslashes($quiz['id']);
 			echo '<td><a href= "'.$_url.'&amp;action=editQuiz&amp;id='
 				.$quiz['id'].'">edit</a></td>';
-			echo '<td><a href="'.$_url.'&amp;action=deleteQuiz&amp;id='.$quiz['id'].'"'
-				.' onclick="return confirm(\'are you sure you want to delete this?\');">
+			echo '<td><a href="'.$_url.'&amp;action=deleteQuiz
+				&amp;id='.$quiz['id'].'"'
+				.' onclick="return confirm
+					(\'are you sure you want to delete this?\');">
 				[x][</a></td>';
 			echo '</tr>';
 		}
 		echo '</tbody></table></div>';
-		break;
 		// }
-	// }
+	break; // }
 }
 echo '</div>';

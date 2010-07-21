@@ -170,6 +170,7 @@ if (isset($_POST['action'])) {
 		$quizTopic=addslashes($_POST['description']);
 		$numberOfQuestions= (int)$_POST['number_of_questions'];
 		$enabled = (int)$_POST['enabled'];
+		var_dump($numberOfQuestions);
 		$result
 			= dbAll(
 				"SELECT COUNT(id) 
@@ -196,21 +197,25 @@ if (isset($_POST['action'])) {
 				} else {
 					dbQuery(
 						"INSERT INTO quiz_quizzes
-						(name, 
-						description, 
-						number_of_questions, 
-						enabled) 
+						(
+						name'
+						description'
+						number_of_questions,
+						enabled
+						)
 						VALUES
-						('$quizName', 
-						'$quizTopic', 
-						'$numberOfQuestions', 
-						'$enabled')"
+						(
+						'$quizName',
+						'$quizTopic',
+						'$numberOfQuestions',
+						'$enabled'
+						)"
 					);
-					$result
-						= dbAll(
-							"SELECT id FROM quiz_quizzes 
-							'WHERE name='$quizName'"
-						);
+					//$result
+					//	= dbAll(
+						//	"SELECT id FROM quiz_quizzes 
+						//	'WHERE name='$quizName'"
+					//	);
 					foreach ($result as $r) {
 						$id=$r['id'];
 					}
@@ -413,7 +418,7 @@ function addQuestion () {
 	$returnString= $returnString.'<input type="text" name="topic"'; 
 	if (isset($_POST['topic'])) {	
 		$returnString= $returnString.'value="';
-		$returnString= $returnString..htmlspecialchars($_POST['topic']).'"';
+		$returnString= $returnString.htmlspecialchars($_POST['topic']).'"';
 	}
 	if (isset($questionID)) {
 		$returnString= $returnString.'value="';
@@ -457,7 +462,7 @@ function addQuestion () {
 	$returnString= $returnString.'</div>';
 	// }
 	$returnString= $returnString.'<input type="submit"';
-	$returnString= $returnString.'name="questionAction"'
+	$returnString= $returnString.'name="questionAction"';
 	$returnString= $returnString.'value="';
 	if (isset($questionID)) {
 		$returnString= $returnString.'Edit';
@@ -486,7 +491,7 @@ function addAnswer($num) {
 		$answers = $_POST['answers'];
 		$i = $num-1;
 		if (!empty($answers[$i])) {
-			$returnString= $returnString.' value="'
+			$returnString= $returnString.' value="';
 			$returnString= $returnString.htmlspecialchars($answers[$i]).'"';
 		}
 	}
