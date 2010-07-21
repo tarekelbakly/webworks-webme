@@ -280,6 +280,9 @@ $c.='<style type="text/css">.loggedin{display:'
 $c.='<link rel="stylesheet" href="/j/jquery-ui/css/smoothness/'
 	.'jquery-ui-1.8.1.custom.css" />';
 $c.='<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
+if(is_admin()){
+	$c.='<script src="/ww.admin/j/common.js"></script>';
+}
 $c.='<script>var pagedata={id:'.$PAGEDATA->id.',url:"'
 	.$PAGEDATA->getRelativeURL()
 	.'",country:"'

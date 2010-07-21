@@ -62,9 +62,9 @@ function ajaxmenu_initialise(p){
 		}
 		else{
 			e.style.display='block';
-			var w=e.width,h=e.offsetHeight,y=e.offsetTop,ws=getWindowSize();
+			var w=e.width,h=e.offsetHeight,y=e.offsetTop,wh=$(window).height();
 			var scrolly = typeof window.pageYOffset != 'undefined' ? window.pageYOffset : (document.documentElement.scrollTop?document.documentElement.scrollTop:document.body.scrollTop);
-			if(h+y>ws.y+scrolly)e.style.top=(ws.y+scrolly-h)+'px';
+			if(h+y>wh+scrolly)e.style.top=(wh+scrolly-h)+'px';
 			if(browser.isIE){ // there is always something...
 				for(var i=0;i<a.length;++i){
 					var el=document.getElementById('ajaxmenu_link'+a[i].id);
@@ -148,7 +148,7 @@ function ajaxmenu_openSubMenus(i){
 				else{
 					x=$(p).offset().left;
 					if(g||(_am.align=='vertical'))x+=p.offsetWidth;
-					if(x+150>window.getSize().size.x && g)x=$(p).offset().left-150;
+					if(x+150>$(window).width() && g)x=$(p).offset().left-150;
 				}	
 				var s=document.createElement('div');
 				s.id='ajaxmenu'+i;
