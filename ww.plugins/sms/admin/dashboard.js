@@ -13,6 +13,6 @@ $(function(){
 		$.post('/ww.plugins/sms/admin/get-paypal-button.php',{
 			"amt":amt
 		},sms_show_paypal_button,'json');
-	}
+	});
 	$('#sms_senderid').click(sms_set_sender_id);
 });
