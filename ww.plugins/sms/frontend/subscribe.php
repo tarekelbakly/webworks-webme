@@ -15,23 +15,15 @@ if(preg_replace('/[^0-9]/','',$phone)!=$phone
 	exit;
 }
 
-$sid=dbOne('select id from sms_subscribers where phone="'.$phone.'" limit 1','id');
+$sid=sms_getSubscriberId($phone,$name);
 if(!$sid){
-	dbQuery('insert into sms_subscribers (name,phone,date_created) values("'.addslashes($name).'","'.$phone.'",now())');
-	$sid=dbOne('select id from sms_subscribers where phone="'.$phone.'" limit 1','id');
+	echo '{"err":2,"errmsg":"incorrect number format"}';
+	exit;
 }
-$sid=(int)$sid;
 
 $ids=explode(',',$_REQUEST['ids']);
 foreach($ids as $aid){
-	$aid=(int)$aid;
-	$subscribers=json_decode(dbOne('select subscribers from sms_addressbooks where id='.$aid,'subscribers'));
-	if(in_array($sid,$subscribers)){
-		continue;
-	}
-	$subscribers[]=$sid;
-	dbQuery('update sms_addressbooks set subscribers="'.addslashes(json_encode($subscribers)).'" where id='.$aid);
+	sms_subscribeToAddressbook($sid,(int)$aid);
 }
-
 
 echo '{"err":0}';
