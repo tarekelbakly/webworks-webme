@@ -94,15 +94,15 @@
 
 		function checkAnswers ($questions, $answers) { //Checks the Answers
 		    $score = $this->score; // I may be changing the object but the score always defaults to 0
-		    $numQuestionsToBeAnswered= count($questions);
-			$returnString="";
+		    $numQuestionsToBeAnswered = count($questions);
+			$returnString = "";
 		    for ($i=0; $i<$numQuestionsToBeAnswered; $i++) {
 			   $question= $questions[$i]['question'];
 			   $correctAnswer= $questions[$i]['correctAnswer'];
 			   $key= $questions[$i]['id'];
 			   $answer= $answers[$key];
 			   $questionNum= $i+1;
-			   $returnString= $returnString.'Question '.$questionNum.'<br/>';
+			   $returnString= $returnString.'<b>Question '.$questionNum.'</b><br/>';
 			   $returnString= $returnString.'You answered '.$answer.'<br/>';
 			   $returnString= $returnString.'The correct answer was '.$correctAnswer.'<br/>';
 			   $returnString= $returnString.'<br/>';
@@ -110,7 +110,12 @@
 				  $score++;
 			   }
 		    }
-		    $returnString= $returnString.'You scored '.$score.' out of '.$numQuestionsToBeAnswered;
+		    $returnString = $returnString.'You scored '.$score.' out of '.$numQuestionsToBeAnswered;
+			$returnString = $returnString.'<form method="post">';
+			$returnString = $returnString.'<center>';
+			$returnString = $returnString.'<input type="submit" name="action" value="Back to Quizzes"/>';
+			$returnString = $returnString.'</center>';
+			$returnString = $returnString.'</form>';
 			return $returnString;
 		}
 	}
