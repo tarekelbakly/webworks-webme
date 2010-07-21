@@ -96,7 +96,7 @@ class WebME_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniffe
         // Find the actual indent.
         $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1));
 
-        $expectedIndent = ($assignmentIndent + 4);
+        $expectedIndent = ($assignmentIndent + 1);
         $foundIndent    = strlen($tokens[$prev]['content']);
         if ($foundIndent !== $expectedIndent) {
             $error = "Multi-line assignment not indented correctly; expected $expectedIndent spaces but found $foundIndent";
