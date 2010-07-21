@@ -5,10 +5,17 @@ if(!file_exists(USERBASE.'/ww.cache/products')){
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
 function products_categories ($params, &$smarty) {
-	$product= $smarty->_tpl_vars['product'];
-	$productID= $product->id;
-	$categoryIDs= dbAll('select category_id from products_categories_products where product_id='.$productID);
-	if (!count ($categoryIDs)) {
+	$product = $smarty->_tpl_vars['product'];
+	$productID = $product->id;
+	$categoryIDs = dbAll('select category_id from products_categories_products where product_id='.$productID);
+	$query= 'select count(id) from products_categories where enabled = 1 and id in (';
+	foreach ($categoryIDs as $catID) {
+		$query.= (int)$catID['category_id'].', ';
+	}
+    $query= substr_replace($query, '', -2);
+	$query.=')';
+	$numEnabledCats = dbOne($query, 'count(id)'); 	
+	if ($numEnabledCats==0) {
 		return '<div class="products-categories">No Categories exist for this product</div>';
 	}
 	$c= '<ul>';
@@ -256,13 +263,14 @@ class Product{
 		return self::$instances[$id];
 	}
 	function getRelativeURL () {
-		//Does the product have a page assigned to display the product?
+		// { Does the product have a page assigned to display the product?
 		$pageID= dbOne('select page_id from page_vars where name=\'products_product_to_show\' and value='.$this->id, 'page_id');
 		if ($pageID) {
 			$page= Page::getInstance($pageID);
 			return $page->getRelativeUrl();
 
 		}
+		// }
 		// { Is there a page designed to display its category?
 		$pages= dbAll('select id from pages where type= \'products\'');
 		$productCats= dbAll('select category_id from products_categories_products where product_id='.$this->id);
@@ -278,6 +286,7 @@ class Product{
 				}
 			}
 		}
+		// }
 		return '/_r?type=products&amp;product_id='.$this->id;
 	}
 	function get($name){
