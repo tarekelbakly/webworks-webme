@@ -4,16 +4,6 @@ function __(str){
 	if(lang[str])str=lang[str];
 	return str;
 }
-function $F(n,v){
-	var o=$M(n),i=0;
-	if(!o)return v?v:'';
-	if(o.type=='checkbox')return o.checked;
-	if(o.type!='radio')return o.value;
-	var os=getEls('input',o.parentNode.parentNode.parentNode),a=[];
-	for(;i<os.length;++i)if(os[i].type=='radio' && os[i].name==n)a.push(os[i]);
-	for(i=0;i<a.length;++i)if(a[i].checked)return a[i].value;
-	return '';
-}
 function $type(obj){
 	if (obj==undefined) return false;
 	if (obj.htmlElement) return 'element';
@@ -147,10 +137,6 @@ function kaejax_do_call(func_name,args){
 	window.kaejax_timeouts[uri].callbacks[l]=args[args.length-1];
 }
 function kaejax_sendRequests(uri){
-	var throbber=document.getElementById('throbber');
-	if(!throbber){
-		$('<div id="throbber"></div>').appendTo(document.body);
-	}
 	var t=window.kaejax_timeouts[uri],callbacks=window.kaejax_timeouts[uri].callbacks;
 	t.callbacks=null;
 	window.kaejax_timeouts[uri]=null;
@@ -171,17 +157,8 @@ function kaejax_sendRequests(uri){
 			}
 			if(f)f(v[i],p);
 		}
-		throbber.style.display='none';
 	}
 	var w=getWindowSize(),s=getWindowScrollAt();
-	throbber.style.display='block';
-	throbber.style.position='absolute';
-	throbber.style.right=0;
-	throbber.style.top=0;
-	throbber.style.width='16px';
-	throbber.style.height='16px';
-	throbber.style.background='url(/i/throbber.gif)';
-	throbber.style.zIndex=30;
 	x.send(post_data);
 }
 // }
@@ -341,62 +318,6 @@ function newScript(url){
 function loadUrl(url){
 	document.location=url;
 }
-function newInput(n,t,v,cl){
-	var b;
-	if(!t)t='text';
-	switch(t){
-		case 'checkbox':{
-			b=X(newEl('input',n),{type:'checkbox'});
-			if(v)b.checked=true;
-			b.style.width='auto';
-			break;
-		}
-		case 'date':case 'datetime':{
-			{ // break the value into components
-				if(v){
-					var p=v.split(/[- :]/);
-					var year=p[0],month=p[1],day=p[2],hour=p[3],minute=p[4];
-				}else{
-					var today=new Date();
-					var year=today.getFullYear(),month=today.getMonth()+1,day=today.getDate(),hour=today.getHours(),minute=today.getMinutes();
-					v=year+'-'+fixed(month,2)+'-'+fixed(day,2)+' '+hour+':'+minute;
-				}
-			}
-			{ // draw the table
-				var b=X(newEl('table'),{className:'borderedTable'}),row;
-				b.style.width='auto';
-				row=addRow(b,0);
-				var y=newNumberRange(2000,2030);
-				y.unshift('----');
-				var d=newNumberRange(1,31,2);
-				d.unshift('--');
-				addEls(row.insertCell(0),[newSelectbox(n+'_month',newNumberRange(0,12,2),months,month,updateInputVal),newInput(n,'hidden',v)]);
-				addCells(row,1,[[newSelectbox(n+'_day',d,0,day,updateInputVal)],[newSelectbox(n+'_year',y,0,year,updateInputVal)]]);
-				if(t=='datetime'){ // time
-					addCells(row,3,[[newText('-')],[newSelectbox(n+'_hour',newNumberRange(0,23,2),0,hour,updateInputVal)],[newSelectbox(n+'_minute',newNumberRange(0,59,2),0,minute,updateInputVal)]]);
-				}
-			}
-			break;
-		}
-		case 'radio':{
-			b=X(newEl('input',n),{type:'radio',value:v,checked:cl});
-			break;
-		}
-		case 'textarea':{
-			b=newEl('textarea',n);
-			break;
-		}
-		default:{
-			b=X(newEl('input',n),{type:t});
-		}
-	}
-	if(v){
-		if(t=='checkbox')b.checked=b.defaultChecked='checked';
-		else if(t!='datetime')b.value=v;
-	}
-	if(cl)b.className=cl;
-	return b;
-}
 function newLink(h,t,id,c){
 	return X(newEl('a',id,c,t),{href:h});
 }
@@ -430,17 +351,6 @@ function newText(a){
 function replaceEl(f,t){
 	if(f)f.parentNode.replaceChild(t,f);
 }
-function setAttribute(o,n,v){
-	if(!n||!o)return;
-	if(n=='width'||n=='height')v=v+'px';
-	if(n=='class')o.className=v;
-	else if(n=='style'&&browser.isIE)$M(o).setStyles(v);
-	else if(n=='onchange'&&browser.isIE){
-		var t=n.replace(/^on/,''),f=new Function(v);
-		o.addEvent(t,f);
-	}
-	else o.setAttribute(n,v);
-}
 function showhide(id){
 	var el=$M('showhideDiv'+id),link=$M('showhideLink'+id);
 	var objName=link.innerHTML.replace(/^\[(show|hide)(.*)\]/,'$2');
@@ -448,18 +358,9 @@ function showhide(id){
 	el.style.display=a.d;
 	link.replaceChild(newText(a.t+objName+']'),link.childNodes[0]);
 }
-function updateInputVal(e){
-	var id=(new Event(e)).target.id.replace(/_[^_]*$/,'');
-	var y=$F(id+'_year'),m=$F(id+'_month'),d=$F(id+'_day');
-	if(y=='----')y='0000';
-	if(d=='--')d='00';
-	$M(id).value=y+'-'+m+'-'+d+' '+$F(id+'_hour','00')+':'+$F(id+'_minute','00')+':00';
-}
 window.ww={
 	CKEDITOR:'ckeditor',
 	webme_start:function(){
-	//	$("img").lazyload({ threshold : 20, effect : "fadeIn" });
-	//	if(getEls('select').length)ms_convert();
 		var p=window.plugins_to_load;
 		if(p.ajaxmenu)           loadAjaxMenu();
 		if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
@@ -468,8 +369,6 @@ window.ww={
 		if(p.tabs)               tabs_init();
 		if(p.showhide)           initShowHide();
 		if(p.fontsize_controls)  loadScript('/j/fonts.js');
-		if(p.scrollingEvents)    loadScript('/j/scrollingEvents.js');
-		if(p.scrollingNews)      loadScript('/j/scroller.js');
 		if(p.os_fader)           loadScript('/j/os_fader.js');
 	
 		// the following items have not yet been optimised at the PHP source

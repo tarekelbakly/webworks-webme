@@ -1,22 +1,15 @@
 function comments_init(){
-		var cs,f,wrapper;
-    wrapper=$('#webmeComments')[0];
-    cs=newEl('div','ww_wrapper');
-		f=new Element('form',{
-			'id':'ww_form',
-			'class':'formvalidation',
-			'action':'javascript:comments_submit()'
-		});
-    addEls(wrapper,[cs,f]);
-    var submit=newInput('ww_submit','submit','Comment');
-    addEls(f,[
-        newEl('h3','ww_newCommentHeader',0,'Add Comment'),
-        newEl('label','ww_nameLabel',0,[new Element('span').appendText('Name'),new Element('input',{'class':'required','id':'ww_name'})]),
-        newEl('label','ww_emailLabel',0,[new Element('span').appendText('Email'),new Element('input',{'class':'email required','id':'ww_email'})]),
-        newEl('label','ww_homepageLabel',0,[new Element('span').appendText('Homepage'),newInput('ww_homepage',0,'http://')]),
-        newEl('label','ww_commentLabel',0,[new Element('span').appendText('Comment'),new Element('textarea',{'class':'required','id':'ww_comment'})]),
-        submit
-    ]);
+		$('#webmeComments')
+			.append('<div id="ww_wrapper"></div>'
+				+'<form id="ww_form" class="formvalidation" action="javascript:comments_submit()">'
+				+'<h3 id="ww_newCommentHeader">Add Comment</h3>'
+				+'<label id="ww_nameLabel"><span>Name</span><input class="required" id="ww_name" /></label>'
+				+'<label id="ww_emailLabel"><span>Email</span><input type="email" class="required" id="ww_email" /></label>'
+				+'<label id="ww_homepageLabel"><span>Homepage</span><input value="http://" id="ww_homepage" /></label>'
+				+'<label id="ww_commentLabel"><span>Comment</span><textarea class="required" id="ww_comment"></textarea></label>'
+				+'<input type="submit" name="ww_submit" value="Comment" />'
+				+'</form>'
+			);
 		loadFormValidation();
     x_comments_getAll(comment_lastId,comments_showAll);
 }
@@ -68,7 +61,15 @@ function comments_replaceAll(comments){
     comments_showAll(comments);
 }
 function comments_submit(){
-    x_comments_submit($F('ww_name'),$F('ww_email'),$F('ww_homepage'),$F('ww_comment'),comment_password,comment_lastId,comments_submitted);
+	x_comments_submit(
+		$('#ww_name').val(),
+		$('#ww_email').val(),
+		$('#ww_homepage').val(),
+		$('#ww_comment').val(),
+		comment_password,
+		comment_lastId,
+		comments_submitted
+	);
 }
 function comments_submitted(ret){
 	if($type(ret)!='array')return alert(ret);

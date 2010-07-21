@@ -99,14 +99,6 @@ Class.Merge = function(previous, current){
 	return current;
 };
 var Events = new Class({
-	addEvent: function(type, fn){
-		if (fn != Class.empty){
-			this.$events = this.$events || {};
-			this.$events[type] = this.$events[type] || [];
-			this.$events[type].include(fn);
-		}
-		return this;
-	},
 	fireEvent: function(type, args, delay){
 		if (this.$events && this.$events[type]){
 			this.$events[type].each(function(fn){
@@ -123,11 +115,6 @@ var Events = new Class({
 var Options = new Class({
 	setOptions: function(){
 		this.options = $merge.apply(null, [this.options].extend(arguments));
-		if (this.addEvent){
-			for (var option in this.options){
-				if ($type(this.options[option] == 'function') && (/^on[A-Z]/).test(option)) this.addEvent(option, this.options[option]);
-			}
-		}
 		return this;
 	}
 });
@@ -452,7 +439,6 @@ Element.extend({
 			var val = props[prop];
 			switch(prop){
 				case 'styles': this.setStyles(val); break;
-				case 'events': if (this.addEvents) this.addEvents(val); break;
 				default: this.setProperty(prop, val);
 			}
 		}
@@ -688,23 +674,6 @@ Element.Properties = new Abstract({
 Element.PropertiesIFlag = {
 	'href': 2, 'src': 2
 };
-Element.Methods = {
-	Listeners: {
-		addListener: function(type, fn){
-			if (this.addEventListener) this.addEventListener(type, fn, false);
-			else this.attachEvent('on' + type, fn);
-			return this;
-		},
-		removeListener: function(type, fn){
-			if (this.removeEventListener) this.removeEventListener(type, fn, false);
-			else this.detachEvent('on' + type, fn);
-			return this;
-		}
-	}
-};
-window.extend(Element.Methods.Listeners);
-document.extend(Element.Methods.Listeners);
-Element.extend(Element.Methods.Listeners);
 var Garbage = {
 	elements: [],
 	collect: function(el){
@@ -731,10 +700,6 @@ var Garbage = {
 		Garbage.trash(Garbage.elements);
 	}
 };
-window.addListener('beforeunload', function(){
-	window.addListener('unload', Garbage.empty);
-	if (window.ie) window.addListener('unload', CollectGarbage);
-});
 var Event = new Class({
 	initialize: function(event){
 		if (event && event.$extended) return event;
@@ -793,129 +758,6 @@ var Event = new Class({
 		if (this.event.preventDefault) this.event.preventDefault();
 		else this.event.returnValue = false;
 		return this;
-	}
-});
-Event.fix = {
-	relatedTarget: function(){
-		if (this.relatedTarget && this.relatedTarget.nodeType == 3) this.relatedTarget = this.relatedTarget.parentNode;
-	},
-	relatedTargetGecko: function(){
-		try {Event.fix.relatedTarget.call(this);} catch(e){this.relatedTarget = this.target;}
-	}
-};
-Event.prototype.fixRelatedTarget = (window.gecko) ? Event.fix.relatedTargetGecko : Event.fix.relatedTarget;
-Event.keys = new Abstract({
-	'enter': 13,
-	'up': 38,
-	'down': 40,
-	'left': 37,
-	'right': 39,
-	'esc': 27,
-	'space': 32,
-	'backspace': 8,
-	'tab': 9,
-	'delete': 46
-});
-Element.Methods.Events = {
-	addEvent: function(type, fn){
-		this.$events = this.$events || {};
-		this.$events[type] = this.$events[type] || {'keys': [], 'values': []};
-		if (this.$events[type].keys.contains(fn)) return this;
-		this.$events[type].keys.push(fn);
-		var realType = type;
-		var custom = Element.Events[type];
-		if (custom){
-			if (custom.add) custom.add.call(this, fn);
-			if (custom.map) fn = custom.map;
-			if (custom.type) realType = custom.type;
-		}
-		if (!this.addEventListener) fn = fn.create({'bind': this, 'event': true});
-		this.$events[type].values.push(fn);
-		return (Element.NativeEvents.contains(realType)) ? this.addListener(realType, fn) : this;
-	},
-	removeEvent: function(type, fn){
-		if (!this.$events || !this.$events[type]) return this;
-		var pos = this.$events[type].keys.indexOf(fn);
-		if (pos == -1) return this;
-		var key = this.$events[type].keys.splice(pos,1)[0];
-		var value = this.$events[type].values.splice(pos,1)[0];
-		var custom = Element.Events[type];
-		if (custom){
-			if (custom.remove) custom.remove.call(this, fn);
-			if (custom.type) type = custom.type;
-		}
-		return (Element.NativeEvents.contains(type)) ? this.removeListener(type, value) : this;
-	},
-	addEvents: function(source){
-		return Element.setMany(this, 'addEvent', source);
-	},
-	removeEvents: function(type){
-		if (!this.$events) return this;
-		if (!type){
-			for (var evType in this.$events) this.removeEvents(evType);
-			this.$events = null;
-		} else if (this.$events[type]){
-			this.$events[type].keys.each(function(fn){
-				this.removeEvent(type, fn);
-			}, this);
-			this.$events[type] = null;
-		}
-		return this;
-	},
-	fireEvent: function(type, args, delay){
-		if (this.$events && this.$events[type]){
-			this.$events[type].keys.each(function(fn){
-				fn.create({'bind': this, 'delay': delay, 'arguments': args})();
-			}, this);
-		}
-		return this;
-	},
-	cloneEvents: function(from, type){
-		if (!from.$events) return this;
-		if (!type){
-			for (var evType in from.$events) this.cloneEvents(from, evType);
-		} else if (from.$events[type]){
-			from.$events[type].keys.each(function(fn){
-				this.addEvent(type, fn);
-			}, this);
-		}
-		return this;
-	}
-};
-window.extend(Element.Methods.Events);
-document.extend(Element.Methods.Events);
-Element.extend(Element.Methods.Events);
-Element.Events = new Abstract({
-	'mouseenter': {
-		type: 'mouseover',
-		map: function(event){
-			event = new Event(event);
-			if (event.relatedTarget != this && !this.hasChild(event.relatedTarget)) this.fireEvent('mouseenter', event);
-		}
-	},
-	'mouseleave': {
-		type: 'mouseout',
-		map: function(event){
-			event = new Event(event);
-			if (event.relatedTarget != this && !this.hasChild(event.relatedTarget)) this.fireEvent('mouseleave', event);
-		}
-	},
-	'mousewheel': {
-		type: (window.gecko) ? 'DOMMouseScroll' : 'mousewheel'
-	}
-});
-Element.NativeEvents = [
-	'click', 'dblclick', 'mouseup', 'mousedown', //mouse buttons
-	'mousewheel', 'DOMMouseScroll', //mouse wheel
-	'mouseover', 'mouseout', 'mousemove', //mouse movement
-	'keydown', 'keypress', 'keyup', //keys
-	'load', 'unload', 'beforeunload', 'resize', 'move', //window
-	'focus', 'blur', 'change', 'submit', 'reset', 'select', //forms elements
-	'error', 'abort', 'contextmenu', 'scroll' //misc
-];
-Function.extend({
-	bindWithEvent: function(bind, args){
-		return this.create({'bind': bind, 'arguments': args, 'event': Event});
 	}
 });
 Elements.extend({

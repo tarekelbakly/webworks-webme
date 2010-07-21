@@ -17,8 +17,6 @@ else{
 	$js.=file_get_contents('json.js');
 	$js.=file_get_contents('js.js');
 	$js.=file_get_contents('tabs.js');
-	$js.=file_get_contents('addrow.js');
-	$js.=file_get_contents('getels.js');
 	$js.=file_get_contents('getoffset.js');
 	
 	{ # browser-specific functions
@@ -42,7 +40,6 @@ else{
 	
 	if(is_admin()){
 		$js.=file_get_contents('../ww.admin/j/common.js');
-		$js.=file_get_contents('notice.js');
 	}
 	
 /* get rid of browser-dependent code above before uncommenting this

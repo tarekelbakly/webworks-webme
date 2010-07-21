@@ -341,7 +341,6 @@ input.invalid{color:#fff; background:#f66; }
 .blockLinks a:hover{background:#fff}
 .shaded{background:#eee}
 .indented{margin-left:10px}
-.notice{background:#ff0;color:#000;border:1px solid #000;width:150px;padding:10px}
 .faded{color:#aaa;font-style:italic;text-indent:16px;background:url(/i/search.png) no-repeat}
 .accordion-header{cursor:pointer}
 ul.accordion,ul.accordion li{margin:0;padding:0 !important}

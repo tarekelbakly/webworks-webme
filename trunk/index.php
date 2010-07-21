@@ -263,12 +263,6 @@ if (strpos($template, 'class="fontsize_controls"')!==false) {
 if (strpos($template, 'class="sc_ssearch"')!==false) {
 	$GLOBALS['plugins_to_load'][]='"sc_ssearch":1';
 }
-if (strpos($template, 'class="scrollingEvents"')!==false) {
-	$GLOBALS['plugins_to_load'][]='"scrollingEvents":1';
-}
-if (strpos($template, 'class="scrollingNews"')!==false) {
-	$GLOBALS['plugins_to_load'][]='"scrollingNews":1';
-}
 // }
 // { show stylesheet and javascript links
 if ($DBVARS['theme_variant']) {
