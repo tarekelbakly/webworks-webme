@@ -54,14 +54,6 @@ function menuDisplay($a=0){
 	require_once SCRIPTBASE . 'common/menus.php';
 	return menu_show($a);
 }
-function scrollingEventsDisplay($a=0){
-	include_once SCRIPTBASE . 'common/funcs.events.php';
-	return ww_scrollingEventsDisplay($a);
-}
-function scrollingNewsDisplay($a=0){
-	include_once SCRIPTBASE . 'common/funcs.news.php';
-	return ww_scrollingNewsDisplay($a);
-}
 function show404($a=0){
 	include_once SCRIPTBASE . 'common/404.php';
 	return ww_show404($a);
