@@ -57,7 +57,7 @@ function comments_showAll(comments){
     $('#ww_comment').val('');
 }
 function comments_replaceAll(comments){
-    $M('ww_wrapper').empty();
+    $('#ww_wrapper').empty();
     comments_showAll(comments);
 }
 function comments_submit(){
