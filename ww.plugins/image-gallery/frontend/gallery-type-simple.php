@@ -39,7 +39,7 @@ for($row=0;$row<$vars['image_gallery_y'];++$row){
 	for($col=0;$col<$vars['image_gallery_x'];++$col){
 		$i=$row*$vars['image_gallery_x']+$col;
 		$c.='<td id="igCell_'.$row.'_'.$col.'">';
-		if(isset($all[$i]))$c.='<div style="text-align:center" class="gallery_image"><a href="'.$all[$i]['url'].'" onclick="return lightbox_show(this.childNodes[0].src.replace(/,.*/,\'\'),\''.$all[$i]['title'].'\')"><img src="'.$all[$i]['thumb'].'" /><br style="clear:both" /><span class="caption">'.$all[$i]['caption'].'</span></a></div>';
+		if(isset($all[$i]))$c.='<div style="text-align:center" class="gallery_image"><a href="'.$all[$i]['url'].'"><img src="'.$all[$i]['thumb'].'" /><br style="clear:both" /><span class="caption">'.$all[$i]['caption'].'</span></a></div>';
 		$c.='</td>';
 	}
 	$c.='</td>';

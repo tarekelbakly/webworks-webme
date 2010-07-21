@@ -92,9 +92,7 @@ var Lightbox={
 	showFrame:function(){
 		var margin=.05;
 		var fixed='absolute';
-		var ws=window.getSize().size;
-		ws.x=+ws.x;
-		ws.y=+ws.y;
+		var ws={x:$(window).width(),y:$(window).height()};
 		this.frameMaxWidth=ws.x*(1-margin*2);
 		this.frameMaxHeight=ws.y*(1-margin*2);
 		var wrapper=$('<div id="lightbox_wrapper"></div>')
@@ -193,9 +191,7 @@ var Lightbox={
 		Lightbox.frameVisible=1;
 	},
 	showImage:function(){
-		var ws=window.getSize().size;
-		ws.x=+ws.x;
-		ws.y=+ws.y;
+		var ws={x:$(window).width(),y:$(window).height()};
 		if(document.getElementById('lightbox_preloader')){
 			var img=document.getElementById('lightbox_preloader');
 			Lightbox.data[Lightbox.at].width=+img.offsetWidth;
