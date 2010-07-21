@@ -32,13 +32,14 @@ function ig_updateGallery(at){
 			div.style.textAlign='center';
 			a=newLink('javascript:;');
 			a.id="image_gallery_thumb_"+imgNum;
+			var $a=$(a);
 			$(a).click((function(at){
 				return function(){
 					Lightbox.show(at);
 				};
-			})(imgNum));
-			a.appendChild(newImg(img.src,'',img.caption));
-			if(ig.hoverphoto)$(a).bind('mouseover',function(){
+			})(imgNum))
+				.append('<img src="'+img.src+'" title="'+img.caption+'" />');
+			if(ig.hoverphoto)$a.bind('mouseover',function(){
 				ig_update_static_photo(this.id.replace(/image_gallery_thumb_/,''));
 			});
 			var br=newEl('br');
@@ -65,21 +66,17 @@ var ig={
 var Lightbox={
 	hideFrame:function(){
 		Lightbox.frameVisible=0;
-		delEl(['lightbox_frame','lightbox_shader','lightbox_wrapper']);
+		$('#lightbox_frame,#lightbox_shader,#lightbox_wrapper').remove();
 	},
 	initialize:function(data){
 		this.data=data;
 	},
 	preload:function(){
-		this.data[this.at].img=newImg('/kfmget/'+this.data[this.at].id+',width='+this.imageMaxWidth+',height='+this.imageMaxHeight,'lightbox_preloader');
-		$(this.data[this.at].img).bind('load',this.showImage);
-		$(this.data[this.at].img).css({
-			'position':'absolute',
-			'left':-4000,
-			'top':-4000,
-			'visibility':'hidden'
-		});
-		document.body.appendChild(this.data[this.at].img);
+		var $preload=$('<img src="/kfmget/'+this.data[this.at].id+',width='+this.imageMaxWidth+',height='+this.imageMaxHeight+'" id="lightbox_preloader" style="position:absolute;left:-4000px;visibility:hidden" />');
+		$preload
+			.load(this.showImage)
+			.appendTo(document.body);
+		this.data[this.at].img=$preload[0];
 	},
 	show:function(at){
 		this.at=(at+this.data.length)%this.data.length;
@@ -204,7 +201,7 @@ var Lightbox={
 			Lightbox.data[Lightbox.at].width=+img.offsetWidth;
 			Lightbox.data[Lightbox.at].height=+img.offsetHeight;
 			Lightbox.data[Lightbox.at].isLoaded=1;
-			delEl(img);
+			$(img).remove();
 		}
 		Lightbox.imageWrapper.innerHTML='';
 		var minwidth=+Lightbox.data[Lightbox.at].width<200?200:Lightbox.data[Lightbox.at].width;
@@ -218,7 +215,7 @@ var Lightbox={
 			'width':+minwidth+20
 		},400,'swing',function(){
 			if(!document.getElementById('lightbox_caption'))return;
-			Lightbox.imageWrapper.appendChild(newImg('/kfmget/'+Lightbox.data[Lightbox.at].id+',width='+Lightbox.imageMaxWidth+',height='+Lightbox.imageMaxHeight));
+			$('<img src="/kfmget/'+Lightbox.data[Lightbox.at].id+',width='+Lightbox.imageMaxWidth+',height='+Lightbox.imageMaxHeight+'" />').appendTo(Lightbox.imageWrapper);
 			Lightbox.imageWrapper.style.backgroundImage='none';
 			document.getElementById('lightbox_caption').innerHTML=Lightbox.data[Lightbox.at].caption.replace(/\\\\n/g,'<br />');
 		});
