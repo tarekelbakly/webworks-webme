@@ -102,7 +102,7 @@ function ajaxmenu_removeInvalidMenus(i){
 			if(_am.accordion){
 				$(el).slideUp(300);
 			}
-			else delEl(el);
+			else $(el).remove();
 		}
 	}
 	_am.openMenus=ajaxmenu_validMenus;
