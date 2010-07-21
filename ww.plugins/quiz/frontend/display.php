@@ -55,9 +55,13 @@
 		$displayString= $displayString.'</script>';
 		// }
 		$quizzes= dbAll(
-						"SELECT DISTINCT quiz_quizzes.id, name, quiz_quizzes.description 
+						"SELECT DISTINCT 
+						quiz_quizzes.id, 
+						name, 
+						quiz_quizzes.description 
 						FROM quiz_quizzes, quiz_questions 
-						WHERE quiz_quizzes.id=quiz_questions.quiz_id"
+						WHERE quiz_quizzes.id=quiz_questions.quiz_id 
+						and quiz_quizzes.enabled=1"
 						);
 		$displayString= $displayString.'<form method="post">';
 		$displayString= $displayString. '<table id="quizzesFrontend" 
