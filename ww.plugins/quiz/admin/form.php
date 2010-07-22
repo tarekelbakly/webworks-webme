@@ -10,7 +10,6 @@
   * @subpackage Quiz
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    This software is released under General Purpose License Version 2.0
-  * @link       www.webworks.ie
 */
 $dir = dirname(__FILE__);
 $isInvalidInput = false;
@@ -112,14 +111,17 @@ foreach ($options as $displayed=>$val) {
 	}
 	echo '>'.htmlspecialchars($displayed).'</option>';
 }
-// }
 echo '</select>';
+// }
 // { Errors
 echo '<input type="hidden" name="errors[]"';
 if (isset($_POST['errors'])) {
 	echo ' value="'.$_POST['errors'].'"';
 }
 echo '/>';
+// }
+// { ID
+echo '<input type="hidden" name="id" value="'.$id.'"/>';
 // }
 // { Submit
 if (!isset($_GET['questionid'])&&!(isset($_POST['add']))) {
@@ -145,7 +147,7 @@ if ($id) {
 		echo '<li id="'.$questionID.'">'.$result['question'];
 		echo '   <a href="'.$_url
 					.'&amp;action=editQuestion&amp;questionid='
-				.$questionID.'&amp;id='.$id.'">edit</a>';
+					.$questionID.'&amp;id='.$id.'">edit</a>';
 		echo '   <a href="#" class="deleteLink" class="deleteLink">x</a></li>';
 	}
 		echo '</ul>';
@@ -161,80 +163,7 @@ if ($id) {
 } 
 echo '</div>';
 // }
-// { When the form is submitted
-if (isset($_POST['action'])) {
-	$errors = checkInput($_POST);
-	if (empty($errors)) {
-		unset ($_POST['errors']);
-		$quizName=addslashes($_POST['name']);
-		$quizTopic=addslashes($_POST['description']);
-		$numberOfQuestions= (int)$_POST['number_of_questions'];
-		$enabled = (int)$_POST['enabled'];
-		$result
-			= dbAll(
-				"SELECT COUNT(id) 
-				FROM quiz_quizzes 
-				WHERE name = '$quizName'"
-			);
-		foreach ($result as $r) {
-			if (($r['COUNT(id)']>0)&&!$id) {
-				//I have to get the id later so I need a unique name 
-				//but I don't want the user to have to change the name 
-				//every time they edit the quiz.
-				echo 'Please choose a unique quiz name';
-				$isInvalidInput= true;
-			} else {
-				if ($id) {
-					echo 'Updating';
-					dbQuery(
-						"UPDATE quiz_quizzes 
-						SET name = '$quizName', 
-						description = '$quizTopic',
-						number_of_questions = '$numberOfQuestions',
-						enabled = $enabled
-						WHERE id = '$id'"
-					);
-				} else {
-					echo 'Inserting';
-					dbQuery(
-						"INSERT INTO quiz_quizzes
-						(
-						name,
-						description,
-						number_of_questions,
-						enabled
-						)
-						VALUES
-						(
-						'$quizName',
-						'$quizTopic',
-						'$numberOfQuestions',
-						'$enabled'
-						)"
-					);
-					echo 'Inserted';
-					//$result
-					//	= dbAll(
-						//	"SELECT id FROM quiz_quizzes 
-						//	'WHERE name='$quizName'"
-					//	);
-					//foreach ($result as $r) {
-					//	$id=$r['id'];
-					//}
-					$addString= addQuestion();
-					echo '<script>';
-					echo '$("#Questions").append('.json_encode($addString).');';
-					echo '</script>';
-				}
-			}		
-		}
-	} else {
-		$_POST['errors'] = $errors;
-		foreach ($errors as $error) {
-			echo $error.'<br/>';
-		}
-	}
-}
+// { When the Add/Edit Question form is submitted
 if (isset($_POST['questionAction'])) {
 	$id = $_POST['quiz_id'];
 	$topic= $_POST['topic'];
@@ -313,38 +242,7 @@ if ((strcmp($action, 'editQuestion')==0)||(strcmp($action, 'newQuestion')==0)) {
 // }
 echo '</form>';
 // }
-/**
-  * Validates the add quiz form
-  *
-  * @param array $input The values that the user has entered
-  *
-  * @return array $errors Any error messages
-*/
-function checkInput ($input) {
-	$errors= array();
-	// { Does the quiz have a name?
-	if (empty($input['name'])) {
-		$errors[] = 'Please give your quiz a name';
-	}
-	// }
-	// { Is the number of questions set?
-	if (!isset($input['number_of_questions'])) {
-		$errors[] = 'You must enter the number of questions 
-			you want to be asked when the quiz is taken';
-	} 
-	// }
-	// { Is the number of questions a number?
-	else if (!is_numeric($input['number_of_questions'])) {
-		$errors[]  = 'The number of questions must be a number';
-	}
-	// }
-	// {Is the number of questions>0
-	else if (!($input['number_of_questions']>0)) {
-		$errors[] = 'The number of questions must be greater than 0';
-	}
-	// }
-	return $errors;
-}
+
 /**
   * This checks that a selection was made for the correct answer 
   * and that the selected answer is not null

@@ -14,6 +14,46 @@
   * @license    General Purpose License Version 2
   * @link       www.webworks.ie
 */
+if (isset($_POST['action'])) {
+	$errors=checkInput($_POST);
+	if (empty($errors)) {
+		unset ($_POST['errors']);
+		$quizName=addslashes($_POST['name']);
+		$quizTopic=addslashes($_POST['description']);
+		$numberOfQuestions= (int)$_POST['number_of_questions'];
+		$enabled = (int)$_POST['enabled'];
+		if ($id) {
+			dbQuery(
+				"UPDATE quiz_quizzes 
+				SET name = '$quizName',
+				description = '$quizTopic',
+				number_of_questions = '$numberOfQuestions',
+				enabled = $enabled
+				WHERE id = '$id'"
+			);
+		} else {
+			dbQuery(
+				"INSERT INTO quiz_quizzes
+				(
+				name,
+				description,
+				number_of_questions,
+				enabled
+				)
+				VALUES
+				(
+				'$quizName',
+				'$quizTopic',
+				'$numberOfQuestions',
+				'$enabled'
+				)"
+			);
+			$id= dbOne('SELECT LAST_INSERT_ID() AS id', 'id');
+			header('location: /ww.admin/plugin.php'
+		     .'?_plugin=quiz&_page=index&action=newQuestion&id='.$id);
+		}
+	}
+}
 echo '<script src="/ww.plugins/quiz/admin/quickDelete.js"></script>';
 $menuItems= array ();
 $quizzes
@@ -33,9 +73,6 @@ echo admin_menu(
 	$menuItems
 );
 echo '<div class="has-left-menu">';
-if (isset($_GET['action'])) {
-	$action=$_GET['action'];
-}
 $dir = dirname(__FILE__);
 switch ($action){
 	case 'newQuestion':
@@ -83,7 +120,7 @@ switch ($action){
 				&amp;id='.$quiz['id'].'"'
 				.' onclick="return confirm
 					(\'are you sure you want to delete this?\');">
-				[x][</a></td>';
+				[x]</a></td>';
 			echo '</tr>';
 		}
 		echo '</tbody></table></div>';
@@ -91,3 +128,26 @@ switch ($action){
 	break; // }
 }
 echo '</div>';
+/**
+  * Validates the Add/Edit quiz form
+  *
+  * @param array $input The supplied values
+  *
+  * @return array $errors Any error messages
+*/
+function checkInput($input) {
+	$errors= array();
+	if (!isset($input['name'])) {
+		$errors[]= 'You must give your quiz a name';
+	}
+	if (!isset($input['number_of_questions'])) {
+		$errors[]= 'You must enter the number of questions you want to be asked';
+	}
+	else if (!is_numeric($input['number_of_questions'])) {
+		$errors[]= 'The number of questions must be a number greater than 0';
+	}
+	else if ($input['number_of_questions']<=0) {
+		$errors[]= 'The number of questions must be greater than 0';
+	}
+	return $errors;
+}
