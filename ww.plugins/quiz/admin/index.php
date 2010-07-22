@@ -31,7 +31,8 @@ if (isset($_POST['action'])) {
 				enabled = $enabled
 				WHERE id = '$id'"
 			);
-		} else {
+		} 
+		else {
 			dbQuery(
 				"INSERT INTO quiz_quizzes
 				(
@@ -49,8 +50,10 @@ if (isset($_POST['action'])) {
 				)"
 			);
 			$id= dbOne('SELECT LAST_INSERT_ID() AS id', 'id');
-			header('location: /ww.admin/plugin.php'
-		     .'?_plugin=quiz&_page=index&action=newQuestion&id='.$id);
+			header(
+				'location: /ww.admin/plugin.php'
+				.'?_plugin=quiz&_page=index&action=newQuestion&id='.$id
+			);
 		}
 	}
 }
@@ -77,7 +80,9 @@ $dir = dirname(__FILE__);
 switch ($action){
 	case 'newQuestion':
 	case 'editQuestion': // { If the user wants to add or edit a question
-		$questionID= $_GET['questionid'];
+		if (isset($_GET['questionid'])) {
+			$questionID= $_GET['questionid'];
+		}
 		require_once $dir.'/form.php';
 	break; // }
 	// }

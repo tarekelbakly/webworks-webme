@@ -10,23 +10,20 @@
   * @subpackage Quiz
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
   * @license    This software is released under General Purpose License Version 2.0
+  * @link       www.webworks.ie
 */
 $dir = dirname(__FILE__);
 $isInvalidInput = false;
+$action=$_GET['action'];
 echo '<script src="/ww.plugins/quiz/admin/quickDelete.js"></script>';
 echo '<script>';
 echo '$(function() {';
 echo '$("#tabs").tabs({';
 echo 'selected:';
-$action=$_GET['action'];
-if ((strcmp($action, 'editQuestion')==0)
-	||(strcmp($action, 'newQuestion')==0)
-	||((strcmp($action, 'newQuiz')==0) 
-	&& isset($_POST['action'])
-	&& !isset($_POST['errors']))
-) {
+if ($action=='newQuestion'||$action=='editQuestion') {
 	echo 1;
-} else {
+} 
+else {
 	echo 0;
 }
 echo '}';
@@ -72,7 +69,8 @@ echo 'Description';
 echo '<input type="text" name="description"';
 if (isset($_POST['description'])) {
 	echo ' value="'.stripslashes(htmlspecialchars($_POST['description'])).'"';
-} else if ($id) {
+} 
+else if ($id) {
 	echo ' value="';
 	echo htmlspecialchars($quiz['description']);
 	echo '"';
@@ -86,9 +84,11 @@ echo pad();
 echo '<input type="text" name="number_of_questions" value="';
 if (isset($_POST['number_of_questions'])) {
 	echo $_POST['number_of_questions'];
-} else if ($id) {
+} 
+else if ($id) {
 	echo $quiz['number_of_questions'];
-} else {
+} 
+else {
 	echo 1;
 }
 echo '"/>';
@@ -104,7 +104,8 @@ foreach ($options as $displayed=>$val) {
 		if ($val==$_POST['enabled']) {
 			echo ' selected="selected"';
 		}
-	} else if ($id) {
+	} 
+	else if ($id) {
 		if ($val==$quiz['enabled']) {
 			echo ' selected="selected"';
 		}
@@ -129,7 +130,8 @@ if (!isset($_GET['questionid'])&&!(isset($_POST['add']))) {
 	echo '<input type="submit" name="action" value="';
 	if ($id) {
 		echo 'Edit Quiz';
-	} else {
+	} 
+	else {
 		echo 'Add Quiz';
 	}
 	echo '"/>';
@@ -175,12 +177,19 @@ if (isset($_POST['questionAction'])) {
 	$correctAnswer = $_POST['isCorrect'];
 	if (empty($question)) {
 		echo 'Please type a question';
-	} else if (empty($answers[0])||empty($answers[1])) {
+		$_POST['questionErrors']=1;
+	} 
+	else if (empty($answers[0])||empty($answers[1])) {
 		echo 'You need to provide at least two possible answers 
 			in fields 1 and 2';
-	} else if (!checkCorrectAnswer($answers, $correctAnswer)) {
+		$_POST['questionErrors']=1;
+	} 
+	else if (!checkCorrectAnswer($answers, $correctAnswer)) {
 		echo 'One of the answers must be marked as correct';
-	} else {//Input is valid
+		$_POST['questionErrors']=1;
+	} 
+	else {
+		unset ($_POST['questionErrors']);
 		if (isset($_GET['questionid'])) {
 			$questionID=$_GET['questionid'];
 			dbQuery(
@@ -220,19 +229,8 @@ if (isset($_POST['questionAction'])) {
 			);
 		}
 	}
-	$addString= addQuestion();
-	echo '<script>';
-	echo '$("#Questions").append('.json_encode($addString).');';
-	echo '</script>';
 }
 echo '</div>';//Ends the tabs div
-if (isset($_POST['add'])) {
-	$questionID=null;
-	$addString= addQuestion();
-	echo '<script>';
-	echo '$("#Questions").append('.json_encode($addString).');';
-	echo '</script>';
-}
 if ((strcmp($action, 'editQuestion')==0)||(strcmp($action, 'newQuestion')==0)) {
 	$addString= addQuestion();
 	echo '<script>';
@@ -285,7 +283,8 @@ function addQuestion () {
 		$questionID= addslashes($_GET['questionid']);
 		$returnString= $returnString.'Edit Question';
 		$question= dbAll("SELECT * FROM quiz_questions WHERE id='$questionID'");
-	} else {
+	} 
+	else {
 		$returnString= $returnString.'New Question';
 	}
 	$returnString= $returnString.'</h2>';
@@ -302,7 +301,7 @@ function addQuestion () {
 	$returnString= $returnString.'Question';
 	$returnString= $returnString.pad();
 	$returnString= $returnString.'<input type="text" name="question"';
-	if (isset($_POST['question'])) {
+	if (isset($_POST['question'])&&isset($_POST['questionErrors'])) {
 		$returnString= $returnString.'value="';
 		$returnString= $returnString.htmlspecialchars($_POST['question']).'"';
 	}
@@ -316,7 +315,7 @@ function addQuestion () {
 	$returnString= $returnString.pad();
 	$returnString= $returnString.'Topic';
 	$returnString= $returnString.'<input type="text" name="topic"'; 
-	if (isset($_POST['topic'])) {	
+	if (isset($_POST['topic'])&&isset($_POST['questionErrors'])) {	
 		$returnString= $returnString.'value="';
 		$returnString= $returnString.htmlspecialchars($_POST['topic']).'"';
 	}
@@ -361,6 +360,7 @@ function addQuestion () {
 	$returnString= $returnString.'</table>';
 	$returnString= $returnString.'</div>';
 	// }
+	$returnString= $returnString.'<input type="hidden" name="questionErrors">';
 	$returnString= $returnString.'<input type="submit"';
 	$returnString= $returnString.'name="questionAction"';
 	$returnString= $returnString.'value="';
@@ -387,7 +387,7 @@ function addAnswer($num) {
 	global $question;
 	$returnString= '<td>';
 	$returnString= $returnString.'<input type="text" name="answers[]"';
-	if (isset ($_POST['answers'])) {
+	if (isset ($_POST['answers'])&&isset($_POST['questionErrors'])) {
 		$answers = $_POST['answers'];
 		$i = $num-1;
 		if (!empty($answers[$i])) {
