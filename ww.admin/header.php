@@ -19,7 +19,7 @@ $admin_vars=array();
 ?>
 <html>
 	<head>
-		<script src="/js/"></script>
+		<?php echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'; ?>
 		<script src="/j/ckeditor/ckeditor.js"></script>
 		<script src="/j/datatables/media/js/jquery.dataTables.js"></script>
 		<script src="/j/jquery.remoteselectoptions.js"></script>
