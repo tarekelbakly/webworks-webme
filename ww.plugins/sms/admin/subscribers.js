@@ -30,8 +30,8 @@ function sms_save(){
 	res.name=$('#sms_name').val();
 	res.phone=$('#sms_phone').val();
 	if(!res.phone || !res.name)return alert('please provide a name and phone number');
-	if(res.phone.replace(/[0-9]*/,'')!='' || res.phone.test(/^0/))return alert('please only use numbers in the phone number\nnumber should be of the format "353871234567"\n(country [00]353 + network [0]87 + number 1234567)');
-	if(!res.phone.test(/^44|^353/))return alert('only UK (44) and Irish (353) numbers are accepted at present.');
+	if(res.phone.replace(/[0-9]*/,'')!='' || /^0/.test(res.phone))return alert('please only use numbers in the phone number\nnumber should be of the format "353871234567"\n(country [00]353 + network [0]87 + number 1234567)');
+	if(!/^44|^353/.test(res.phone))return alert('only UK (44) and Irish (353) numbers are accepted at present.');
 	$.post('/ww.plugins/sms/admin/subscribers-save.php',{
 		"id":res.id,
 		"name":res.name,
