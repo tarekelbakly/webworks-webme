@@ -180,6 +180,7 @@ function OnlineStore_showBasketWidget() {
 	else {
 		$html.='<em>empty</em>';
 	}
-	$html.='</div><script src="/ww.plugins/online-store/j/basket.js"></script>';
+	$html.='</div>';
+	WW_addScript('/ww.plugins/online-store/j/basket.js');
 	return $html;
 }

@@ -41,7 +41,7 @@ function image_gallery_show($PAGEDATA){
 				);
 			}
 			$c.='<script>var ig_prices='.json_encode($prices).';</script>';
-			$c.='<script src="/ww.plugins/image-gallery/j/online-store.js"></script>';
+			WW_addScript('/ww.plugins/image-gallery/j/online-store.js');
 		}
 		if(isset($vars['footer']))$c.=$vars['footer'];
 		return $c;

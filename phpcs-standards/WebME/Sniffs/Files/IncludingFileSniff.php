@@ -107,10 +107,10 @@ class WebME_Sniffs_Files_IncludingFileSniff implements PHP_CodeSniffer_Sniff
 
         $tokenCode = $tokens[$stackPtr]['code'];
 	if($tokenCode === T_INCLUDE){
-		$phpcsFile->addError('Don\'t use "include". Use "require" instead.');
+		$phpcsFile->addError('Don\'t use "include". Use "require" instead.',$stackPtr);
 	}
 	else if($tokenCode === T_INCLUDE_ONCE){
-		$phpcsFile->addError('Don\'t use "include_once". Use "require_once" instead.');
+		$phpcsFile->addError('Don\'t use "include_once". Use "require_once" instead.',$stackPtr);
 	}
 
     }//end process()
