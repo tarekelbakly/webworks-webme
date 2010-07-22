@@ -1,8 +1,8 @@
 var lang=[];
 $j=jQuery;
-function __(str){
-	if(lang[str])str=lang[str];
-	return str;
+_d=document;
+function _a(i){ // shortcut version of _a(id)
+	return _d.getElementById(i);
 }
 function $type(obj){
 	if (obj==undefined) return false;
@@ -28,7 +28,7 @@ function $type(obj){
 };
 function addEls(p,c){
 	if(!p)return;
-	if($type(p)=='string')p=document.getElementById(p);
+	if($type(p)=='string')p=_a(p);
 	if(isArray(c))for(var i=0;i<c.length;++i)addEls(p,c[i]);
 	else if(c)p.appendChild($type(c)=='string'||(+c)===c?newText(c):c);
 	return p;
@@ -89,8 +89,8 @@ function getClassName(el){
 	return el&&el.className?el.className:'';
 }
 function htmlspecialchars(str) {
-	var div=document.createElement('div');
-	var text=document.createTextNode(str);
+	var div=_d.createElement('div');
+	var text=_d.createTextNode(str);
 	div.appendChild(text);
 	return div.innerHTML;
 }
@@ -219,7 +219,7 @@ function loadJS(url,id,lang,onload,runanyway){
 			}
 		};
 	}
-	document.getElementsByTagName('head')[0].appendChild(el);
+	_d.getElementsByTagName('head')[0].appendChild(el);
 	return 1;
 }
 function loadScript(url){
@@ -227,14 +227,14 @@ function loadScript(url){
 	loadedScripts.push(url);
 	if(kaejax_is_loaded&&/\.php/.test(url))url+=(/\?/.test(url)?'&':'?')+'kaejax_is_loaded';
 	var el=newScript(url);
-	document.getElementsByTagName('head')[0].appendChild(el);
+	_d.getElementsByTagName('head')[0].appendChild(el);
 	return 1;
 }
 function loadUrl(url){
-	document.location=url;
+	_d.location=url;
 }
 function newEl(t,id,cn,els){
-	var el=document.createElement(t);
+	var el=_d.createElement(t);
 	if(id)X(el,{id:id,name:id});
 	if(els){
 		if($type(els)=='string')el.innerHTML=els;
@@ -256,7 +256,7 @@ function newNumberRange(from,to,padding){
 }
 function newScript(url){
 	var el;
-	if(document.ie)el=document.createElement('<script type="text/javascript" src="'+url+'"></script>');
+	if(_d.ie)el=_d.createElement('<script type="text/javascript" src="'+url+'"></script>');
 	else{
 		el=newEl('script');
 		X(el,{type:"text/javascript",src:url});
@@ -280,13 +280,13 @@ function newSelectbox(name,keys,vals,s,f){
 	return el2;
 }
 function newText(a){
-	return document.createTextNode(a);
+	return _d.createTextNode(a);
 }
 function replaceEl(f,t){
 	if(f)f.parentNode.replaceChild(t,f);
 }
 function showhide(id){
-	var el=document.getElementById('showhideDiv'+id),link=document.getElementById('showhideLink'+id);
+	var el=_a('showhideDiv'+id),link=_a('showhideLink'+id);
 	var objName=link.innerHTML.replace(/^\[(show|hide)(.*)\]/,'$2');
 	var a=el.style.display=='block'?{d:'none',t:'[show'}:{d:'block',t:'[hide'};
 	el.style.display=a.d;
@@ -294,23 +294,6 @@ function showhide(id){
 }
 window.ww={
 	CKEDITOR:'ckeditor',
-	webme_start:function(){
-		var p=window.plugins_to_load;
-		if(p.ajaxmenu)           loadAjaxMenu();
-		if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
-		if(p.formvalidation)     loadFormValidation();
-		if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
-		if(p.tabs)               tabs_init();
-		if(p.showhide)           initShowHide();
-		if(p.fontsize_controls)  loadScript('/j/fonts.js');
-		if(p.os_fader)           loadScript('/j/os_fader.js');
-	
-		// the following items have not yet been optimised at the PHP source
-	  if(p.eventsAdmin)      loadScript('/ww.admin/ajax/events.admin.php?pageid='+pagedata.id);
-		if(p.newsAdmin)        loadScript('/ww.admin/ajax/news.admin.php?pageid='+pagedata.id);
-	
-		if(document.getElementById('webmeComments'))loadScript('/ajax/comments.php?pageid='+pagedata.id);
-	}
 }
 function X(d,s){
 	return $.extend(d,s);
@@ -318,10 +301,104 @@ function X(d,s){
 // { variables
 var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,inCheckout=0;
 var showhideDivs=[],showhideNum=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var function_urls=[],sc_supplements=[];
+var function_urls=[];
 var kaejax_timeouts=[],kaejax_xhrinstances=[],ms_select_defaults=[],ms_show_toplinks=true;
 // }
 // { browser-specific
 if(window.ie)window.XMLHttpRequest=function(){var l=(ScriptEngineMajorVersion()>=5)?"Msxml2":"Microsoft";return new ActiveXObject(l+".XMLHTTP")};function DOMParser(){};DOMParser.prototype={toString:function(){return"[object DOMParser]"},parseFromString:function(s,c){var x=new ActiveXObject("Microsoft.XMLDOM");x.loadXML(s);return x},parseFromStream:new Function,baseURI:""};function XMLSerializer(){};XMLSerializer.prototype={toString:function(){return"[object XMLSerializer]"},serializeToString:function(r){return r.xml||r.outerHTML},serializeToStream:new Function};
 // }
-$(ww.webme_start);
+var Json = {
+	toString: function(obj){
+		switch($type(obj)){
+			case 'string':
+				return '"' + obj.replace(/(["\\])/g, '\\$1') + '"';
+			case 'array':
+				return '[' + obj.map(Json.toString).join(',') + ']';
+			case 'object':
+				var string = [];
+				for (var property in obj) string.push(Json.toString(property) + ':' + Json.toString(obj[property]));
+				return '{' + string.join(',') + '}';
+			case 'number':
+				if (isFinite(obj)) break;
+			case false:
+				return 'null';
+		}
+		return String(obj);
+	},
+	evaluate: function(str, secure){
+		return (($type(str) != 'string') || (secure && !str.test(/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/))) ? null : eval('(' + str + ')');
+	}
+};
+function tabs_init(){
+	var a=jQuery('div.tabs');
+	if(!a||!a.length)return;
+	for(var i=a.length-1;i>-1;--i){
+		tabs_instances++;
+		tabs_functions[tabs_instances]=[];
+		var wrapper=a[i];
+		wrapper.className='tabs_wrapper';
+		var pages=jQuery('div.tabPage',wrapper),menu;
+		menu=_d.createElement('div');
+		menu.id='tabs_menu_'+tabs_instances;
+		menu.className='tabs_menu';
+		for(var j=0;j<pages.length;++j){
+			var page=pages[j],text;
+			page.className='tabs_page';
+			var e=jQuery('h2',page)[0];
+			if(e){
+				text=e.innerHTML;
+				e.parentNode.removeChild(e);
+			}
+			else text='Page '+(j+1);
+			tabs_names[text]=[tabs_instances,j];
+			link=$('<a href="javascript:tabs_show('+tabs_instances+','+j+')" id="tabs_menu_link_'+tabs_instances+'_'+j+'" class="tabs_menu_link'+(j?'':' active')+'"><span class="r"></span><span class="l"></span><span class="m">'+text+'</span></a>')
+				.appendTo(menu);
+			var ontabshow=page.getAttribute('ontabshow');
+			if(ontabshow)tabs_functions[tabs_instances][j]=new Function(ontabshow);
+			page.id='tabs_page_'+tabs_instances+'_'+j;
+			page.style.display='none';
+		}
+		wrapper.insertBefore(menu,pages[0]);
+		tabs_show(tabs_instances,0);
+	}
+	var url=_d.location.toString();
+	var tabname=unescape(url.replace(/.*#.*tab=([^&]*)(&|$).*/,"$1"));
+	tabs_open_by_name(tabname);
+}
+function tabs_open_by_name(name){
+	var v=tabs_names[name];
+	if(!v)return;
+	tabs_show(v[0],v[1]);
+}
+function tabs_show(a,b){
+	if(!_a('tabs_menu_link_'+a+'_'+b))return;
+	var f=tabs_functions[a][b];
+	if(f)f();
+	for(var i=0;_a('tabs_menu_link_'+a+'_'+i);++i){
+		var el=_a('tabs_menu_link_'+a+'_'+i);
+		el.className=el.className.toString().replace(/active/,'');
+		_a('tabs_page_'+a+'_'+i).style.display='none';
+	}
+	var el=_a('tabs_menu_link_'+a+'_'+b);
+	el.blur();
+	el.className+=' active';
+	_a('tabs_page_'+a+'_'+b).style.display='block';
+}
+var tabs_instances=0,tabs_functions=[],tabs_names=[];
+$(function(){
+	var p=window.plugins_to_load;
+	if(p.ajaxmenu)           loadAjaxMenu();
+	if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
+	if(p.formvalidation)     loadFormValidation();
+	if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
+	if(p.tabs)               tabs_init();
+	if(p.showhide)           initShowHide();
+	if(p.fontsize_controls)  loadScript('/j/fonts.js');
+	if(p.os_fader)           loadScript('/j/os_fader.js');
+
+	// the following items have not yet been optimised at the PHP source
+  if(p.eventsAdmin)      loadScript('/ww.admin/ajax/events.admin.php?pageid='+pagedata.id);
+	if(p.newsAdmin)        loadScript('/ww.admin/ajax/news.admin.php?pageid='+pagedata.id);
+
+	if(_a('webmeComments'))loadScript('/ajax/comments.php?pageid='+pagedata.id);
+});

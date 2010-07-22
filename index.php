@@ -12,6 +12,18 @@
 	*/
 
 // { common variables and functions
+$scripts=array();
+function WW_addScript($url){
+	global $scripts;
+	if(in_array($url,$scripts))return;
+	$scripts[]=$url;
+}
+function WW_getScripts(){
+	global $scripts;
+	$url='/js/'.filemtime(SCRIPTBASE.'j/js.js');
+	foreach($scripts as $s)$url.='|'.$s;
+	return $url;
+}
 require_once 'ww.incs/common.php';
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 	$server=str_replace('www.', '', $_SERVER['HTTP_HOST']);
@@ -279,7 +291,8 @@ $c.='<style type="text/css">.loggedin{display:'
 	.'}</style>';
 $c.='<link rel="stylesheet" href="/j/jquery-ui/css/smoothness/'
 	.'jquery-ui-1.8.1.custom.css" />';
-$c.='<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
+$c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
+#$c.='<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
 if(is_admin()){
 	$c.='<script src="/ww.admin/j/common.js"></script>';
 }
@@ -333,6 +346,7 @@ ob_start();
 if (strpos($template, '/')===false) {
 	$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
 }
-$smarty->display($template);
+$t=$smarty->fetch($template);
+echo str_replace('WW_SCRIPTS_GO_HERE',WW_getScripts(),$t);
 ob_show_and_log('page', 'Content-type: text/html; Charset=utf-8');
 // }

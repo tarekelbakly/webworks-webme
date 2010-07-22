@@ -212,7 +212,8 @@ function menu_show_fg($opts){
 		if($options['direction']=='0')$options['direction']='horizontal';
 		else $options['direction']='vertical';
 	}
-	$c.='<script src="/j/fg.menu/fg.menu.js"></script>';
+	WW_addScript('/j/fg.menu/fg.menu.js');
+//	$c.='<script src="/j/fg.menu/fg.menu.js"></script>';
 	$c.='<link rel="stylesheet" type="text/css" href="/j/fg.menu/fg.menu.css" />';
 	$items=array();
 	$menuid=$GLOBALS['fg_menus']++;

@@ -8,38 +8,50 @@ header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 header('Pragma:');
 header('Content-type: text/javascript; charset=utf-8');
 
-$name=md5_of_dir('./');
+$files=array(
+	'jquery-ui/js/jquery-1.4.2.min.js',
+	'jquery-ui/js/jquery-ui-1.8.2.custom.min.js',
+	'js.js'
+);
+if(isset($_REQUEST['extra'])){
+	$fs=explode('|',$_REQUEST['extra']);
+	array_shift($fs);
+	foreach($fs as $f){
+		if(strpos($f,'..')!==false)continue;
+		$fname=SCRIPTBASE.$f;
+		if(!preg_match('/\.js$/',$fname) || !file_exists($fname))continue;
+		$files[]=$fname;
+	}
+}
 
-$js=cache_load('j','js-'.$name.'-minified');
+$latest=0;
+foreach($files as $f){
+	$mt=filemtime($f);
+	if($mt>$latest)$latest=$mt;
+}
+
+$name=md5(join('|',$files));
+
+if(
+	file_exists(USERBASE.'/ww.cache/j/js-'.$name)
+	&& filemtime(USERBASE.'/ww.cache/j/js-'.$name)<$latest
+){
+	unlink(USERBASE.'/ww.cache/j/js-'.$name);
+}
+
+$js=cache_load('j','js-'.$name);
 if($js==false){
-	$js=cache_load('j','js-'.$name);
-	if($js==false){
-		$js.=file_get_contents('jquery-ui/js/jquery-1.4.2.min.js');
-		$js.=file_get_contents('jquery-ui/js/jquery-ui-1.8.1.custom.min.js');
-		$js.=file_get_contents('json.js');
-		$js.=file_get_contents('js.js');
-		$js.=file_get_contents('tabs.js');
-		$js.=file_get_contents('getoffset.js');
-		cache_clear('j');
-		cache_save('j','js-'.$name,$js);
+	$js='';
+	foreach($files as $f){
+		$js.=file_get_contents($f);
+	}
+	if(function_exists('jsmin')){
+		$js=jsmin($js);
 	}
 	else{
-	/*
-  	require_once '../ww.incs/class.JavaScriptPacker.php';
-  	$packer=new JavaScriptPacker($js,62);
-  	$js=$packer->pack();
-	*/
-	/*
-		// install http://www.ypass.net/software/php_jsmin/ for very fast minifying
-		if(function_exists('jsmin')){
-			$js=jsmin($js);
-		}
-		else{
-			require_once 'kfm/includes/jsmin-1.1.1.php';
-			$js=JSMin::minify($js);
-		}
-	*/
-		cache_save('j','js-'.$name.'-minified',$js);
+		require_once 'kfm/includes/jsmin-1.1.1.php';
+		$js=JSMin::minify($js);
 	}
+	cache_save('j','js-'.$name,$js);
 }
 echo $js;
