@@ -15,7 +15,7 @@ CKEDITOR.editorConfig = function( config )
 		['Undo','Redo','RemoveFormat','Bold','Italic','Underline','Subscript','Superscript'],
 		['NumberedList','BulletedList','Outdent','Indent'],
 		['JustifyLeft','JustifyCenter','JustifyRight'],
-		['Link','Unlink','Anchor','Image','Flash','Table','SpecialChar'],
+		['Link','Unlink','Anchor','Image','Flash','Table','SpecialChar','HorizontalRule'],
 		['TextColor','BGColor'],
 		['Styles','Format','Font','FontSize']
 	];
