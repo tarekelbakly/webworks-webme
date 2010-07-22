@@ -34,7 +34,12 @@
 			$id= $this->id;
 			$this->score= 0;
 			$quiz= dbRow ("SELECT * FROM quiz_quizzes WHERE id = '".$id."'");
-			$rows = dbAll("SELECT * FROM quiz_questions WHERE quiz_id = '$id' AND question IS NOT NULL");
+			$rows 
+				= dbAll("SELECT * 
+				FROM quiz_questions 
+				WHERE quiz_id = '$id' 
+				AND question IS NOT NULL"
+				);
 			if (count($rows)!=0) {
 			// I want the questions to be in an indexed array
 				$this->allQuestions=array();

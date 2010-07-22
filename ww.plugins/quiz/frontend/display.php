@@ -41,7 +41,8 @@
   * @return string $displayString The correct page HTML
 */
 	function getPageHtml () {
-		$displayString= '<script src="/j/datatables/media/js/jquery.dataTables.js"></script>';
+		$displayString= '<script 
+			src="/j/datatables/media/js/jquery.dataTables.js"></script>';
 		$displayString= $displayString.'<link rel="stylesheet" 
 							type="text/css" 
 							href="/j/datatables/media/css/demo_table.css" />';
@@ -65,7 +66,7 @@
 						);
 		$displayString= $displayString.'<form method="post">';
 		$displayString= $displayString. '<table id="quizzesFrontend" 
-											style="width:100% postion:top">';
+											style="{width:100% postion:top}">';
 		$displayString= $displayString.'<thead><tr>';
 		$displayString= $displayString.'<th>Name</th>';
 		$displayString= $displayString.'<th>Description</th>';
