@@ -27,8 +27,7 @@ if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password
 	<head>
 		<title><?php echo __('Login'); ?></title>
 		<link rel="stylesheet" type="text/css" href="/ww.admin/theme/login.css" />
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-		<script type="text/javascript" src="/j/tabs.js"></script>
+		<script type="text/javascript" src="/js/"></script>
 	</head>
  <body onload="document.getElementById('email').focus();tabs_init();">
  	<div id="wrapper">
