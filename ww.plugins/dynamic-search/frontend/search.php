@@ -6,10 +6,9 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 
+WW_addScript('/ww.plugins/dynamic-search/files/general.js');
+WW_addCSS('/ww.plugins/dynamic-search/files/style.css');
 $html='
-<link rel="stylesheet" type="text/css" href="/ww.plugins/dynamic-search/files/style.css"/>
-<script type="text/javascript" src="/ww.plugins/dynamic-search/files/general.js"></script>
-
 <h1>Search</h1>
 
 <form method="get" id="dynamic_search">

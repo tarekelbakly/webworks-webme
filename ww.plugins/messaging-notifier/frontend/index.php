@@ -51,18 +51,23 @@ function parse_messaging_notifier($data,$vars){
 		$title=$vars->hide_story_title?'':'<strong>'.htmlspecialchars($r['title']).'</strong><br />';
 		$html.='<li class="messaging-notifier-'.$r['type'].'"><a'.$target.' href="'.$r['link'].'">'.$title.$description.'</a><br /><i>'.date('Y M jS H:i',$r['unixtime']).'</i></li>';
 	}
-	$html.='</ul></div><style type="text/css">@import "/ww.plugins/messaging-notifier/c/styles.css";</style>';
+	$html.='</ul></div>';
+	WW_addCSS('/ww.plugins/messaging-notifier/c/styles.css');
 	if(isset($vars->scrolling) && $vars->scrolling){
 		$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
-		if(isset($vars->scrolling) && $vars->scrolling)$html.='<script src="/ww.plugins/messaging-notifier/j/jquery.vticker.js"></script><script>$(function(){
-			$("#messaging-notifier-'.$vars->id.'").vTicker({
-				speed: 4000,
-				pause: 5000,
-				showItems: '.$n_items.',
-				animation: "",
-				mousePause: true
-			});
-		});</script><style>@import "/ww.plugins/messaging-notifier/c/scroller.css";</style>';
+		if(isset($vars->scrolling) && $vars->scrolling){
+			WW_addScript('/ww.plugins/messaging-notifier/j/jquery.vticker.js');
+			WW_addCSS('/ww.plugins/messaging-notifier/c/scroller.css');
+			$html.='<script>$(function(){
+				$("#messaging-notifier-'.$vars->id.'").vTicker({
+					speed: 4000,
+					pause: 5000,
+					showItems: '.$n_items.',
+					animation: "",
+					mousePause: true
+				});
+			});</script>';
+		}
 	}
 	$height=$vars->height_in_px?' style="height:'.((int)$vars->height_in_px).'px"':'';
 	return $html;

@@ -24,14 +24,18 @@ foreach($rs as $r){
 }
 if(isset($vars->scrolling) && $vars->scrolling){
 	$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
-	if(isset($vars->scrolling) && $vars->scrolling)$html.='<script src="/ww.plugins/news/j/jquery.vticker.js"></script><script>$(document).ready(function(){
-	$(".news_excerpts_wrapper").vTicker({
-		speed: 4000,
-		pause: 5000,
-		showItems: '.$n_items.',
-		animation: "",
-		mousePause: true
-	});
-});</script><style>@import "/ww.plugins/news/c/scroller.css";</style>';
+	if(isset($vars->scrolling) && $vars->scrolling){
+		WW_addScript('/ww.plugins/news/j/jquery.vticker.js');
+		WW_addCSS('/ww.plugins/news/c/scroller.css');
+		$html.='<script>$(function(){
+			$(".news_excerpts_wrapper").vTicker({
+				speed: 4000,
+				pause: 5000,
+				showItems: '.$n_items.',
+				animation: "",
+				mousePause: true
+			});
+		});</script>';
+	}
 }
 $html.='<div class="news_excerpts_wrapper"><ul class="news_excerpts"><li>'.join('</li><li>',$links).'</li></ul></div>';

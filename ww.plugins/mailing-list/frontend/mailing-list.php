@@ -6,7 +6,7 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 function falert($text){
-	return '<script type="text/javascript">fAlert(\''.$text.'\');</script>';
+	return '<script>fAlert(\''.$text.'\');</script>';
 }
 function check_details($email,$name){
 	if($name=='') return false;
@@ -44,10 +44,10 @@ function create_form(){
 		return $f;
 }
 function show_form(){
-	$html='<script type="text/javascript" src="/ww.plugins/mailing-list/files/impromptu.jquery.min.js"></script>
-	       <script type="text/javascript" src="/ww.plugins/mailing-list/files/general.js"></script>
-	       <link rel="stylesheet" type="text/css" href="/ww.plugins/mailing-list/files/mailing-list.css"/>';
-	$html.=create_form();
+	WW_addScript('/ww.plugins/mailing-list/files/impromptu.jquery.min.js');
+	WW_addScript('/ww.plugins/mailing-list/files/general.js');
+	WW_addCSS('/ww.plugins/mailing-list/files/mailing-list.css');
+	$html=create_form();
 	if(isset($_GET['mailing_list_hash'])){
 		$hash=$_GET['mailing_list_hash'];
 		$email=dbQuery('select email from mailing_list where hash="'.$hash.'"');

@@ -4,6 +4,6 @@ function onetouchcontact_widget_show($vars){
 	if($vars->phone)$form.='Phone<br /><input id="onetouchcontact-phone" /><br />';
 	$form.='<input type="hidden" name="cid" value="'.$vars->cid.'" /><input type="hidden" name="mid" value="'.$vars->mid.'" />';
 	$form.='<div class="onetouchcontact-msg"></div><input type="submit" value="subscribe" /></form>';
-	$form.='<script src="/ww.plugins/onetouchcontact/frontend/js.js"></script>';
+	WW_addScript('/ww.plugins/onetouchcontact/frontend/js.js');
 	return $form;
 }

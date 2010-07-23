@@ -4,7 +4,9 @@ for($i=0;$i<$n;$i++){
 	$c.='<li> <a href="/kfmget/'.$images[$i]['id'].'"> <img src="/kfmget/'.$images[$i]['id'].',width='.$vars['image_gallery_thumbsize'].',height='.$vars['image_gallery_thumbsize'].'" title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'"> </a> </li>';
 }
 $c.='</ul> </div> </div> </div>';
-$c.='<script src="/ww.plugins/image-gallery/j/ad-gallery/jquery.ad-gallery.pack.js"></script><style type="text/css">@import "/ww.plugins/image-gallery/j/ad-gallery/jquery.ad-gallery.css";.ad-gallery .ad-image-wrapper{	height: 400px;}</style><script>
+WW_addScript('/ww.plugins/image-gallery/j/ad-gallery/jquery.ad-gallery.pack.js');
+WW_addCSS('/ww.plugins/image-gallery/j/ad-gallery/jquery.ad-gallery.css');
+$c.='<style type="text/css">.ad-gallery .ad-image-wrapper{	height: 400px;}</style><script>
 $(function(){
 	$(".ad-gallery").adGallery({
 		animate_first_image:true,

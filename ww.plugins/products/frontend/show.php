@@ -168,7 +168,10 @@ function products_link ($params, &$smarty) {
 }
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
-	$c='<script src="/ww.plugins/products/j/jquery.lightbox-0.5.min.js"></script><script src="/ww.plugins/products/j/js.js"></script><link rel="stylesheet" type="text/css" href="/ww.plugins/products/c/jquery.lightbox-0.5.css" />';
+	WW_addScript('/ww.plugins/products/j/jquery.lightbox-0.5.min.js');
+	WW_addScript('/ww.plugins/products/j/js.js');
+	WW_addCSS('/ww.plugins/products/c/jquery.lightbox-0.5.css');
+	$c='';
 	// { search
 	$search=isset($_REQUEST['products-search'])?$_REQUEST['products-search']:'';
 	if(isset($PAGEDATA->vars['products_add_a_search_box']) && $PAGEDATA->vars['products_add_a_search_box']){
