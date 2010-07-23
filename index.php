@@ -13,6 +13,18 @@
 
 // { common variables and functions
 $scripts=array();
+$css_urls=array();
+function WW_addCSS($url){
+	global $css_urls;
+	if(in_array($url,$css_urls))return;
+	$css_urls[]=$url;
+}
+function WW_getCSS(){
+	global $css_urls;
+	$url='/css/';
+	foreach($css_urls as $s)$url.='|'.$s;
+	return '<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($url).'" />';
+}
 function WW_addScript($url){
 	global $scripts;
 	if(in_array($url,$scripts))return;
@@ -277,20 +289,15 @@ if (strpos($template, 'class="sc_ssearch"')!==false) {
 }
 // }
 // { show stylesheet and javascript links
+$c.='WW_CSS_GOES_HERE';
 if ($DBVARS['theme_variant']) {
-	$c.='<link rel="stylesheet" href="/css/'.$DBVARS['theme'].'/'
-		.$DBVARS['theme_variant'].'" type="text/css" />';
-}
-else {
-	$c.='<link rel="stylesheet" href="/css" type="text/css" />';
+	WW_addCSS('/ww.skins/'.$DBVARS['theme'].'/cs/'.$DBVARS['theme_variant'].'.css');
 }
 $c.='<style type="text/css">.loggedin{display:'
 	.(is_logged_in()?'block':'none')
 	.'} .loggedinCell{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
-$c.='<link rel="stylesheet" href="/j/jquery-ui/css/smoothness/'
-	.'jquery-ui-1.8.1.custom.css" />';
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
 #$c.='<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
 if(is_admin()){
@@ -314,15 +321,14 @@ $c.='document.write("<"+"style type=\'text/css\'>'
 	.'a.nojs{display:none !important}<"+"/style>");';
 $c.='</script>';
 if (is_admin()) {
-	$c.='<script src="/ww.admin/j/admin-frontend.js"></script>'
-		.'<link rel="stylesheet" href="/ww.admin/theme/admin-frontend.css" />';
+	WW_addScript('/ww.admin/j/admin-frontend.js');
 	$c.='<script src="/j/ckeditor/ckeditor.js"></script>';
 	$c.='<script src="/j/ckeditor/adapters/jquery.js"></script>';
+	WW_addCSS('/ww.admin/theme/admin-frontend.css');
 	foreach ($GLOBALS['PLUGINS'] as $p) {
-		if (!isset($p['frontend']['admin-script'])) {
-			continue;
+		if (isset($p['frontend']['admin-script'])) {
+			WW_addScript($p['frontend']['admin-script']);
 		}
-		$c.='<script src="'.$p['frontend']['admin-script'].'"></script>';
 	}
 }
 // }
@@ -347,6 +353,10 @@ if (strpos($template, '/')===false) {
 	$template=THEME_DIR.'/'.THEME.'/h/'.$template.'.html';
 }
 $t=$smarty->fetch($template);
-echo str_replace('WW_SCRIPTS_GO_HERE',WW_getScripts(),$t);
+echo str_replace(
+	array('WW_SCRIPTS_GO_HERE','WW_CSS_GOES_HERE'),
+	array(WW_getScripts(),WW_getCSS()),
+	$t
+);
 ob_show_and_log('page', 'Content-type: text/html; Charset=utf-8');
 // }

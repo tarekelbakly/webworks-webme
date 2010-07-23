@@ -4,20 +4,68 @@ header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 header('Pragma:');
 header('Content-type: text/css; charset=utf-8');
 
-echo file_get_contents('menus.css');
-echo file_get_contents('language_flags.css');
-echo file_get_contents('ui.datepicker.css');
-echo file_get_contents('forms.css');
-echo file_get_contents('comments.css');
-echo file_get_contents('contextmenu.css');
-echo file_get_contents('lightbox.css');
-echo file_get_contents('tabs.css');
-
-if(isset($_GET['skin']) && isset($_GET['variant'])){
-	if(strpos($_GET['skin'],'.')!==false || strpos($_GET['variant'],'.')!==false)exit;
-	require '../.private/config.php';
-	if(isset($DBVARS['theme_dir']))define('THEME_DIR',$DBVARS['theme_dir']);
-	else define('THEME_DIR',$_SERVER['DOCUMENT_ROOT'].'/ww.skins');
-	$fname=THEME_DIR.'/'.$_GET['skin'].'/cs/'.$_GET['variant'].'.css';
-	if(file_exists($fname))echo file_get_contents($fname);
+require_once '../ww.incs/basics.php';
+$files=array(
+	'menus.css',
+	'language_flags.css',
+	'ui.datepicker.css',
+	'forms.css',
+	'comments.css',
+	'contextmenu.css',
+	'lightbox.css',
+	'tabs.css',
+	'../j/jquery-ui/css/smoothness/jquery-ui-1.8.1.custom.css'
+);
+if(isset($_REQUEST['extra'])){
+	$fs=explode('|',$_REQUEST['extra']);
+	foreach($fs as $f){
+		if(strpos($f,'..')!==false)continue;
+		if(strpos($f,'ww.skins')!==false){
+			$fname=USERBASE.'themes-personal'.str_replace('/ww.skins','',$f);
+		}
+		else $fname=SCRIPTBASE.$f;
+		if(!preg_match('/\.css$/',$fname) || !file_exists($fname))continue;
+		$files[]=array($fname,$f);
+		$name.='|'.$fname;
+	}
 }
+
+$latest=0;
+foreach($files as $f){
+	$mt=is_array($f)?filemtime($f[0]):filemtime($f);
+	if($mt>$latest)$latest=$mt;
+}
+
+$name=md5($name);
+
+if(
+	file_exists(USERBASE.'/ww.cache/c/css-'.$name)
+	&& filemtime(USERBASE.'/ww.cache/c/css-'.$name)<$latest
+){
+	unlink(USERBASE.'/ww.cache/c/css-'.$name);
+}
+
+$css_code=false; //cache_load('c','css-'.$name);
+if($css_code==false){
+	$css_code='';
+	require 'Minify/CSS.php';
+	foreach($files as $f){
+		if(is_array($f)){
+		echo preg_replace('/[^\/]*$/','',$f[1]);
+			$css_code.=Minify_CSS::minify(
+				file_get_contents($f[0]),
+				array(
+					'prependRelativePath'=>preg_replace('/[^\/]*$/','',$f[1])
+				)
+			);
+		}
+		else{
+			$css_code.=Minify_CSS::minify(
+				file_get_contents($f)
+			);
+		}
+	}
+
+	cache_save('c','css-'.$name,$css_code);
+}
+echo $css_code;
