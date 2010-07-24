@@ -52,8 +52,8 @@ function sms_send(){
 	if($('#sms_send_type').val()=='Phone Number'){
 		sms_check_to();
 		var to=$('#sms_to').val();
-		if(to.replace(/[0-9]*/,'')!='' || to.test(/^0/))return alert('please only use numbers in the phone number\nnumber should be of the format "353871234567"\n(country [00]353 + network [0]87 + number 1234567)');
-		if(!to.test(/^44|^353/))return alert('only UK (44) and Irish (353) numbers are accepted at present.');
+		if(to.replace(/[0-9]*/,'')!='' || /^0/.test(to))return alert('please only use numbers in the phone number\nnumber should be of the format "353871234567"\n(country [00]353 + network [0]87 + number 1234567)');
+		if(!/^44|^353/.test(to))return alert('only UK (44) and Irish (353) numbers are accepted at present.');
 		var name=$('#sms_to_name').val();
 		if(name=="name (optional)")name=to;
 		$.post('/ww.plugins/sms/admin/send.php',{
