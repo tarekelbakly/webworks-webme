@@ -1,9 +1,4 @@
 <?php
-header('Expires-Active: On');
-header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
-header('Pragma:');
-header('Content-type: text/css; charset=utf-8');
-
 require_once '../ww.incs/basics.php';
 $files=array(
 	'menus.css',
@@ -51,7 +46,6 @@ if($css_code==false){
 	require 'Minify/CSS.php';
 	foreach($files as $f){
 		if(is_array($f)){
-		echo preg_replace('/[^\/]*$/','',$f[1]);
 			$css_code.=Minify_CSS::minify(
 				file_get_contents($f[0]),
 				array(
@@ -68,4 +62,12 @@ if($css_code==false){
 
 	cache_save('c','css-'.$name,$css_code);
 }
+
+header('Content-type: text/css; charset=utf-8');
+header('Cache-Control: max-age = 2592000');
+header('Expires-Active: On');
+header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+header('Pragma:');
+header('Content-Length: ' . strlen($css_code));
+
 echo $css_code;
