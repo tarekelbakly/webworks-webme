@@ -216,7 +216,13 @@ function menu_show_fg($opts){
 	WW_addCSS('/j/fg.menu/fg.menu.css');
 	$items=array();
 	$menuid=$GLOBALS['fg_menus']++;
-	$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'.$menuid.'">'.menu_build_fg($options['parent'],0,$options).'</div>';
+	$md5=md5($options['parent'].'|0|'.json_encode($options));
+	$html=cache_load('pages','fgmenu-'.$md5);
+	if($html===false){
+		$html=menu_build_fg($options['parent'],0,$options);
+		cache_save('pages','fgmenu-'.$md5,$html);
+	}
+	$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'.$menuid.'">'.$html.'</div>';
 	if($options['direction']=='vertical'){
 		$posopts="positionOpts: { posX: 'left', posY: 'top',
 			offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',

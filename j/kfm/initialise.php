@@ -9,7 +9,6 @@
  * @license  docs/license.txt for licensing
  * @link     http://kfm.verens.com/
  */
-#error_reporting(E_PARSE | E_WARNING);
 if(!defined('KFM_BASE_PATH'))define('KFM_BASE_PATH', dirname(__FILE__).'/');
 if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))@date_default_timezone_set(date_default_timezone_get());
 
@@ -352,7 +351,6 @@ $h=opendir(KFM_BASE_PATH.'plugins');
 while(false!==($file=readdir($h))){
     if(!is_dir(KFM_BASE_PATH.'plugins/'.$file))continue;
     if($file[0]!='.' && substr($file,0,9)!='disabled_'){
-        //if(in_array($file, $kfm->setting('disabled_plugins')))continue;
         if(file_exists(KFM_BASE_PATH.'plugins/'.$file.'/plugin.php')) include(KFM_BASE_PATH.'plugins/'.$file.'/plugin.php');
     }
 }
