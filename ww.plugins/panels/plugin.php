@@ -17,7 +17,6 @@ $plugin=array(
 	'version'=>4
 );
 function panels_show($vars){
-	global $PLUGINS;
 	$name=isset($vars['name'])?$vars['name']:'';
 	// { load panel data
 	$p=cache_load('panels',md5($name));
@@ -39,7 +38,11 @@ function panels_show($vars){
 	// }
 	// { get the panel content
 	$widgets=json_decode($p['body']);
+	if(!count($widgets->widgets))return '';
+	// }
+	// { show the panel content
 	$h='';
+	global $PLUGINS;
 	foreach($widgets->widgets as $widget){
 		if(isset($widget->disabled) && $widget->disabled)continue;
 		if(isset($widget->visibility) && count($widget->visibility)){
@@ -55,6 +58,7 @@ function panels_show($vars){
 		else $h.='<em>missing plugin "'.htmlspecialchars($widget->type).'".</em>';
 	}
 	// }
+	if($h=='')return '';
 	$name=preg_replace('/[^a-z0-9\-]/','-',$name);
 	return '<div class="panel panel-'.$name.'">'.$h.'</div>';
 }
