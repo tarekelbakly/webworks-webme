@@ -114,7 +114,7 @@ $html.='<script type="text/javascript" src="/ww.plugins/privacy/j/admin.fields.j
 $html.='</div>';
 // }
 $html.='</div><script>var page_vars_userlogin_redirect_to='.$page_vars['userlogin_redirect_to'].';
-$(document).ready(function(){
+$(function(){
 	$("#page_vars_userlogin_redirect_to").remoteselectoptions({
 		url:"/ww.admin/pages/get_parents.php"
 	});

@@ -1,16 +1,4 @@
 <?php
-// { defines
-define('ACL_PAGES',           1);
-define('ACL_PANELS',          2);
-define('ACL_EZINES',          4);
-define('ACL_MATRICES',       32);
-define('ACL_USERS',          64);
-define('ACL_FORMS',         256);
-define('ACL_SMS',          2048);
-define('ACL_ONLINESTORES', 4096);
-define('ACL_PRODUCTS',    16384);
-define('ACL_ADS',         32768);
-// }
 function addMenuItem(&$arr,$file,$nav){
 	if(ereg('>',$nav)){
 		return;
@@ -138,15 +126,6 @@ function drawMenu($menuArray){
 	}
 	return $c;
 }
-function getAdminVar($name,$default=''){
-	if(isset($GLOBALS['admin_vars'][$name]))return $GLOBALS['admin_vars'][$name];
-	$r=dbRow('select varvalue from admin_vars where varname=\''.$name.'\' and admin_id='.get_userid());
-	if(count($r)){
-		$GLOBALS['admin_vars'][$name]=$r['varvalue'];
-		return $r['varvalue'];
-	}
-	return $default;
-}
 function ckeditor($name,$value='',$height=250){
 	return '<textarea style="width:100%;height:'.$height.'px" name="'.addslashes($name).'">'.htmlspecialchars($value).'</textarea>'
 		.'<script>$(function(){window.ckeditor_'.preg_replace('/[^a-zA-Z_]/','',$name).'=CKEDITOR.replace("'.str_replace(array('[',']'),array('\[','\]'),addslashes($name)).'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME",scayt_autoStartup:false});});</script>';
@@ -159,9 +138,4 @@ function sanitise_html($html) {
 	$html = html_fixImageResizes($html);
 	$html=str_replace('&quot;','"',$html);
 	return $html;
-}
-function setAdminVar($name,$value){
-	dbQuery("delete from admin_vars where varname='".$name."' and admin_id=".get_userid());
-	dbQuery("insert into admin_vars (varname,varvalue,admin_id) values('".addslashes($name)."','".addslashes($value)."',".get_userid().")");
-	$GLOBALS['admin_vars'][$name]=$value;
 }
