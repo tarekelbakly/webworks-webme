@@ -1,6 +1,6 @@
 function plugin_rename(){
   this.name = "rename";
-  this.title = kfm.lang["rename file"];
+  this.title = "rename file";
   this.category = "edit";
   this.mode = 0;
   this.extensions = "all";
