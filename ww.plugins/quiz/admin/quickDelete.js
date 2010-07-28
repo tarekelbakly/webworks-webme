@@ -17,7 +17,7 @@ function remove_row (data) {
   	if(!data.status){
 		return alert("Could not delete");
 	}
-		$("#delete_link_"+data.id)
-		.closest("li")
-		.remove();
+	$("#delete_link_"+data.id)
+	.closest("li")
+	.remove();
 }

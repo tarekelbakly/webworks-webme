@@ -118,6 +118,38 @@ if($n){
 }
 echo '<input type="hidden" name="images_directory" value="'.htmlspecialchars($pdata['images_directory']).'" />';
 // }
+// { Link
+echo '<tr><td id="product_table_link_holder">';
+if ($id) {
+	if (!dbOne(
+			'select page_id 
+			from page_vars 
+			where name=\'products_product_to_show\' and value ='.$id,
+			'page_id'
+		)
+	)
+	{
+		echo '<a href="#" id="page_create_link" 
+			onClick=
+				"createPopup(
+					\''.htmlspecialchars($pdata['name']).'\','.
+					$id.','.
+					'3'.
+				')"'.
+			'>';
+		echo 'Click here to create a page for this</a>';
+	}
+	else {
+		$dir= dirname(__FILE__);
+		require_once $dir.'/../frontend/show.php';
+		$product= Product::getInstance($id);
+		$url= $product->getRelativeUrl();
+		echo '<a href="'.$url.'" target="_blank" id="view_this_product">';
+		echo 'Click here to view this product on the front end</a>';
+	}
+}
+echo '</td></tr>';
+// }
 echo '</table></div>';
 // }
 // { data fields
@@ -217,3 +249,4 @@ if(isset($_REQUEST['frontend-admin'])){
 }
 echo '</div><input type="submit" value="Save" /></form>';
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';
+echo '<script src="/ww.plugins/products/admin/create_page.js"></script>';

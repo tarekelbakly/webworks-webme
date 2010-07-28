@@ -92,6 +92,9 @@ switch ($action){
 	break; // }
 	case 'deleteQuiz': 
 		// { What to do if the user wants to delete a quiz and confirms it
+		if (!is_admin()) {
+			die('Insufficent Privlages');
+		}
 		dbQuery("DELETE FROM quiz_quizzes WHERE id = '$id'");
 		dbQuery("DELETE FROM quiz_questions WHERE quiz_id = '$id'");
 		//Not breaking because I want the quizzes to display after a quiz is
