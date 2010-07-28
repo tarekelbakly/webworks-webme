@@ -290,7 +290,7 @@ if (strpos($template, 'class="sc_ssearch"')!==false) {
 // }
 // { show stylesheet and javascript links
 $c.='WW_CSS_GOES_HERE';
-if ($DBVARS['theme_variant']) {
+if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
 	WW_addCSS('/ww.skins/'.$DBVARS['theme'].'/cs/'.$DBVARS['theme_variant'].'.css');
 }
 $c.='<style type="text/css">.loggedin{display:'

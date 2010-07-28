@@ -6,7 +6,7 @@ header('Cache-Control: max-age=2592000, public');
 header('Expires-Active: On');
 header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
 header('Pragma:');
-header('Content-type: text/javascript; charset=utf-8');
+header('Content-type: text/javascript;'); // charset=utf-8');
 
 $files=array(
 	'jquery-ui/js/jquery-1.4.2.min.js',
@@ -29,6 +29,8 @@ foreach($files as $f){
 	$mt=filemtime($f);
 	if($mt>$latest)$latest=$mt;
 }
+$mt=filemtime(__FILE__);
+if($mt>$latest)$latest=$mt;
 
 $name=md5(join('|',$files));
 
@@ -42,8 +44,11 @@ if(
 $js=cache_load('j','js-'.$name);
 if($js==false){
 	$js='';
+//	$i=0;
 	foreach($files as $f){
+//		$js.="\ndocument.title=".$i.";\n";
 		$js.=file_get_contents($f);
+//		$i++;
 	}
 	if(function_exists('jsmin')){
 		$js=jsmin($js);
