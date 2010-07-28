@@ -11,6 +11,7 @@ header('Content-type: text/javascript;'); // charset=utf-8');
 $files=array(
 	'jquery-ui/js/jquery-1.4.2.min.js',
 	'jquery-ui/js/jquery-ui-1.8.2.custom.min.js',
+	'jquery.json-2.2.min.js',
 	'js.js'
 );
 if(isset($_REQUEST['extra'])){
