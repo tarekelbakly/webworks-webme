@@ -293,8 +293,8 @@ function showhide(id){
 	link.replaceChild(newText(a.t+objName+']'),link.childNodes[0]);
 }
 window.ww={
-	CKEDITOR:'ckeditor',
-}
+	CKEDITOR:'ckeditor'
+};
 function X(d,s){
 	return $.extend(d,s);
 }
@@ -308,25 +308,29 @@ var kaejax_timeouts=[],kaejax_xhrinstances=[],ms_select_defaults=[],ms_show_topl
 if(window.ie)window.XMLHttpRequest=function(){var l=(ScriptEngineMajorVersion()>=5)?"Msxml2":"Microsoft";return new ActiveXObject(l+".XMLHTTP")};function DOMParser(){};DOMParser.prototype={toString:function(){return"[object DOMParser]"},parseFromString:function(s,c){var x=new ActiveXObject("Microsoft.XMLDOM");x.loadXML(s);return x},parseFromStream:new Function,baseURI:""};function XMLSerializer(){};XMLSerializer.prototype={toString:function(){return"[object XMLSerializer]"},serializeToString:function(r){return r.xml||r.outerHTML},serializeToStream:new Function};
 // }
 var Json = {
-	toString: function(obj){
-		switch($type(obj)){
-			case 'string':
-				return '"' + obj.replace(/(["\\])/g, '\\$1') + '"';
-			case 'array':
-				return '[' + obj.map(Json.toString).join(',') + ']';
-			case 'object':
-				var string = [];
-				for (var property in obj) string.push(Json.toString(property) + ':' + Json.toString(obj[property]));
-				return '{' + string.join(',') + '}';
-			case 'number':
-				if (isFinite(obj)) break;
-			case false:
-				return 'null';
+	toString: function(arr) {
+		var parts = [];
+		var is_list = (Object.prototype.toString.apply(arr) === '[object Array]');
+		for(var key in arr) {
+			var value = arr[key];
+			if(typeof value == "object") { //Custom handling for arrays
+				if(is_list) parts.push(toString(value)); /* :RECURSION: */
+				else parts[key] = toString(value); /* :RECURSION: */
+			} else {
+				var str = "";
+				if(!is_list) str = '"' + key + '":';
+				//Custom handling for multiple data types
+				if(typeof value == "number") str += value; //Numbers
+				else if(value === false) str += 'false'; //The booleans
+				else if(value === true) str += 'true';
+				else str += '"' + value + '"'; //All other things
+				// :TODO: Is there any more datatype we should be in the lookout for? (Functions?)
+				parts.push(str);
+			}
 		}
-		return String(obj);
-	},
-	evaluate: function(str, secure){
-		return (($type(str) != 'string') || (secure && !str.test(/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/))) ? null : eval('(' + str + ')');
+		var json = parts.join(",");
+		if(is_list) return '[' + json + ']';//Return numerical JSON
+		return '{' + json + '}';//Return associative JSON
 	}
 };
 function tabs_init(){
