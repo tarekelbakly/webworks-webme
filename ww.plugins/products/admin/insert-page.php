@@ -78,13 +78,16 @@ if ($product) {
 			'select data_fields from products where id='.$product, 
 			'data_fields'
 		);
-	$data= json_decode($datafields);
-	$firstField= $data->n;
+	if ($datafields) {
+		$data= json_decode($datafields);
+		$firstField= $data->n;
+		dbQuery(
+			"insert into page_vars(page_id, name, value)
+			values('$pageid', 'products_order_by', '$firstField')"
+		);
+	}
 }
-dbQuery(
-	"insert into page_vars(page_id, name, value)
-	values('$pageid', 'products_order_by', '$firstField')"
-);
+
 if (dbOne("select name from pages where id=$pageid", 'name')==stripslashes($name)) {
 	$message= 'Page Created';
 	$status= 1;

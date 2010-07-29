@@ -129,7 +129,7 @@ if ($id) {
 		)
 	)
 	{
-		echo '<a href="#" id="page_create_link" 
+		echo '<a href="javascript:;" id="page_create_link" 
 			onClick=
 				"createPopup(
 					\''.htmlspecialchars($pdata['name']).'\','.

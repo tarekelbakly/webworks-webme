@@ -7,8 +7,7 @@ function products_categories_save_attrs(ret){
 function products_categories_show_attrs(ret){
 	window.selected_cat=ret.attrs.id;
 	// { Remove the links so that they don't get added twice
-	$('#create_link').remove();
-	$('#frontend_link').remove();
+	$('#create_link,#frontend_link').remove();
 	// }
 	var table=$('#products-categories-attrs>table');
 	if(!table.length){
@@ -66,7 +65,7 @@ function products_categories_show_attrs(ret){
 			if (ret.page==null) {
 				$(
 					'<tr id="create_link"><th>Link</th>'+
-					'<td><a href="#" id="page_create_link"'+
+					'<td><a href="javascript:;" id="page_create_link"'+
 					'onClick='+
 					'"createPopup(\''+ret.attrs.name+'\', '+ret.attrs.id+', 2);"'
 					+'>Create a page for this category</a></td></tr>'
@@ -78,7 +77,7 @@ function products_categories_show_attrs(ret){
 			'<tr id="frontend_link"><th>Link</th>'+
 			'<td><a href="'+ret.page+'" target=_blank>'+
 			'View this category on the frontend</a></td></tr>'
-		).insertAfter($('#products'));
+		).insertAfter('#products');
 	}
 	$('#pc_edit_enabled').val(ret.attrs.enabled);
 	var selected_names=[];

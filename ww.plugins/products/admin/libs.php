@@ -8,15 +8,15 @@ function products_categories_get_data($id){
 		where name="products_category_to_show" and value='.$id,
 		'page_id'
 	);
-	if (isset($pageid)) {
-		$page= Page::getInstance($pageid);
-		$url= $page->getRelativeUrl();
-	}
 	foreach($ps as $p)$products[]=$p['product_id'];
 	$data=array(
 		'attrs'=>dbRow('select id,name,enabled,parent_id from products_categories where id='.$id),
 		'products'=>$products,
-		'page'=>$url
 	);
+	if (isset($pageid)) {
+		$page= Page::getInstance($pageid);
+		$url= $page->getRelativeUrl();
+		$data['page']= $url;
+	}
 	return $data;
 }
