@@ -66,8 +66,9 @@ echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" method="post"><
 echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a href="#data-fields">Data Fields</a></li><li><a href="#categories">Categories</a></ul>';
 // { main details
 echo '<div id="main-details"><table>';
+echo '<tr>';
 // { name
-echo '<tr><th><div class="help products/name"></div>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($pdata['name']).'" /></td>';
+echo '<th><div class="help products/name"></div>Name</th><td><input class="not-empty" name="name" value="'.htmlspecialchars($pdata['name']).'" /></td>';
 // }
 // { type
 echo '<th><div class="help products/type"></div>Type</th><td>';
@@ -90,10 +91,43 @@ echo '</td>';
 // { enabled
 echo '<th><div class="help products/enabled"></div>Enabled</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
 if(!$pdata['enabled'])echo ' selected="selected"';
-echo '>No</option></select></td></tr>';
+echo '>No</option></select></td>';
 // }
+// { page link
+echo '<th>Product Page</th><td id="product_table_link_holder">';
+if ($id) {
+	if (!dbOne(
+			'select page_id 
+			from page_vars 
+			where name=\'products_product_to_show\' and value ='.$id,
+			'page_id'
+		)
+	)
+	{
+		echo '<a href="javascript:;" id="page_create_link" 
+			onClick=
+				"createPopup(
+					\''.htmlspecialchars($pdata['name']).'\','.
+					$id.','.
+					'3'.
+				')"'.
+			'>';
+		echo 'click to create</a>';
+	}
+	else {
+		$dir= dirname(__FILE__);
+		require_once $dir.'/../frontend/show.php';
+		$product= Product::getInstance($id);
+		$url= $product->getRelativeUrl();
+		echo '<a href="'.$url.'" target="_blank" id="view_this_product">'
+			.htmlspecialchars($url).'</a>';
+	}
+}
+echo '</td>';
+// }
+echo '</tr><tr>';
 // { images
-echo '<tr><th><div class="help products/images"></div>Images</th><td colspan="5">';
+echo '<th><div class="help products/images"></div>Images</th><td colspan="5">';
 if(!isset($pdata['images_directory']) || !$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
 	if(!is_dir(USERBASE.'f/products/product-images')){
 		mkdir(USERBASE.'f/products/product-images',0777,true);
@@ -116,41 +150,13 @@ if($n){
 }else{
 	echo '<em>no images yet. please upload some.</em>';
 }
-echo '<input type="hidden" name="images_directory" value="'.htmlspecialchars($pdata['images_directory']).'" />';
+echo '<input type="hidden" name="images_directory" value="'.htmlspecialchars($pdata['images_directory']).'" /></td>';
 // }
-// { Link
-echo '<tr><td id="product_table_link_holder">';
-if ($id) {
-	if (!dbOne(
-			'select page_id 
-			from page_vars 
-			where name=\'products_product_to_show\' and value ='.$id,
-			'page_id'
-		)
-	)
-	{
-		echo '<a href="javascript:;" id="page_create_link" 
-			onClick=
-				"createPopup(
-					\''.htmlspecialchars($pdata['name']).'\','.
-					$id.','.
-					'3'.
-				')"'.
-			'>';
-		echo 'Click here to create a page for this</a>';
-	}
-	else {
-		$dir= dirname(__FILE__);
-		require_once $dir.'/../frontend/show.php';
-		$product= Product::getInstance($id);
-		$url= $product->getRelativeUrl();
-		echo '<a href="'.$url.'" target="_blank" id="view_this_product">';
-		echo 'Click here to view this product on the front end</a>';
-	}
-}
-echo '</td></tr>';
+// { relations
+echo '<th>Relations</th><td id="product-relations">';
+echo '</td>';
 // }
-echo '</table></div>';
+echo '</tr></table>';
 // }
 // { data fields
 echo '<div id="data-fields"><table>';

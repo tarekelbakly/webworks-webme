@@ -15,7 +15,8 @@ $plugin=array(
 		'menu' => array(
 			'Products>Products'   => 'products',
 			'Products>Categories' => 'categories',
-			'Products>Product Types'=> 'types'
+			'Products>Types'=> 'types',
+			'Products>Relation Types'=> 'relation-types'
 		),
 		'page_type' => 'products_admin_page_form'
 	),
