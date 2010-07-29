@@ -7,6 +7,11 @@ $name= addslashes($_REQUEST['name']);
 $parent= (int)$_REQUEST['parent'];
 $what= (int)$_REQUEST['what'];
 $id= (int)$_REQUEST['id'];
+$i = 2;
+while (dbOne('select id from pages where name=\''.$name.'\'', 'id')) {
+	$name.=$i;
+	$i++;
+}
 dbQuery(
 	"insert into pages(name, cdate, type, parent) 
 	values('$name', now(), 'products', '$parent')"
@@ -14,11 +19,7 @@ dbQuery(
 $pageid= (int)dbOne('select last_insert_id() as id', 'id');
 $page= Page::getInstance($pageid);
 $url= $page->getRelativeUrl();
-$i = 2;
-while (dbOne('select id from pages where name=\''$name'\'', 'id')) {
-	$name.=$i;
-	$i++;
-}
+
 dbQuery(
 	"insert into page_vars(page_id, name, value) 
 	values('$pageid', 'products_what_to_show', '$what')"
@@ -88,7 +89,7 @@ if ($product) {
 		$firstField= $data->n;
 		dbQuery(
 			"insert into page_vars(page_id, name, value)
-			values('$pageid', 'products_order_by', '".addslashes($firstField).')"
+			values('$pageid', 'products_order_by', '".addslashes($firstField)."')"
 		);
 	}
 }
