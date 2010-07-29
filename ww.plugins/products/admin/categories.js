@@ -6,6 +6,10 @@ function products_categories_save_attrs(ret){
 }
 function products_categories_show_attrs(ret){
 	window.selected_cat=ret.attrs.id;
+	// { Remove the links so that they don't get added twice
+	$('#create_link').remove();
+	$('#frontend_link').remove();
+	// }
 	var table=$('#products-categories-attrs>table');
 	if(!table.length){
 		table='<table style="width:100%">';
@@ -16,7 +20,7 @@ function products_categories_show_attrs(ret){
 		table+='<tr><th>Enabled</th><td><select id="pc_edit_enabled"><option value="1">Yes</option><option value="0">No</option></td></tr>';
 		// }
 		// { products
-		table+='<tr><th>Products</th><td><form><select name="pc_edit_products[]" id="pc_edit_products" multiple="multiple">';
+		table+='<tr id="products"><th>Products</th><td><form><select name="pc_edit_products[]" id="pc_edit_products" multiple="multiple">';
 		for(var i=0;i<window.product_names.length;++i){
 			table+='<option value="'+window.product_names[i][1]+'">'+window.product_names[i][0]+'</option>';
 		}
@@ -55,9 +59,26 @@ function products_categories_show_attrs(ret){
 	switch(ret.attrs.enabled){
 		case '0': // disabled
 			$('#cat_'+ret.attrs.id+' a').addClass('disabled');
+			$('#create_link').remove();
 			break;
 		default:  // enabled
 			$('#cat_'+ret.attrs.id+' a').removeClass('disabled');
+			if (ret.page==null) {
+				$(
+					'<tr id="create_link"><th>Link</th>'+
+					'<td><a href="#" id="page_create_link"'+
+					'onClick='+
+					'"createPopup(\''+ret.attrs.name+'\', '+ret.attrs.id+', 2);"'
+					+'>Create a page for this category</a></td></tr>'
+				).insertAfter($('#products'));
+			}
+	}
+	if (ret.page!=null) {
+		$(
+			'<tr id="frontend_link"><th>Link</th>'+
+			'<td><a href="'+ret.page+'" target=_blank>'+
+			'View this category on the frontend</a></td></tr>'
+		).insertAfter($('#products'));
 	}
 	$('#pc_edit_enabled').val(ret.attrs.enabled);
 	var selected_names=[];

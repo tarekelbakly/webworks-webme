@@ -1,4 +1,7 @@
 function createPopup (defaultName, id, what) {
+	if (/[^A-Za-z \-0-9]/.test(defaultName)) {
+		defaultName= '';
+	}
 	var html
 		= '<div id="dialog">Name'+
 			'<input id="products_page_name" type="text"'+
@@ -7,7 +10,7 @@ function createPopup (defaultName, id, what) {
 						'<option value="0" selected="selected">'+
 							'--none--'+
 						'</option>'+
-					'</select></div>'
+					'</select></div>';
 
 	$(html).dialog(
 		{
@@ -17,17 +20,22 @@ function createPopup (defaultName, id, what) {
 					var name= $('#products_page_name').val();
 					var parentPage= $('#products_page_parent').val();
 					if(name=='') {
-						name= defaultName;
+						return alert('Please enter a name for your page');
 					}
-					while (name.lastIndexOf(" ")>-1) {
-						name= name.replace(" ", "_");
+					if (/[^A-Za-z \-0-9]/.test(name)) {
+						return alert(
+							'Only letters or numbers are allowed in a page name'
+						);
 					}
-					$.getJSON (
-						'/ww.plugins/products/admin/insert-page.php?id='+id+
-						'&what='+what+
-						'&name='+name+
-						'&parent='+parentPage,
-						confirm_create
+					$.post (
+						'/ww.plugins/products/admin/insert-page.php',
+						{
+							"id":id,
+							"what":what,
+							"name":name,
+							"parent":parentPage
+						},
+						confirm_create, "json"
 					);
 				},
 				'Cancel': function () {
@@ -55,5 +63,5 @@ function confirm_create (data) {
 		.insertBefore($('#page_create_link'));
 		$('#page_create_link').remove();
 	}
-	$('#dialog').dialog('close');
+	$('#dialog').remove();
 }

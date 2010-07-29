@@ -9,7 +9,7 @@ $what= (int)$_REQUEST['what'];
 $id= (int)$_REQUEST['id'];
 dbQuery(
 	"insert into pages(name, cdate, type, parent) 
-	values('$name', '".date('Ymd')."', 'products', '$parent')"
+	values('$name', now(), 'products', '$parent')"
 );
 $pageid= (int)dbOne('select last_insert_id() as id', 'id');
 $page= Page::getInstance($pageid);
@@ -71,16 +71,16 @@ if ($what==2) {
 else {
 	$product= $id;
 }
-$datafields
-	= dbOne
-	(
-		'select data_fields from products where id='.$product, 
-		'data_fields'
-	);
-$datafields= $datafields[0].explode(':', $datafields[0]);
-$firstField= $datafields[1];
-$firstField= str_replace('"', '', $firstField);
-$firstField= preg_replace ('/,*/', '', $firstField);
+if ($product) {
+	$datafields
+		= dbOne
+		(
+			'select data_fields from products where id='.$product, 
+			'data_fields'
+		);
+	$data= json_decode($datafields);
+	$firstField= $data->n;
+}
 dbQuery(
 	"insert into page_vars(page_id, name, value)
 	values('$pageid', 'products_order_by', '$firstField')"

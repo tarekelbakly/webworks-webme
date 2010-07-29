@@ -2,6 +2,7 @@
 <script src="/j/jquery.inlinemultiselect.js"></script>
 <script src="/ww.plugins/products/admin/get-product-names-js.php"></script>
 <script src="/ww.plugins/products/admin/categories.js"></script>
+<script src="/ww.plugins/products/admin/create_page.js"></script>
 <table>
 	<tr><th style="width:300px">Categories</th><th style="width:300px">Attributes</th></tr>
 	<tr><td>
@@ -17,7 +18,7 @@ function show_cats($id){
 	global $cats;
 	if(!isset($cats[$id]))return;
 	echo '<ul>';
-	foreach($cats[$id] as $cat){
+	foreach($cats[$id] as $cat) {
 		echo '<li id="cat_'.$cat['id'].'"><a href="#"';
 		if($cat['enabled']=='0')echo ' class="disabled"';
 		echo '><ins>&nbsp;</ins>'.htmlspecialchars($cat['name']).'</a>';
