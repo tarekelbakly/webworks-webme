@@ -41,13 +41,16 @@ $plugin=array(
 			),
 			'PRODUCTS_LINK' => array (
 				'function' => 'products_link'
+			),
+			'PRODUCTS_REVIEWS' => array (
+				'function' => 'products_reviews'
 			)
 		)
 	),
 	'triggers' => array(
 		'initialisation-completed' => 'products_add_to_cart'
 	),
-	'version' => '8'
+	'version' => '10'
 );
 // }
 

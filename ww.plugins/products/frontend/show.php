@@ -8,13 +8,18 @@ function products_categories ($params, &$smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
 	$categoryIDs = dbAll('select category_id from products_categories_products where product_id='.$productID);
-	$query= 'select count(id) from products_categories where enabled = 1 and id in (';
-	foreach ($categoryIDs as $catID) {
-		$query.= (int)$catID['category_id'].', ';
+	if ($categoryIDs) {
+		$query
+			= 'select count(id) 
+				from products_categories 
+				where enabled = 1 and id in (';
+		foreach ($categoryIDs as $catID) {
+			$query.= (int)$catID['category_id'].', ';
+		}
+    	$query= substr_replace($query, '', -2);
+		$query.=')';
+		$numEnabledCats = dbOne($query, 'count(id)'); 	
 	}
-    $query= substr_replace($query, '', -2);
-	$query.=')';
-	$numEnabledCats = dbOne($query, 'count(id)'); 	
 	if ($numEnabledCats==0) {
 		return '<div class="products-categories">No Categories exist for this product</div>';
 	}
@@ -38,7 +43,7 @@ function products_categories ($params, &$smarty) {
 				}
 			}
 			if (!$pageFound) {
-				$parent = dbOne('select parent_id from products_categories where id='.$cid, 'parent_id');
+				//$parent = dbOne('select parent_id from products_categories where id='.$cid, 'parent_id');
 				while ($parent>0) {
 					foreach ($directCategoryPages as $catPage) {
 						$pageID= $catPage['page_id'];
@@ -52,7 +57,7 @@ function products_categories ($params, &$smarty) {
 							break;
 						}
 					}
-					$parent= dbOne('select parent_id from products_categories where id='.$parent, 'parent_id');
+					//$parent= dbOne('select parent_id from products_categories where id='.$parent, 'parent_id');
 				}
 			}
 			if (!$pageFound) {
@@ -165,6 +170,62 @@ function products_link ($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	$id= $product->id;
 	return $product->getRelativeURL();
+}
+function products_reviews ($params, &$smarty) {
+	$product = $smarty->_tpl_vars['product'];
+	$productid = (int)$product->id;
+	$c='';
+	$reviews 
+		= dbAll(
+			'select body, rating, cdate 
+			from products_reviews 
+			where product_id ='.$productid
+		);
+	if (!count($reviews)) {
+		$c.= '<em>Nobody has reviewed this product yet</em>';
+	}
+	$userid = (int)get_userid();
+	// { Allow the user to submit a review if they are logged in and haven't
+	//   already left one
+	if (is_logged_in()
+		&&!dbOne(
+				'select user_id 
+				from products_reviews 
+				where product_id='.$productid.' and user_id='.$userid,
+				'user_id'
+			)
+		)
+	{
+		$dir= dirname(__FILE__);
+		$c.= $dir;
+		$c.= '<br/><br/>';
+		$c.='<strong>Review This Product</strong><br/>';
+		$c.='<form method="post" 
+			action="http://webworks-webme/ww.plugins/products/frontend/submit_review.php">';
+		$c.='<input type="hidden" name="productid" value="'.$productid.'"/>';
+		$c.='<input type="hidden" name="userid" value="'.$userid.'"/>';
+		$c.= '<b>Rating: </b>';
+		$c.= '<small><i>The higher the rating the better </i></small>';
+		// { The rating select box
+		$c.= '<select name="rating">';
+		$c.= '<option>1</option>';
+		$c.= '<option>2</option>';
+		$c.= '<option>3</option>';
+		$c.= '<option>4</option>';
+		$c.= '<option>5</option>';
+		$c.= '</select>';
+		$c.='<br/>';
+		// }
+		$c.= '<textarea cols="50" rows="10" name="text">';
+		$c.= 'Put your comments about the product here';
+		$c.= '</textarea><br/>';
+		$c.= '<center>';
+		$c.= '<input type="submit" name="submit" value="Submit Review"/>';
+		$c.= '</center>';
+		$c.= '</form>';
+	}
+	// }
+	return $c;
 }
 function products_show($PAGEDATA){
 	if(!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
