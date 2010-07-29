@@ -50,7 +50,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'products_add_to_cart'
 	),
-	'version' => '10'
+	'version' => '11'
 );
 // }
 

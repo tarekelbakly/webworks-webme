@@ -75,6 +75,19 @@ if ($version<10) {
 	);
 	$version=10;
 }
+if($version==10) { // create product relation tables
+	dbQuery('create table products_relation_types (
+		id int auto_increment not null primary key,
+		name text,
+		one_way smallint default 0
+	)engine=MyISAM default charset=utf8');
+	dbQuery('create table products_relations (
+		relation_id int default 0,
+		from_id int default 0,
+		to_id int default 0
+	)engine=MyISAM default charset=utf8');
+	$version=11;
+}
 			
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();
