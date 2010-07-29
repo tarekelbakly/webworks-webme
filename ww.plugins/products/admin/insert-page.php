@@ -14,6 +14,11 @@ dbQuery(
 $pageid= (int)dbOne('select last_insert_id() as id', 'id');
 $page= Page::getInstance($pageid);
 $url= $page->getRelativeUrl();
+$i = 2;
+while (dbOne('select id from pages where name=\''$name'\'', 'id')) {
+	$name.=$i;
+	$i++;
+}
 dbQuery(
 	"insert into page_vars(page_id, name, value) 
 	values('$pageid', 'products_what_to_show', '$what')"
@@ -83,7 +88,7 @@ if ($product) {
 		$firstField= $data->n;
 		dbQuery(
 			"insert into page_vars(page_id, name, value)
-			values('$pageid', 'products_order_by', '$firstField')"
+			values('$pageid', 'products_order_by', '".addslashes($firstField).')"
 		);
 	}
 }
