@@ -48,7 +48,7 @@ if($js==false){
 //	$i=0;
 	foreach($files as $f){
 //		$js.="\ndocument.title=".$i.";\n";
-		$js.=file_get_contents($f);
+		$js.=file_get_contents($f).';';
 //		$i++;
 	}
 	if(function_exists('jsmin')){
