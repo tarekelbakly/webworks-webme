@@ -81,7 +81,9 @@ function products_datatable ($params, &$smarty) {
 	if ($params['align']!='horizontal') {
 		foreach ($datafields as $data) {
 			$name = str_replace('_', ' ', $data->n);
-			$c.= '<tr><th>'.(htmlspecialchars(ucfirst($name))).'</th><td>';
+			$c.= '<tr><th style="text-align:left">';
+			$c.= htmlspecialchars(ucfirst($name));
+			$c.= '</th><td>';
 			if (isset($product->vals [$data->n])) {
 				$c.=htmlspecialchars($product->vals[$data->n]);
 			}
@@ -172,59 +174,119 @@ function products_link ($params, &$smarty) {
 	return $product->getRelativeURL();
 }
 function products_reviews ($params, &$smarty) {
+	WW_addScript('/ww.plugins/products/frontend/delete.js');
+	WW_addScript('/ww.plugins/products/frontend/products-edit-review.js');
+	$userid = (int)get_userid();
 	$product = $smarty->_tpl_vars['product'];
 	$productid = (int)$product->id;
 	$c='';
-	$reviews 
-		= dbAll(
-			'select body, rating, cdate 
+	$numReviews
+		= dbOne(
+			'select count(id) 
 			from products_reviews 
-			where product_id ='.$productid
+			where product_id='.$productid,
+			'count(id)'
 		);
-	if (!count($reviews)) {
+	if ($numReviews) {
+		$reviews 
+			= dbAll(
+				'select * 
+				from products_reviews  
+				where product_id ='.$productid
+			);
+		$query = 'select avg(rating), product_id ';
+		$query.= 'from products_reviews ';
+		$query.= 'where product_id='.$productid;
+		$query.= ' group by product_id';
+		$average = dbOne($query, 'avg(rating)');
+		$c.= '<div id="reviews_display">';
+		$c.= '<div id="average'.$productid.'">';
+		$c.= 'The average rating for this product over '.count($reviews);
+		$c.= ' review';
+		if (count($reviews)>1) {
+			$c.= 's';
+		}
+		$c.= ' was '.$average.'<br/><br/>';
+		$c.='</div>';
+		foreach ($reviews as $review) {
+			$name
+				= dbOne(
+					'select name 
+					from user_accounts 
+					where id='.(int)$review['user_id'], 
+					'name'
+				);
+			$c.= '<div id="'.$review['id'].'">';
+			$date = $review['cdate'];
+			$date = substr_replace($date, '', strpos($date, ' '));
+			$c.= 'Posted by '.htmlspecialchars($name).' on '.$date;
+			$body = htmlspecialchars($body);
+			$body = str_replace("\n", '<br/>', $review['body']);
+			$c.= '   ';
+			$c.= '<b>Rated: </b>'.$review['rating'].'<br/>';
+			$c.= ($body).'<br/>';
+			if (is_admin()|| $userid==$review['user_id']) {
+				// { Edit Review Link
+				$timeReviewMayBeEditedUntil
+					= dbOne('select 
+						date_add('
+							.'\''.$review['cdate'].'\''
+							.', interval 15 minute
+						)
+						as last_edit_time',
+						'last_edit_time'
+					);
+				$reviewMayBeEdited
+					= dbOne (
+						'select \''.$timeReviewMayBeEditedUntil.'\'>now()
+						as can_edit_review',
+						'can_edit_review'
+					);
+				if ($reviewMayBeEdited) {
+					$c.= '<a href="javascript:;"';
+					$c.= 'onClick="';
+					$c.= 'edit_review('.
+							$review['id'].', '
+							.'\''.addslashes($body).'\''
+							.', '.$review['rating']
+						.');">';
+					$c.= 'edit</a> ';
+				}
+				// }
+				// { Delete Review Link
+				$c.= '<a';
+				$c.= ' href="javascript:;" ';
+				$c.= 'onClick=
+					"delete_review('.
+						$review['id'].
+						', '.$review['user_id'].', '
+						.$productid
+					.');"';
+				$c.='>[x]';
+				$c.= '</a><br/>';
+				// }
+			}
+			$c.= '<br/></div>';
+		}
+		$c.= '</div>';
+		$userHasNotReviewedThisProduct
+			= !dbOne(
+				'select id
+				from products_reviews
+				where user_id='.$userid.' and product_id='.$productid,
+				'id'
+			);
+		if (is_logged_in() && $userHasNotReviewedThisProduct) {
+			$c.= products_submit_review_form($productid, $userid);
+		}
+	}
+	else {
 		$c.= '<em>Nobody has reviewed this product yet</em>';
+		$c.= '<br/>';
+		if (is_logged_in()) {
+			$c.= products_submit_review_form($productid, $userid);
+		}
 	}
-	$userid = (int)get_userid();
-	// { Allow the user to submit a review if they are logged in and haven't
-	//   already left one
-	if (is_logged_in()
-		&&!dbOne(
-				'select user_id 
-				from products_reviews 
-				where product_id='.$productid.' and user_id='.$userid,
-				'user_id'
-			)
-		)
-	{
-		$dir= dirname(__FILE__);
-		$c.= $dir;
-		$c.= '<br/><br/>';
-		$c.='<strong>Review This Product</strong><br/>';
-		$c.='<form method="post" 
-			action="http://webworks-webme/ww.plugins/products/frontend/submit_review.php">';
-		$c.='<input type="hidden" name="productid" value="'.$productid.'"/>';
-		$c.='<input type="hidden" name="userid" value="'.$userid.'"/>';
-		$c.= '<b>Rating: </b>';
-		$c.= '<small><i>The higher the rating the better </i></small>';
-		// { The rating select box
-		$c.= '<select name="rating">';
-		$c.= '<option>1</option>';
-		$c.= '<option>2</option>';
-		$c.= '<option>3</option>';
-		$c.= '<option>4</option>';
-		$c.= '<option>5</option>';
-		$c.= '</select>';
-		$c.='<br/>';
-		// }
-		$c.= '<textarea cols="50" rows="10" name="text">';
-		$c.= 'Put your comments about the product here';
-		$c.= '</textarea><br/>';
-		$c.= '<center>';
-		$c.= '<input type="submit" name="submit" value="Submit Review"/>';
-		$c.= '</center>';
-		$c.= '</form>';
-	}
-	// }
 	return $c;
 }
 function products_show($PAGEDATA){
@@ -301,6 +363,33 @@ function products_setup_smarty(){
 	$smarty->template_dir='/ww.cache/products/templates';
 	return $smarty;
 }
+function products_submit_review_form ($productid, $userid) {
+	$formAction = '"http://webworks-webme';
+	$formAction.= '/ww.plugins/products';
+	$formAction.= '/frontend/submit_review.php"';
+	$c.='<strong>Review This Product</strong><br/>';
+	$c.='<form method="post" id= "submit_review" action='.$formAction.'>';
+	$c.='<input type="hidden" name="productid" value="'.$productid.'"/>';
+	$c.='<input type="hidden" name="userid" value="'.$userid.'"/>';
+	$c.= '<b>Rating: </b>';
+	$c.= '<small><i>The higher the rating the better </i></small>';
+	// { The rating select box
+	$c.= '<select name="rating">';
+	for ($i=1; $i<=5; $i++) {
+		$c.= '<option>'.$i.'</option>';
+	}
+	$c.= '</select>';
+	$c.='<br/>';
+	// }
+	$c.= '<textarea cols="50" rows="10" name="text">';
+	$c.= 'Put your comments about the product here';
+	$c.= '</textarea><br/>';
+	$c.= '<center>';
+	$c.= '<input type="submit" name="submit" value="Submit Review"/>';
+	$c.= '</center>';
+	$c.= '</form>';
+	return $c;
+}
 
 class Product{
 	static $instances=array();
@@ -328,7 +417,13 @@ class Product{
 	}
 	function getRelativeURL () {
 		// { Does the product have a page assigned to display the product?
-		$pageID= dbOne('select page_id from page_vars where name=\'products_product_to_show\' and value='.$this->id, 'page_id');
+		$pageID
+			= dbOne(
+				'select page_id 
+				from page_vars 
+				where name=\'products_product_to_show\' 
+				and value='.$this->id, 'page_id'
+			);
 		if ($pageID) {
 			$page= Page::getInstance($pageID);
 			return $page->getRelativeUrl();
@@ -337,10 +432,21 @@ class Product{
 		// }
 		// { Is there a page designed to display its category?
 		$pages= dbAll('select id from pages where type= \'products\'');
-		$productCats= dbAll('select category_id from products_categories_products where product_id='.$this->id);
+		$productCats
+			= dbAll(
+				'select category_id 
+				from products_categories_products 
+				where product_id='.$this->id
+			);
 		foreach ($pages as $page) {
 			$pageID= $page['id'];
-			$shownCats= dbAll ('select value from page_vars where name= \'products_category_to_show\' and page_id='.$pageID);
+			$shownCats
+				= dbAll (
+					'select value 
+					from page_vars 
+					where name= \'products_category_to_show\' 
+					and page_id='.$pageID
+				);
 			foreach ($shownCats as $shownCat) {
 				foreach ($productCats as $productCat) {
 					if ($shownCat['value']==$productCat['category_id']) {

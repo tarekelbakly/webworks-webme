@@ -2,9 +2,9 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $dir= dirname(__FILE__);
 $user_id = (int)$_POST['userid'];
-$product_id= (int)$_POST['productid'];
-$rating= (int)$_POST['rating'];
-$text= addslashes($_POST['text']);
+$product_id = (int)$_POST['productid'];
+$rating = (int)$_POST['rating'];
+$text = addslashes($_POST['text']);
 $errors= array();
 if (empty($text)||$text=='Put your comments about the product here') {
 	$errors[]= 'You need to type a comment';
@@ -25,7 +25,10 @@ else {
 		values ('$user_id', '$product_id', '$rating', '$text', now())"
 	);
 	echo '<script>';
-	echo 'alert("Thank you for leaving a review for this product");';
+	echo 'alert(
+			"Thank you for leaving a review for this product\n"
+			+"You can edit your review for 15 minutes"
+		);';
 	echo 'history.go(-1)';
 	echo '</script>';
 }

@@ -61,7 +61,7 @@ if($version==7){ // default image
 	dbQuery('alter table products change default_image image_default int default 0');
 	$version=8;
 }
-if ($version<10) {
+if ($version<10) { // products reviews table
 	dbQuery(
 		'CREATE TABLE products_reviews
 		(
@@ -87,6 +87,10 @@ if($version==10) { // create product relation tables
 		to_id int default 0
 	)engine=MyISAM default charset=utf8');
 	$version=11;
+}
+if ($version==11) { //
+	dbQuery('alter table products_reviews change cdate cdate datetime');
+	$version=12;
 }
 			
 $DBVARS[$pname.'|version']=$version;

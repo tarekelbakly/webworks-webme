@@ -35,7 +35,8 @@ function createPopup (defaultName, id, what) {
 							"name":name,
 							"parent":parentPage
 						},
-						confirm_create, "json"
+						confirm_create, 
+						"json"
 					);
 				},
 				'Cancel': function () {
