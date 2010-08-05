@@ -156,7 +156,7 @@ echo '<input type="hidden" name="images_directory" value="'.htmlspecialchars($pd
 echo '<th>Relations</th><td id="product-relations">';
 echo '</td>';
 // }
-echo '</tr></table>';
+echo '</tr></table></div>';
 // }
 // { data fields
 echo '<div id="data-fields"><table>';
@@ -255,4 +255,4 @@ if(isset($_REQUEST['frontend-admin'])){
 }
 echo '</div><input type="submit" value="Save" /></form>';
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';
-echo '<script src="/ww.plugins/products/admin/create_page.js"></script>';
+echo '<script src="/ww.plugins/products/admin/create-page.js"></script>';

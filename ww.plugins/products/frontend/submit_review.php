@@ -1,4 +1,18 @@
 <?php
+/**
+  * Inserts a review into the database
+  *
+  * PHP Version 5
+  *
+  * Checks that the values are valid first
+  *
+  * @category   WebworksWebme
+  * @package    WebworksWebme
+  * @subpackage Products_Plugin
+  * @author     Belinda Hamilton <bhamilton@webworks.ie>
+  * @license    GPL Version 2
+  * @link       www.webworks.ie
+*/
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $dir= dirname(__FILE__);
 $user_id = (int)$_POST['userid'];

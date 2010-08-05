@@ -6,11 +6,11 @@
   *
   * PHP Version 5
   *
-  * @category   Products Plugin
+  * @category   Webworks_Webme
   * @package    Webworks_Webme
-  * @subpackage Products Plugin
+  * @subpackage Products_Plugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
-  * @licence    GPL Version 2
+  * @license    GPL Version 2
   * @link       www.webworks.ie
 */
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
@@ -27,7 +27,7 @@ $user= get_userid();
 if (!is_admin() || get_userid()!=$userid) {
 	die('You do not have permission to delete this review');
 }
-dbQuery ('delete from products_reviews where id='.$id);
+dbQuery('delete from products_reviews where id='.$id);
 if (dbOne('select id from products_reviews where id='.$id, 'id')) {
 	echo '{"status":0}';
 }

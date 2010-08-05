@@ -6,9 +6,9 @@
   *
   * @category   WebworksWebme
   * @package    WebworksWebMe
-  * @subpackage Products Plugin
+  * @subpackage Products_Plugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
-  * @licence    GPL Version 2
+  * @license    GPL Version 2
   * @link       www.webworks.ie
 */
 
