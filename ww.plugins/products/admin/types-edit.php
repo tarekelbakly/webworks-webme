@@ -19,7 +19,15 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 	}
 	else{
 		$data_fields=str_replace(array("\n","\r"),array('\n',''),$_REQUEST['data_fields']);
-		$sql='set name="'.addslashes($_REQUEST['name']).'",data_fields="'.addslashes($data_fields).'",multiview_template="'.addslashes($_REQUEST['multiview_template']).'",singleview_template="'.addslashes($_REQUEST['singleview_template']).'"';
+		$singleview = addslashes($_REQUEST['singleview_template']);
+		if (strlen($singleview)<10) {
+			$singleview = '{{PRODUCTS_DATATABLE}}'.$singleview;
+		}
+		$multiview = addslashes($_REQUEST['multiview_template']);
+		if (strlen($multiview)<10) {
+			$multiview = '{{PRODUCTS_DATATABLE align=horizontal}}';
+		}
+		$sql='set name="'.addslashes($_REQUEST['name']).'",data_fields="'.addslashes($data_fields).'",multiview_template="'.$multiview.'",singleview_template="'.addslashes($singleview).'"';
 		foreach($tabs as $tab){
 			$sql.=','.$tab[0].'='.(isset($_REQUEST[$tab[0]])?1:0);
 		}
