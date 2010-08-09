@@ -18,22 +18,23 @@ switch($_REQUEST['action']){
 		global $kfm;
 		$root_id = $kfm->setting('root_folder_id');
 		$root_directory = kfmDirectory::getInstance($root_id);
-		prune($root_directory);
+		kfm_prune($root_directory);
 	break; // }
 }
 
-function prune ($dir) {
+function kfm_prune ($dir) {
 	global $root_id;
 	$files = $dir->getFiles();
 	$subDirs = $dir->getSubdirs();
+	if ($dir->hasSubdirs()) {
+		foreach ($subDirs as $sub) {
+			kfm_prune($sub);
+		}
+	}
 	// { If the directory contains nothing and is not the root delete it
-	if (!($files&&$subDirs)&&($dir->id!=$root_id)) {
+	if (!(count($files)||count($subDirs))&&($dir->id!=$root_id)) {
 		return $dir->delete();
 	}
 	// }
-	elseif ($dir->hasSubdirs()) {
-		foreach ($subDirs as $sub) {
-			prune($sub);
-		}
-	}
+	
 }
