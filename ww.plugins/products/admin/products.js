@@ -8,6 +8,21 @@ function products_form_validate(){
 	alert(errors.join("\n"));
 	return false;
 }
+function change_href (id) {
+	var href = $('#delete_link_'+id)
+		.attr('href');
+	var boxIsChecked = $('#delete_checkbox_'+id).attr('checked');
+	if (boxIsChecked) {
+			href += '&delete-images=1';
+			$('#delete_link_'+id)
+				.attr ('href', href);
+	}
+	else {
+		href = href.replace('&delete-images=1', '');
+		$('#delete_link_'+id)
+			.attr ('href', href);
+	}
+}
 $(function(){
 	$('#product-images-wrapper a.mark-as-default').bind('click',function(){
 		var $this=$(this);
@@ -31,3 +46,4 @@ $(function(){
 	$("#tabs").tabs();
 	$('#products-form').submit(products_form_validate);
 });
+

@@ -8,7 +8,7 @@ window.kfm_createEmptyFile=function(filename,msg){
 		if(!filename)return;
 		if(filename.indexOf('/')>-1){
 			msg=kfm.lang.NoForwardslash;
-      kfm_createEmptyFile(filename,msg);
+      		kfm_createEmptyFile(filename,msg);
 		}else{
 		  if(kfm_isFileInCWD(filename)){
 			  kfm.confirm(kfm.lang.AskIfOverwrite(filename),function(){

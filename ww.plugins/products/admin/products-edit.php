@@ -12,6 +12,25 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
+		$_REQUEST['action'] = 'prune';
+		require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/rpc.php';
+		// { Recreate the directory because for some reason it was looking
+		//   in the old directory for the image files
+		if (!is_dir(USERBASE.'f'.$_REQUEST['images_directory'])) {    
+			if(!is_dir(USERBASE.'f/products/product-images')){
+		    	mkdir(USERBASE.'f/products/product-images',0777,true);
+			}
+			$parent_id = kfm_api_getDirectoryId('products/product-images');
+			require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
+			_createDirectory(
+				$parent_id, 
+				substr(
+					$_REQUEST['images_directory'],
+					strrpos($_REQUEST['images_directory'], '/'))
+
+			);
+		}
+		// }
 		// { save main data and data fields
 		$sql='set name="'.addslashes($_REQUEST['name']).'"'
 			.',product_type_id='.((int)$_REQUEST['product_type_id'])
@@ -38,6 +57,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		dbQuery('delete from products_categories_products where product_id='.$id);
 		foreach($_REQUEST['product_categories'] as $key=>$val)dbQUery('insert into products_categories_products set product_id='.$id.',category_id='.$key);
 		// }
+		//$file->delete();
 		echo '<em>Product saved</em>';
 		if(isset($_REQUEST['frontend-admin'])){
 			echo '<script type="text/javascript">parent.location=parent.location;</script>';
@@ -127,7 +147,6 @@ echo '</td>';
 // }
 echo '</tr><tr>';
 // { images
-echo '<th><div class="help products/images"></div>Images</th><td colspan="5">';
 if(!isset($pdata['images_directory']) || !$pdata['images_directory'] || !is_dir(USERBASE.'f/'.$pdata['images_directory'])){
 	if(!is_dir(USERBASE.'f/products/product-images')){
 		mkdir(USERBASE.'f/products/product-images',0777,true);
@@ -135,7 +154,10 @@ if(!isset($pdata['images_directory']) || !$pdata['images_directory'] || !is_dir(
 	$pdata['images_directory']='/products/product-images/'.md5(rand().microtime());
 	mkdir(USERBASE.'f'.$pdata['images_directory']);
 }
-$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$pdata['images_directory']));
+echo '<input type="hidden" 
+	name="images_directory" value="'.$pdata['images_directory'].'" />';
+echo '<th><div class="help products/images"></div>Images</th><td colspan="5">';
+$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','', $pdata['images_directory']));
 $images=kfm_loadFiles($dir_id);
 $images=$images['files'];
 $n=count($images);
@@ -147,16 +169,17 @@ if($n){
 		echo '<div'.$default.'><img src="/kfmget/'.$images[$i]['id'].',width=64,height=64" title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" /><br /><input type="checkbox" id="products-dchk-'.$images[$i]['id'].'" /><a class="delete" href="javascript:;" id="products-dbtn-'.$images[$i]['id'].'">delete</a><br /><a class="mark-as-default" href="javascript:;" id="products-dfbtn-'.$images[$i]['id'].'">set default</a></div>';
 	}
 	echo '</div>';
-}else{
+} else{
 	echo '<em>no images yet. please upload some.</em>';
 }
-echo '<input type="hidden" name="images_directory" value="'.htmlspecialchars($pdata['images_directory']).'" /></td>';
-// }
+echo '</td></tr>';
+
 // { relations
 echo '<th>Relations</th><td id="product-relations">';
 echo '</td>';
 // }
 echo '</tr></table></div>';
+// }
 // }
 // { data fields
 echo '<div id="data-fields"><table>';
@@ -256,3 +279,4 @@ if(isset($_REQUEST['frontend-admin'])){
 echo '</div><input type="submit" value="Save" /></form>';
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';
 echo '<script src="/ww.plugins/products/admin/create-page.js"></script>';
+

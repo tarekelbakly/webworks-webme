@@ -25,7 +25,7 @@ class kfmFile extends kfmObject{
 			$this->name=$filedata['name'];
 			$this->parent=$filedata['directory'];
 			$dir=kfmDirectory::getInstance($this->parent);
-      $this->dir = $dir;
+      		$this->dir = $dir;
 			$this->directory=$dir->path();
 			$this->path=$this->directory.'/'.$filedata['name'];
 			if(!$this->exists()){
