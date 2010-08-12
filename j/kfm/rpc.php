@@ -1,5 +1,5 @@
 <?php
-require 'initialise.php';
+require_once 'initialise.php';
 
 switch($_REQUEST['action']){
 	case 'delete_file': // {
@@ -12,8 +12,6 @@ switch($_REQUEST['action']){
 		}
 		else die('file does not exist');
 	break; // }
-
-
 	case 'prune': // {
 		global $kfm;
 		$root_id = $kfm->setting('root_folder_id');
