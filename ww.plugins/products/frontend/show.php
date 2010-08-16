@@ -221,7 +221,7 @@ function products_reviews ($params, &$smarty) {
 			$date = substr_replace($date, '', strpos($date, ' '));
 			$c.= 'Posted by '.htmlspecialchars($name).' on '.$date;
 			$body = htmlspecialchars($body);
-			$body = str_replace("\n", '<br/>', $review['body']);
+			$body = str_replace("\n", '<br />', $review['body']);
 			$c.= '   ';
 			$c.= '<b>Rated: </b>'.$review['rating'].'<br/>';
 			$c.= ($body).'<br/>';
@@ -369,21 +369,21 @@ function products_submit_review_form ($productid, $userid) {
 	$formAction.= '/frontend/submit_review.php"';
 	$c.='<strong>Review This Product</strong><br/>';
 	$c.='<form method="post" id= "submit_review" action='.$formAction.'>';
-	$c.='<input type="hidden" name="productid" value="'.$productid.'"/>';
-	$c.='<input type="hidden" name="userid" value="'.$userid.'"/>';
+	$c.='<input type="hidden" name="productid" value="'.$productid.'" />';
+	$c.='<input type="hidden" name="userid" value="'.$userid.'" />';
 	$c.= '<b>Rating: </b>';
-	$c.= '<small><i>The higher the rating the better </i></small>';
+	$c.= '<small><i>higher ratings are better </i></small>';
 	// { The rating select box
 	$c.= '<select name="rating">';
 	for ($i=1; $i<=5; $i++) {
 		$c.= '<option>'.$i.'</option>';
 	}
 	$c.= '</select>';
-	$c.='<br/>';
+	$c.='<br />';
 	// }
 	$c.= '<textarea cols="50" rows="10" name="text">';
 	$c.= 'Put your comments about the product here';
-	$c.= '</textarea><br/>';
+	$c.= '</textarea><br />';
 	$c.= '<center>';
 	$c.= '<input type="submit" name="submit" value="Submit Review"/>';
 	$c.= '</center>';

@@ -22,10 +22,15 @@ if(!dbOne('select id from products_types limit 1','id')){
 	echo '<em>You can\'t create a product until you have created a type. <a href="plugin.php?_plugin=products&amp;_page=types-edit">Click here to create one</a></em>';
 }
 else if(!count($rs)){
-	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;_page=products-edit">Click here to create one</a>.</em>';
+	echo '<em>No existing products. <a href="plugin.php?_plugin=products&amp;_page=products-edit">Click here to create one</a>.';
+	echo ' or <a href="plugin.php?_plugin=products&amp;_page=import">';
+	echo 'Click here to import products</a></em>';
 }
 else{
-	echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a Product</a><br /><br />';
+	echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a Product</a>';
+	echo ' <a href="plugin.php?_plugin=products&amp;_page=import">';
+	echo 'Import Products</a>';
+	echo '<br /><br />';
 	echo '<div style="width:50%"><table class="datatable"><thead><tr><th>Name</th><th>&nbsp;</th><th>Remove Associated Images</th></tr></thead><tbody>';
 	foreach($rs as $r){
 		echo '<tr><td class="edit-link"><a href="plugin.php?_plugin=products&amp;_page=products-edit&amp;id='.$r['id'].'">'.htmlspecialchars($r['name']).'</td><td>';

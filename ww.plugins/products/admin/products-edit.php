@@ -22,13 +22,14 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			}
 			$parent_id = kfm_api_getDirectoryId('products/product-images');
 			require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
-			_createDirectory(
-				$parent_id, 
-				substr(
-					$_REQUEST['images_directory'],
-					strrpos($_REQUEST['images_directory'], '/'))
-
-			);
+			$pos = strrpos($_REQUEST['images_directory'], '/');
+			if ($pos===false) {
+				$dname = $_REQUEST['images_directory'];
+			}
+			else {
+				$dname = substr($_REQUEST['images_directory'], $pos);
+			}
+			_createDirectory($parent_id, $dname);
 		}
 		// }
 		// { save main data and data fields
@@ -116,29 +117,29 @@ echo '>No</option></select></td>';
 // { page link
 echo '<th>Product Page</th><td id="product_table_link_holder">';
 if ($id) {
-	if (!dbOne(
+	$pageid 
+		= dbOne(
 			'select page_id 
 			from page_vars 
 			where name=\'products_product_to_show\' and value ='.$id,
 			'page_id'
-		)
-	)
-	{
+		);
+	if (!$pageid) {
 		echo '<a href="javascript:;" id="page_create_link" 
 			onClick=
 				"createPopup(
 					\''.htmlspecialchars($pdata['name']).'\','.
 					$id.','.
 					'3'.
-				')"'.
+				');"'.
 			'>';
 		echo 'click to create</a>';
 	}
 	else {
 		$dir= dirname(__FILE__);
 		require_once $dir.'/../frontend/show.php';
-		$product= Product::getInstance($id);
-		$url= $product->getRelativeUrl();
+		$page= Page::getInstance($pageid);
+		$url= $page->getRelativeUrl();
 		echo '<a href="'.$url.'" target="_blank" id="view_this_product">'
 			.htmlspecialchars($url).'</a>';
 	}

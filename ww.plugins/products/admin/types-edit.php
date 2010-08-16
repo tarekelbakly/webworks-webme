@@ -24,13 +24,11 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$singleview = '{{PRODUCTS_DATATABLE}}'.$singleview;
 		}
 		$multiview = addslashes($_REQUEST['multiview_template']);
-		var_dump (strlen($multiview));
 		if (strlen($multiview)<20) {
 			echo 'HI';
 			$multiview = '{{PRODUCTS_DATATABLE align=horizontal}}';
 			$multiview.= '<a href="{{PRODUCTS_LINK}}">more</a>';
 		}
-		var_dump($multiview);
 		$sql='set name="'.addslashes($_REQUEST['name']).'",data_fields="'.addslashes($data_fields).'",multiview_template="'.addslashes($multiview).'",singleview_template="'.addslashes($singleview).'"';
 		foreach($tabs as $tab){
 			$sql.=','.$tab[0].'='.(isset($_REQUEST[$tab[0]])?1:0);
