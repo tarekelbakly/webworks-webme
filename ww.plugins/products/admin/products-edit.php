@@ -115,8 +115,8 @@ if(!$pdata['enabled'])echo ' selected="selected"';
 echo '>No</option></select></td>';
 // }
 // { page link
-echo '<th>Product Page</th><td id="product_table_link_holder">';
 if ($id) {
+	echo '<th>Product Page</th><td id="product_table_link_holder">';
 	$pageid 
 		= dbOne(
 			'select page_id 
@@ -143,8 +143,11 @@ if ($id) {
 		echo '<a href="'.$url.'" target="_blank" id="view_this_product">'
 			.htmlspecialchars($url).'</a>';
 	}
+	echo '</td>';
 }
-echo '</td>';
+else {
+	echo '<th>&nbsp;</th><td>&nbsp;</td>';
+}
 // }
 echo '</tr><tr>';
 // { images
