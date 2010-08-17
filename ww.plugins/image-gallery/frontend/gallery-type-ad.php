@@ -18,11 +18,11 @@ $(function(){
 		loader_image:"/i/throbber.gif",
 		slideshow:{';
 $slideshowvars=array();
-if($vars['image_gallery_autostart']){
+if(isset($vars['image_gallery_autostart']) && $vars['image_gallery_autostart']){
 	$slideshowvars[]='enable:true';
 	$slideshowvars[]='autostart:true';
 }
-$sp=(int)$vars['image_gallery_slidedelay'];
+$sp=(isset($vars['image_gallery_slidedelay']))?(int)$vars['image_gallery_slidedelay']:0;
 if($sp)$slideshowvars[]='speed:'.$sp;
 $c.=join(',',$slideshowvars);
 $c.='}
