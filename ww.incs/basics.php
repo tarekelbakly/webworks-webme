@@ -180,6 +180,7 @@ else{
 	$DBVARS['theme']='.default';
 	foreach($dir as $file){
 		if($file->isDot())continue;
+		if(!$file->isDir())continue;
 		$DBVARS['theme']=$file->getFileName();
 		break;
 	}
