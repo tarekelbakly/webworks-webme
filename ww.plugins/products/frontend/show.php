@@ -85,7 +85,15 @@ function products_datatable ($params, &$smarty) {
 			$c.= htmlspecialchars(ucfirst($name));
 			$c.= '</th><td>';
 			if (isset($product->vals [$data->n])) {
-				$c.=htmlspecialchars($product->vals[$data->n]);
+				switch($data->t){
+					case 'textarea': // {
+						$c.=$product->vals[$data->n];
+						break;
+					// }
+					default: // {
+						$c.=htmlspecialchars($product->vals[$data->n]);
+					// }
+				}
 			}
 			else {
 				$c.= '&nbsp;';
