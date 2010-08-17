@@ -32,6 +32,33 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		}
 	}
 	// }
+	// { check that payment method is valid
+	switch($_REQUEST['_payment_method_type']){
+		case 'PayPal': // {
+			if(
+				!isset($PAGEDATA->vars['online_stores_paypal_address'])
+				|| !$PAGEDATA->vars['online_stores_paypal_address']
+			){
+				$errors[]='PayPal payment method not available.';
+			}
+			break;
+		// }
+		case 'Realex': // {
+			if(
+				!isset($PAGEDATA->vars['online_stores_realex_sharedsecret'])
+				|| !$PAGEDATA->vars['online_stores_realex_sharedsecret']
+			){
+				$errors[]='Realex payment method not available.';
+			}
+			break;
+		// }
+		default: // {
+			$errors[]='Invalid payment method "'
+				.htmlspecialchars($_REQUEST['_payment_method_type'])
+				.'" selected.';
+		// }
+	}
+	// }
 	unset($_REQUEST['action']);
 	unset($_REQUEST['page']);
 	if (count($errors)) {
@@ -82,13 +109,24 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		);
 		dbQuery("update online_store_orders set invoice='$invoice' where id=$id");
 		// }
-		// { show PayPal button
-		$c.='<p>Your order has been recorded. Please click the button below to go to '
-			.'PayPal for payment. Thank you.</p>';
-		$c.=OnlineStore_generatePaypalButton($PAGEDATA, $id, $total);
+		// { show payment button
+		switch($_REQUEST['_payment_method_type']){
+			case 'PayPal': // {
+				$c.='<p>Your order has been recorded. Please click the button below '
+					.'to go to PayPal for payment. Thank you.</p>';
+				$c.=OnlineStore_generatePaypalButton($PAGEDATA, $id, $total);
+				break;
+			// }
+			case 'Realex': // {
+				$c.='<p>Your order has been recorded. Please click the button below '
+					.'to go to Realex Payments for payment. Thank you.</p>';
+				$c.=OnlineStore_generateRealexButton($PAGEDATA, $id, $total);
+				break;
+			// }
+		}
 		// }
 		// { unset the shopping cart data
-		unset($_SESSION['online-store']);
+//		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
 	}

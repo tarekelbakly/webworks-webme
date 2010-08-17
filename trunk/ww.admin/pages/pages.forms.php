@@ -12,36 +12,10 @@ else{
 	}
 	$page_vars=array();
 	if(isset($msgs) && $msgs!='')echo $msgs;
-	echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
-	echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
-	if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 	if($edit){
 		if(isset($_REQUEST['newpage_dialog']) && $page['special']&2)$page['special']-=2;
 		$pvq=dbAll("SELECT * FROM page_vars WHERE page_id=$id");
 		foreach($pvq as $pvr)$page_vars[$pvr['name']]=$pvr['value'];
-		// { language
-		if(getVar('__editing_language'))$_SESSION['editing_language']=getVar('__editing_language');
-		$r=dbRow("SELECT * FROM site_vars WHERE name='languages'");
-		if($r['value'])$langs=json_decode($r['value']);
-		else $langs=array();
-		if(count($langs)>1){
-			if(!isset($_SESSION['editing_language']))$_SESSION['editing_language']=$langs[0]->iso;
-			if($langs[0]->iso!=$_SESSION['editing_language'])$translation=1;
-			echo '<select name="__editing_language" style="float:right" onchange="if(confirm(\''.__('change Editing Language without saving?').'\'))document.location=\'pages.php?id='.$id.'&amp;__editing_language=\'+this.value;">';
-			foreach($langs as $lang){
-				echo '<option value="'.htmlspecialchars($lang->iso).'"';
-				if($lang->iso==$_SESSION['editing_language'])echo ' selected="selected"';
-				echo '>'.htmlspecialchars($lang->name).'</option>';
-			}
-			echo '</select>';
-		}
-		if($translation){
-			$rs=dbAll("SELECT * FROM translations WHERE object_type='page' AND object_id=$id AND lang='".addslashes($_SESSION['editing_language'])."'");
-			foreach($rs as $r){
-				if($r['value']!='')$page[$r['name']]=$r['value'];
-			}
-		}
-		// }
 	}
 	else{
 		$parent=isset($_REQUEST['parent'])?(int)$_REQUEST['parent']:0;
@@ -50,6 +24,9 @@ else{
 		$page=array('parent'=>$parent,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>$special,'template'=>'','stylesheet'=>'','importance'=>0.5);
 		$id=0;
 	}
+	echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
+	echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
+	if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 	echo wInput('id','hidden',$page['id']);
 	echo '<div class="tabs">';
 	// { Common Details

@@ -14,53 +14,25 @@ Adapted for Webworks-WebME by Kae Verens, 20090111
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-{$METADATA}
+{{$METADATA}}
 <link href="/ww.skins/theisland/c/_default.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <div id="wrapper">
 	<div id="header">
-		<h1><a href="/">{$WEBSITE_TITLE}</a></h1>
-		<p>{$WEBSITE_SUBTITLE}</p>
+		<h1><a href="/">{{$WEBSITE_TITLE}}</a></h1>
+		<p>{{$WEBSITE_SUBTITLE}}</p>
 	</div>
 	<!-- end header -->
-		{MENU}
+		{{MENU}}
 	<!-- end menu -->
 	<div id="page">
 		<div id="content">
-		{$PAGECONTENT}
+		{{$PAGECONTENT}}
 		</div>
 		<!-- end content -->
 		<div id="sidebar">
-			<ul>
-				<li id="search">
-					<form id="searchform" method="get" action="/">
-						<fieldset>
-						<legend>Search</legend>
-						<input id="searchfield" type="text" name="search" value="" />
-						<input id="searchsubmit" type="submit" value="Search" />
-						</fieldset>
-					</form>
-				</li>
-				<li>
-					<h2>Polls</h2>
-					{POLL}
-				</li>
-				<li id="submenu">
-					<h2>Ads From Google</h2>
-				<script type="text/javascript"><!--
-				google_ad_client = "pub-8909891942029631";
-				/* 120x600, created 1/11/09 */
-				google_ad_slot = "2947446453";
-				google_ad_width = 120;
-				google_ad_height = 600;
-				//-->
-				</script>
-				<script type="text/javascript"
-				src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-				</script>
-				</li>
-			</ul>
+		{{PANEL name="sidebar"}}
 		</div>
 		<!-- end sidebar -->
 		<div style="clear: both;">&nbsp;</div>

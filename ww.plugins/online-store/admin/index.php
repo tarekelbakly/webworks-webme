@@ -105,18 +105,10 @@ $c.='</div>';
 $c.='<div class="tabPage"><h2>Payment Details</h2>';
 $c.='<table width="100%">';
 // { admin email address
-$c.='<tr><th>Admin email address</th><td>'
-	.'<input class="email" name="page_vars[online_stores_admin_email]"';
+$c.='<tr><th style="width:20%">Admin email address</th><td>'
+	.'<input type="email" name="page_vars[online_stores_admin_email]"';
 if (isset($vars['online_stores_admin_email'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_admin_email']).'"';
-}
-$c.=' /></td></tr>';
-// }
-// { paypal
-$c.='<tr><th>PayPal email address</th><td>'
-	.'<input class="email" name="page_vars[online_stores_paypal_address]"';
-if (isset($vars['online_stores_paypal_address'])) {
-	$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
 }
 $c.=' /></td></tr>';
 // }
@@ -130,6 +122,70 @@ foreach ($online_store_currencies as $key=>$val) {
 	$c.= '>'.$val[0].': '.htmlspecialchars($val[1]).'</option>';
 }
 $c.= '</select></td></tr>';
+// }
+// { payment types
+$c.='<tr><th>Payment Types</th><td><div class="tabs">';
+// { realex
+$c.='<div class="tabPage"><h2>Realex</h2>'
+	.'<table>';
+// { Merchant ID
+$c.='<tr><th>Merchant ID</th><td>'
+	.'<input name="page_vars[online_stores_realex_merchantid]"';
+if (isset($vars['online_stores_realex_merchantid'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_realex_merchantid'])
+		.'"';
+}
+$c.=' /></td></tr>';
+// }
+// { Shared Secret
+$c.='<tr><th>Shared Secret</th><td>'
+	.'<input name="page_vars[online_stores_realex_sharedsecret]"';
+if (isset($vars['online_stores_realex_sharedsecret'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_realex_sharedsecret'])
+		.'"';
+}
+$c.=' /></td></tr>';
+// }
+// { thank you message
+$c.='<tr><th>Thank You message<br /><span style="font-size:small">shown on '
+	.'Realex Server after completed payment</span></th><td>'
+	.ckeditor('page_vars[online_stores_realex_thankyou]', $vars['online_stores_realex_thankyou'])
+	.'</td></tr>';
+// }
+// {
+$c.='<tr><th>Mode</th><td>'
+	.'<select name="page_vars[online_stores_realex_testmode]">'
+	.'<option value="test">Test Mode</option>'
+	.'<option value="live"';
+if(
+	isset($vars['online_stores_realex_testmode'])
+	&& $vars['online_stores_realex_testmode']=='live'
+){
+	$c.=' selected="selected"';
+}
+$c.='>Live</option></select>'
+	.'In test mode, you can use the realex payment method by adding "?testmode=1"'
+	.' to the URL.</td></tr>';
+// }
+// { note
+$c.='<tr><td colspan="2">Note that some manual configuration is necessary. '
+	.'You will need to provide RealEx with a template (see their Real Auth '
+	.'Developers Guide for an example), and with the following Response Script'
+	.'URL: <br />'
+	.'http://'.$_SERVER['HTTP_HOST'].'/ww.plugins/online-store/verify/realex.php'
+	.'</td></tr>';
+// }
+$c.=' </table></div>';
+// }
+// { paypal
+$c.='<div class="tabPage"><h2>PayPal</h2>'
+	.'<table><tr><th>Email Address</th><td><input type="email" name="page_vars[online_stores_paypal_address]"';
+if (isset($vars['online_stores_paypal_address'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
+}
+$c.=' /></td></tr></table></div>';
+// }
+$c.='</div></td></tr>';
 // }
 $c.='</table></div>';
 // }

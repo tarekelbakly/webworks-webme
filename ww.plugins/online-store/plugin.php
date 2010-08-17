@@ -20,7 +20,12 @@ $plugin=array(
 	'description' => 'Add online-shopping capabilities to a number of other plugins.',
 	'frontend' => array(
 		'widget' => 'OnlineStore_showBasketWidget',
-		'page_type' => 'OnlineStore_frontend'
+		'page_type' => 'OnlineStore_frontend',
+		'template_functions' => array(
+			'ONLINESTORE_PAYMENT_TYPES' => array(
+				'function' => 'OnlineStore_payment_types'
+			)
+		)
 	),
 	'triggers' => array(
 		'displaying-pagedata' => 'OnlineStore_pagedata'
@@ -127,6 +132,48 @@ function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
 }
 
 /**
+	* return HTML for a Realex button to pay for the current Online-Store order
+	*
+	* @param object $PAGEDATA the checkout page
+	* @param int    $id       the order ID
+	* @param float  $total    the order total
+	* @param string $return   URL that the buyer should be returned to after a purchase
+	*
+	* @return string
+	*/
+function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
+	global $DBVARS;
+	$timestamp=date('YmdHjs');
+	$sha1hash=sha1(
+		$timestamp
+		.'.'.$PAGEDATA->vars['online_stores_realex_merchantid']
+		.'.'.$id
+		.'.'.$total
+		.'.'.$DBVARS['online_store_currency']
+	);
+	$sha1hash=sha1(
+		$sha1hash
+		.'.'.$PAGEDATA->vars['online_stores_realex_sharedsecret']
+	);
+	return '<form id="online-store-realex" method="post" action="'
+		.'https://epage.payandshop.com/epage.cgi">'
+		.'<input type="hidden" value="'
+		.$PAGEDATA->vars['online_stores_realex_merchantid']
+		.'" name="MERCHANT_ID" />'
+		.'<input type="hidden" value="'.$id.'" name="ORDER_ID" />'
+		.'<input type="hidden" value="internet" name="ACCOUNT" />'
+		.'<input type="hidden" value="'.$total.'" name="AMOUNT" />'
+		.'<input type="hidden" value="'.$DBVARS['online_store_currency']
+		.'" name="CURRENCY" />'
+		.'<input type="hidden" value="'.$timestamp.'" name="TIMESTAMP" />'
+		.'<input type="hidden" value="'.$sha1hash.'" name="SHA1HASH" />'
+		.'<input type="hidden" value="1" name="AUTO_SETTLE_FLAG" />'
+		.'<input type="hidden" value="Purchase made from '.$_SERVER['HTTP_HOST']
+		.'" name="COMMENT1"/>'
+		.'<input type="submit" value="Proceed to Payment" /></form>';
+}
+
+/**
 	* returns currency information to be added to global JS script
 	*
 	* @return string
@@ -135,6 +182,16 @@ function OnlineStore_pagedata() {
 	$currency=$GLOBALS['DBVARS']['online_store_currency'];
 	$currency_symbols=array('EUR'=>'€','GBP'=>'£');
 	return ',"currency":"'.$currency_symbols[$currency].'"';
+}
+
+/**
+	* returns a selectbox with payment types (PayPal, Realex, etc) in it.
+	*
+	* @return string
+	*/
+function OnlineStore_payment_types() {
+	require dirname(__FILE__).'/frontend/payment-types.php';
+	return $c;
 }
 
 /**
