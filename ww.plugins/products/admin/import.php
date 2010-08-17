@@ -14,9 +14,15 @@
   * @license    GPL Version 2
   * @link       www.webworks.ie
  */
+echo '<script src="/ww.plugins/products/admin/products.js"></script>';
 // { The Form
 echo '<form method="post" enctype="multipart/form-data">';
+echo 'Clear database before import? ';
+echo '<input type="checkbox" id="clear_database" name="clear_database"
+	onChange="toggle_remove_associated_files();" />';
+echo '<div id="new_line"></div>';
 echo '<input type="file" name="file" />';
+echo '<br />';
 echo '<input type="submit" name="import" value="Import Data" />';
 echo '</form>';
 // }
@@ -24,6 +30,21 @@ if (isset($_POST['import'])) {
 	if (isset($_FILES['file'])) {
 		$file = $_FILES['file'];
 		if ($file['type']=='text/csv') { // If it has the right extension
+			if (isset($_POST['clear_database'])) {
+				dbQuery('delete from products');
+				if (isset($_POST['remove_associated-files'])) {
+					$base = $_SERVER['DOCUMENT_ROOT'];
+					require_once $base.'/j/kfm/api/api.php';
+					require_once $base.'/j/kfm/classes/kfmDirectory.php';
+					$base_dir_name = USERBASE.'f/products/products-images';
+					$base_dir_id = kfm_api_getDirectoryId($base_dir_name);
+					$base_dir = kfmDirectory::getInstance($base_dir_id);
+					$sub_dirs = $base_dir->getSubDirs();
+					foreach($sub_dirs as $sub) {
+						$sub->delete();
+					}
+				}	
+			}
 			$newName = 'webworks_webme_products_import'.time().rand().'.csv';
 			$location = USERBASE.'ww.cache/products/imports';
 			if (!is_dir($location)) {

@@ -23,6 +23,24 @@ function change_href (id) {
 			.attr ('href', href);
 	}
 }
+function toggle_remove_associated_files() {
+	$('#new_line').remove();
+	var addString = '<div id="remove_wrapper">';
+	addString += 'Remove associated files? ';
+	addString += '<input type="checkbox" id="remove_associated_files"';
+	addString += ' name="remove_associated_files" /></div>';
+	var newLineString = '<div id="new_line"></div>';
+	switch ($('#clear_database').attr('checked')) {
+		case true: // {
+			$(addString).insertAfter('#clear_database');
+			$('#remove_associated_files').attr('checked', true); 
+		break; // }
+		case false : // {
+			$('#remove_wrapper').remove();
+			$(newLineString).insertAfter('#clear_database');
+		break; // }
+	}
+}
 $(function(){
 	$('#product-images-wrapper a.mark-as-default').bind('click',function(){
 		var $this=$(this);
