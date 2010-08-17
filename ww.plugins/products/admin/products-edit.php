@@ -4,7 +4,7 @@ if(!is_admin())exit;
 if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id']))$id=(int)$_REQUEST['id'];
 else $id=0;
 // }
-
+require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
 if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 	$errors=array();
 	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='')$errors[]='You must fill in the <strong>Name</strong>.';
@@ -21,7 +21,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		    	mkdir(USERBASE.'f/products/product-images',0777,true);
 			}
 			$parent_id = kfm_api_getDirectoryId('products/product-images');
-			require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
 			$pos = strrpos($_REQUEST['images_directory'], '/');
 			if ($pos===false) {
 				$dname = $_REQUEST['images_directory'];
@@ -157,6 +156,17 @@ if(!isset($pdata['images_directory']) || !$pdata['images_directory'] || !is_dir(
 	}
 	$pdata['images_directory']='/products/product-images/'.md5(rand().microtime());
 	mkdir(USERBASE.'f'.$pdata['images_directory']);
+}
+if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {    
+	$parent_id = kfm_api_getDirectoryId('products/product-images');
+	$pos = strrpos($pdata['images_directory'], '/');
+	if ($pos===false) {
+		$dname = $pdata['images_directory'];
+	}
+	else {
+		$dname = substr($_REQUEST['images_directory'], $pos);
+	}
+	_createDirectory($parent_id, $dname);
 }
 echo '<input type="hidden" 
 	name="images_directory" value="'.$pdata['images_directory'].'" />';

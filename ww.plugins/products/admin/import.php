@@ -15,17 +15,6 @@
   * @link       www.webworks.ie
  */
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';
-// { The Form
-echo '<form method="post" enctype="multipart/form-data">';
-echo 'Clear database before import? ';
-echo '<input type="checkbox" id="clear_database" name="clear_database"
-	onChange="toggle_remove_associated_files();" />';
-echo '<div id="new_line"></div>';
-echo '<input type="file" name="file" />';
-echo '<br />';
-echo '<input type="submit" name="import" value="Import Data" />';
-echo '</form>';
-// }
 if (isset($_POST['import'])) {
 	if (isset($_FILES['file'])) {
 		$file = $_FILES['file'];
@@ -56,10 +45,12 @@ if (isset($_POST['import'])) {
 			);
 			$file = fopen($location.'/'.$newName, 'r');
 			$tmp = fgetcsv($file);
+			$patterns 
+				= array("/^\"_/", "/^_/" ,"/^ \"_/", "/^ _/", '/^ "/', '/"$/');
 			// { The headings are the first line.
 			foreach ($tmp as $col) {
 				// { Assume that leading underscores in the name should be removed
-				$col = preg_replace('/^_/', '', $col);
+				$col = preg_replace($patterns, '', $col);
 				$colNames[] = $col;
 				// }
 				${$col}= array();
@@ -67,15 +58,46 @@ if (isset($_POST['import'])) {
 			// }
 			$row = fgetcsv($file);
 			// { Build the arrays of data
+			$rowPatterns = array('/^"/', '/^ "/', '/"$/');
 			while ($row) {
 				$i = 0;
+				$data_fields_contents = '';
 				foreach ($colNames as $col) {
 					for($i; $i<count($row); $i++) {
 						$data = $row[$i];
+						$data = preg_replace($rowPatterns, '', $data);
+						if ($col=='data_fields') {
+							while ($i<10) {
+								$data = str_replace('""', '"', $row[$i]);
+								if (preg_match('/^v/', $data)) {
+									$data_fields_contents.=',"';
+								}
+								$data_fields_contents.= $data;
+								$i++;
+								$data = $row[$i];
+							}
+							$data_fields_contents 
+								= str_replace(
+									'}{', 
+									'},{',
+									$data_fields_contents
+								);
+								$data_fields_contents 
+									= preg_replace(
+										$rowPatterns, 
+										'', 
+										$data_fields_contents
+									);
+						}
 						break;
 					}
 					if (is_array(${$col})) {
-						${$col}[] = $data;
+						if ($col=='data_fields') {
+							${$col}[] = $data_fields_contents;
+						}
+						else {
+							${$col}[] = $data;
+						}
 					}
 					$i++;
 				}
@@ -179,9 +201,22 @@ if (isset($_POST['import'])) {
 			fclose($file);
 			unlink($location.'/'.$newName);
 			$_FILES['file'] = '';
+			echo '<em>Products Imported</em>';
 		}
 		else {
-			echo 'Only csv files are permitted';
+			echo '<em>Only csv files are permitted</em>';
 		}
 	}
 }
+// { The Form
+echo '<form method="post" enctype="multipart/form-data">';
+echo 'Clear database before import? ';
+echo '<input type="checkbox" id="clear_database" name="clear_database"
+	onChange="toggle_remove_associated_files();" />';
+echo '<div id="new_line"></div>';
+echo '<input type="file" name="file" />';
+echo '<br />';
+echo '<input type="submit" name="import" value="Import Data" />';
+echo '</form>';
+// }
+

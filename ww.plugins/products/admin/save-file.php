@@ -22,7 +22,8 @@ $row = '';
 foreach ($fields as $field) {
     $row.= '"_'.$field['Field'].'", ';
 }
-$contents = substr_replace($row, "\n", strrpos($row, ', '));
+$row.="\"_categories\"\n";
+$contents = $row;
 // } 
 // { Get the data
 $results = dbAll('select * from products');
@@ -31,8 +32,20 @@ foreach ($results as $product) {
 	foreach ($fields as $field) {
 		$row.= '"'.str_replace('"', '""', $product[$field['Field']]).'", ';
 	}
-	$row = substr_replace($row, "\n", strrpos($row, ', '));
-	$contents.= $row;
+	$cats 
+		= dbAll(
+			'select category_id 
+			from products_categories_products 
+			where product_id = '.$product['id']
+		);
+		$stringCats = '"';
+		foreach($cats as $cat) {
+			$stringCats.=$cat['category_id'].', ';
+		}
+		$stringCats = substr($stringCats, strrpos(', ', $stringCats));
+		$stringCats.= '"';
+		$row.= $stringCats;
+		$contents.=$row."\n";
 }
 echo $contents;
 // }
