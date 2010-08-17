@@ -12,7 +12,7 @@ if($action=='delete' || $action==__('Insert Page Details') || $action==__('Updat
 	}
 }
 $is_an_update=($action==__('Insert Page Details') || $action==__('Update Page Details'));
-$edit=($is_an_update || $action=='edit')?1:0;
+$edit=($is_an_update || $action=='edit' || $id)?1:0;
 echo '<div class="left-menu">';
 include 'pages/menu.php';
 echo '</div>';
