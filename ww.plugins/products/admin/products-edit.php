@@ -18,18 +18,29 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		//   in the old directory for the image files
 		if (!is_dir(USERBASE.'f'.$_REQUEST['images_directory'])) {    
 			if(!is_dir(USERBASE.'f/products/product-images')){
-		    	mkdir(USERBASE.'f/products/product-images',0777,true);
+		    	if(!is_dir(USERBASE.'f/products')) {
+					echo 'Creating products directory ';
+					$parent_id = kfm_api_getDirectoryId('f');
+					_createDirectory($parent_id, 'products');
+				}
+				echo 'Creating image directory ';
+				$parent_id = kfm_api_getDirectoryId('products');
+				_create_Directory($parent_id, 'product-images');
 			}
-			$parent_id = kfm_api_getDirectoryId('products/product-images');
 			$pos = strrpos($_REQUEST['images_directory'], '/');
 			if ($pos===false) {
-				$dname = 'products/products-images';
 				$dname.= $_REQUEST['images_directory'];
 			}
 			else {
-				$dname = substr($_REQUEST['images_directory'], $pos);
+				$dname = substr($_REQUEST['images_directory'], $pos+1);
 			}
-			_createDirectory($parent_id, $dname);
+			echo $_REQUEST['images_directory'];
+			if (strlen($dname)==0) {
+				$dname = rand().microtime();
+			}
+			$parent_id = kfm_api_getDirectoryId('products/product-images');
+			$parent = kfmDirectory::getInstance($parent_id);
+			$parent->createSubdir($dname);
 		}
 		// }
 		// { save main data and data fields
