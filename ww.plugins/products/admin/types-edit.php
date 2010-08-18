@@ -25,9 +25,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		}
 		$multiview = addslashes($_REQUEST['multiview_template']);
 		if (strlen($multiview)<20) {
-			echo 'HI';
 			$multiview = '{{PRODUCTS_DATATABLE align=horizontal}}';
-			$multiview.= '<a href="{{PRODUCTS_LINK}}">more</a>';
+			$multiview.= '<a href={{PRODUCTS_LINK}}>more</a>';
 		}
 		$sql='set name="'.addslashes($_REQUEST['name']).'",data_fields="'.addslashes($data_fields).'",multiview_template="'.addslashes($multiview).'",singleview_template="'.addslashes($singleview).'"';
 		foreach($tabs as $tab){
