@@ -84,19 +84,29 @@ function products_datatable ($params, &$smarty) {
 			$c.= '<tr><th style="text-align:left">';
 			$c.= htmlspecialchars(ucfirst($name));
 			$c.= '</th><td>';
-			if (isset($product->vals [$data->n])) {
-				switch($data->t){
-					case 'textarea': // {
-						$c.=$product->vals[$data->n];
-						break;
-					// }
-					default: // {
+			switch($data->t){
+				case 'date': // {
+					$c.= date_m2h($product->vals[$data->n]);
+				break; // }
+				case 'checkbox': // {
+					if(isset($product->vals[$data->n])) {
+						$c.='Yes';
+					}
+					else {
+						$c.= 'No';
+					}
+				break; // }
+				case 'textarea': // {
+					$c.=$product->vals[$data->n];
+				break; // }
+				default: // {
+					if (isset($product->vals[$data->n])) {
 						$c.=htmlspecialchars($product->vals[$data->n]);
-					// }
-				}
-			}
-			else {
-				$c.= '&nbsp;';
+					}
+					else {
+						$c.= '&nbsp;';
+					}
+				// }
 			}
 			$c.='</td></tr>';
 		}
@@ -114,11 +124,29 @@ function products_datatable ($params, &$smarty) {
 		$c.= '<tr>';
 		foreach ($datafields as $data) {
 			$c.= '<td>';
-			if (isset($product->vals[$data->n])) {
-				$c.=htmlspecialchars($product->vals[$data->n]);
-			}
-			else {
-				$c.='&nbsp;';
+			switch ($data->t) {
+				case 'date' : // {
+					$c.= date_m2h($product->vals[$data->n]);
+				break; // }
+				case 'checkbox': // {
+					if (isset($product->vals[$data->n])) {
+						$c.= 'Yes';
+					}
+					else{ 
+						$c.= 'No';
+					}
+				break; // }
+				case 'textarea': // {
+					$c.= $product->vals[$data->n];
+				break; // }
+				default: // {
+					if (isset($product->vals[$data->n])) {
+						$c.=htmlspecialchars($product->vals[$data->n]);
+					}
+					else {
+						$c.='&nbsp;';
+					}
+				// }
 			}
 			$c.='</td>';
 		}
