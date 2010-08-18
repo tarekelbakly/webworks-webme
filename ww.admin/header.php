@@ -16,15 +16,26 @@ $admin_vars=array();
 	$id=(int)@$_REQUEST['id'];
 	$plugins_to_load=array('"showhide":1','"tabs":1','"vkfade":1'); // to be used by javascript
 // }
+$scripts=array();
+function WW_addScript($url){
+	global $scripts;
+	if(in_array($url,$scripts))return;
+	$scripts[]=$url;
+}
+function WW_getScripts(){
+	global $scripts;
+	return '<script src="'.join('"></script><script src="',$scripts).'"></script>';
+}
+WW_addScript('/j/datatables/media/js/jquery.dataTables.js');
+WW_addScript('/j/jquery.remoteselectoptions.js');
+WW_addScript('/j/fg.menu/fg.menu.js');
+WW_addScript('/j/cluetip/jquery.cluetip.js');
+WW_addScript('/ww.admin/j/admin.js');
 ?>
 <html>
 	<head>
 		<?php echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'; ?>
 		<script src="/j/ckeditor/ckeditor.js"></script>
-		<script src="/j/datatables/media/js/jquery.dataTables.js"></script>
-		<script src="/j/jquery.remoteselectoptions.js"></script>
-		<script src="/j/fg.menu/fg.menu.js"></script>
-		<script src="/j/cluetip/jquery.cluetip.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
 		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin-20100406.css" type="text/css" />
@@ -34,7 +45,6 @@ foreach($PLUGINS as $pname=>$p){
 	if(file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css'))echo '<link rel="stylesheet" href="/ww.plugins/'.$pname.'/admin/admin.css" type="text/css" />';
 }
 ?>
-		<script src="/ww.admin/j/admin.js"></script>
 	</head>
 	<body<?php
 	if(isset($_REQUEST['frontend-admin']))echo ' class="frontend-admin"';
