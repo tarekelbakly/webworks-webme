@@ -83,7 +83,15 @@ else{
 	);
 }
 echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" method="post"><input type="hidden" name="action" value="save" />';
-echo '<div id="tabs"><ul><li><a href="#main-details">Main Details</a></li><li><a href="#data-fields">Data Fields</a></li><li><a href="#categories">Categories</a></ul>';
+echo '<div id="tabs"><ul>'
+	.'<li><a href="#main-details">Main Details</a></li>'
+	.'<li><a href="#data-fields">Data Fields</a></li>'
+	.'<li><a href="#categories">Categories</a></li>';
+$relations=dbAll('select id,name from products_relation_types order by name');
+if(count($relations)){
+	echo '<li><a href="#relations">Related Items</a></li>';
+}
+echo '</ul>';
 // { main details
 echo '<div id="main-details"><table>';
 echo '<tr>';
@@ -187,11 +195,6 @@ if($n){
 	echo '<em>no images yet. please upload some.</em>';
 }
 echo '</td></tr>';
-
-// { relations
-echo '<th>Relations</th><td id="product-relations">';
-echo '</td>';
-// }
 echo '</tr></table></div>';
 // }
 // }
@@ -287,10 +290,15 @@ function show_sub_cats($parent){
 echo show_sub_cats(0);
 echo '</div>';
 // }
+// { related items
+if(count($relations)){
+	echo '<div id="relations"></div>';
+}
+// }
 if(isset($_REQUEST['frontend-admin'])){
 	echo '<input type="hidden" name="frontend-admin" value="1" />';
 }
 echo '</div><input type="submit" value="Save" /></form>';
-echo '<script src="/ww.plugins/products/admin/products.js"></script>';
-echo '<script src="/ww.plugins/products/admin/create-page.js"></script>';
+WW_addScript('/ww.plugins/products/admin/products.js');
+WW_addScript('/ww.plugins/products/admin/create-page.js');
 
