@@ -23,7 +23,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$parent_id = kfm_api_getDirectoryId('products/product-images');
 			$pos = strrpos($_REQUEST['images_directory'], '/');
 			if ($pos===false) {
-				$dname = $_REQUEST['images_directory'];
+				$dname = 'products/products-images';
+				$dname.= $_REQUEST['images_directory'];
 			}
 			else {
 				$dname = substr($_REQUEST['images_directory'], $pos);
@@ -57,7 +58,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		dbQuery('delete from products_categories_products where product_id='.$id);
 		foreach($_REQUEST['product_categories'] as $key=>$val)dbQUery('insert into products_categories_products set product_id='.$id.',category_id='.$key);
 		// }
-		//$file->delete();
 		echo '<em>Product saved</em>';
 		if(isset($_REQUEST['frontend-admin'])){
 			echo '<script type="text/javascript">parent.location=parent.location;</script>';

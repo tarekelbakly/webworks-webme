@@ -21,6 +21,7 @@ if (isset($_POST['import'])) {
 		if ($file['type']=='text/csv') { // If it has the right extension
 			if (isset($_POST['clear_database'])) {
 				dbQuery('delete from products');
+				dbQuery('delete from products_categories_products');
 				if (isset($_POST['remove_associated-files'])) {
 					$base = $_SERVER['DOCUMENT_ROOT'];
 					require_once $base.'/j/kfm/api/api.php';
@@ -34,6 +35,10 @@ if (isset($_POST['import'])) {
 					}
 				}	
 			}
+			if (isset($_POST['clear_categories_database'])) {
+				dbQuery('delete from products_categories');
+				dbQuery('delete from products_categories_products');
+			}
 			$newName = 'webworks_webme_products_import'.time().rand().'.csv';
 			$location = USERBASE.'ww.cache/products/imports';
 			if (!is_dir($location)) {
@@ -45,12 +50,10 @@ if (isset($_POST['import'])) {
 			);
 			$file = fopen($location.'/'.$newName, 'r');
 			$tmp = fgetcsv($file);
-			$patterns 
-				= array("/^\"_/", "/^_/" ,"/^ \"_/", "/^ _/", '/^ "/', '/"$/');
 			// { The headings are the first line.
 			foreach ($tmp as $col) {
 				// { Assume that leading underscores in the name should be removed
-				$col = preg_replace($patterns, '', $col);
+				$col = preg_replace('/^_/', '', $col);
 				$colNames[] = $col;
 				// }
 				${$col}= array();
@@ -58,46 +61,15 @@ if (isset($_POST['import'])) {
 			// }
 			$row = fgetcsv($file);
 			// { Build the arrays of data
-			$rowPatterns = array('/^"/', '/^ "/', '/"$/');
 			while ($row) {
 				$i = 0;
-				$data_fields_contents = '';
 				foreach ($colNames as $col) {
 					for($i; $i<count($row); $i++) {
 						$data = $row[$i];
-						$data = preg_replace($rowPatterns, '', $data);
-						if ($col=='data_fields') {
-							while ($i<10) {
-								$data = str_replace('""', '"', $row[$i]);
-								if (preg_match('/^v/', $data)) {
-									$data_fields_contents.=',"';
-								}
-								$data_fields_contents.= $data;
-								$i++;
-								$data = $row[$i];
-							}
-							$data_fields_contents 
-								= str_replace(
-									'}{', 
-									'},{',
-									$data_fields_contents
-								);
-								$data_fields_contents 
-									= preg_replace(
-										$rowPatterns, 
-										'', 
-										$data_fields_contents
-									);
-						}
 						break;
 					}
 					if (is_array(${$col})) {
-						if ($col=='data_fields') {
-							${$col}[] = $data_fields_contents;
-						}
-						else {
-							${$col}[] = $data;
-						}
+						${$col}[] = $data;
 					}
 					$i++;
 				}
@@ -110,11 +82,15 @@ if (isset($_POST['import'])) {
 				break;
 			}
 			// }
-			$ids = dbAll('select id from products');
+			$ids = array();
+			$allIds = dbAll('select id from products');
+			foreach($allIds as $num) {
+				$ids[] = $num['id'];
+			}
 			// { Put the data into the products database
 			for($i=0; $i<$numRows; $i++) {
 				if (is_array($id)) {
-					if (in_array($id[$i],$ids)&&is_numeric($id[$i])) {
+					if (in_array($id[$i],$ids, false)&&is_numeric($id[$i])) {
 						dbQuery(
 							'update products 
 							set 
@@ -203,17 +179,20 @@ if (isset($_POST['import'])) {
 			$_FILES['file'] = '';
 			echo '<em>Products Imported</em>';
 		}
-		else {
+		elseif (!empty($_POST['file'])) {
 			echo '<em>Only csv files are permitted</em>';
 		}
 	}
 }
 // { The Form
 echo '<form method="post" enctype="multipart/form-data">';
-echo 'Clear database before import? ';
+echo 'Delete products before import? ';
 echo '<input type="checkbox" id="clear_database" name="clear_database"
 	onChange="toggle_remove_associated_files();" />';
 echo '<div id="new_line"></div>';
+echo 'Delete categories before import? ';
+echo '<input type="checkbox" name="clear_categories_database" />';
+echo '<br />';
 echo '<input type="file" name="file" />';
 echo '<br />';
 echo '<input type="submit" name="import" value="Import Data" />';

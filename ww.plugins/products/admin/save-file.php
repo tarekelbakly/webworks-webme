@@ -20,7 +20,7 @@ header('Content-Dispositon: attachment; filename="'.$filename.'"');
 $fields = dbAll('describe products');
 $row = '';
 foreach ($fields as $field) {
-    $row.= '"_'.$field['Field'].'", ';
+    $row.= '"_'.$field['Field'].'",';
 }
 $row.="\"_categories\"\n";
 $contents = $row;
@@ -30,7 +30,7 @@ $results = dbAll('select * from products');
 foreach ($results as $product) {
 	$row = '';
 	foreach ($fields as $field) {
-		$row.= '"'.str_replace('"', '""', $product[$field['Field']]).'", ';
+		$row.= '"'.str_replace('"', '""', $product[$field['Field']]).'",';
 	}
 	$cats 
 		= dbAll(
@@ -38,12 +38,33 @@ foreach ($results as $product) {
 			from products_categories_products 
 			where product_id = '.$product['id']
 		);
-		$stringCats = '"';
+		$stringCats = '';
 		foreach($cats as $cat) {
-			$stringCats.=$cat['category_id'].', ';
+			$info
+				= dbRow(
+					'select name, parent_id 
+					from products_categories
+					where id ='.$cat['category_id']
+				);
+			$thisCat = '';
+			$catName = $info['name'];
+			$thisCat.=$catName.',';
+			$parent = $info['parent_id'];
+			while ($parent>0) {
+				$info 
+					= dbRow(
+						'select name, parent_id 
+						from products_categories
+						where id ='.$parent
+					);
+				$parentName = $info['name'];
+				$thisCat = $parentName.'>'.$thisCat;
+				$parent = $info['parent_id'];
+			}
+			$stringCats.= $thisCat;
 		}
-		$stringCats = substr($stringCats, strrpos(', ', $stringCats));
-		$stringCats.= '"';
+		$stringCats = substr($stringCats, 0, (strrpos(',', $stringCats)-1));
+		$stringCats= '"'.$stringCats.'"';
 		$row.= $stringCats;
 		$contents.=$row."\n";
 }
