@@ -175,7 +175,13 @@ if (isset($_POST['import'])) {
 			}
 			// }
 			if (($_POST['cat_options'])!='') {
-				insert_into_cats($categories, $id);				
+				products_import_insert_into_cats($categories, $id);				
+			}
+			if (isset($_POST['prune_cats'])) {
+				$allCats = dbAll('select id from products_categories');
+				foreach ($allCats as $cat) {
+					products_import_prune_cats($cat['id']);
+				}
 			}
 			fclose($file);
 			unlink($location.'/'.$newName);
@@ -217,7 +223,7 @@ echo '<br />';
 echo '<input type="submit" name="import" value="Import Data" />';
 echo '</form>';
 // }
-function insert_into_cats ($categories, $id) {
+function products_import_insert_into_cats ($categories, $id) {
 	switch ($_POST['cat_options']) {
 		case '0': // { The categories are in the file
 			$i = 0;
@@ -288,5 +294,40 @@ function insert_into_cats ($categories, $id) {
 				}
 			}
 		break; // }
+	}
+}
+function products_import_prune_cats ($catID) {
+	$prod_id
+		= dbOne(
+			'select product_id 
+			from products_categories_products
+			where category_id = '.$catID
+			.' limit 1',
+			'product_id'
+		);
+	if ($prod_id) {
+		return;
+	}
+	// { Check the children
+	$children 
+		= dbAll(
+			'select id
+			from products_categories 
+			where parent_id = '.$catID
+		);
+	if (count($children)) {
+	foreach ($children as $child) {
+		products_import_prune_cats($child['id']);
+	}
+	// }
+	$children
+		= dbAll(
+			'select id 
+			from products_categories
+			where parent_id = '.$catID
+		);
+	}
+	if (!count($children)) {
+		dbQuery('delete from products_categories where id = '.$catID);
 	}
 }
