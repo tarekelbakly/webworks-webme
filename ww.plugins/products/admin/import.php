@@ -116,7 +116,7 @@ if (isset($_POST['import'])) {
 							'insert into products 
 							values
 							(
-								.\''.(int)$id[$i].'\',
+								\''.(int)$id[$i].'\',
 								\''.addslashes($name[$i]).'\',
 								\''.(int)$product_type_id[$i].'\',
 								\''.(int)$enabled[$i].'\',
@@ -175,79 +175,8 @@ if (isset($_POST['import'])) {
 			}
 			// }
 			if (($_POST['cat_options'])!='') {
-				switch ($_POST['cat_options']) {
-					case '0': // { The categories are in the file
-						$i = 0;
-						foreach ($categories as $cats) { // Create cats
-							$cats = explode(',', $cats);
-							foreach ($cats as $catList) {
-								if (!empty($catList)) {
-									$catList = explode('>', $catList);
-									$parent = 0;
-									foreach ($catList as $cat) {
-										$catID
-											= dbOne(
-												'select id 
-												from products_categories
-												where name=\''.$cat.'\' 
-												and parent_id='.$parent,
-												'id'
-											);
-										if (!$catID) {
-											dbQuery(
-												'insert into products_categories
-												(name, parent_id)
-												values(
-													\''.addslashes($cat).'\', 
-													'.(int)$parent
-												.')'
-											);
-											$parent 
-												= dbOne(
-													'select last_insert_id()',
-													'last_insert_id()'
-												);
-												$catID = $parent;
-										}
-										else {
-											$parent = $catID;
-										}
-									}
-									if (is_numeric($id[$i])) {
-										dbQuery(
-											'insert into 
-											products_categories_products
-											values(
-												'.(int)$id[$i].'
-												,'.(int)$catID
-											.')'
-										);
-
-									}
-								}
-							}
-							$i++;
-						}
-					break; // }
-					default: // { The category exists
-						if (is_numeric($_POST['cat_options'])) {
-							for ($i=0; $i<$numRows; $i++) {
-								if (is_numeric($id[$i])) {
-									dbQuery(
-										'insert into 
-										products_categories_products
-										values(
-											'.(int)$id[$i].'
-											,'.(int)$_POST['cat_options']
-										.')'
-									);
-								}
-							}
-						}
-					break; // }
-				}
+				insert_into_cats($categories, $id);				
 			}
-
 			fclose($file);
 			unlink($location.'/'.$newName);
 			$_FILES['file'] = '';
@@ -262,14 +191,14 @@ if (isset($_POST['import'])) {
 echo '<form method="post" enctype="multipart/form-data">';
 echo 'Delete products before import? ';
 echo '<input type="checkbox" id="clear_database" name="clear_database"
-	onChange="toggle_remove_associated_files();" />';
+	onchange="toggle_remove_associated_files();" />';
 echo '<div id="new_line"></div>'; // a <br /> will keep an extra line
 $cats = dbAll('select name, id from products_categories');
 $jsonCats = json_encode($cats);
 echo 'Delete categories before import? ';
 echo '<input type="checkbox" name="clear_categories_database" 
 	id="clear_categories_database" 
-		onChange=\'show_hide_cat_options('.$jsonCats.');\' />';
+		onchange=\'show_hide_cat_options('.$jsonCats.');\' />';
 echo '<br />';
 echo 'Delete empty categories on import? ';
 echo '<input type="checkbox" name="prune_cats" id = "prune-cats" />';
@@ -277,9 +206,9 @@ echo '<br />';
 echo 'Import into categories ';
 echo '<select id="cat_options" name="cat_options">';
 echo '<option value="">--none--</option>';
-echo '<option value=0>In File</option>';
+echo '<option value="0">In File</option>';
 foreach ($cats as $cat) {
-	echo '<option value='.$cat['id'].'>'.$cat['name'].'</option>';
+	echo '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
 }
 echo '</select><br />';
 echo 'Select import file ';
@@ -288,4 +217,76 @@ echo '<br />';
 echo '<input type="submit" name="import" value="Import Data" />';
 echo '</form>';
 // }
+function insert_into_cats ($categories, $id) {
+	switch ($_POST['cat_options']) {
+		case '0': // { The categories are in the file
+			$i = 0;
+			foreach ($categories as $cats) { // Create cats
+				$cats = explode(',', $cats);
+				foreach ($cats as $catList) {
+					if (!empty($catList)) {
+						$catList = explode('>', $catList);
+						$parent = 0;
+						foreach ($catList as $cat) {
+							$catID
+								= dbOne(
+									'select id 
+									from products_categories
+									where name=\''.$cat.'\' 
+									and parent_id='.$parent,
+									'id'
+								);
+							if (!$catID) {
+								dbQuery(
+									'insert into products_categories
+									(name, parent_id)
+									values(
+										\''.addslashes($cat).'\', 
+										'.(int)$parent
+									.')'
+								);
+								$parent 
+									= dbOne(
+										'select last_insert_id()',
+										'last_insert_id()'
+									);
+									$catID = $parent;
+							}
+							else {
+								$parent = $catID;
+							}
+						}
+						if (is_numeric($id[$i])) {
+							dbQuery(
+								'insert into 
+								products_categories_products
+								values(
+									'.(int)$id[$i].'
+									,'.(int)$catID
+								.')'
+							);
 
+						}
+					}
+				}
+				$i++;
+			}
+		break; // }
+		default: // { The category exists
+			if (is_numeric($_POST['cat_options'])) {
+				for ($i=0; $i<$numRows; $i++) {
+					if (is_numeric($id[$i])) {
+						dbQuery(
+							'insert into 
+							products_categories_products
+							values(
+								'.(int)$id[$i].'
+								,'.(int)$_POST['cat_options']
+							.')'
+						);
+					}
+				}
+			}
+		break; // }
+	}
+}
