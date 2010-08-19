@@ -1,4 +1,5 @@
 <?php
+$webme_start_time=microtime();
 header('Content-type: text/html; Charset=utf-8');
 date_default_timezone_set('Eire');
 require '../ww.incs/common.php';
