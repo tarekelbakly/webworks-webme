@@ -41,6 +41,24 @@ function toggle_remove_associated_files() {
 		break; // }
 	}
 }
+function show_hide_cat_options(catsToChange) {
+	switch($('#clear_categories_database').attr('checked')) {
+		case true: // {
+			for (var i=0; i<catsToChange.length; i++) {
+				$('#cat_options option[value='+catsToChange[i].id+']').remove();
+			}
+		break; // }
+		case false: // {
+			for (var i=0; i<catsToChange.length; i++) {
+				$('#cat_options')
+					.append(
+						'<option value='+catsToChange[i].id
+						+'>'+catsToChange[i].name+'</option>'
+					);
+			}
+		break; // }
+	}
+}
 $(function(){
 	$('#product-images-wrapper a.mark-as-default').bind('click',function(){
 		var $this=$(this);

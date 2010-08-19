@@ -190,6 +190,7 @@ if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {
 echo '<input type="hidden" 
 	name="images_directory" value="'.$pdata['images_directory'].'" />';
 echo '<th><div class="help products/images"></div>Images</th><td colspan="5">';
+var_dump($pdata['images_directory']);
 $dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','', $pdata['images_directory']));
 $images=kfm_loadFiles($dir_id);
 $images=$images['files'];
