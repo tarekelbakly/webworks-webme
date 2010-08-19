@@ -30,7 +30,7 @@ if (isset($_POST['import'])) {
 					$base_dir_id = kfm_api_getDirectoryId($base_dir_name);
 					$base_dir = kfmDirectory::getInstance($base_dir_id);
 					$sub_dirs = $base_dir->getSubDirs();
-					foreach($sub_dirs as $sub) {
+					foreach ($sub_dirs as $sub) {
 						$sub->delete();
 					}
 				}	
@@ -64,7 +64,7 @@ if (isset($_POST['import'])) {
 			while ($row) {
 				$i = 0;
 				foreach ($colNames as $col) {
-					for($i; $i<count($row); $i++) {
+					for ($i; $i<count($row); $i++) {
 						$data = $row[$i];
 						break;
 					}
@@ -84,24 +84,24 @@ if (isset($_POST['import'])) {
 			// }
 			$ids = array();
 			$allIds = dbAll('select id from products');
-			foreach($allIds as $num) {
+			foreach ($allIds as $num) {
 				$ids[] = $num['id'];
 			}
 			// { Put the data into the products database
-			for($i=0; $i<$numRows; $i++) {
+			for ($i=0; $i<$numRows; $i++) {
 				if (is_array($id)) {
-					if (in_array($id[$i],$ids, false)&&is_numeric($id[$i])) {
+					if (in_array($id[$i], $ids, false)&&is_numeric($id[$i])) {
 						dbQuery(
 							'update products 
 							set 
 								name = 
 									\''.addslashes($name[$i]).'\',
-								product_type_id = '
-									.(int)$product_type_id[$i].',
+								product_type_id = 
+									'.(int)$product_type_id[$i].',
 								image_default = 
 									\''.addslashes($image_default[$i]).'\',
-								enabled = '
-									.(int)$enabled[$i].', 
+								enabled = 
+									'.(int)$enabled[$i].', 
 								date_created = 
 									\''.addslashes($date_created[$i]).'\',
 								data_fields = 
@@ -115,11 +115,11 @@ if (isset($_POST['import'])) {
 						dbQuery(
 							'insert into products 
 							values
-							('
-								.'\''.(int)$id[$i].'\',
-								\''.addslashes($name[$i]).'\','
-								.' \''.(int)$product_type_id[$i].'\','
-								.' \''.(int)$enabled[$i].'\',
+							(
+								.\''.(int)$id[$i].'\',
+								\''.addslashes($name[$i]).'\',
+								\''.(int)$product_type_id[$i].'\',
+								\''.(int)$enabled[$i].'\',
 								\''.addslashes($image_default[$i]).'\',
 								\''.addslashes($date_created[$i]).'\',
 								\''.addslashes($data_fields[$i]).'\',
@@ -141,13 +141,13 @@ if (isset($_POST['import'])) {
 							)
 							values
 							(
-								'.addslashes($name[$i]).', '
-								.'\''.(int)$product_type_id[$i].'\', '
-								.'\''.addslashes($image_default[$i]).'\', '
-								.'\''.(int)$enabled[$i].'\', ' 
-								.'\''.addslashes($date_created[$i]).'\', '
-								.'\''.addslashes($data_fields[$i]).'\', '
-								.'\''.addslashes($images_directory[$i]).'\'
+								'.addslashes($name[$i]).', 
+								\''.(int)$product_type_id[$i].'\',
+								\''.addslashes($image_default[$i]).'\',
+								\''.(int)$enabled[$i].'\',
+								\''.addslashes($date_created[$i]).'\',
+								\''.addslashes($data_fields[$i]).'\',
+								\''.addslashes($images_directory[$i]).'\'
 							)'
 						);
 					}
@@ -158,12 +158,12 @@ if (isset($_POST['import'])) {
 						set 
 						name = 
 							\''.addslashes($name[$i]).'\',
-						product_type_id = '
-							.(int)$product_type_id[$i].',
+						product_type_id = 
+							'.(int)$product_type_id[$i].',
 						image_default = 
 							\''.addslashes($image_default[$i]).'\',
-						enabled = '
-							.(int)$enabled[$i].', 
+						enabled = 
+							'.(int)$enabled[$i].', 
 						date_created = 
 							\''.addslashes($date_created[$i]).'\',
 						data_fields = 
@@ -193,13 +193,13 @@ if (isset($_POST['import'])) {
 												and parent_id='.$parent,
 												'id'
 											);
-										if(!$catID) {
+										if (!$catID) {
 											dbQuery(
 												'insert into products_categories
 												(name, parent_id)
 												values(
-													\''.addslashes($cat).'\', '
-													.(int)$parent
+													\''.addslashes($cat).'\', 
+													'.(int)$parent
 												.')'
 											);
 											$parent 
@@ -218,8 +218,8 @@ if (isset($_POST['import'])) {
 											'insert into 
 											products_categories_products
 											values(
-												'.(int)$id[$i].','
-												.(int)$catID
+												'.(int)$id[$i].'
+												,'.(int)$catID
 											.')'
 										);
 
@@ -234,16 +234,17 @@ if (isset($_POST['import'])) {
 							for ($i=0; $i<$numRows; $i++) {
 								if (is_numeric($id[$i])) {
 									dbQuery(
-										'insert into products_categories_products
-										values('
-											.(int)$id[$i].','
-											.(int)$_POST['cat_options']
+										'insert into 
+										products_categories_products
+										values(
+											'.(int)$id[$i].'
+											,'.(int)$_POST['cat_options']
 										.')'
 									);
 								}
 							}
 						}
-					// }
+					break; // }
 				}
 			}
 
@@ -268,7 +269,10 @@ $jsonCats = json_encode($cats);
 echo 'Delete categories before import? ';
 echo '<input type="checkbox" name="clear_categories_database" 
 	id="clear_categories_database" 
-		onChange=\'show_hide_cat_options('.$jsonCats.');\'/>';
+		onChange=\'show_hide_cat_options('.$jsonCats.');\' />';
+echo '<br />';
+echo 'Delete empty categories on import? ';
+echo '<input type="checkbox" name="prune_cats" id = "prune-cats" />';
 echo '<br />';
 echo 'Import into categories ';
 echo '<select id="cat_options" name="cat_options">';
@@ -278,6 +282,7 @@ foreach ($cats as $cat) {
 	echo '<option value='.$cat['id'].'>'.$cat['name'].'</option>';
 }
 echo '</select><br />';
+echo 'Select import file ';
 echo '<input type="file" name="file" />';
 echo '<br />';
 echo '<input type="submit" name="import" value="Import Data" />';
