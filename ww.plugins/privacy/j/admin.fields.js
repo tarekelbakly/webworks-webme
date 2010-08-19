@@ -16,7 +16,7 @@ function privacy_export(id){
 	document.location='/ww.plugins/privacys/j/export.php?date='+d+'&id='+id;
 }
 if(!privacyfieldElements)var privacyfieldElements=0;
-$(document).ready(function(){
+$(function(){
 	privacyfieldsAddRow();
 	$('.date').datepicker({dateFormat:'yy-m-d'});
 });

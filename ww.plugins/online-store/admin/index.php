@@ -125,6 +125,14 @@ $c.= '</select></td></tr>';
 // }
 // { payment types
 $c.='<tr><th>Payment Types</th><td><div class="tabs">';
+// { paypal
+$c.='<div class="tabPage"><h2>PayPal</h2>'
+	.'<table><tr><th>Email Address</th><td><input type="email" name="page_vars[online_stores_paypal_address]"';
+if (isset($vars['online_stores_paypal_address'])) {
+	$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
+}
+$c.=' /></td></tr></table></div>';
+// }
 // { realex
 $c.='<div class="tabPage"><h2>Realex</h2>'
 	.'<table>';
@@ -146,13 +154,20 @@ if (isset($vars['online_stores_realex_sharedsecret'])) {
 }
 $c.=' /></td></tr>';
 // }
-// { thank you message
-$c.='<tr><th>Thank You message<br /><span style="font-size:small">shown on '
-	.'Realex Server after completed payment</span></th><td>'
-	.ckeditor('page_vars[online_stores_realex_thankyou]', $vars['online_stores_realex_thankyou'])
-	.'</td></tr>';
+// { redirect page
+$c.='<tr><th>Redirect after payment</th><td>';
+$c.='<select id="online_store_redirect_to" name="page_vars[online_store_redirect_to]">';
+if($vars['online_store_redirect_to']){
+	$parent=Page::getInstance($vars['online_store_redirect_to']);
+	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
+}
+else{
+	$vars['online_store_redirect_to']=0;
+	$c.='<option value="0"> -- '.__('none').' -- </option>';
+}
+$c.='</select></td></tr>';
 // }
-// {
+// { test mode
 $c.='<tr><th>Mode</th><td>'
 	.'<select name="page_vars[online_stores_realex_testmode]">'
 	.'<option value="test">Test Mode</option>'
@@ -177,20 +192,12 @@ $c.='<tr><td colspan="2">Note that some manual configuration is necessary. '
 // }
 $c.=' </table></div>';
 // }
-// { paypal
-$c.='<div class="tabPage"><h2>PayPal</h2>'
-	.'<table><tr><th>Email Address</th><td><input type="email" name="page_vars[online_stores_paypal_address]"';
-if (isset($vars['online_stores_paypal_address'])) {
-	$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
-}
-$c.=' /></td></tr></table></div>';
-// }
 $c.='</div></td></tr>';
 // }
 $c.='</table></div>';
 // }
 $c.='</div>';
-$c.='<script src="/ww.plugins/online-store/j/admin.js"></script>';
+WW_addScript('/ww.plugins/online-store/j/admin.js');
 
 if (!file_exists(USERBASE.'ww.cache/online-store')) {
 	mkdir(USERBASE.'ww.cache/online-store');
