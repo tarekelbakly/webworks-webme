@@ -175,13 +175,16 @@ if (isset($_POST['import'])) {
 			}
 			// }
 			if (($_POST['cat_options'])!='') {
-				products_import_insert_into_cats($categories, $id);				
+				$cids = Products_Import_Insert_Into_cats($categories, $id);
 			}
 			if (isset($_POST['prune_cats'])) {
 				$allCats = dbAll('select id from products_categories');
 				foreach ($allCats as $cat) {
-					products_import_prune_cats($cat['id']);
+					Products_Import_Prune_cats($cat['id']);
 				}
+			}
+			if (isset($_POST['create_page'])&&$_POST['cat_options']!='') {
+				Products_Import_Create_page($cids);
 			}
 			fclose($file);
 			unlink($location.'/'.$newName);
@@ -217,13 +220,26 @@ foreach ($cats as $cat) {
 	echo '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
 }
 echo '</select><br />';
+echo 'Create pages for imported categories? ';
+echo '<input type="checkbox" name="create_page" />';
+echo '<br />';
 echo 'Select import file ';
 echo '<input type="file" name="file" />';
 echo '<br />';
 echo '<input type="submit" name="import" value="Import Data" />';
 echo '</form>';
 // }
-function products_import_insert_into_cats ($categories, $id) {
+/**
+  * Inserts categories into products. 
+  * If the category doesn't exist it creates it
+  *
+  * @param array $categories The category list from the file
+  * @param array $id         The product ids
+  *
+  * @return array $cs The category id's
+**/
+function Products_Import_Insert_Into_cats ($categories, $id) {
+	$cs = array();
 	switch ($_POST['cat_options']) {
 		case '0': // { The categories are in the file
 			$i = 0;
@@ -261,6 +277,7 @@ function products_import_insert_into_cats ($categories, $id) {
 							else {
 								$parent = $catID;
 							}
+							$cs[] = $catID;
 						}
 						if (is_numeric($id[$i])) {
 							dbQuery(
@@ -292,11 +309,20 @@ function products_import_insert_into_cats ($categories, $id) {
 						);
 					}
 				}
+				$cs[] = $_POST['cat_options'];
 			}
 		break; // }
 	}
+	return $cs;
 }
-function products_import_prune_cats ($catID) {
+/**
+  * Checks if a category and it's subcategories are empty. If so it deletes them
+  *
+  * @param int $catID The category id to check
+  *
+  * @return void The statement is just there to finish quickly if it can
+**/
+function Products_Import_Prune_cats ($catID) {
 	$prod_id
 		= dbOne(
 			'select product_id 
@@ -316,18 +342,154 @@ function products_import_prune_cats ($catID) {
 			where parent_id = '.$catID
 		);
 	if (count($children)) {
-	foreach ($children as $child) {
-		products_import_prune_cats($child['id']);
+		foreach ($children as $child) {
+			Products_import_prune_cats($child['id']);
+		}
+		$first_child
+			= dbOne(
+				'select id 
+				from products_categories
+				where parent_id = '.$catID
+				.' limit 1',
+				'id'
+			);
 	}
 	// }
-	$children
-		= dbAll(
-			'select id 
-			from products_categories
-			where parent_id = '.$catID
-		);
-	}
-	if (!count($children)) {
+	if (!$first_child) {
 		dbQuery('delete from products_categories where id = '.$catID);
 	}
+}
+/**
+  * Creates a page for the imported categories
+  *
+  * @param array $categories The category list
+  *
+  * @return void
+  *
+**/
+function Products_Import_Create_page ($categories) {
+	$names = array();
+	foreach ($categories as $cat) {
+		$page_id 
+			= dbOne(
+				'select page_id 
+				from page_vars 
+				where value='.(int)$cat,
+				'page_id'
+			);
+		$default 
+			= dbOne(
+				'select name 
+				from products_categories 
+				where id=\''.(int)$cat.'\'',
+				'name'
+			);
+		$name = $default;
+		$i=2;
+		while (dbOne('select name from pages where name= \''.$name.'\'', 'name')) {
+			$name = $default.$i;
+			$i++;
+		}
+		$names[] = $name;
+		if (!$page_id) {
+			$hasProducts 
+				= dbOne(
+					'select product_id 
+					from products_categories_products
+					where category_id = \''.(int)$cat.'\'
+					limit 1',
+					'product_id'
+				);
+			if (!$hasProducts) {
+				echo 'Creating a table of contents page with name '.htmlspecialchars($name);
+				dbQuery(
+					'insert into pages 
+					set name = \''.addslashes($name).'\', 
+					type = 9,
+					cdate = now(),
+					edate = now(),
+					associated_date = now()'
+				);
+				$p_id = dbOne('select last_insert_id()', 'last_insert_id()');
+				var_dump($p_id);
+				dbQuery(
+					"insert into page_vars 
+					values($p_id, 'cat_id', '$cat')"
+				);
+			}	
+		}
+	}
+	for ($i=0; $i<count($names); $i++) {
+		echo 'Name is '.$names[$i];
+		echo 'id is '.$categories[$i];
+		$page 
+			= dbOne(
+				'select page_id 
+				from page_vars 
+				where value = '.(int)$categories[$i],
+				'page_id'
+			);
+		if (!$page) {
+			// { The parent should be before the relevant category in the array
+			$parent 
+				= dbOne(
+					'select parent_id 
+					from products_categories 
+					where id = '.(int)$categories[$i],
+					'parent_id'
+				);
+			echo 'Parent is '.$parent;
+			$parentPage 
+				= dbOne(
+					'select page_id 
+					from page_vars 
+					where name like \'%cat%\' and value ='.$parent,
+					'page_id'
+				);
+			if (!$parentPage) {
+				$parentPage = 0;
+			}
+			// }
+			echo 'Parent page is '.$parentPage;
+			dbQuery(
+				'insert into pages set 
+				name = \''.addslashes($names[$i]).'\',
+				type = \'products\',
+				parent = \''.(int)$parentPage.'\',
+				cdate = now(),
+				edate = now(),
+				associated_date = now()'
+			);
+			$id = dbOne('select last_insert_id()', 'last_insert_id()');
+			dbQuery(
+				'insert into page_vars 
+				values('.$id.', \'products_what_to_show\', 2)'
+			);
+			dbQuery(
+				"insert into page_vars 
+				values(
+					'$id'
+					,'products_category_to_show'
+					,'$categories[$i]'
+				)"
+			);
+			dbQuery(
+				'insert into page_vars
+				values(
+					\''.(int)$id.'\',
+					\'products_type_to_show\',
+					0
+				)'
+			);
+			dbQuery(
+				'insert into page_vars
+				values(
+					\''.(int)$id.'\',
+					\'products_product_to_show\',
+					0
+				)'
+			);
+		}
+	}
+	dbQuery('delete from page_vars where name = \'cat_id\'');
 }
