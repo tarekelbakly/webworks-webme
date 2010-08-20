@@ -6,6 +6,7 @@ $languages=array(
 	'da'=>'Danish',
 	'fr'=>'French',
 	'de'=>'German',
+	'ga'=>'Irish',
 	'es'=>'Spanish'
 );
 
