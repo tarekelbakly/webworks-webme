@@ -1,4 +1,17 @@
 <?php
+/**
+	* definition file for Translate plugin
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@webworks.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
+
+// { define $plugin
 $plugin=array(
 	'name' => 'Translate',
 	'admin' => array(
@@ -9,11 +22,30 @@ $plugin=array(
 		'page_type' => 'Translate_frontend'
 	)
 );
-function Translate_admin($page,$vars){
+// }
+
+/**
+	* admin area Page form
+	*
+	* @param object $page Page array from database
+	* @param array  $vars Page's custom variables
+	*
+	* @return string
+	*/
+function Translate_admin($page,$vars) {
 	require dirname(__FILE__).'/admin/form.php';
 	return $c;
 }
-function Translate_frontend($PAGEDATA){
+
+
+/**
+	* stub function to load frontend page-type
+	*
+	* @param object $PAGEDATA the current page
+	*
+	* @return string
+	*/
+function Translate_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/check.php';
 	return $PAGEDATA->render();
 }

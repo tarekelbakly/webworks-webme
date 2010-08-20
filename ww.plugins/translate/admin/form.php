@@ -1,8 +1,20 @@
 <?php
+/**
+	* form for Page section of admin area for Translate plugin
+	*
+	* PHP version 5
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@webworks.ie>
+	* @license  GPL 2.0
+	* @link     None
+	*/
+
 // { page to translate
 $c='<tr><th>Page to translate</th><td>';
 $c.='<select id="page_vars_translate_page_id" name="page_vars[translate_page_id]">';
-if($vars['translate_page_id']){
+if ($vars['translate_page_id']) {
 	$parent=Page::getInstance($vars['translate_page_id']);
 	$c.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
 }
@@ -14,8 +26,9 @@ $c.='</select></td>';
 // }
 // { what language
 $c.='<th>Language</th><td>';
-$c.='<select id="page_vars_translate_language" name="page_vars[translate_language]">';
-if($vars['translate_language']){
+$c.='<select id="page_vars_translate_language" '
+	.'name="page_vars[translate_language]">';
+if ($vars['translate_language']) {
 	$c.='<option value="'.htmlspecialchars($vars['translate_language']).'">'
 		.htmlspecialchars($vars['translate_language'])
 		.'</option>';
@@ -30,7 +43,7 @@ $c.='<td colspan="2">&nbsp;</td></tr>';
 // { body
 $c.='<tr><th>Body</th><td colspan="5">';
 $c.='<p>To force a re-translation, clear the box below and update.</p>';
-$c.=ckeditor('body',$page['body'],false);
+$c.=ckeditor('body', $page['body'], false);
 $c.='</td></tr>';
 // }
 WW_addScript('/ww.plugins/translate/admin/form.js');
