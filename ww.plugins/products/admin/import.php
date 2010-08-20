@@ -386,7 +386,7 @@ function Products_Import_Create_page ($categories) {
 			);
 		$name = $default;
 		$i=2;
-		while (dbOne('select name from pages where name= \''.$name.'\'', 'name')) {
+		while (dbOne("select name from pages where name= '$name'", 'name')) {
 			$name = $default.$i;
 			$i++;
 		}
@@ -401,7 +401,6 @@ function Products_Import_Create_page ($categories) {
 					'product_id'
 				);
 			if (!$hasProducts) {
-				echo 'Creating a table of contents page with name '.htmlspecialchars($name);
 				dbQuery(
 					'insert into pages 
 					set name = \''.addslashes($name).'\', 
@@ -420,8 +419,6 @@ function Products_Import_Create_page ($categories) {
 		}
 	}
 	for ($i=0; $i<count($names); $i++) {
-		echo 'Name is '.$names[$i];
-		echo 'id is '.$categories[$i];
 		$page 
 			= dbOne(
 				'select page_id 
@@ -438,7 +435,6 @@ function Products_Import_Create_page ($categories) {
 					where id = '.(int)$categories[$i],
 					'parent_id'
 				);
-			echo 'Parent is '.$parent;
 			$parentPage 
 				= dbOne(
 					'select page_id 
@@ -450,7 +446,6 @@ function Products_Import_Create_page ($categories) {
 				$parentPage = 0;
 			}
 			// }
-			echo 'Parent page is '.$parentPage;
 			dbQuery(
 				'insert into pages set 
 				name = \''.addslashes($names[$i]).'\',
