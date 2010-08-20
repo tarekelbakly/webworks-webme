@@ -29,6 +29,7 @@ $c.='</select></td>';
 $c.='<td colspan="2">&nbsp;</td></tr>';
 // { body
 $c.='<tr><th>Body</th><td colspan="5">';
+$c.='<p>To force a re-translation, clear the box below and update.</p>';
 $c.=ckeditor('body',$page['body'],false);
 $c.='</td></tr>';
 // }
