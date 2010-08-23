@@ -188,28 +188,25 @@ if (isset($_POST['import'])) {
 			}
 			if (isset($_POST['prune_cat_pages'])) {
 				$cats = dbAll('select id from products_categories');
-				$query = 'select page_id from page_vars ';
-				$query.= 'where name = "products_category_to_show"';
-				$vals = ' and value not in (';
 				foreach ($cats as $cat) {
 					Products_Import_pruneCatPages($cat['id']);
-					$vals.= $cat['id'].', ';
-				}
-				$vals = substr_replace($vals, ')', strrpos($vals, ','));
+				}	
+				$query = 'select page_id from page_vars ';
+				$query.= 'where name = "products_category_to_show"';
 				if (count($cats)) {
-					$query.= $vals;
+					$query.= ' and value not in (';
+					foreach ($cats as $cat) {
+						$query.= $cat['id'].', ';
+					}
+					$query = substr_replace($query, ')', strrpos($query, ','));
 				}
 				$p_ids = dbAll($query);
-				var_dump($p_ids);
-				$vals = '(';
 				foreach ($p_ids as $p_id) {
-					$vals.= $p_id['page_id'].', ';
+					Products_Import_deletePagesForCatsThatDontExist(
+						$p_id['page_id'], 
+						$vals
+					);
 				}
-				$vals = substr_replace($vals, ')', strrpos($vals, ','));
-				$query = 'delete from pages where id in '.$vals;
-				dbQuery($query);
-				$query = 'delete from page_vars where id in '.$vals;
-				dbQuery($query);
 			};
 			fclose($file);
 			unlink($location.'/'.$newName);
@@ -523,6 +520,18 @@ function Products_Import_createPage ($categories) {
 	}
 	dbQuery('delete from page_vars where name = "products_cat_id"');
 }
+/**
+  * Deletes or changes pages of empty categories
+  *
+  * If a category is empty and has a page it checks if that page has subpages
+  * if it does the page type is changed to table of contents.
+  * If the page has no subpages it is deleted.
+  *
+  * @param int $id The category id
+  *
+  * @return void
+  *
+**/
 function Products_Import_pruneCatPages($id) {
 	if (!$id>0) {
 		return;
@@ -577,4 +586,40 @@ function Products_Import_pruneCatPages($id) {
 		dbQuery('delete from pages where id = '.$page_id);
 	}
 	dbQuery('delete from page_vars where page_id = '.$page_id);
+}
+function Products_Import_deletePagesForCatsThatDontExist($page, $cats) {
+	$subs 
+		= dbAll(
+			'select id 
+			from pages 
+			where type = "products" and parent = '.$page
+		);
+	foreach($subs as $sub) {
+		$displaysCat = 
+			dbOne(
+				'select value 
+				from page_vars where 
+				name = "products_category_to_show" and page_id = '.$sub['id'],
+				'value'
+			);
+		if ($displaysCat) {
+			if (!in_array($displaysCat, $cats, false)) {
+				Products_Import_deletePagesForCatsThatDontExist(
+					$sub['id'], 
+					$cats
+				);
+			}
+		}
+	}
+	$has_subs 
+		= dbOne(
+			'select id from pages where parent = '.$page. ' limit 1',
+			'id'
+		);
+	if ($has_subs) {
+		dbQuery('update pages set type = 9 where id = '.$page);
+	}
+	else {
+		dbQuery('delete from pages where id = '.$page);
+	}
 }
