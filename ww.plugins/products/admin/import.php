@@ -175,16 +175,16 @@ if (isset($_POST['import'])) {
 			}
 			// }
 			if (($_POST['cat_options'])!='') {
-				$cids = Products_Import_Insert_Into_cats($categories, $id);
+				$cids = Products_Import_insertIntoCats($categories, $id);
 			}
 			if (isset($_POST['prune_cats'])) {
 				$allCats = dbAll('select id from products_categories');
 				foreach ($allCats as $cat) {
-					Products_Import_Prune_cats($cat['id']);
+					Products_Import_pruneCats($cat['id']);
 				}
 			}
 			if (isset($_POST['create_page'])&&$_POST['cat_options']!='') {
-				Products_Import_Create_page($cids);
+				Products_Import_createPage($cids);
 			}
 			fclose($file);
 			unlink($location.'/'.$newName);
@@ -238,7 +238,7 @@ echo '</form>';
   *
   * @return array $cs The category id's
 **/
-function Products_Import_Insert_Into_cats ($categories, $id) {
+function Products_Import_insertIntocats ($categories, $id) {
 	$cs = array();
 	switch ($_POST['cat_options']) {
 		case '0': // { The categories are in the file
@@ -322,7 +322,7 @@ function Products_Import_Insert_Into_cats ($categories, $id) {
   *
   * @return void The statement is just there to finish quickly if it can
 **/
-function Products_Import_Prune_cats ($catID) {
+function Products_Import_pruneCats ($catID) {
 	$prod_id
 		= dbOne(
 			'select product_id 
@@ -343,7 +343,7 @@ function Products_Import_Prune_cats ($catID) {
 		);
 	if (count($children)) {
 		foreach ($children as $child) {
-			Products_import_prune_cats($child['id']);
+			Products_import_pruneCats($child['id']);
 		}
 		$first_child
 			= dbOne(
@@ -367,7 +367,7 @@ function Products_Import_Prune_cats ($catID) {
   * @return void
   *
 **/
-function Products_Import_Create_page ($categories) {
+function Products_Import_createPage ($categories) {
 	$names = array();
 	foreach ($categories as $cat) {
 		$page_id 
@@ -410,15 +410,14 @@ function Products_Import_Create_page ($categories) {
 					associated_date = now()'
 				);
 				$p_id = dbOne('select last_insert_id()', 'last_insert_id()');
-				var_dump($p_id);
 				dbQuery(
 					"insert into page_vars 
-					values($p_id, 'cat_id', '$cat')"
+					values($p_id, 'cat_id', '".(int)$cat."')"
 				);
 			}	
 		}
 	}
-	for ($i=0; $i<count($names); $i++) {
+	for ($i=0; $i<count($names); ++$i) {
 		$page 
 			= dbOne(
 				'select page_id 
@@ -458,33 +457,33 @@ function Products_Import_Create_page ($categories) {
 			$id = dbOne('select last_insert_id()', 'last_insert_id()');
 			dbQuery(
 				'insert into page_vars 
-				values('.$id.', \'products_what_to_show\', 2)'
+				values('.$id.', "products_what_to_show", 2)'
 			);
 			dbQuery(
-				"insert into page_vars 
+				'insert into page_vars 
 				values(
-					'$id'
-					,'products_category_to_show'
-					,'$categories[$i]'
-				)"
+					"'.$id.'"
+					,"products_category_to_show"
+					,"'.$categories[$i].'"
+				)'
 			);
 			dbQuery(
 				'insert into page_vars
 				values(
-					\''.(int)$id.'\',
-					\'products_type_to_show\',
+					"'.(int)$id.'\",
+					"products_type_to_show",
 					0
 				)'
 			);
 			dbQuery(
 				'insert into page_vars
 				values(
-					\''.(int)$id.'\',
-					\'products_product_to_show\',
+					"'.(int)$id.'",
+					"products_product_to_show",
 					0
 				)'
 			);
 		}
 	}
-	dbQuery('delete from page_vars where name = \'cat_id\'');
+	dbQuery('delete from page_vars where name = "cat_id"');
 }
