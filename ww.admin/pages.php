@@ -6,7 +6,7 @@ echo '<div class="left-menu">';
 include 'pages/menu.php';
 echo '</div>';
 echo '<div class="has-left-menu">'
-	.'<iframe id="page-form-wrapper" name="page-form-wrapper" src="pages/form.php?id='.$id.'"></iframe>'
+	.'<iframe id="page-form-wrapper" name="page-form-wrapper" src="/ww.admin/pages/form.php?id='.$id.'"></iframe>'
 	.'</div>';
 echo '<script>window.page_menu_currentpage='.$id.';</script>',
 		'<script src="/j/jquery.remoteselectoptions.js"></script>',
