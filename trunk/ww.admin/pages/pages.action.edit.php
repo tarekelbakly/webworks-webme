@@ -1,11 +1,4 @@
 <?php
-function recordTranslation($name,$value){
-	global $id;
-	if(!$name || !$value)return;
-	$name=addslashes($name);
-	$value=addslashes($value);
-	dbQuery("INSERT INTO translations SET object_type='page',object_id=$id,lang='".addslashes($_SESSION['editing_language'])."',name='$name',value='$value'");
-}
 function recursively_update_page_templates($id,$template){
 	$pages=Pages::getInstancesByParent($id);
 	$ids=array();
@@ -17,16 +10,11 @@ function recursively_update_page_templates($id,$template){
 	dbQuery('update pages set template="'.addslashes($template).'" where id in ('.join(',',$ids).')');
 }
 if(allowedToEditPage($id)){
-	include 'pages/pages.action.common.php';
+	include dirname(__FILE__).'/pages.action.common.php';
 	$pid=(int)$_REQUEST['parent'];
 	$l=dbRow("SELECT * FROM site_vars WHERE name='languages'");
 	if($l['value'])$langs=json_decode($l['value']);
 	else $langs=array();
-	$translation=0;
-	if(count($langs)>1){
-		if(!isset($_SESSION['editing_language']))$_SESSION['editing_language']=$langs[0]->iso;
-		if($langs[0]->iso!=$_SESSION['editing_language'])$translation=1;
-	}
 	// {
 	$keywords=$_REQUEST['keywords'];
 	$description=$_REQUEST['description'];
@@ -36,7 +24,7 @@ if(allowedToEditPage($id)){
 	$name=$_REQUEST['name'];
 	if($importance<0)$importance=0;
 	if($importance>1)$importance=1;
-	$template=getVar('template');
+	$template=$_REQUEST['template'];
 	$body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 	$body=str_replace(
 		array(
@@ -59,20 +47,12 @@ if(allowedToEditPage($id)){
 		$name=$name.$i;
 	}
 	// }
-	$category1=getVar('category1');
-	$category2=getVar('category2');
+	$category1=$_REQUEST['category1'];
+	$category2=$_REQUEST['category2'];
 	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
 	$q='update pages set importance="'.$importance.'",category="'.$category.'",template="'.$template.'",edate=now(),type="'.$_POST['type'].'",associated_date="'.addslashes($associated_date).'"';
-	if(!$translation)$q.=',keywords="'.$keywords.'",description="'.$description.'",name="'.addslashes($name).'",title="'.$_POST['title'].'",body="'.addslashes($body).'"';
-	else{
-		dbQuery("DELETE FROM translations WHERE object_type='page' AND object_id=$id AND lang='".addslashes($_SESSION['editing_language'])."'");
-		recordTranslation('keywords',$keywords);
-		recordTranslation('description',$description);
-		recordTranslation('title',$title);
-		recordTranslation('body',$body);
-		recordTranslation('name',$name);
-	}
+	$q.=',keywords="'.$keywords.'",description="'.$description.'",name="'.addslashes($name).'",title="'.$_POST['title'].'",body="'.addslashes($body).'"';
 	$q.=',parent='.$pid;
 	if(has_page_permissions(128))$q.=',special='.$special;
 	$q.=' where id='.$id;
@@ -108,4 +88,7 @@ else{
 }
 if(isset($_REQUEST['frontend-admin'])){
 	echo '<script type="text/javascript">parent.location=parent.location;</script>';
+}
+else{
+	echo '<script>window.parent.document.getElementById("page_'.$id.'").childNodes[0].innerHTML="'.htmlspecialchars($name).'";</script>';
 }

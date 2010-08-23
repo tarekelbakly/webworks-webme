@@ -1,6 +1,6 @@
 <?php
 if(allowedToEditPage($parent)){
-	include 'pages/pages.action.common.php';
+	include dirname(__FILE__).'/pages.action.common.php';
 	$name=$_REQUEST['name'];
 	if(isset($_REQUEST['prefill_body_with_title_as_header']))$body='<h1>'.htmlspecialchars($name).'</h1><p>&nbsp;</p>';
 	else if(isset($_REQUEST['body']))$body=$_REQUEST['body'];
@@ -14,20 +14,20 @@ if(allowedToEditPage($parent)){
 		$name.=$i;
 	}
 	// { variables
-	$template=getVar('template');
-	$type=getVar('type');
+	$template=$_REQUEST['template'];
+	$type=$_REQUEST['type'];
 	$title=isset($_REQUEST['title'])?addslashes($_REQUEST['title']):'';
-	$keywords=getVar('keywords');
-	$associated_date=getVar('associated_date');
-	$description=getVar('description');
-	$importance=(float)getVar('importance');
+	$keywords=$_REQUEST['keywords'];
+	$associated_date=$_REQUEST['associated_date'];
+	$description=$_REQUEST['description'];
+	$importance=(float)$_REQUEST['importance'];
 	if($importance<0)$importance=0;
 	if($importance>1)$importance=1;
-	$category1=getVar('category1');
-	$category2=getVar('category2');
+	$category1=$_REQUEST['category1'];
+	$category2=$_REQUEST['category2'];
 	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
-	if(getVar('page_order')==0){
+	if($_REQUEST['page_order']==0){
 		dbQuery("update pages set ord=ord+1 where parent=".$pid);
 		$ord=0;
 	}
@@ -44,6 +44,7 @@ if(allowedToEditPage($parent)){
 	dbQuery('update page_summaries set rss=""');
 	cache_clear('menus');
 	cache_clear('pages');
+	echo '<script>window.parent.pages_add_node("'.addslashes($name).'",'.$id.','.$pid.');</script>';
 }
 else{
 	$msgs.='<em>'.__('You do not have permissions for creating a document in that location.').'</em>';

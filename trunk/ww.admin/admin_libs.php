@@ -1,4 +1,5 @@
 <?php
+$scripts=array();
 function addMenuItem(&$arr,$file,$nav){
 	if(ereg('>',$nav)){
 		return;
@@ -114,6 +115,16 @@ function wFormRow($title,$input){
 	}
 	echo '</td></tr>';
 }
+function WW_addScript($url){
+	global $scripts;
+	if(in_array($url,$scripts))return;
+	$scripts[]=$url;
+}
+function WW_getScripts(){
+	global $scripts;
+	if(!count($scripts))return '';
+	return '<script src="'.join('"></script><script src="',$scripts).'"></script>';
+}
 function drawMenu($menuArray){
 	$c='';
 	foreach($menuArray as $name=>$item){
@@ -128,7 +139,12 @@ function drawMenu($menuArray){
 }
 function ckeditor($name,$value='',$height=250){
 	return '<textarea style="width:100%;height:'.$height.'px" name="'.addslashes($name).'">'.htmlspecialchars($value).'</textarea>'
-		.'<script>$(function(){window.ckeditor_'.preg_replace('/[^a-zA-Z_]/','',$name).'=CKEDITOR.replace("'.str_replace(array('[',']'),array('\[','\]'),addslashes($name)).'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME",scayt_autoStartup:false});});</script>';
+		."<script>//<![CDATA[\n"
+		.'$(function(){window.ckeditor_'.preg_replace('/[^a-zA-Z_]/','',$name)
+		.'=CKEDITOR.replace("'
+		.str_replace(array('[',']'),array('\[','\]'),addslashes($name))
+		.'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME",scayt_autoStartup:false});});'
+		."//]]></script>";
 }
 function sanitise_html($html) {
 	$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);

@@ -17,16 +17,6 @@ $admin_vars=array();
 	$id=(int)@$_REQUEST['id'];
 	$plugins_to_load=array('"showhide":1','"tabs":1','"vkfade":1'); // to be used by javascript
 // }
-$scripts=array();
-function WW_addScript($url){
-	global $scripts;
-	if(in_array($url,$scripts))return;
-	$scripts[]=$url;
-}
-function WW_getScripts(){
-	global $scripts;
-	return '<script src="'.join('"></script><script src="',$scripts).'"></script>';
-}
 WW_addScript('/j/datatables/media/js/jquery.dataTables.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');

@@ -1,6 +1,6 @@
 <?php
 $special=0;
-$specials=getVar('special');
+$specials=$_REQUEST['special'];
 if(is_array($specials))foreach($specials as $a=>$b)$special+=pow(2,$a);
 if(isset($_REQUEST['name']))$_REQUEST['name']=trim($_REQUEST['name']);
 if($_REQUEST['name']=='')$_REQUEST['name']='no name provided';
