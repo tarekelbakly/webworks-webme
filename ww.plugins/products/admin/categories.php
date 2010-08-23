@@ -2,7 +2,7 @@
 <script src="/j/jquery.inlinemultiselect.js"></script>
 <script src="/ww.plugins/products/admin/get-product-names-js.php"></script>
 <script src="/ww.plugins/products/admin/categories.js"></script>
-<script src="/ww.plugins/products/admin/create_page.js"></script>
+<script src="/ww.plugins/products/admin/create-page.js"></script>
 <table>
 	<tr><th style="width:300px">Categories</th><th style="width:300px">Attributes</th></tr>
 	<tr><td>

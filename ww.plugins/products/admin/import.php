@@ -186,6 +186,31 @@ if (isset($_POST['import'])) {
 			if (isset($_POST['create_page'])&&$_POST['cat_options']!='') {
 				Products_Import_createPage($cids);
 			}
+			if (isset($_POST['prune_cat_pages'])) {
+				$cats = dbAll('select id from products_categories');
+				$query = 'select page_id from page_vars ';
+				$query.= 'where name = "products_category_to_show"';
+				$vals = ' and value not in (';
+				foreach ($cats as $cat) {
+					Products_Import_pruneCatPages($cat['id']);
+					$vals.= $cat['id'].', ';
+				}
+				$vals = substr_replace($vals, ')', strrpos($vals, ','));
+				if (count($cats)) {
+					$query.= $vals;
+				}
+				$p_ids = dbAll($query);
+				var_dump($p_ids);
+				$vals = '(';
+				foreach ($p_ids as $p_id) {
+					$vals.= $p_id['page_id'].', ';
+				}
+				$vals = substr_replace($vals, ')', strrpos($vals, ','));
+				$query = 'delete from pages where id in '.$vals;
+				dbQuery($query);
+				$query = 'delete from page_vars where id in '.$vals;
+				dbQuery($query);
+			};
 			fclose($file);
 			unlink($location.'/'.$newName);
 			$_FILES['file'] = '';
@@ -225,6 +250,9 @@ echo '<input type="checkbox" name="create_page" />';
 echo '<br />';
 echo 'Hide created pages? ';
 echo '<input type="checkbox" name="hide_pages" />';
+echo '<br />';
+echo 'Delete empty category pages on import? ';
+echo '<input type="checkbox" name="prune_cat_pages" />';
 echo '<br />';
 echo 'Select import file ';
 echo '<input type="file" name="file" />';
@@ -371,6 +399,7 @@ function Products_Import_pruneCats ($catID) {
   *
 **/
 function Products_Import_createPage ($categories) {
+	cache_clear('pages');
 	$names = array();
 	foreach ($categories as $cat) {
 		$page_id 
@@ -493,4 +522,59 @@ function Products_Import_createPage ($categories) {
 		}
 	}
 	dbQuery('delete from page_vars where name = "products_cat_id"');
+}
+function Products_Import_pruneCatPages($id) {
+	if (!$id>0) {
+		return;
+	}
+	$page_id
+		= dbOne(
+			'select page_id
+			from page_vars
+			where name= "products_category_to_show" and value='.(int)$id.
+			' limit 1',
+			'page_id'
+		);
+	if (!$page_id) {
+		return;
+	}
+	$hasProducts 
+		= dbOne(
+			'select product_id 
+			from products_categories_products
+			where category_id = '.$id.
+			' limit 1',
+			'product_id'
+		);
+	if ($hasProducts) {
+		return;
+	}
+	$subs = dbAll('select id from pages where parent ='.$page_id);
+	foreach ($subs as $sub) {
+		$cat 
+			= dbOne(
+				'select value from page_vars 
+				where name = "products_category_to_show" 
+				and page_id = '.$sub['id'],
+				'value'
+			);
+		if ($cat) {
+			Products_Import_pruneCatPages($cat);
+		}
+	}
+	$has_subs 
+		= dbOne(
+			'select id 
+			from pages 
+			where parent= '.$page_id.
+			' limit 1',
+			'id'
+		);
+	if ($has_subs) {
+		dbQuery('update pages set type = 9 where id = '.$page_id);
+	}
+	else {
+		dbQuery('delete from pages where id = '.$page_id);
+	}
+	dbQuery('delete from page_vars where page_id = '.$page_id);
 }
