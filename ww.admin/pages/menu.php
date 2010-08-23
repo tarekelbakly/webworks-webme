@@ -1,5 +1,5 @@
-<script src="/j/jquery.jstree/jquery.tree.js"></script>
-<script src="/j/jquery.jstree/plugins/jquery.tree.contextmenu.js"></script>
+<script src="/j/jstree-1.0rc2/jquery.jstree.js"></script>
+<script src="/j/jstree-1.0rc2/_lib/jquery.cookie.js"></script>
 <script src="/ww.admin/pages/menu.js"></script>
 <?php
 echo '<div id="pages-wrapper">';
@@ -14,9 +14,9 @@ function show_pages($id){
 	if(!isset($pages[$id]))return;
 	echo '<ul>';
 	foreach($pages[$id] as $page){
-		echo '<li id="page_'.$page['id'].'"><a href="pages.php?id='.$page['id'].'"';
+		echo '<li id="page_'.$page['id'].'"><a';
 		if($page['disabled']=='1')echo ' class="disabled"';
-		echo '><ins>&nbsp;</ins>'.htmlspecialchars($page['name']).'</a>';
+		echo '>'.htmlspecialchars($page['name']).'</a>';
 		show_pages($page['id']);
 		echo '</li>';
 	}
