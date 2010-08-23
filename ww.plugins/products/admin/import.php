@@ -223,6 +223,9 @@ echo '</select><br />';
 echo 'Create pages for imported categories? ';
 echo '<input type="checkbox" name="create_page" />';
 echo '<br />';
+echo 'Hide created pages? ';
+echo '<input type="checkbox" name="hide_pages" />';
+echo '<br />';
 echo 'Select import file ';
 echo '<input type="file" name="file" />';
 echo '<br />';
@@ -381,7 +384,7 @@ function Products_Import_createPage ($categories) {
 			= dbOne(
 				'select name 
 				from products_categories 
-				where id=\''.(int)$cat.'\'',
+				where id="'.(int)$cat.'"',
 				'name'
 			);
 		$name = $default;
@@ -396,23 +399,25 @@ function Products_Import_createPage ($categories) {
 				= dbOne(
 					'select product_id 
 					from products_categories_products
-					where category_id = \''.(int)$cat.'\'
+					where category_id = "'.(int)$cat.'" 
 					limit 1',
 					'product_id'
 				);
 			if (!$hasProducts) {
-				dbQuery(
-					'insert into pages 
-					set name = \''.addslashes($name).'\', 
-					type = 9,
-					cdate = now(),
-					edate = now(),
-					associated_date = now()'
-				);
+				$query = 'insert into pages ';
+				$query.= 'set name = "'.addslashes($name).'", ';
+				$query.= 'type = 9, ';
+				$query.= 'cdate = now(), ';
+				$query.= 'edate = now(), ';
+				$query.= 'associated_date = now()';
+				if (isset($_POST['hide_pages'])) {
+					$query.= ', special = 2';
+				}
+				dbQuery($query);
 				$p_id = dbOne('select last_insert_id()', 'last_insert_id()');
 				dbQuery(
 					"insert into page_vars 
-					values($p_id, 'cat_id', '".(int)$cat."')"
+					values($p_id, 'products_cat_id', '".(int)$cat."')"
 				);
 			}	
 		}
@@ -438,22 +443,24 @@ function Products_Import_createPage ($categories) {
 				= dbOne(
 					'select page_id 
 					from page_vars 
-					where name like \'%cat%\' and value ='.$parent,
+					where name like "products_cat%" and value ='.$parent,
 					'page_id'
 				);
 			if (!$parentPage) {
 				$parentPage = 0;
 			}
 			// }
-			dbQuery(
-				'insert into pages set 
-				name = \''.addslashes($names[$i]).'\',
-				type = \'products\',
-				parent = \''.(int)$parentPage.'\',
-				cdate = now(),
-				edate = now(),
-				associated_date = now()'
-			);
+			$query = 'insert into pages ';
+			$query.= 'set name = "'.addslashes($names[$i]).'", ';
+			$query.= 'type = "products", ';
+			$query.= 'parent = "'.(int)$parentPage.'", ';
+			$query.= 'cdate = now(), ';
+			$query.= 'edate = now(), ';
+			$query.= 'associated_date = now()';
+			if (isset($_POST['hide_pages'])) {
+				$query.= ', special=2';
+			};
+			dbQuery($query);
 			$id = dbOne('select last_insert_id()', 'last_insert_id()');
 			dbQuery(
 				'insert into page_vars 
@@ -470,7 +477,7 @@ function Products_Import_createPage ($categories) {
 			dbQuery(
 				'insert into page_vars
 				values(
-					"'.(int)$id.'\",
+					"'.(int)$id.'",
 					"products_type_to_show",
 					0
 				)'
@@ -485,5 +492,5 @@ function Products_Import_createPage ($categories) {
 			);
 		}
 	}
-	dbQuery('delete from page_vars where name = "cat_id"');
+	dbQuery('delete from page_vars where name = "products_cat_id"');
 }
