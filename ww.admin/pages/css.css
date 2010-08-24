@@ -63,7 +63,7 @@ li.placeholder{height:1px;background:#f00}
 #pages-wrapper{
 	overflow:auto;
 }
-.tree li a{
+#pages-wrapper li a{
 	font-size:10px;
 }
 #page-form-wrapper{

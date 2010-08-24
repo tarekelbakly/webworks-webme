@@ -1,5 +1,5 @@
 <?php
-require '../../ww.incs/basics.php';
+require '../../ww.incs/common.php';
 if(!is_admin())exit;
 require '../admin_libs.php';
 // { take care of actions
