@@ -1,7 +1,5 @@
-function edit_review (id, text, rating) {
-	while (text.indexOf('<br />')>=0) {
-		text = text.replace('<br />', "\n");
-	}
+function edit_review (id, text, rating, cdate) {
+	text = text.replace(/<br ?\/>/g, "\n");
 	var form = '<div style="text-align:left" id="form">'
 	form += '<b>Rating: </b>';
 	form += '<small><i>higher ratings are better </i></small>';
@@ -17,19 +15,20 @@ function edit_review (id, text, rating) {
 	form += '<textarea cols="50" rows="10" id="text">';
 	form += text;
 	form += '</textarea>';
-	form += '<center>';
-	form += '<input type="button" name="submit"';
-	form += 'value="Save Review" onClick="submit_vals('+id+')"; /></div>';
+	form += '<input style="text-align:center" type="button" name="submit"';
+	form += 'value="Save Review" onClick="submit_vals('+id+', \''+cdate+'\')"; />';
+	form += '</div>';
 	$(form).insertBefore('#'+id);
 	$('#'+id).remove();
 }
-function submit_vals(id) {
+function submit_vals(id, cdate) {
 	$.post(
-		'ww.plugins/products/frontend/update-review.php',
+		'/ww.plugins/products/frontend/update-review.php',
 		{
 			"id":id,
 			"text":$('#text').val(),
-			"rating":$('#rating').val()
+			"rating":$('#rating').val(),
+			"cdate":cdate
 		},
 		products_reviews_display,
 		"json"
@@ -37,7 +36,7 @@ function submit_vals(id) {
 }
 function products_reviews_display(data) {
 	if (!data.status) {
-		return alert ('Could not edit this review');
+		return alert ('Could not edit this review because '+data.message);
 	}
 	var averageText = '<div id="avg">';
 	averageText += 'The average rating for this product over ';
@@ -58,7 +57,12 @@ function products_reviews_display(data) {
 	reviewText += ' <b>Rated: </b>' + data.rating;
 	reviewText += '<br />' + body + '<br />';
 	reviewText += '<a href="javascript:'
-		+'edit_review('+data.id+', \''+body+'\', '+data.rating+')">edit</a> ';
+		+'edit_review('
+			+data.id+', '
+			+'\''+body+'\', '
+			+data.rating+', '
+			+'\''+data.date+'\''+
+		')">edit</a> ';
 	reviewText += '<a href="javascript:'
 		+'delete_review('+data.id+','+data.user_id+' ,'+data.product+')">'
 	reviewText = reviewText + '[x]</a>';

@@ -622,4 +622,5 @@ function Products_Import_deletePagesForCatsThatDontExist($page, $cats) {
 	else {
 		dbQuery('delete from pages where id = '.$page);
 	}
+	dbQuery('delete from page_vars where id = '.$page);
 }

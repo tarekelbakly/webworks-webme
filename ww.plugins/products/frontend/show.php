@@ -81,7 +81,7 @@ function products_datatable ($params, &$smarty) {
 	if ($params['align']!='horizontal') {
 		foreach ($datafields as $data) {
 			$name = str_replace('_', ' ', $data->n);
-			$c.= '<tr><th style="text-align:left">';
+			$c.= '<tr><th class="left">';
 			$c.= htmlspecialchars(ucfirst($name));
 			$c.= '</th><td>';
 			switch($data->t){
@@ -285,7 +285,8 @@ function products_reviews ($params, &$smarty) {
 							$review['id'].', '
 							.'\''.addslashes($body).'\''
 							.', '.$review['rating']
-						.');">';
+							.', \''.addslashes($review['cdate']).'\'
+						);">';
 					$c.= 'edit</a> ';
 				}
 				// }
@@ -419,10 +420,11 @@ function products_submit_review_form ($productid, $userid) {
 	// }
 	$c.= '<textarea cols="50" rows="10" name="text">';
 	$c.= 'Put your comments about the product here';
-	$c.= '</textarea><br />';
-	$c.= '<center>';
-	$c.= '<input type="submit" name="submit" value="Submit Review"/>';
-	$c.= '</center>';
+	$c.= '</textarea>';
+	$c.= '<div class="centre">';
+	$c.= '<input type="submit" name="submit" 
+		value="Submit Review" />';
+	$c.= '</div>';
 	$c.= '</form>';
 	return $c;
 }
@@ -680,3 +682,15 @@ class ProductType{
 		return '<div class="products-product" id="products-'.$product->get('id').'">'.$smarty->fetch(USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id).'</div>';
 	}
 }
+echo '<style type="text/css">';
+// { Align left
+echo '.left {';
+echo 'text-align:left';
+echo '}';
+// }
+// { Align Centre
+echo '.centre {';
+echo 'text-align:center';
+echo '}';
+// }
+echo '</style>';
