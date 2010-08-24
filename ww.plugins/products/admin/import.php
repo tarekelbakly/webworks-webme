@@ -587,6 +587,17 @@ function Products_Import_pruneCatPages($id) {
 	}
 	dbQuery('delete from page_vars where page_id = '.$page_id);
 }
+/**
+  * Takes a list of categories and a page that contains a category that doesn't
+  * exist. If the page has no subpages it will delete it. If it does have subpages
+  * it changes its type to table of contents
+  *
+  * @param int   $page The id of the page we are checking
+  * @param array $cats The list of existing categories
+  *
+  * @return void
+  *
+**/
 function Products_Import_deletePagesForCatsThatDontExist($page, $cats) {
 	$subs 
 		= dbAll(
@@ -594,9 +605,9 @@ function Products_Import_deletePagesForCatsThatDontExist($page, $cats) {
 			from pages 
 			where type = "products" and parent = '.$page
 		);
-	foreach($subs as $sub) {
-		$displaysCat = 
-			dbOne(
+	foreach ($subs as $sub) {
+		$displaysCat 
+			= dbOne(
 				'select value 
 				from page_vars where 
 				name = "products_category_to_show" and page_id = '.$sub['id'],
