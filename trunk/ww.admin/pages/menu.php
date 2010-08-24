@@ -14,6 +14,7 @@ function show_pages($id){
 	if(!isset($pages[$id]))return;
 	echo '<ul>';
 	foreach($pages[$id] as $page){
+		if($page['name']=='')$page['name']='NO NAME';
 		echo '<li id="page_'.$page['id'].'"><a';
 		if($page['disabled']=='1')echo ' class="disabled"';
 		echo '>'.htmlspecialchars($page['name']).'</a>';
