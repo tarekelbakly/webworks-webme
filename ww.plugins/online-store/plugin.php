@@ -144,6 +144,7 @@ function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
 function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
 	global $DBVARS;
 	$timestamp=date('YmdHjs');
+	$total=ceil(100*$total);
 	$sha1hash=sha1(
 		$timestamp
 		.'.'.$PAGEDATA->vars['online_stores_realex_merchantid']

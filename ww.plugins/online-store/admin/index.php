@@ -197,7 +197,7 @@ $c.='</div></td></tr>';
 $c.='</table></div>';
 // }
 $c.='</div>';
-WW_addScript('/ww.plugins/online-store/j/admin.js');
+WW_addScript('/ww.plugins/online-store/admin/index.js');
 
 if (!file_exists(USERBASE.'ww.cache/online-store')) {
 	mkdir(USERBASE.'ww.cache/online-store');

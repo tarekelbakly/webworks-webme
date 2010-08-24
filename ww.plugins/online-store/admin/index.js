@@ -105,7 +105,7 @@ function os_status_change(ev){
 }
 $(function(){
 	$('#online-store-status').change(function(ev){
-		document.location='/ww.admin/pages.php?id='+window.page_menu_currentpage+'&online-store-status='+$(ev.target).val();
+		document.location='/ww.admin/pages/form.php?id='+window.page_menu_currentpage+'&online-store-status='+$(ev.target).val();
 	});
 	os_update_fields();
 	$('.tabs_menu_link').live('mousedown',os_update_fields);
