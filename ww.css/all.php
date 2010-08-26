@@ -11,6 +11,7 @@ $files=array(
 	'tabs.css',
 	'../j/jquery-ui/css/smoothness/jquery-ui-1.8.1.custom.css'
 );
+$name='';
 if(isset($_REQUEST['extra'])){
 	$fs=explode('|',$_REQUEST['extra']);
 	foreach($fs as $f){
