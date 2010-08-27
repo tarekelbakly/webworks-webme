@@ -24,6 +24,10 @@ function convert_date_to_human_readable(){
 			'setDate', new Date(dparts[0],dparts[1]-1,dparts[2])
 		);
 }
+function webme_keepSessionAlive(){
+	setTimeout(webme_keepSessionAlive,60000);
+	$.get('/ww.admin/keepalive.php');
+}
 $(function(){
 	$('.datatable').dataTable();
 	$('input.date-human').each(convert_date_to_human_readable);
@@ -58,4 +62,5 @@ $(function(){
 		});
 		$('.help').cluetip();
 	}
+	setTimeout(webme_keepSessionAlive,60000);
 });
