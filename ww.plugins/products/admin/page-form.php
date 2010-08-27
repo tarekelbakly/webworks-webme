@@ -83,7 +83,6 @@ $c.='<select name="page_vars[products_order_direction]">';
 $c.='<option value="0">Ascending (A-Z)</option><option value="1"';
 if(isset($vars['products_order_direction']) && $vars['products_order_direction']=='1')$c.=' selected="selected"';
 $c.='>Descending (Z-A)</option></select></td></tr>';
-$c.='</td></tr>';
 // }
 // { products per page
 $c.='<tr id="products_per_page"><th>Products per page</th><td><input name="page_vars[products_per_page]" class="small" value="';

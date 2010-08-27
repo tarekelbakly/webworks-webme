@@ -67,7 +67,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		// }
 		// { save categories
 		dbQuery('delete from products_categories_products where product_id='.$id);
-		foreach($_REQUEST['product_categories'] as $key=>$val)dbQUery('insert into products_categories_products set product_id='.$id.',category_id='.$key);
+		if (isset($_REQUEST['product_categories'])) {
+			foreach($_REQUEST['product_categories'] as $key=>$val) {
+				dbQUery('insert into products_categories_products set product_id='
+					.$id.',category_id='.$key);
+			}
+		}
 		// }
 		echo '<em>Product saved</em>';
 		if(isset($_REQUEST['frontend-admin'])){
@@ -190,7 +195,6 @@ if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {
 echo '<input type="hidden" 
 	name="images_directory" value="'.$pdata['images_directory'].'" />';
 echo '<th><div class="help products/images"></div>Images</th><td colspan="5">';
-var_dump($pdata['images_directory']);
 $dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','', $pdata['images_directory']));
 $images=kfm_loadFiles($dir_id);
 $images=$images['files'];
