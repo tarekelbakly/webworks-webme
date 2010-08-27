@@ -28,7 +28,7 @@ function show_image_transition($vars){
 			if($r['url'])$html.='</a>';
 			else $html.='</div>';
 			WW_addScript('/ww.plugins/image-transition/j/jquery.cycle.all.min.js');
-			$html.='<script>$(function(){$("#image_transitions_'.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'.$r['pause'].'})});</script>';
+			$html.='<script>$(window).load(function(){$("#image_transitions_'.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'.$r['pause'].'})});</script>';
 			return $html;
 		}
 	}
