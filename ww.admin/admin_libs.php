@@ -115,10 +115,24 @@ function wFormRow($title,$input){
 	}
 	echo '</td></tr>';
 }
+function WW_addCSS($url){
+	global $css_urls;
+	if(in_array($url,$css_urls))return;
+	$css_urls[]=$url;
+}
 function WW_addScript($url){
 	global $scripts;
 	if(in_array($url,$scripts))return;
 	$scripts[]=$url;
+}
+function WW_getCSS(){
+	global $css_urls;
+	if (!is_array($css_urls)) {
+		return;
+	}
+	$url='/css/';
+	foreach($css_urls as $s)$url.='|'.$s;
+	return '<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($url).'" />';
 }
 function WW_getScripts(){
 	global $scripts;
