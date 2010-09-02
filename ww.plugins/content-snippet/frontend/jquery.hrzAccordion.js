@@ -30,10 +30,10 @@
 			   				
 							$('[id*='+container+'Handle]').attr("class",settings.handleClass);
 		
-			   				$("#"+container+"Handle"+i).addClass(settings.handleClassSelected);
+			 				$("#"+container+"Handle"+i).addClass(settings.handleClassSelected);
 										   
 			   		
-							$("."+settings.contentWrapper).css({width: finalWidth+"px" });
+							$("."+settings.contentWrapper).css({"width":finalWidth+"px" });
 							
 							switch(settings.closeOpenAnimation)
 							{
@@ -94,6 +94,7 @@
 	$.fn.extend({
 	   
 		hrzAccordionLoop: function(options) {
+return;
 			return this.each(function(a){  
 				
 				var container = $(this).attr("id") || $(this).attr("class");
@@ -186,7 +187,9 @@
 				var handleWidth = $("."+settings.handleClass).css("width");
 		
 				handleWidth =  handleWidth.replace(/px/,"");
-			    var finalWidth;
+				if(handleWidth=='auto')handleWidth=$('.handle')[0].offsetWidth;
+
+			  var finalWidth;
 				var handle;
 				
 				if(settings.fixedWidth){
