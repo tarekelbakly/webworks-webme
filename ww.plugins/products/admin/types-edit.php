@@ -39,6 +39,20 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			dbQuery("insert into products_types $sql");
 			$id=dbOne('select last_insert_id() as id','id');
 		}
+		if(isset($_FILES['image_not_found'])){
+			@mkdir(USERBASE.'f/products/types/'.$id);
+			$imgs=new DirectoryIterator(USERBASE.'f/products/types/'.$id);
+			foreach ($imgs as $img) {
+				if ($img->isDot()) {
+					continue;
+				}
+				unlink($img->getPathname());
+			}
+			$from=$_FILES['image_not_found']['tmp_name'];
+			$to=USERBASE.'f/products/types/'.$id.'/image-not-found.png';
+			echo "convert \"$from\" \"$to\"";
+			`convert "$from" "$to"`;
+		}
 		echo '<em>Product Type saved</em>';
 		cache_clear('products/templates');
 	}

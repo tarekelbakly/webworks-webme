@@ -3,7 +3,9 @@ $plugin=array(
 	'name' => 'Menu',
 	'admin' => array(
 		'widget' => array(
-			'form_url' => '/ww.plugins/menu/admin/widget-form.php'
+			'form_url' => '/ww.plugins/menu/admin/widget-form.php',
+			'js_include' => '/j/farbtastic/farbtastic.js',
+			'css_include' => '/j/farbtastic/farbtastic.css'
 		)
 	),
 	'description' => 'Menu widget',

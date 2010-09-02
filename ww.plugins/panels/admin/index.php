@@ -18,7 +18,15 @@ echo '];';
 echo 'ww.widgets=[';
 $ws=array();
 foreach($PLUGINS as $n=>$p){
-	if(isset($p['frontend']['widget']))$ws[]='{type:"'.$n.'",description:"'.addslashes($p['description']).'"}';
+	if (isset($p['frontend']['widget'])) {
+		$ws[]='{type:"'.$n.'",description:"'.addslashes($p['description']).'"}';
+	}
+	if (isset($p['admin']['widget']['css_include'])) {
+		WW_addCSS($p['admin']['widget']['css_include']);
+	}
+	if (isset($p['admin']['widget']['js_include'])) {
+		WW_addScript($p['admin']['widget']['js_include']);
+	}
 }
 echo join(',',$ws);
 echo '];';
@@ -36,5 +44,3 @@ echo '};';
 ?>
 </script><script src="/ww.plugins/panels/j/admin.js"></script>
 <script src="/ww.plugins/panels/j/jquery.inlinemultiselect.js"></script>
-<script type="text/javascript" src="/j/farbtastic/farbtastic.js"></script>
-<link rel="stylesheet" href="/j/farbtastic/farbtastic.css" type="text/css" />

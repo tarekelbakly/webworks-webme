@@ -1,0 +1,47 @@
+/*Main Container*/
+.hrzAccordion>li{
+	list-style:none;
+}
+.hrzAccordion .container {
+	width:100%;	
+
+
+}
+.hrzAccordion .container ul{
+	list-style-type: none;
+	margin: 0;
+	padding:0;	
+		
+}
+.hrzAccordion .container li{
+	display: inline;
+	margin: 0px;
+	padding:0px;
+	
+}
+/*Content Container*/
+.hrzAccordion .contentContainer {
+	padding-left: 0px;	
+	float: left;
+	width:0px;
+	height: 310px;	
+	overflow:hidden;
+background: white;
+	
+}
+.hrzAccordion .contentWrapper{	
+}
+.hrzAccordion .contentInnerWrapper{
+	text-align: justify;
+	padding: 10px;
+}
+/* Handle*/
+.hrzAccordion .handle{
+	float: left;
+}
+.hrzAccordion .handleOver{	
+	background: url(../images/blade_sel.png) no-repeat;
+}
+.hrzAccordion .handleSelected{	
+	background: url(../images/blade_sel.png) no-repeat;
+}

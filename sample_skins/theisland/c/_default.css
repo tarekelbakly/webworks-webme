@@ -44,6 +44,7 @@ a:hover {
 	width: 680px;
 	height: 110px;
 	margin: 0 auto;
+	overflow:auto;
 }
 #header h1, #header p {
 	margin: 0;

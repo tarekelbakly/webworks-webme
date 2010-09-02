@@ -170,7 +170,11 @@ class kfmImage extends kfmFile{
 		$r=db_fetch_row("SELECT id FROM ".KFM_DB_PREFIX."files_images_thumbs WHERE image_id=".$this->id." and width<=".$width." and height<=".$height." and (width=".$width." or height=".$height.")");
 		if($r){
 			$id=$r['id'];
-			if(!file_exists(WORKPATH.'thumbs/'.$id.$kfm_thumb_format))$this->createThumb($width,$height,$id); // missing thumb file - recreate it
+			if(!file_exists(WORKPATH.'thumbs/'.$id.$kfm_thumb_format)
+				|| filectime(WORKPATH.'thumbs/'.$id.$kfm_thumb_format)< filectime($this->path)
+			) {
+				$this->createThumb($width,$height,$id); // missing thumb file - recreate it
+			}
 		}
 		else{
 			$id=$this->createThumb($width,$height);

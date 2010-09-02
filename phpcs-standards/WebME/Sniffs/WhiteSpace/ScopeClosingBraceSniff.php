@@ -69,7 +69,7 @@ class WebME_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer_
         // If the scope closer doesn't think it belongs to this scope opener
         // then the opener is sharing its closer ith other tokens. We only
         // want to process the closer once, so skip this one.
-        if ($tokens[$scopeEnd]['scope_condition'] !== $stackPtr) {
+        if (isset($tokens[$scopeEnd]['scope_condition'] ) && $tokens[$scopeEnd]['scope_condition'] !== $stackPtr) {
             return;
         }
 
