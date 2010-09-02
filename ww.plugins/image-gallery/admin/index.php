@@ -29,9 +29,18 @@ $gvars=array(
 );
 foreach($gvars as $n=>$v)if(isset($vars[$n]))$gvars[$n]=$vars[$n];
 $cssurl=false;
-$c='<div class="tabs">';
+$c = '<div id="image-gallery-tabs">';
+$c.= '<ul>';
+$c.= '<li><a href="#image-gallery-images">Images</a></li>';
+$c.= '<li><a href="#image-gallery-header">Header</a></li>';
+$c.= '<li><a href="#image-gallery-footer">Footer</a></li>';
+$c.= '<li><a href="#image-gallery-advanced">Advanced Settings</a></li>';
+if (isset($GLOBALS['PLUGINS']['online-store'])) {
+	$c.= '<li><a href="#image-gallery-shop">Online Store</a></li>';
+}
+$c.= '</ul>';
 // { images
-$c.='<div class="tabPage"><h2>Images</h2>';
+$c.='<div id="image-gallery-images">';
 if(!$gvars['image_gallery_directory'] || !is_dir(USERBASE.'f/'.$gvars['image_gallery_directory'])){
 	mkdir(USERBASE.'f/image-galleries');
 	$gvars['image_gallery_directory']='/image-galleries/page-'.$page['id'];
@@ -54,17 +63,17 @@ if($n){
 $c.='</div>';
 // }
 // { header
-$c.='<div class="tabPage"><h2>Header</h2><p>This text will appear above the gallery.</p>';
+$c.='<div id="image-gallery-header"><p>This text will appear above the gallery.</p>';
 $c.=ckeditor('body',$page['body'],0,$cssurl);
 $c.='</div>';
 // }
 // { footer
-$c.='<div class="tabPage"><h2>Footer</h2><p>This text will appear below the gallery.</p>';
+$c.='<div id="image-gallery-footer"><p>This text will appear below the gallery.</p>';
 $c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''),0,$cssurl);
 $c.='</div>';
 // }
 // { advanced settings
-$c.='<div class="tabPage"><h2>Advanced Settings</h2>';
+$c.='<div id="image-gallery-advanced">';
 if(!isset($gvars['image_gallery_directory']) || !$gvars['image_gallery_directory'])$gvars['image_gallery_directory']='/';
 $c.='<table><tr><th>Image Directory</th><td><select id="image_gallery_directory" name="page_vars[image_gallery_directory]"><option value="'.htmlspecialchars($gvars['image_gallery_directory']).'">'.htmlspecialchars($gvars['image_gallery_directory']).'</option>';
 echo '</select></td></tr>';
@@ -111,7 +120,7 @@ $c.='</div>';
 // }
 // { online store
 if(isset($GLOBALS['PLUGINS']['online-store'])){
-	$c.='<div class="tabPage"><h2>Online Store</h2><table>';
+	$c.='<div id="image-gallery-shop"><table>';
 	// { for sale
 	$c.='<tr><th>Are these images for sale?</th><td><select name="page_vars[image_gallery_forsale]"><option value="">No</option>';
 	$c.='<option value="yes"';
@@ -137,5 +146,6 @@ if(isset($GLOBALS['PLUGINS']['online-store'])){
 }
 // }
 $c.='</div>';
-$c.='<script src="/ww.plugins/image-gallery/j/admin.js"></script>';
+ww_addScript('/ww.plugins/image-gallery/j/admin.js');
+ww_addScript('/ww.plugins/image-gallery/j/make-tabs.js');
 $c.='<link rel="stylesheet" href="/ww.plugins/image-gallery/admin/admin.css" />';
