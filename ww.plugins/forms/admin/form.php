@@ -1,13 +1,25 @@
 <?php
+$c.= '<script>';
+$c.= '$(function () {';
+$c.= '$("#tabs").tabs();';
+$c.= '});';
+$c.= '</script>';
 if(!$edit && isset($replytoid) && $replytoid)$c.= wInput('replytoid','hidden',$replytoid);
-$c.= '<div class="tabs">';
+$c.= '<div id="tabs">';
+$c.= '<ul>';
+$c.= '<li><a href="#before">Header</a></li>';
+$c.= '<li><a href="#main">Main Details</a></li>';
+$c.= '<li><a href="#fields">Form Fields</a></li>';
+$c.= '<li><a href="#success">Success Message</a></li>';
+$c.= '<li><a href="#template">Template</a></li>';
+$c.= '</ul>';
 // { header
-$c.='<div class="tabPage"><h2>Header</h2><p>Text to be shown above the form</p>';
+$c.='<div id="before"><p>Text to be shown above the form</p>';
 $c.=ckeditor('body',$page['body']);
 $c.='</div>';
 // }
 // { main details
-$c.= '<div class="tabPage"><h2>Main Details</h2><table>';
+$c.= '<div id="main"><table>';
 // { send as email, recipient
 if(!isset($vars['forms_send_as_email']))$vars['forms_send_as_email']=1;
 if(!isset($vars['forms_recipient']))$vars['forms_recipient']=$_SESSION['userdata']['email'];
@@ -26,8 +38,8 @@ $c.= '<th>Export<br /><i style="font-size:small">(requires Record In DB)</i></th
 // }
 $c.= '</table></div>';
 // }
-// { form fields
-$c.= '<div class="tabPage"><h2>Form Fields</h2>';
+// { form field
+$c.= '<div id="fields">';
 $c.= '<table id="formfieldsTable" width="100%"><tr><th width="30%">Name</th><th width="30%">Type</th><th width="10%">Required</th><th id="extrasColumn"><a href="javascript:formfieldsAddRow()">add field</a></th></tr></table>';
 $c.='<ul id="form_fields" style="list-style:none">';
 $q2=dbAll('select * from forms_fields where formsId="'.$id.'" order by id');
@@ -52,17 +64,17 @@ $c.= '</td></tr></table></li>';
 $c.= '</ul></div>';
 // }
 // { success message
-$c.= '<div class="tabPage"><h2>Success Message</h2>';
+$c.= '<div id="success">';
 $c.= '<p>What should be displayed on-screen when the message is sent.</p>';
 $c.= ckeditor('page_vars[forms_successmsg]',@$vars['forms_successmsg']);
 $c.= '</div>';
 // }
 // { template
-$c.= '<div class="tabPage"><h2>Template</h2>';
+$c.= '<div id="template">';
 $c.= '<p>Leave blank to have an auto-generated template displayed.</p>';
 $c.= ckeditor('page_vars[forms_template]',@$vars['forms_template']);
 $c.= '</div>';
-// }
 $c.= '</div>';
+// }
 $c.= '<script type="text/javascript">var formfieldElements='.$i.';</script>';
 $c.='<script type="text/javascript" src="/ww.plugins/forms/j/admin.fields.js"></script>';
