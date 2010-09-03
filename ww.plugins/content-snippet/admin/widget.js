@@ -36,7 +36,6 @@ function content_snippet_edit(ev){
 				minWidth:630,
 				minHeight:450,
 				height:450,
-				modal:true,
 				width:630,
 				beforeclose:function(){
 					if(!ww.content_snippet.rte)return;
