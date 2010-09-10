@@ -135,7 +135,9 @@ function plugin_trigger($trigger_name){
 	global $PLUGIN_TRIGGERS,$PAGEDATA;
 	if(!isset($PLUGIN_TRIGGERS[$trigger_name]))return;
 	$c='';
-	foreach($PLUGIN_TRIGGERS[$trigger_name] as $fn)$c.=$fn($PAGEDATA);
+	foreach($PLUGIN_TRIGGERS[$trigger_name] as $fn) {
+		$c.=$fn($PAGEDATA);
+	}
 	return $c;
 }
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
@@ -187,9 +189,9 @@ else{
 	define('THEME',$DBVARS['theme']);
 }
 // }
-// { plugins
+// { plugin
 $PLUGINS=array();
-$PLUGINS_TRIGGERS=array();
+$PLUGIN_TRIGGERS=array();
 if(!isset($ignore_webme_plugins)){
 	foreach($DBVARS['plugins'] as $pname){
 		if(strpos('/',$pname)!==false)continue;

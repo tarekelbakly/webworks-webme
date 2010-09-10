@@ -183,8 +183,8 @@ else {
 		$c=show404(str_replace('/', ' ', $_SERVER['REQUEST_URI']));
 	}
 }
-if ($PAGEDATA->special&64) {
-	$c.='<div id="webmeComments"></div>';
+if (isset($PLUGINS['comments'])) {
+	$c.= plugin_trigger('page-content-created');
 }
 $pagecontent=$c;
 // }

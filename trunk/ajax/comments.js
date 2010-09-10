@@ -1,16 +1,16 @@
 function comments_init(){
-		$('#webmeComments')
-			.append('<div id="ww_wrapper"></div>'
-				+'<form id="ww_form" class="formvalidation" action="javascript:comments_submit()">'
-				+'<h3 id="ww_newCommentHeader">Add Comment</h3>'
-				+'<label id="ww_nameLabel"><span>Name</span><input class="required" id="ww_name" /></label>'
-				+'<label id="ww_emailLabel"><span>Email</span><input type="email" class="required" id="ww_email" /></label>'
-				+'<label id="ww_homepageLabel"><span>Homepage</span><input value="http://" id="ww_homepage" /></label>'
-				+'<label id="ww_commentLabel"><span>Comment</span><textarea class="required" id="ww_comment"></textarea></label>'
-				+'<input type="submit" name="ww_submit" value="Comment" />'
-				+'</form>'
-			);
-		loadFormValidation();
+	$('#webmeComments')
+		.append('<div id="ww_wrapper"></div>'
+			+'<form id="ww_form" class="formvalidation" action="javascript:comments_submit()">'
+			+'<h3 id="ww_newCommentHeader">Add Comment</h3>'
+			+'<label id="ww_nameLabel"><span>Name</span><input class="required" id="ww_name" /></label>'
+			+'<label id="ww_emailLabel"><span>Email</span><input type="email" class="required" id="ww_email" /></label>'
+			+'<label id="ww_homepageLabel"><span>Homepage</span><input value="http://" id="ww_homepage" /></label>'
+			+'<label id="ww_commentLabel"><span>Comment</span><textarea class="required" id="ww_comment"></textarea></label>'
+			+'<input type="submit" name="ww_submit" value="Comment" />'
+			+'</form>'
+		);
+	loadFormValidation();
     x_comments_getAll(comment_lastId,comments_showAll);
 }
 function comments_showAll(comments){
