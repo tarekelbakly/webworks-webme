@@ -196,7 +196,7 @@ echo '</table>';
 echo '</td><td>';
 // { special
 echo '<h4>'.__('Special').'</h4>';
-$specials=array(__('Is Home Page'),__('Does not appear in navigation'),'','','','',__('Allow public comments'));
+$specials=array(__('Is Home Page'), __('Does not appear in navigation'));
 for($i=0;$i<count($specials);++$i){
 	if($specials[$i]!=''){
 		echo wInput('special['.$i.']','checkbox',($page['special']&pow(2,$i))?1:0).$specials[$i].'<br />';
@@ -240,6 +240,7 @@ if(isset($_REQUEST['frontend-admin'])){
 }
 echo '</form>';
 echo WW_getScripts();
+echo WW_getCss();
 echo '<script>//<![CDATA[
 window.page_menu_currentpage='.$id.';var plugins_to_load={"showhide":1,"tabs":1};
 //]]></script></body></html>';
