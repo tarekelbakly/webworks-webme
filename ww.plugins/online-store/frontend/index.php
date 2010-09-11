@@ -32,6 +32,20 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		}
 	}
 	// }
+	// { if no payment method is selected, then choose the first available
+	if (!isset($_REQUEST['_payment_method_type']) || $_REQUEST['_payment_method_type']=='') {
+		if (isset($PAGEDATA->vars['online_stores_paypal_address'])
+			&& $PAGEDATA->vars['online_stores_paypal_address']!=''
+		) {
+			$_REQUEST['_payment_method_type'] = 'PayPal';
+		}
+		else if (isset($PAGEDATA->vars['online_stores_realex_sharedsecret'])
+			&& $PAGEDATA->vars['online_stores_realex_sharedsecret']
+		) {
+			$_REQUEST['_payment_method_type'] = 'Realex';
+		}
+	}
+	// }
 	// { check that payment method is valid
 	switch($_REQUEST['_payment_method_type']){
 		case 'PayPal': // {
