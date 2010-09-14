@@ -42,7 +42,6 @@ if($sha1!=$sha1hash){
 	die('SHA1 hash does not match. Received '.$sha1hash.', expected '.$sha1);
 }
 // }
-
 // { check that purchase was successful
 if($result!='00'){
 	echo '<p>Error '.$result.'. "'.htmlspecialchars($message).'"</p>';
@@ -50,7 +49,6 @@ if($result!='00'){
 	exit;
 }
 // }
-
 // process payment
 $order=dbRow("SELECT * FROM online_store_orders WHERE id=$id");
 require dirname(__FILE__).'/process-order.php';
@@ -63,6 +61,6 @@ if($rid){
 		$url.=$rp->getRelativeUrl();
 	}
 }
-echo '<script>document.location="'.addslashes($url).'";</script>'
+echo '<script>document.location="'.addslashes($url).'?total='.$order['total'].'";</script>'
 	.'<p>Thank you!</p>'
 	.'<p>Please <a href="'.htmlspecialchars($url).'">click here</a> to continue.</p>';

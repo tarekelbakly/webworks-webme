@@ -143,7 +143,7 @@ function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
 	*/
 function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
 	global $DBVARS;
-	$timestamp=date('YmdHjs');
+	$timestamp=date('YmdHis');
 	$total=ceil(100*$total);
 	$sha1hash=sha1(
 		$timestamp

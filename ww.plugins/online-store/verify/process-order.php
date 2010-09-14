@@ -42,8 +42,11 @@ function OnlineStore_processOrder($id, $order) {
 		$from=$page->vars['online_stores_admin_email'];
 		$bcc=$page->vars['online_stores_admin_email'];
 	}
+	if (isset($form_vals->email)) {
+		$form_vals->Email=$form_vals->email;
+	}
 	if (isset($form_vals->Email)) {
-		$headers = "From: $from\r\nReply-To: $from\r\nX-Mailer: PHP/" . phpversion();
+		$headers = "From: $from\r\nReply-To: $from\r\nBCC: kae@webworks.ie\r\nX-Mailer: PHP/" . phpversion();
 		$headers.='MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 		$headers .= 'To: '.$form_vals->Email. "\r\n";
@@ -56,5 +59,8 @@ function OnlineStore_processOrder($id, $order) {
 			$order['invoice'],
 			$headers
 		);
+	}
+	else {
+		mail('kae@webworks.ie',$_SERVER['HTTP_HOST'].' shopping test',var_export($order,true)."\n\n".$_SERVER['REQUEST_URI']);
 	}
 }
