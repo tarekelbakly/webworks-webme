@@ -56,17 +56,17 @@ function parse_messaging_notifier($data,$vars){
 	if(isset($vars->scrolling) && $vars->scrolling){
 		$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
 		if(isset($vars->scrolling) && $vars->scrolling){
-			WW_addScript('/j/jquery.vticker.js');
+			WW_addScript('/j/jquery.vticker-min.js');
 			WW_addCSS('/ww.plugins/messaging-notifier/c/scroller.css');
 			$html.='<script>$(function(){
-				$("#messaging-notifier-'.$vars->id.'").vTicker({
-					speed: 4000,
-					pause: 5000,
-					showItems: '.$n_items.',
-					animation: "",
-					mousePause: true
-				});
-			});</script>';
+					$("#messaging-notifier-'.$vars->id.'").vTicker({
+						speed: 4000,
+						pause: 5000,
+						showItems: '.$n_items.',
+						animation: "",
+						mousePause: true
+					});
+				});</script>';
 		}
 	}
 	$height=$vars->height_in_px?' style="height:'.((int)$vars->height_in_px).'px"':'';
