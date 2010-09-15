@@ -81,8 +81,8 @@ function Translate_check_current_page($PAGEDATA) {
 		// }
 		$page_to_translate=(int)$PAGEDATA->vars['translate_page_id'];
 	}
+	$trs=dbAll('select page_id from page_vars where name="translate_page_id" and value='.$page_to_translate);
 	// { try to find a version of the current page in the selected language
-	$trs=dbAll('select page_id from page_vars where name="translate_page_id" and value='.(int)$PAGEDATA->vars['translate_page_id']);
 	// { if none found, return
 	if ($trs===false || !count($trs)) {
 		return;
