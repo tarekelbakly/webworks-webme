@@ -12,7 +12,7 @@ function pages_validate_name(){
 	else{
 		if(/^[^0-9\w\u00C0-\u00FF]/.test(name))errors.push('Begins with non-alphanumeric character');
 		if(/[^0-9\w\u00C0-\u00FF]$/.test(name))errors.push('Ends with non-alphanumeric character');
-		if(/[^0-9_ -\'\w\u00C0-\u00FF]/.test(name))errors.push('Only use alphanumeric characters, spaces, hyphens or underscores');
+		if(/[,^0-9_ -\'\w\u00C0-\u00FF]/.test(name))errors.push('Only use alphanumeric characters, spaces, hyphens or underscores');
 	}
 	if(!errors.length){
 		$name[0].className='';
