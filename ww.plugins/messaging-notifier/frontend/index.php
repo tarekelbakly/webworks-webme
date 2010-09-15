@@ -56,7 +56,7 @@ function parse_messaging_notifier($data,$vars){
 	if(isset($vars->scrolling) && $vars->scrolling){
 		$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
 		if(isset($vars->scrolling) && $vars->scrolling){
-			WW_addScript('/ww.plugins/messaging-notifier/j/jquery.vticker.js');
+			WW_addScript('/j/jquery.vticker.js');
 			WW_addCSS('/ww.plugins/messaging-notifier/c/scroller.css');
 			$html.='<script>$(function(){
 				$("#messaging-notifier-'.$vars->id.'").vTicker({

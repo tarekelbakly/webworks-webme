@@ -1,5 +1,4 @@
 <?php
-
 $html='';
 if(!isset($vars->id)){
 	$html='<em>No news page selected.</em>';
@@ -25,7 +24,7 @@ foreach($rs as $r){
 if(isset($vars->scrolling) && $vars->scrolling){
 	$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
 	if(isset($vars->scrolling) && $vars->scrolling){
-		WW_addScript('/ww.plugins/news/j/jquery.vticker.js');
+		WW_addScript('/j/jquery.vticker.js');
 		WW_addCSS('/ww.plugins/news/c/scroller.css');
 		$html.='<script>$(function(){
 			$(".news_excerpts_wrapper").vTicker({
