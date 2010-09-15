@@ -103,9 +103,9 @@ else{
 		.'your first page.';
 	exit;
 }
+$c=plugin_trigger('page-object-loaded');
 // }
 // { main content
-$c='';
 // { check if page is protected
 $allowed=1;
 foreach ($PLUGINS as $p) {

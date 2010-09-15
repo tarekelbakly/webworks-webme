@@ -105,6 +105,9 @@ if (isset($_GET['forcedownload'])) {
 } else header('Content-Type: '.Mimetype::get($extension));
 header('Content-Transfer-Encoding: binary');
 // }
+if (!file_exists($path)) {
+	exit;
+}
 if ($file = fopen($path, 'rb')) { // send file
     while ((!feof($file))&&(connection_status()==0)) {
         print(fread($file, 1024*8));
