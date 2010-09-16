@@ -76,8 +76,8 @@ if(isset($_REQUEST['id'])){
 }
 // }
 // { list all users
-$users=dbAll('select id,email from user_accounts order by name');
-echo '<table style="min-width:50%"><tr><th>User</th><th>Groups</th><th>Actions</th></tr>';
+$users=dbAll('select id,email,last_login,last_view from user_accounts order by last_view desc,last_login desc,email');
+echo '<table style="min-width:50%"><tr><th>User</th><th>Groups</th><th>Last Login</th><th>Last View</th><th>Actions</th></tr>';
 foreach($users as $user){
 	echo '<tr><th><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">'.htmlspecialchars($user['email']).'</a></th>';
 	// { groups
@@ -92,6 +92,12 @@ foreach($users as $user){
 	}
 	echo join(', ',$garr);
 	echo '</td>';
+	// }
+	// { last login
+	echo '<td>'.($user['last_login']=='0000-00-00 00:00:00'?'never':date_m2h($user['last_login'])).'</td>';
+	// }
+	// { last view
+	echo '<td>'.($user['last_view']=='0000-00-00 00:00:00'?'never':date_m2h($user['last_view'])).'</td>';
 	// }
 	echo '<td><a href="siteoptions.php?page=users&amp;id='.$user['id'].'">edit</a> <a href="siteoptions.php?page=users&amp;id='.$user['id'].'&amp;action=delete" onclick="return confirm(\'are you sure you want to delete this user?\')">[x]</a></td></tr>';
 }

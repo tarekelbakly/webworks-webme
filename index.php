@@ -42,7 +42,7 @@ if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 	header('Location: https://www.'.$server.'/');
 	exit;
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<28) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<29) {
 	redirect('/p/upgrade.php');
 }
 $id=getVar('pageid', 0);

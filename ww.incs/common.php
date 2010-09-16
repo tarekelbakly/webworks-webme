@@ -99,6 +99,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 		$_SESSION['userdata']=$r;
 		$r['password'] = $_SESSION['userdata']['password'];
 		$_SESSION['userdata'] = $r;
+		dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
 		// }
 		// { redirect if applicable
 		$redirect_url='';
@@ -113,15 +114,16 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 		// }
 	}
 }
-if(isset($_SESSION['userdata']['id']) && !isset($_SESSION['userdata']['groups'])){
-	// { groups
-	$USERGROUPS = array();
-	$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
-	if($rs)foreach($rs as $r){
-		$USERGROUPS[$r['name']] = $r['id'];
+if(isset($_SESSION['userdata']['id'])) {
+	dbQuery('update user_accounts set last_view=now() where id='.$_SESSION['userdata']['id']);
+	if (!isset($_SESSION['userdata']['groups'])){
+		$USERGROUPS = array();
+		$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
+		if($rs)foreach($rs as $r){
+			$USERGROUPS[$r['name']] = $r['id'];
+		}
+		$_SESSION['userdata']['groups']=$USERGROUPS;
 	}
-	$_SESSION['userdata']['groups']=$USERGROUPS;
-	// }
 }
 if(isset($_REQUEST['logout']))unset($_SESSION['userdata']);
 // }
