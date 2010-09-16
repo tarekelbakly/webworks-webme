@@ -200,6 +200,11 @@ if($version==27){ // create personal copy of theme
 	$DBVARS['theme_dir_personal']=USERBASE.'themes-personal';
 	$version=28;
 }
+if($version==28){ // update user accounts to remember last login and last view
+	dbQuery('alter table user_accounts add last_login datetime default "0000-00-00 00:00:00"');
+	dbQuery('alter table user_accounts add last_view datetime default "0000-00-00 00:00:00"');
+	$version=29;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
