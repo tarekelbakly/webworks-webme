@@ -36,6 +36,7 @@ function userloginandregistrationDisplay(){
 				$_SESSION['userdata']=$r;
 			// }
 			$n=$_SESSION['userdata']['name']==''?$_SESSION['userdata']['contactname']:$_SESSION['userdata']['name'];
+			dbQuery('update user_accounts set last_view=now() where id='.$r['id']);
 			if($action=='Login'){
 				$redirect_url='';
 				if(isset($_REQUEST['login_referer']) && strpos($_REQUEST['login_referer'],'/')===0){
@@ -45,6 +46,7 @@ function userloginandregistrationDisplay(){
 					$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
 					$redirect_url=$p->getRelativeUrl();
 				}
+				dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
 				if($redirect_url!='')redirect($redirect_url);
 			}
 			return userregistration_showProfile();
