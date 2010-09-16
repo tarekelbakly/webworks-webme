@@ -55,7 +55,7 @@ class Page{
 		}
 		$this->dbVals=$r;
 		self::$instances[$this->id] =& $this;
-		self::$instancesByName[preg_replace('/[^a-z0-9]/','-',strtolower($this->urlname))] =& $this;
+		self::$instancesByName[preg_replace('/[^,a-z0-9]/','-',strtolower($this->urlname))] =& $this;
 		self::$instancesBySpecial[$this->special] =& $this;
 		self::$instancesByType[$this->type] =& $this;
 		// { set up values if supplied. otherwise, delay it 'til required
@@ -70,9 +70,9 @@ class Page{
 		return self::$instances[$id];
 	}
 	function getInstanceByName($name=''){
-		if(preg_match('/[^a-zA-Z0-9 \-_\/]/',$name))return false;
+		if(preg_match('/[^,a-zA-Z0-9 \-_\/]/',$name))return false;
 		$name=strtolower($name);
-		$nameIndex=preg_replace('#[^a-z0-9/]#','-',$name);
+		$nameIndex=preg_replace('#[^,a-z0-9/]#','-',$name);
 		if(@array_key_exists($nameIndex,self::$instancesByName))return self::$instancesByName[$nameIndex];
 		if(strpos($name,'/')){
 			$names=explode('/',$nameIndex);
@@ -101,7 +101,7 @@ class Page{
 		return self::$instancesByType[$type];
 	}
 	function getInstanceByNameAndParent($name,$parent){
-		if(preg_match('/[^a-zA-Z0-9 \-_]/',$name))return false;
+		if(preg_match('/[^,a-zA-Z0-9 \-_]/',$name))return false;
 		$name=str_replace('-','_',$name);
 	  if(!@array_key_exists($name.'/'.$parent,self::$instancesByNAndP)){
 			$r=cache_load('pages',md5($parent.'|'.$name));
@@ -133,7 +133,7 @@ class Page{
 	function getURLSafeName(){
 		if(isset($this->getURLSafeName))return $this->getURLSafeName;
 		$r=$this->urlname;
-		$r=preg_replace('/[^a-zA-Z0-9,-]/','-',$r);
+		$r=preg_replace('/[^,a-zA-Z0-9,-]/','-',$r);
 		$this->getURLSafeName=$r;
 		return $r;
 	}
