@@ -8,7 +8,7 @@ function products_form_validate(){
 	alert(errors.join("\n"));
 	return false;
 }
-function change_href (id) {
+function change_href(id) {
 	var href = $('#delete_link_'+id)
 		.attr('href');
 	var boxIsChecked = $('#delete_checkbox_'+id).attr('checked');
@@ -82,4 +82,121 @@ $(function(){
 	$("#tabs").tabs();
 	$('#products-form').submit(products_form_validate);
 });
-
+$('#product_type_id').change(function() {
+	$('#data-fields-table').remove();
+	var newType = $(this).val();
+	var product = $(this).attr('product');
+	$.post(
+		'/ww.plugins/products/admin/get-data-fields.php',
+		{
+			"type":newType,
+			"product":product
+		},
+		update_data_fields,
+		"json"
+	);
+});
+function update_data_fields(data) {
+	if (data.message) {
+		return alert(data.message);
+	}
+	html = '<table id="data-fields-table">'; 
+	for (i=0; i<data.type.length; ++i) {
+		var value='';
+		for (j=0; j<data.product.length; ++j) {
+			if (data.product[j].n==data.type[i].n) {
+				if (data.type[i]!='checkbox') {
+					value=data.product[j].v;
+				}
+				break;
+			}
+		}
+		html+= '<tr><th>'+htmlspecialchars(data.type[i].n)+'</th><td>';
+		var name = 'data_fields['+htmlspecialchars(data.type[i].n)+']';
+		switch(data.type[i].t) {
+			case 'checkbox': // {
+				html+= '<input name='+name+'" ';
+				html+= 'type="checkbox"';
+				if (data.type[i].r) {
+					html+= ' class="required"';
+				}
+				if (value!='') {
+					html+= ' checked="checked"';
+				}
+				html+= ' />';
+			break; // }
+			case 'date': // {
+				html+= '<input name="'+name+'" ';
+				html+= 'class="date-human';
+				if (data.type[i].r) {
+					html+= ' required';
+				}
+				html+= '" />';
+			break; // }
+			case 'textarea': // {
+				html+= '<textarea name="'+name+'" id="'+name+'" '
+					+ 'style="display:none">';
+				html+= '</textarea>';
+				html+= '<div name="textfor'+name+'" class="ckeditor">';
+				html+= value;
+				html+= '</div>';
+			break; // }
+			case 'selectbox': // {
+				var opts = data.type[i].e.split("\n");
+				html += '<select name="'+name+'">';
+				for (j=0; j<opts.length; j++) {
+					html+= '<option';
+					if (value==opts[j]) {
+						html+= ' selected="selected"';
+					}
+					html+= '>'+htmlspecialchars(opts[j])+'</option>';
+				}
+				html+= '</select>';
+			break; // }
+			default: // { An inputbox
+				html+= '<input type="text" ';
+				html+= 'name="'+name+'" ';
+				html+= 'type="text"';
+				if (data.type[i].r) {
+					html+= ' class="required"';
+				}
+				if (value!='') {
+					html+= ' value="'+value+'"';
+				}
+				html+= ' />';
+			break; // }
+		}
+		html+= '</td></tr>';
+	}
+	html+= '</table>';
+	$('#data-fields').append(html);
+	var editors = document.getElementsByTagName('div');
+	for (i=0; i<editors.length; ++i) {
+		if (editors[i].className=='ckeditor') {
+			var editor 
+				= CKEDITOR.replace(
+					editors[i], 
+					{
+						filebrowserBrowseUrl:"/j/kfm",
+						menu:"WebMe",
+						scayt_autoStartup:false
+					}
+				);
+			editor.name = editors[i].getAttribute('name');
+			CKEDITOR.add(editor);
+		}
+	}
+}
+function products_getData () {
+	var elements = document.getElementsByTagName('div');
+	for (i=0; i<elements.length; ++i) {
+		if (elements[i].className=='ckeditor') { // It's a CKEDITOR
+			var name = elements[i].getAttribute('name');
+			var textAreaName = name.replace('textfor', '');
+			var textAreas = document.getElementsByName(textAreaName);
+			for (j=0; j<textAreas.length; ++j) {
+				$(textAreas[j]).val(data);
+			}
+		}
+	}
+}

@@ -10,6 +10,7 @@ if(!count($rs)){
 	echo '<em>No existing product types. <a href="plugin.php?_plugin=products&amp;_page=types-edit">Click here to create one</a>.</em>';
 }
 else{
+	echo '<a href="plugin.php?_plugin=products&amp;_page=types-edit">Create a new type</a>';
 	echo '<div style="width:50%"><table class="datatable"><thead><tr><th>Name</th><th>&nbsp;</th></tr></thead><tbody>';
 	foreach($rs as $r){
 		echo '<tr><td class="edit-link"><a href="plugin.php?_plugin=products&amp;_page=types-edit&amp;id='.$r['id'].'">'.htmlspecialchars($r['name']).'</td><td>';

@@ -34,7 +34,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			else {
 				$dname = substr($_REQUEST['images_directory'], $pos+1);
 			}
-			echo $_REQUEST['images_directory'];
 			if (strlen($dname)==0) {
 				$dname = rand().microtime();
 			}
@@ -98,7 +97,8 @@ else{
 		'images_directory'=>''
 	);
 }
-echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" method="post"><input type="hidden" name="action" value="save" />';
+echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" method="post" onsubmit="products_getData();">';
+echo '<input type="hidden" name="action" value="save" />';
 echo '<div id="tabs"><ul>'
 	.'<li><a href="#main-details">Main Details</a></li>'
 	.'<li><a href="#data-fields">Data Fields</a></li>'
@@ -122,7 +122,8 @@ if($ptypes===false){
 }
 else{
 	if(!$pdata['product_type_id'])$pdata['product_type_id']=$ptypes[0]['id'];
-	echo '<select name="product_type_id">';
+	echo '<select id="product_type_id" name="product_type_id" 
+		product="'.$pdata['id'].'">';
 	foreach($ptypes as $ptype){
 		echo '<option value="'.$ptype['id'].'"';
 		if($ptype['id']==$pdata['product_type_id'])echo ' selected="selected"';
@@ -215,7 +216,7 @@ echo '</tr></table></div>';
 // }
 // }
 // { data fields
-echo '<div id="data-fields"><table>';
+echo '<div id="data-fields"><table id="data-fields-table">';
 $dfs=json_decode($pdata['data_fields'],true);
 $dfjson=dbOne('select data_fields from products_types where id='.$pdata['product_type_id'],'data_fields');
 if($dfjson=='')$dfjson='[]';
@@ -224,6 +225,7 @@ $dfjson=json_decode($dfjson,true);
 $dfdefs=array();
 foreach($dfjson as $d)$dfdefs[$d['n']]=$d;
 function product_dfs_show($df,$def){
+	echo '<br />';
 	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
 	switch($def['t']){
 		case 'checkbox': // {
@@ -266,12 +268,8 @@ foreach($dfs as $df){
 	if(isset($dfdefs[$df['n']])){
 		$def=$dfdefs[$df['n']];
 		unset($dfdefs[$df['n']]);
+		product_dfs_show($df,$def);
 	}
-	else{
-		if($df['v']=='')continue;
-		$def=array('n'=>$df['n'],'t'=>'inputbox','r'=>0);
-	}
-	product_dfs_show($df,$def);
 }
 foreach($dfdefs as $def){
 	product_dfs_show(array('v'=>''),$def);
@@ -317,4 +315,3 @@ if(isset($_REQUEST['frontend-admin'])){
 echo '</div><input type="submit" value="Save" /></form>';
 WW_addScript('/ww.plugins/products/admin/products.js');
 WW_addScript('/ww.plugins/products/admin/create-page.js');
-
