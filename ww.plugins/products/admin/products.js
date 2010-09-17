@@ -193,6 +193,7 @@ function products_getData () {
 		if (elements[i].className=='ckeditor') { // It's a CKEDITOR
 			var name = elements[i].getAttribute('name');
 			var textAreaName = name.replace('textfor', '');
+			var data = CKEDITOR.instances[name].getData();
 			var textAreas = document.getElementsByName(textAreaName);
 			for (j=0; j<textAreas.length; ++j) {
 				$(textAreas[j]).val(data);
