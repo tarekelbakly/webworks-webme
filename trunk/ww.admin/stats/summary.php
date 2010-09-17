@@ -12,7 +12,7 @@
  */
 WebME_Stats_update();
 echo '<!--[if IE]><script language="javascript" type="text/javascript" '
-	.'src="/j/flot-0.5/excanvas.pack.js"></script><![endif]-->';
+	.'src="/j/flot-0.5/excanvas.pack.js"></script><![endif]-->'
 	.'<script type="text/javascript" src="/j/flot-0.5/jquery.flot.pack.js">'
 	.'</script>';
 
