@@ -103,12 +103,19 @@ function update_data_fields(data) {
 	html = '<table id="data-fields-table">'; 
 	for (i=0; i<data.type.length; ++i) {
 		var value='';
-		for (j=0; j<data.product.length; ++j) {
-			if (data.product[j].n==data.type[i].n) {
-				if (data.type[i]!='checkbox') {
+		for (j=0; j<data.oldType.length; ++j) {	
+			if (data.oldType[j].n==data.type[i].n) {
+				if (data.oldType[j].t=='checkbox'&&data.type[i].t!='checkbox') {
+					if (data.product[j]!=null) {
+						value='Yes';
+					}
+					else {
+						value='No';
+					}
+				}
+				else if (data.product[j]!=null) {
 					value=data.product[j].v;
 				}
-				break;
 			}
 		}
 		html+= '<tr><th>'+htmlspecialchars(data.type[i].n)+'</th><td>';
@@ -131,7 +138,8 @@ function update_data_fields(data) {
 				if (data.type[i].r) {
 					html+= ' required';
 				}
-				html+= '" />';
+				html+= '" value="'+value+'"';
+				html+= ' />';
 			break; // }
 			case 'textarea': // {
 				html+= '<textarea name="'+name+'" id="'+name+'" '
