@@ -32,3 +32,21 @@ $(function(){
 	$('#pages_form').submit(pages_validate);
 	$('#name').keyup(pages_validate_name);
 });
+function pages_check_page_length(maxLength) {
+	var textAreas = document.getElementsByTagName('textArea');
+	for (i=0; i<textAreas.length; ++i) {
+		var name= textAreas[i].getAttribute('name');
+		if (name=='body') {
+			var contents = $(textAreas[i]).val();
+			if (contents.length>maxLength) {
+				var confirmText = 'This page has more characters ';
+				confirmText+= 'than the set limit. This may cause problems';
+				confirmText+= "\nDo you want to save the page anyway?";
+				if (!confirm(confirmText)) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
