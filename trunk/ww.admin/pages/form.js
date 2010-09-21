@@ -31,21 +31,22 @@ $(function(){
 	});
 	$('#pages_form').submit(pages_validate);
 	$('#name').keyup(pages_validate_name);
+	$('form#pages_form').submit(function() {
+		return pages_check_page_length($(this).attr('maxLength'))
+	});
 });
 function pages_check_page_length(maxLength) {
-	var textAreas = document.getElementsByTagName('textArea');
+	if (maxLength==null) {
+		return true;
+	}
+	var textAreas = $('textarea[name=body]');
 	for (i=0; i<textAreas.length; ++i) {
-		var name= textAreas[i].getAttribute('name');
-		if (name=='body') {
-			var contents = $(textAreas[i]).val();
-			if (contents.length>maxLength) {
-				var confirmText = 'This page has more characters ';
-				confirmText+= 'than the set limit. This may cause problems';
-				confirmText+= "\nDo you want to save the page anyway?";
-				if (!confirm(confirmText)) {
-					return false;
-				}
-			}
+		var contents = $(textAreas[i]).val();
+		if (contents.length>maxLength) {
+			var confirmText = 'This page has more characters ';
+			confirmText+= 'than the set limit. This may cause problems';
+			confirmText+= "\nDo you want to save the page anyway?";
+			return confirm(confirmText); 
 		}
 	}
 	return true;

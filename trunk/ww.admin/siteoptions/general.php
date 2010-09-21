@@ -11,11 +11,11 @@ if($action=='Save'){
 		`rm -fr "$newdir"/logo-* ; convert "$tmpname" -geometry 320x320 "$newdir/logo.png"`;
 	}
 	$pageLengthLimit = $_REQUEST['site_page_length_limit'];
-	if (isset($pageLengthLimit)&&is_numeric($pageLengthLimit)) {
+	if (!empty($pageLengthLimit)&&is_numeric($pageLengthLimit)) {
 		$DBVARS['site_page_length_limit'] = $pageLengthLimit;
 	}
 	else (if(isset($DBVARS['site_page_length_limit']) {
-		unset($DBVARS['site_page_lenght_limit']);
+		unset($DBVARS['site_page_length_limit']);
 	}
 	config_rewrite();
 	echo '<em>'.__('options updated').'</em>';
