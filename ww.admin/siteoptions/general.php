@@ -14,6 +14,9 @@ if($action=='Save'){
 	if (isset($pageLengthLimit)&&is_numeric($pageLengthLimit)) {
 		$DBVARS['site_page_length_limit'] = $pageLengthLimit;
 	}
+	else (if(isset($DBVARS['site_page_length_limit']) {
+		unset($DBVARS['site_page_lenght_limit']);
+	}
 	config_rewrite();
 	echo '<em>'.__('options updated').'</em>';
 }
