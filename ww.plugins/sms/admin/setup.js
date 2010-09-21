@@ -2,13 +2,15 @@ function sms_verify_setup(){
 	var email=$('#sms_email').val();
 	var pass=$('#sms_password').val();
 	var pass2=$('#sms_password2').val();
+	var phone = $('#sms_phone_number').val();
 	if(!email)return sms_show_error('please enter the email address');
 	if(!pass)return sms_show_error('please enter a password');
 	if(pass!=pass2)return sms_show_error('the entered passwords must be the same');
 	$('#sms_messages').html('submitting form... please wait');
 	$.post('/ww.plugins/sms/admin/subscribe.php',{
 		'email':email,
-		'pass':pass
+		'pass':pass,
+		'phone':phone
 	},sms_subscription_sent,'json');
 }
 function sms_show_error(err){
