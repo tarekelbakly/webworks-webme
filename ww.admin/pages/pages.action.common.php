@@ -16,3 +16,4 @@ else{
 		$msgs.='<em>'.__('This page has been marked as the site\'s Home Page, because there must always be one.').'</em>';
 	}
 }
+

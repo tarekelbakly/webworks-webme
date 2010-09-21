@@ -10,6 +10,10 @@ if($action=='Save'){
 		mkdir(USERBASE.'/f/skin_files');
 		`rm -fr "$newdir"/logo-* ; convert "$tmpname" -geometry 320x320 "$newdir/logo.png"`;
 	}
+	$pageLengthLimit = $_REQUEST['site_page_length_limit'];
+	if (isset($pageLengthLimit)&&is_numeric($pageLengthLimit)) {
+		$DBVARS['site_page_length_limit'] = $pageLengthLimit;
+	}
 	config_rewrite();
 	echo '<em>'.__('options updated').'</em>';
 }
@@ -26,5 +30,11 @@ if(file_exists(USERBASE.'f/skin_files/logo.png')){
 	echo '<img src="/f/skin_files/logo.png?rand='.mt_rand(0,9999).'" /><a href="/ww.admin/siteoptions.php?action=remove_logo" onclick="return confirm(\'are you sure you want to remove the logo?\')" title="remove logo">[x]</a>';
 }
 echo '</td></tr>';
+echo '<th>Page Length Limit</th>';
+echo '<td><input type="text" name="site_page_length_limit"';
+if (isset($DBVARS['site_page_length_limit'])) {
+	echo ' value="'.$DBVARS['site_page_length_limit'].'"';
+}
+echo ' /></td></tr>';
 echo '</table><input type="submit" name="action" value="Save" /></form>';
 // }

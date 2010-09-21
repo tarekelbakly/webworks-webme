@@ -3,6 +3,9 @@ require '../../ww.incs/common.php';
 if(!is_admin())exit;
 require '../admin_libs.php';
 // { take care of actions
+if (isset($_REQUEST['update'])) {
+	unset($_REQUEST['action']);
+}
 $id=(int)$_REQUEST['id'];
 $parent=(int)@$_REQUEST['parent'];
 $action=@$_REQUEST['action'];
@@ -54,7 +57,8 @@ else{
 	$page=array('parent'=>$parent,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>$special,'template'=>'','stylesheet'=>'','importance'=>0.5);
 	$id=0;
 }
-echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'">';
+$maxLength = $DBVARS['site_page_length_limit'];
+echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'" onsubmit="return pages_check_page_length('.$maxLength.');">';
 echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
 if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 echo wInput('id','hidden',$page['id']);
@@ -82,7 +86,7 @@ echo '</tr>';
 // }
 // { page type, parent, associated date
 // { type
-echo '<tr><th><div class="help type"></div>'.__('type').'</th><td><select name="type">';
+echo '<tr><th><div class="help type"></div>'.__('type').'</th><td><select name="type" id="type">';
 if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
 	if(has_access_permissions($a[2]) || !$a[2]){
 		if($a[0]==$page['type'])echo '<option value="',$a[0],'" selected="selected">',htmlspecialchars($a[1]),'</option>';
@@ -98,7 +102,7 @@ if(!preg_match('/^[0-9]*$/',$page['type']))foreach($PLUGINS as $n=>$p){
 echo '</select></td>';
 // }
 // { parent
-echo '<th><div class="help parent"></div>',__('parent'),'</th><td>',"\n\n",'<select name="parent">';
+echo '<th><div class="help parent"></div>',__('parent'),'</th><td>',"\n\n",'<select name="parent" id="parent">';
 if($page['parent']){
 	$parent=Page::getInstance($page['parent']);
 	echo '<option value="',$parent->id,'">',htmlspecialchars($parent->name),'</option>';
@@ -109,7 +113,7 @@ echo '</select>',"\n\n",'</td>';
 // { associated date
 if(!isset($page['associated_date']) || !preg_match('/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/',$page['associated_date']) || $page['associated_date']=='0000-00-00')
 	$page['associated_date']=date('Y-m-d');
-echo '<th><div class="help associated-date"></div>Associated Date</th><td><input name="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td>';
+echo '<th><div class="help associated-date"></div>Associated Date</th><td><input name="associated_date" id="associated_date" class="date-human" value="'.$page['associated_date'].'" /></td>';
 echo '</tr>';
 // }
 // }
