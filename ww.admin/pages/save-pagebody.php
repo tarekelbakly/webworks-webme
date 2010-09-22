@@ -8,4 +8,5 @@ $body=addslashes($_REQUEST['body']);
 $body=sanitise_html($body);
 dbQuery("update pages set body='$body' where id=$id");
 cache_clear('pages');
+dbQuery('update page_summaries set rss=""');
 echo 'ok';

@@ -19,6 +19,7 @@ if(allowedToEditPage($id)){
 			if(!isset($no_echo_on_success))$msgs.='<em>'.__('A page has been deleted.').'</em>';
 			cache_clear('menus');
 			cache_clear('pages');
+			dbQuery('update page_summaries set rss=""');
 		}
 		else{
 			$msgs.='<em>'.__('That page does not exist.').'</em>';
