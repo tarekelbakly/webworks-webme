@@ -54,7 +54,9 @@ else{
 	$page=array('parent'=>$parent,'type'=>'0','body'=>'','name'=>'','title'=>'','ord'=>0,'description'=>'','id'=>0,'keywords'=>'','special'=>$special,'template'=>'','stylesheet'=>'','importance'=>0.5);
 	$id=0;
 }
-$maxLength = $DBVARS['site_page_length_limit'];
+$maxLength = (isset($DBVARS['site_page_length_limit']) && $DBVARS['site_page_length_limit'])
+	?$DBVARS['site_page_length_limit']
+	:0;
 echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['PHP_SELF'].'" maxLength="'.$maxLength.'">';
 echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
 if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
