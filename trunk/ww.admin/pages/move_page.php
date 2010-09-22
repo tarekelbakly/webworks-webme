@@ -13,3 +13,4 @@ for($i=0;$i<count($order);++$i){
 }
 cache_clear('pages');
 cache_clear('menus');
+dbQuery('update page_summaries set rss=""');
