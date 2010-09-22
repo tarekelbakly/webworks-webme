@@ -36,17 +36,17 @@ $(function(){
 	});
 });
 function pages_check_page_length(maxLength) {
-	if (maxLength==null) {
+	if (!+maxLength) {
 		return true;
 	}
 	var textAreas = $('textarea[name=body]');
 	for (i=0; i<textAreas.length; ++i) {
 		var contents = $(textAreas[i]).val();
 		if (contents.length>maxLength) {
-			var confirmText = 'This page has more characters ';
-			confirmText+= 'than the set limit. This may cause problems';
-			confirmText+= "\nDo you want to save the page anyway?";
-			return confirm(confirmText); 
+			return confirm(
+				'This page has more characters than the set limit. This may cause '
+				+'problems\nDo you want to save the page anyway?'
+			);
 		}
 	}
 	return true;
