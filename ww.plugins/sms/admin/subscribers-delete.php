@@ -5,11 +5,17 @@ $id=(int)$_REQUEST['id'];
 
 $addressBooks = dbAll('select id, subscribers from sms_addressbooks');
 foreach($addressBooks as $book) {
-	$subs = $book['subscribers'];
-	$subs = str_replace($id.',', '', $subs);
-	if ($subs==$book['subscribers']) {
+	$subs = json_decode($book['subscribers']);
+	if (!in_array($id, $subs)) {
 		continue;
 	}
+	for ($i=0; $i<count($subs); ++$i) {
+		if ($subs[$i]==$id) {
+			unset($subs[$i]);
+			break;
+		}
+	}
+	$subs = json_encode($subs);
 	dbQuery(
 		'update sms_addressbooks 
 		set subscribers = "'.$subs.'" 
@@ -17,4 +23,4 @@ foreach($addressBooks as $book) {
 	);
 }
 dbQuery('delete from sms_subscribers where id='.$id);
-echo '{"err":0,"id:"'.$id.'}';
+echo '{"err":0,"id":'.$id.'}';
