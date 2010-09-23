@@ -61,10 +61,21 @@ echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['P
 echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
 if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 echo wInput('id','hidden',$page['id']);
-echo '<div class="tabs">';
+echo '<div id="pages-tabs">';
+echo '<ul>';
+echo '<li><a href="#pages-common">Common Details</a></li>';
+echo '<li><a href="#pages-advanced">Advanced Options</a></li>';
+foreach($PLUGINS as $n=>$p){
+	if(isset($p['admin']['page_panel'])){
+		$name = $p['admin']['page_panel']['name'];
+		echo '<li><a href="#'.$name.'">'.$name.'</a></li>';
+	}
+}
+echo '</ul>';
 // { Common Details
-echo '<div class="tabPage"><h2>'.__('Common Details').'</h2><table style="clear:right">';
+echo '<div id="pages-common">';
 // { name, title, url
+echo '<table>';
 echo '<tr>';
 // { name
 echo '<th width="6%"><div class="help name"></div>'.__('name').'</th><td width="23%"><input id="name" name="name" value="'.htmlspecialchars($page['name']).'" /></td>';
@@ -156,7 +167,7 @@ switch($page['type']){
 echo '</table></div>';
 // }
 // { Advanced Options
-echo '<div class="tabPage"><h2>'.__('Advanced Options').'</h2>';
+echo '<div id="pages-advanced">';
 echo '<table>';
 echo '<td>';
 // { metadata 
@@ -230,7 +241,7 @@ echo '</td></tr></table></div>';
 // { tabs added by plugins
 foreach($PLUGINS as $n=>$p){
 	if(isset($p['admin']['page_panel'])){
-		echo '<div class="tabPage"><h2>'.$p['admin']['page_panel']['name'].'</h2>';
+		echo '<div id="'.$p['admin']['page_panel']['name'].'">';
 		$p['admin']['page_panel']['function']($page,$page_vars);
 		echo '</div>';
 	}
