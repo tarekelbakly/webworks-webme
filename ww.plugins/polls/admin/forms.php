@@ -7,9 +7,13 @@ if($id){
 else $data=array('name'=>'','enabled'=>1,'body'=>'');
 echo '<form action="'.$_url.'" method="post">';
 if($id)echo '<input type="hidden" name="id" value="'.$id.'" />';
-echo '<div class="tabs">';
+echo '<div id="poll-tabs">';
+echo '<ul>';
+echo '<li><a href="#polls-main-details-tab">Main</a></li>';
+echo '<li><a href="#polls-answers-tab">Answers</a></li>';
+echo '</ul>';
 // { main details
-	echo '<div class="tabPage"><h2>'.__('Main').'</h2>';
+	echo '<div id="polls-main-details-tab">';
 	echo '<table class="poll_creation_table" style="width:100%">';
 	echo '<tr><th>'.__('Name').'</th><td><input name="name" value="'.htmlspecialchars($data['name']).'" /></td>';
 	echo '<th>'.__('Enabled').'</th><td><select name="enabled"><option value="1">Yes</option><option value="0"';
@@ -19,7 +23,7 @@ echo '<div class="tabs">';
 	echo '</table></div>';
 // }
 // { answers
-	echo '<div class="tabPage"><h2>'.__('Answers').'</h2><table id="poll_answers" width="100%">';
+	echo '<div id="polls-answers-tab"><table id="poll_answers" width="100%">';
 	echo '<tr><th>Answer</th><th>Votes so far</th><th><a href="javascript:add_answer_row()">add answer</a></th></tr>';
 	if($id){
 		$answers=dbAll("select * from poll_answer where poll_id=$id order by num");

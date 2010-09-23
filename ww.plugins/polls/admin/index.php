@@ -1,4 +1,5 @@
 <?php
+ww_addScript('/ww.plugins/polls/admin/polls.js');
 echo admin_menu(array(
 	'New'=>$_url.'&action=newPoll',
 	'View All'=>$_url
