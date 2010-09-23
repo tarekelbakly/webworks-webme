@@ -6,6 +6,7 @@
         Report Bugs: <conor@macaoidh.name>
 */
 
+ww_addScript('/ww.plugins/dynamic-search/files/admin.js');
 $SS=array();
 $q=dbAll('select value from site_vars where name="catags"');
 $catags=explode(',',$q[0]['value']);
@@ -38,9 +39,12 @@ if($delete!=''){
 }
 
 $html='
-<div class="tabs">
-	<div class="tabPage">
-		<h2>Search Options</h2>
+<div id="dynamic-search-tabs">
+	<ul>
+		<li><a href="#dynamic-search-options">Search Options</a></li>
+		<li><a href="#dynamic-search-popular">Popular Searches</a></li>
+	</ul>
+	<div id="dynamic-search-options">
 		<form method="post">
 			<table style="margin:10px;width:65%">
 				<tr><td colspan="3"><i>A search category must be a pagename. The search engine will then search that page and all subpages</i></td></tr>';
@@ -65,8 +69,7 @@ $html.='
 			</table>
 		</form>
 	</div>
-	<div class="tabPage">
-		<h2>Popular Searches</h2>';
+	<div id="dynamic-search-popular">';
 
 $q=dbAll('select *, count(search) as occurances from latest_search group by search order by occurances desc limit 8');
 $c=count($q);
