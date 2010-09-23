@@ -37,13 +37,18 @@ echo 	'<h3>Form Options</h3>';
 
 if(isset($updated)) echo '<em>'.$updated.'</em>';
 
-echo '<div class="tabs">';
+echo '<div id="mailing-list-form-options-tabs" class="mailing-list-tabs">';
 
 $sub_val = ($OPT['dis_sub']==1)?'checked':'';
 $name_val = ($OPT['col_name']==1)?'checked':'';
 
 echo '
-<div class="tabPage"><h2>Frontend</h2>
+<ul>
+	<li><a href="#mailing-list-form-frontend">Frontend</a></li>
+	<li><a href="#mailing-list-form-admin">Admin</a></li>
+	<li><a href="#mailing-list-email-layout">Verification Email Layout</a></li>
+</ul>
+<div id="mailing-list-form-frontend">
 	<form method="post">
 		<table>
 			<tr><td>Display submit button:</td><td><input type="checkbox" value="1" name="dis_sub"'.$sub_val.'/></td></tr>
@@ -62,7 +67,7 @@ $bcc_val = ($OPT['use_bcc']==1)?'checked':'';
 $js_val = ($OPT['use_js']==1)?'checked':'';
 
 echo '
-<div class="tabPage"><h2>Admin</h2>
+<div id="mailing-list-form-admin">
 	<form method="post">
 		<table>
 			<tr><td>Display pending emails:</td><td><input type="checkbox" value="1" name="dis_pend"'.$pend_val.'/></td></tr>
@@ -76,7 +81,7 @@ echo '
 ';
 
 echo '
-<div class="tabPage"><h2>Verification Email Layout</h2>
+<div id="mailing-list-email-layout">
 	<form method="post" id="form">
 		<table>
 			<tr><td>From:</td><td><input type="text" name="from" value="'.$OPT['from'].'"/></td><td>Email address to send from.</td></tr>
@@ -89,5 +94,3 @@ echo '
 ';
 
 echo '</div>';
-
-?>

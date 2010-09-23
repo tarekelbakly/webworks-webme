@@ -13,17 +13,17 @@ echo '
   $(document).ready(function() {
       $("#emailForm").validate({
         rules: {
-          subject:{
-		required:true;
-		min-lenght:2;
-	},
-          body:"required"
-	},
+          	subject:{
+				required:true,
+				minlength:2
+			},
+          	body:"required"
+		},
         messages:{
-	  subject: "",
-          body: ""
+	  		subject: "",
+          	body: ""
         },
-	onkeyup:true
+		onkeyup:true
       });
     });
 </script>
@@ -66,12 +66,15 @@ if(isset($updated)) echo '<em>'.$updated.'</em>';
 
 echo '
 <form method="post" id="emailForm">
-	<div class="tabs">
+	<div class="mailing-list-tabs">
+		<ul>
+			<li><a href="#mailing-list-email-main-details">Main</a><li>
+			<li><a href="#mailing-list-email-options">Options</a></li>
+		</ul>
 ';
 
 echo '
-		<div class="tabPage">
-			<h2>Main</h2>
+		<div id="mailing-list-email-main-details">
 			<table style="width:100%">
 				<tr><th>Subject</th><td><input name="subject" value="" style="width:85%"/></td>
 				<tr><th>Body</th><td colspan="2">'.ckeditor('body').'</td></tr>
@@ -81,8 +84,7 @@ echo '
 ';
 
 echo '
-		<div class="tabPage">
-			<h2>Options</h2>
+		<div id="mailing-list-email-options">
 			<table width="100%">
 				<tr><td>Type:</td><td><select name="type"><option>HTML</option><option>Text</option></td></tr>
 				<tr><td>Reply To:</td><td><input type="text" name="reply_to"/></td></tr>

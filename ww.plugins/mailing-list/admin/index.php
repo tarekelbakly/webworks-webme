@@ -6,6 +6,7 @@
 	Report Bugs: <conor@macaoidh.name>
 */
 
+ww_addScript('/ww.plugins/mailing-list/files/admin.js');
 echo admin_menu(array(
 	'View List'=>$_url,
 	'New Email'=>$_url.'&mailing_list=send_email',
