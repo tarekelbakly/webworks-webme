@@ -45,22 +45,20 @@ function OnlineStore_processOrder($id, $order) {
 	if (isset($form_vals->email)) {
 		$form_vals->Email=$form_vals->email;
 	}
-	if (isset($form_vals->Email)) {
-		$headers = "From: $from\r\nReply-To: $from\r\nBCC: kae@webworks.ie\r\nX-Mailer: PHP/" . phpversion();
-		$headers.='MIME-Version: 1.0' . "\r\n";
-		$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-		$headers .= 'To: '.$form_vals->Email. "\r\n";
-		if ($bcc) {
-			$headers.='BCC: '.$bcc."\r\n";
-		}
-		mail(
-			$form_vals->Email,
-			'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] invoice #'. $id,
-			$order['invoice'],
-			$headers
-		);
+	if (!isset($form_vals->Email)) {
+		$form_vals->Email='no-email-supplied@example.com';
 	}
-	else {
-		mail('kae@webworks.ie',$_SERVER['HTTP_HOST'].' shopping test',var_export($order,true)."\n\n".$_SERVER['REQUEST_URI']);
+	$headers = "From: $from\r\nReply-To: $from\r\nBCC: kae@webworks.ie\r\nX-Mailer: PHP/" . phpversion();
+	$headers.='MIME-Version: 1.0' . "\r\n";
+	$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+	$headers .= 'To: '.$form_vals->Email. "\r\n";
+	if ($bcc) {
+		$headers.='BCC: '.$bcc."\r\n";
 	}
+	mail(
+		$form_vals->Email,
+		'['.str_replace('www.', '', $_SERVER['HTTP_HOST']).'] invoice #'. $id,
+		$order['invoice'],
+		$headers
+	);
 }
