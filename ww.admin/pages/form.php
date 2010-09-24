@@ -3,7 +3,9 @@ require '../../ww.incs/common.php';
 if(!is_admin())exit;
 require '../admin_libs.php';
 // { take care of actions
-$id=(int)$_REQUEST['id'];
+$id=isset($_REQUEST['id'])
+	?(int)$_REQUEST['id']
+	:0;
 $parent=(int)@$_REQUEST['parent'];
 $action=@$_REQUEST['action'];
 $msgs='';
@@ -25,7 +27,7 @@ echo '<html><head>'
 	.'<script src="/j/datatables/media/js/jquery.dataTables.js"></script>'
 	.'<script src="/j/jquery.remoteselectoptions.js"></script>'
 	.'<script src="/j/cluetip/jquery.cluetip.js"></script>'
-	.'<script src="form.js"></script>'
+	.'<script src="form-20100924.js"></script>'
 	.'<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />'
 	.'<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />'
 	.'<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />'
