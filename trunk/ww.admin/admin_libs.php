@@ -160,26 +160,34 @@ function ckeditor($name,$value='',$height=250){
 		.'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME",scayt_autoStartup:false});});'
 		."//]]></script>";
 }
-function sanitise_html($html) {
-	$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
-	$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
-	$html = str_replace('</font>', '</span>', $html);
-	$html = preg_replace("/<p>[\s]*(<img[^>]*>)<\/p>/",'\1',$html);
-	$html = html_fixImageResizes($html);
-	// { clean skype crap from page
-	$html = str_replace('<span class="skype_pnh_left_span" skypeaction="skype_dropdown">&nbsp;&nbsp;</span>','',$html);
-	$html = str_replace('<span class="skype_pnh_dropart_flag_span" skypeaction="skype_dropdown" style="background-position: -1999px 1px ! important;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>','',$html);
-	$html = str_replace('<span class="skype_pnh_dropart_span" skypeaction="skype_dropdown" title="Skype actions">&nbsp;&nbsp;&nbsp;</span>','',$html);
-	$html = str_replace('<span class="skype_pnh_right_span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>','',$html);
-	$html = preg_replace('#<span class="skype_pnh_print_container">([^<]*)</span>#','\1',$html);
-	$html = preg_replace('#<span class="skype_pnh_text_span">([^<]*)</span>#','\1',$html);
-	$html = preg_replace('#<span class="skype_pnh_mark">[^<]*</span>#','',$html);
-	$html = preg_replace('#<span class="skype_pnh_textarea_span">([^<]*)</span>#','\1',$html);
-	$html = preg_replace('#<span class="skype_pnh_highlighting_inactive_common" dir="ltr"[^>]*>([^<]*)</span>#','\1',$html);
-	$html = preg_replace('#<span class="skype_pnh_container"[^>]*>([^<]*)</span>#','\1',$html);
-	$html = preg_replace('#<span class="skype_pnh_text_span">([^<]*)</span>#','\1',$html);
-	$html = preg_replace('#<span class="skype_pnh_print_container">([^<]*)</span>#','\1',$html);
-	// }
-	$html=str_replace('&quot;','"',$html);
+function sanitise_html($original_html) {
+	do{
+		$html = $original_html;
+		$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
+		$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
+		$html = str_replace('</font>', '</span>', $html);
+		$html = preg_replace("/<p>[\s]*(<img[^>]*>)<\/p>/",'\1',$html);
+		$html = html_fixImageResizes($html);
+		$html = str_replace(' alt=""','',$html);
+		$html = str_replace(">\n",'>',$html);
+		$html = str_replace(">\t",'>',$html);
+		// { clean skype crap from page
+		$html = str_replace('<span class="skype_pnh_left_span" skypeaction="skype_dropdown">&nbsp;&nbsp;</span>','',$html);
+		$html = str_replace('<span class="skype_pnh_dropart_flag_span" skypeaction="skype_dropdown" style="background-position: -1999px 1px ! important;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>','',$html);
+		$html = str_replace('<span class="skype_pnh_dropart_span" skypeaction="skype_dropdown" title="Skype actions">&nbsp;&nbsp;&nbsp;</span>','',$html);
+		$html = str_replace('<span class="skype_pnh_right_span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>','',$html);
+		$html = preg_replace('#<span class="skype_pnh_print_container">([^<]*)</span>#','\1',$html);
+		$html = preg_replace('#<span class="skype_pnh_text_span">([^<]*)</span>#','\1',$html);
+		$html = preg_replace('#<span class="skype_pnh_mark">[^<]*</span>#','',$html);
+		$html = preg_replace('#<span class="skype_pnh_textarea_span">([^<]*)</span>#','\1',$html);
+		$html = preg_replace('#<span class="skype_pnh_highlighting_inactive_common" dir="ltr"[^>]*>([^<]*)</span>#','\1',$html);
+		$html = preg_replace('#<span class="skype_pnh_container"[^>]*>([^<]*)</span>#','\1',$html);
+		$html = preg_replace('#<span class="skype_pnh_text_span">([^<]*)</span>#','\1',$html);
+		$html = preg_replace('#<span class="skype_pnh_print_container">([^<]*)</span>#','\1',$html);
+		// }
+		$html=str_replace('&quot;','"',$html);
+		$has_changed=$html!=$original_html;
+		$original_html=$html;
+	}while($has_changed);
 	return $html;
 }
