@@ -61,6 +61,9 @@ function dbInit(){
 	$GLOBALS['db']=$db;
 	return $db;
 }
+function dbLastInsertId(){
+	return dbOne('select last_insert_id() as id','id');
+}
 function dbOne($query, $field='') {
 	$r = dbRow($query);
 	return $r[$field];
