@@ -161,13 +161,13 @@ function ckeditor($name,$value='',$height=250){
 		."//]]></script>";
 }
 function sanitise_html($original_html) {
+	$original_html= html_fixImageResizes($original_html);
 	do{
 		$html = $original_html;
 		$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
 		$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
 		$html = str_replace('</font>', '</span>', $html);
 		$html = preg_replace("/<p>[\s]*(<img[^>]*>)<\/p>/",'\1',$html);
-		$html = html_fixImageResizes($html);
 		$html = str_replace(' alt=""','',$html);
 		$html = str_replace(">\n",'>',$html);
 		$html = str_replace(">\t",'>',$html);
