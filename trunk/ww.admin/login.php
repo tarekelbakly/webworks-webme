@@ -28,6 +28,11 @@ if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password
 		<title><?php echo __('Login'); ?></title>
 		<link rel="stylesheet" type="text/css" href="/ww.admin/theme/login.css" />
 		<script type="text/javascript" src="/js/"></script>
+		<script>
+			$(function() {
+				$('#login-tabs').tabs();
+			});
+		</script>
 	</head>
  <body onload="document.getElementById('email').focus();tabs_init();">
  	<div id="wrapper">
@@ -46,9 +51,12 @@ if(isset($message) && $message!='')echo '<br /><br /><strong>'.$message.'</stron
 ?>
 		</p>
 	</div>
-	<div class="tabs" style="width:400px;text-align:left;margin:0 auto">
-		<div class="tabPage">
-   		<h2><?php echo __('Login'); ?></h2>
+	<div id="login-tabs" style="width:40%;margin:0 auto;">
+		<ul>
+			<li><a href="#admin-login">Login</a></li>
+			<li><a href="#admin-reminder">Reminder</a></li>
+		</ul>
+		<div id="admin-login">
 	   	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 				<table cols="3">
 			   	<tr><th colspan="1"><?php echo __('email'); ?></th><td colspan="2"><input id="email" name="email" /></td></tr>
@@ -57,8 +65,7 @@ if(isset($message) && $message!='')echo '<br /><br /><strong>'.$message.'</stron
 				</table>
 	   	</form>
 		</div>
-		<div class="tabPage">
-   		<h2><?php echo __('Reminder'); ?></h2>
+		<div id="admin-reminder">
 	   	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 				<table cols="3">
 			   	<tr><th colspan="1"><?php echo __('email'); ?></th><td colspan="2"><input id="email" type="text" name="email" /></td></tr>

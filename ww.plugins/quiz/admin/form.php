@@ -277,7 +277,6 @@ function addQuestion () {
 	global $questionID;
 	global $question;
 	// { Question Tab
-	$returnString= '<div class="tabpage">';
 	$returnString= $returnString.'<h2>';
 	if (isset($_GET['questionid'])) {
 		$questionID= addslashes($_GET['questionid']);
@@ -330,7 +329,6 @@ function addQuestion () {
 	$returnString= $returnString.'</div>';
 	// }
 	// { Answers Tab
-	$returnString= $returnString.'<div class="tabpage">';
 	$returnString= $returnString.'<h2>';
 	if (isset($questionID)) {
 		$returnString= $returnString.'Edit Answers';

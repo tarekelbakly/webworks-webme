@@ -20,8 +20,15 @@ if (isset($_REQUEST['online_store_currency'])
 }
 $csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 $c='<div class="tabs">';
+$c.= '<ul>';
+$c.='<li><a href="#online-store-orders">Orders</a></li>';
+$c.='<li><a href="#online-store-form">Form</a></li>';
+$c.='<li><a href="#online-stores-fields">Fields</a></li>';
+$c.='<li><a href="#online-store-invoice">Invoice</a></li>';
+$c.='<li><a href="#online-store-payment">Payment Details</a></li>';
+$c.='</ul>';
 // { orders
-$c.='<div class="tabPage"><h2>Orders</h2>';
+$c.='<div id="online-store-orders">';
 if (!isset($_SESSION['online-store'])) {
 	$_SESSION['online-store']=array();
 }
@@ -66,7 +73,7 @@ else {
 $c.='</div>';
 // }
 // { form
-$c.='<div class="tabPage"><h2>Form</h2>';
+$c.='<div id="online-store-form">';
 $c.='<p>This is the form that will be presented as the checkout.</p>';
 if ($page['body']==''
 	|| $page['body']=='<h1>'.htmlspecialchars($page['name']).'</h1><p>&nbsp;</p>'
@@ -82,16 +89,14 @@ if (!isset($vars['online_stores_fields'])
 ) {
 	$vars['online_stores_fields']='{}';
 }
-$c.='<div class="tabPage"><h2>Fields</h2>';
 $c.='<div id="online-stores-fields">'
 	.'<script>var os_fields='.$vars['online_stores_fields'].';</script>'
 	.'<input type="hidden" name="page_vars[online_stores_fields]" value="'
 	.htmlspecialchars($vars['online_stores_fields']).'" />'
 	.'</div>';
-$c.='</div>';
 // }
 // { invoice details
-$c.='<div class="tabPage"><h2>Invoice</h2>';
+$c.='<div id="online-store-invoice">';
 $c.='<p>This is what will be sent out to the buyer after the payment succeeds.</p>';
 if (!isset($vars['online_stores_invoice']) || $vars['online_stores_invoice']=='') {
 	$vars['online_stores_invoice']=file_get_contents(
@@ -102,8 +107,8 @@ $c.=ckeditor('page_vars[online_stores_invoice]', $vars['online_stores_invoice'])
 $c.='</div>';
 // }
 // { payment details
-$c.='<div class="tabPage"><h2>Payment Details</h2>';
-$c.='<table width="100%">';
+$c.='<div id="online-store-payment">';
+$c.='<table style="width:100%">';
 // { admin email address
 $c.='<tr><th style="width:20%">Admin email address</th><td>'
 	.'<input type="email" name="page_vars[online_stores_admin_email]"';
@@ -125,16 +130,22 @@ $c.= '</select></td></tr>';
 // }
 // { payment types
 $c.='<tr><th>Payment Types</th><td><div class="tabs">';
+$c.='<ul>';
+$c.='<li><a href="#online-store-payments-paypal">PayPal</a></li>';
+$c.='<li><a href="#online-store-payments-realex">Realex</a></li>';
+$c.='</ul>';
 // { paypal
-$c.='<div class="tabPage"><h2>PayPal</h2>'
-	.'<table><tr><th>Email Address</th><td><input type="email" name="page_vars[online_stores_paypal_address]"';
+$c.='<div id="online-store-payments-paypal">';
+$c.='<table>';
+$c.='<tr><th>Email Address</th>';
+$c.='<td><input type="email" name="page_vars[online_stores_paypal_address]"';
 if (isset($vars['online_stores_paypal_address'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_paypal_address']).'"';
 }
 $c.=' /></td></tr></table></div>';
 // }
 // { realex
-$c.='<div class="tabPage"><h2>Realex</h2>'
+$c.='<div id="online-store-payments-realex">'
 	.'<table>';
 // { Merchant ID
 $c.='<tr><th>Merchant ID</th><td>'

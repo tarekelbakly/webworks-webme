@@ -108,7 +108,7 @@ $(function(){
 		document.location='/ww.admin/pages/form.php?id='+window.page_menu_currentpage+'&online-store-status='+$(ev.target).val();
 	});
 	os_update_fields();
-	$('.tabs_menu_link').live('mousedown',os_update_fields);
+	$('.ui-tabs-nav').live('mousedown',os_update_fields);
 	$('form').bind('submit',os_update_fields);
 	$("#online_store_redirect_to").remoteselectoptions({
 		url:"/ww.admin/pages/get_parents.php"

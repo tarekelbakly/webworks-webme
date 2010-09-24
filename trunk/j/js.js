@@ -369,7 +369,11 @@ function tabs_show(a,b){
 }
 var tabs_instances=0,tabs_functions=[],tabs_names=[];
 $(function(){
+	$('.tabs').tabs();
 	var p=window.plugins_to_load;
+	if (p==null) {
+		return;
+	}
 	if(p.ajaxmenu)           loadAjaxMenu();
 	if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
 	if(p.formvalidation)     loadFormValidation();
@@ -383,5 +387,4 @@ $(function(){
   if(p.eventsAdmin)      loadScript('/ww.admin/ajax/events.admin.php?pageid='+pagedata.id);
 	if(p.newsAdmin)        loadScript('/ww.admin/ajax/news.admin.php?pageid='+pagedata.id);
 
-	if(_a('webmeComments'))loadScript('/ajax/comments.php?pageid='+pagedata.id);
 });
