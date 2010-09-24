@@ -154,8 +154,16 @@ switch($page['type']){
 	// }
 	case '9': // { table of contents
 		echo '<tr><td colspan="6"><div class="tabs">';
-		echo '<div class="tabPage"><h2>Header</h2><p>This will appear above the table of contents.</p>'.ckeditor('body',$page['body']).'</div>';
-		echo '<div class="tabPage"><h2>Footer</h2><p>This will appear below the table of contents.</p>'.ckeditor('page_vars[footer]',$page_vars['footer']).'</div>';
+		echo '<ul>';
+		echo '<li><a href="#table-of-contents-header">Header</a></li>';
+		echo '<li><a href="#table-of-contents-footer">Footer</a></li>';
+		echo '</ul>';
+		echo '<div id="table-of-contents-header">';
+		echo '<p>This will appear above the table of contents.</p>';
+		echo ckeditor('body',$page['body']).'</div>';
+		echo '<div id="table-of-contents-footer">';
+		echo '<p>This will appear below the table of contents.</p>';
+		echo ckeditor('page_vars[footer]',$page_vars['footer']).'</div>';
 		echo '</div></td></tr>';
 		break;
 	// }
