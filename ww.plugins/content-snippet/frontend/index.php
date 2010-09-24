@@ -2,6 +2,7 @@
 function show_content_snippet($vars){
 	if(!is_array($vars) && isset($vars->id) && $vars->id){
 		$data=cache_load('content_snippets',$vars->id.'-data');
+$data=false;
 		if($data===false){
 			$data=dbRow('select * from content_snippets where id='.$vars->id,'content');
 			$data['content']=json_decode($data['content'],true);
@@ -54,7 +55,7 @@ function show_content_snippet($vars){
 			$html.=$content['html'].'</li>';
 			++$i;
 		}
-		$html.='</ul><script>$(function(){$("#'.$id.'").hrzAccordion({handlePosition:"left"});});</script>';
+		$html.='</ul><script>$(function(){$("#'.$id.'").hrzAccordion({handlePosition:"left",cycle:true,cycleInterval:2000});});</script>';
 		return $html;
 		return $data['accordion_direction'];
 		// }

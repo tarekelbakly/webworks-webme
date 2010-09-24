@@ -94,7 +94,6 @@
 	$.fn.extend({
 	   
 		hrzAccordionLoop: function(options) {
-return;
 			return this.each(function(a){  
 				
 				var container = $(this).attr("id") || $(this).attr("class");
@@ -283,7 +282,10 @@ return;
 				});	
 				
 				if(settings.cycle === true){
-					$(this).hrzAccordionLoop();
+					$this=$(this);
+					setTimeout(function(){
+						$this.hrzAccordionLoop();
+					},1);
 				}
 			});				
 		}		
