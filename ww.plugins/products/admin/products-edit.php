@@ -61,7 +61,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		}
 		else{
 			dbQuery("insert into products $sql,date_created=now()");
-			$id=dbOne('select last_insert_id() as id','id');
+			$id=dbLastInsertId();
 		}
 		// }
 		// { save categories
