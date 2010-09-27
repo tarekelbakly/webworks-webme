@@ -2,7 +2,6 @@
 function image_gallery_show($PAGEDATA){
 	$vars=$PAGEDATA->vars;
 	// {
-	global $plugins_to_load;
 	$c=$PAGEDATA->render();
 	$start=getVar('start');
 	if(!$start)$start=0;

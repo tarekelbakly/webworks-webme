@@ -70,7 +70,6 @@ function formDisplaySend($page,$vars){
 	return $c;
 }
 function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_submit=1){
-	global $plugins_to_load;
 	if(!isset($_SESSION['forms']))$_SESSION['forms']=array();
 	$c='';
 	if(!$only_show_contents && $show_submit){
