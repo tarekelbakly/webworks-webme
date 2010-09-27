@@ -136,7 +136,6 @@ function menu_show($b){
 		else $c.='<a><span class="l"></span>&nbsp;<span class="r"></span></a>';
 		$c.='</div>';
 	}
-	$c.='<script type="text/javascript">plugins_to_load.ajaxmenu=1;</script>';
 	cache_save('menus',$md5,$c);
 	return $c;
 }
