@@ -74,9 +74,8 @@ function formDisplayShow($page,$vars,$err='',$only_show_contents=false,$show_sub
 	if(!isset($_SESSION['forms']))$_SESSION['forms']=array();
 	$c='';
 	if(!$only_show_contents && $show_submit){
-		$c.='<form action="'.$_SERVER['REQUEST_URI'].'" method="post" class="ww_form formvalidation" enctype="multipart/form-data">';
+		$c.='<form action="'.$_SERVER['REQUEST_URI'].'" method="post" class="ww_form" enctype="multipart/form-data">';
 	}
-	else if(!$only_show_contents)$plugins_to_load[]='"formvalidation":1';
 	$c.='<fieldset>';
 	if($err)$c.='<div class="errorbox">'.$err.'</div>';
 	if($vars['forms_template'] && strpos($vars['forms_template'],'%')===false)$vars['forms_template']='';
