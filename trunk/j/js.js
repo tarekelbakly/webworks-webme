@@ -1,9 +1,4 @@
-var lang=[];
 $j=jQuery;
-_d=document;
-function _a(i){ // shortcut version of _a(id)
-	return _d.getElementById(i);
-}
 function $type(obj){
 	if (obj==undefined) return false;
 	if (obj.htmlElement) return 'element';
@@ -28,7 +23,7 @@ function $type(obj){
 };
 function addEls(p,c){
 	if(!p)return;
-	if($type(p)=='string')p=_a(p);
+	if($type(p)=='string')p=document.getElementById(p);
 	if(isArray(c))for(var i=0;i<c.length;++i)addEls(p,c[i]);
 	else if(c)p.appendChild($type(c)=='string'||(+c)===c?newText(c):c);
 	return p;
@@ -89,13 +84,10 @@ function getClassName(el){
 	return el&&el.className?el.className:'';
 }
 function htmlspecialchars(str) {
-	var div=_d.createElement('div');
-	var text=_d.createTextNode(str);
+	var div=document.createElement('div');
+	var text=document.createTextNode(str);
 	div.appendChild(text);
 	return div.innerHTML;
-}
-function initialise(){
-	alert('function initialise() no longer needs to be called from the HTML template. please remove it');
 }
 function initShowHide(vis,objName){
 	if(!objName)objName='';
@@ -175,66 +167,19 @@ function loadArray(k,v){
 	});
 	return a;
 }
-function loadFormValidation(skipload){
-	if(skipload){
-		if(!window.formvalidation_ids)window.formvalidation_ids=[];
-		var els=$('.formvalidation');
-		els.each(function(key,el){
-			$(el).removeClass('formvalidation');
-			if(!el.id)el.id='formvalidation'+window.formvalidation_ids.length;
-			window.formvalidation_ids.push(el.id);
-			$(el).validate();
-		});
-	}
-	else loadJS('http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js',0,0,'loadFormValidation(1)',1);
-}
-function loadJS(url,id,lang,onload,runanyway){
-	var i=0;
-	for(;i<loadedScripts.length;++i){
-		if(loadedScripts[i]==url){
-			if(onload && runanyway)return eval(onload);
-			return 0;
-		}
-	}
-	loadedScripts.push(url);
-	var el=newScript(url);
-	if(id){
-		el.id=id;
-	}
-	if(lang){
-		el.lang=lang;
-	}
-	if(onload){
-		el.onload_triggered=0;
-		el.onload=function(){
-			if(!this.onload_triggered++){
-				eval(onload);
-			}
-		};
-		el.onreadystatechange=function(){
-			if(this.readyState=='loaded'||this.readyState=='complete'){
-				if(!this.onload_triggered++){
-					eval(onload);
-				}
-			}
-		};
-	}
-	_d.getElementsByTagName('head')[0].appendChild(el);
-	return 1;
-}
 function loadScript(url){
 	if(isLoaded(url))return 0;
 	loadedScripts.push(url);
 	if(kaejax_is_loaded&&/\.php/.test(url))url+=(/\?/.test(url)?'&':'?')+'kaejax_is_loaded';
 	var el=newScript(url);
-	_d.getElementsByTagName('head')[0].appendChild(el);
+	document.getElementsByTagName('head')[0].appendChild(el);
 	return 1;
 }
 function loadUrl(url){
-	_d.location=url;
+	document.location=url;
 }
 function newEl(t,id,cn,els){
-	var el=_d.createElement(t);
+	var el=document.createElement(t);
 	if(id)X(el,{id:id,name:id});
 	if(els){
 		if($type(els)=='string')el.innerHTML=els;
@@ -246,17 +191,9 @@ function newEl(t,id,cn,els){
 function newLink(h,t,id,c){
 	return X(newEl('a',id,c,t),{href:h});
 }
-function newNumberRange(from,to,padding){
-	var arr=[],i=0;
-	for(;i<to-from+1;++i){
-		arr[i]=''+(from+i);
-		while(arr[i].length<padding)arr[i]='0'+arr[i];
-	}
-	return arr;
-}
 function newScript(url){
 	var el;
-	if(_d.ie)el=_d.createElement('<script type="text/javascript" src="'+url+'"></script>');
+	if(document.ie)el=document.createElement('<script type="text/javascript" src="'+url+'"></script>');
 	else{
 		el=newEl('script');
 		X(el,{type:"text/javascript",src:url});
@@ -280,13 +217,13 @@ function newSelectbox(name,keys,vals,s,f){
 	return el2;
 }
 function newText(a){
-	return _d.createTextNode(a);
+	return document.createTextNode(a);
 }
 function replaceEl(f,t){
 	if(f)f.parentNode.replaceChild(t,f);
 }
 function showhide(id){
-	var el=_a('showhideDiv'+id),link=_a('showhideLink'+id);
+	var el=document.getElementById('showhideDiv'+id),link=document.getElementById('showhideLink'+id);
 	var objName=link.innerHTML.replace(/^\[(show|hide)(.*)\]/,'$2');
 	var a=el.style.display=='block'?{d:'none',t:'[show'}:{d:'block',t:'[hide'};
 	el.style.display=a.d;
@@ -302,10 +239,10 @@ function X(d,s){
 var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,inCheckout=0;
 var showhideDivs=[],showhideNum=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var function_urls=[];
-var kaejax_timeouts=[],kaejax_xhrinstances=[],ms_select_defaults=[],ms_show_toplinks=true;
+var kaejax_timeouts=[],ms_select_defaults=[],ms_show_toplinks=true;
 // }
-// { browser-specific
-if(window.ie)window.XMLHttpRequest=function(){var l=(ScriptEngineMajorVersion()>=5)?"Msxml2":"Microsoft";return new ActiveXObject(l+".XMLHTTP")};function DOMParser(){};DOMParser.prototype={toString:function(){return"[object DOMParser]"},parseFromString:function(s,c){var x=new ActiveXObject("Microsoft.XMLDOM");x.loadXML(s);return x},parseFromStream:new Function,baseURI:""};function XMLSerializer(){};XMLSerializer.prototype={toString:function(){return"[object XMLSerializer]"},serializeToString:function(r){return r.xml||r.outerHTML},serializeToStream:new Function};
+// { browser-specific REMOVE ME IF THERE ARE NO COMPLAINTS
+// if(window.ie)window.XMLHttpRequest=function(){var l=(ScriptEngineMajorVersion()>=5)?"Msxml2":"Microsoft";return new ActiveXObject(l+".XMLHTTP")};function DOMParser(){};DOMParser.prototype={toString:function(){return"[object DOMParser]"},parseFromString:function(s,c){var x=new ActiveXObject("Microsoft.XMLDOM");x.loadXML(s);return x},parseFromStream:new Function,baseURI:""};function XMLSerializer(){};XMLSerializer.prototype={toString:function(){return"[object XMLSerializer]"},serializeToString:function(r){return r.xml||r.outerHTML},serializeToStream:new Function};
 // }
 var Json = {
 	toString: function(arr) {
@@ -313,14 +250,11 @@ var Json = {
 	}
 };
 $(function(){
-	$('.tabs').tabs();
 	var p=window.plugins_to_load;
 	if (p==null) {
 		return;
 	}
 	if(p.ajaxmenu)           loadAjaxMenu();
-	if(p.carousel)           loadJS('/j/jcarousellite_1.0.1.js',0,0,"$('.carousel').jCarouselLite({btnNext:'.carousel-next',btnPrev:'.carousel-prev'});");
-	if(p.formvalidation)     loadFormValidation();
 	if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
 	if(p.showhide)           initShowHide();
 	if(p.fontsize_controls)  loadScript('/j/fonts.js');
