@@ -89,19 +89,6 @@ function htmlspecialchars(str) {
 	div.appendChild(text);
 	return div.innerHTML;
 }
-function initShowHide(vis,objName){
-	if(!objName)objName='';
-	var els=$('div.showhide'),i;
-	for(var i=0;i<els.length;++i){
-		var thisvis=vis?1:($(els[i]).hasClass('show')?1:0);
-		var link=newLink('javascript:showhide('+(++showhideNum)+');',thisvis?'[hide'+objName+']':'[show'+objName+']','showhideLink'+showhideNum,'showhideLink');
-		els[i].parentNode.insertBefore(link,els[i]);
-		els[i].id='showhideDiv'+showhideNum;
-		els[i].style.display=thisvis?'block':'none';
-		$(els[i]).removeClass('showhide');
-	}
-	return els.length-1;
-}
 function isArray(o){
 	return o instanceof Array||typeof o=='array';
 }
@@ -154,11 +141,6 @@ function kaejax_sendRequests(uri){
 }
 // }
 function loadAjaxMenu(){
-	var el=$('.ajaxmenu')[0];
-	if(!el)return;
-	var id=el.id.replace(/ajaxmenu/,'');
-	if(id && id=='am_top')return;
-	loadScript('/ajax/menu.php?pageid='+pagedata.id);
 }
 function loadArray(k,v){
 	var a=[],i;
@@ -222,13 +204,6 @@ function newText(a){
 function replaceEl(f,t){
 	if(f)f.parentNode.replaceChild(t,f);
 }
-function showhide(id){
-	var el=document.getElementById('showhideDiv'+id),link=document.getElementById('showhideLink'+id);
-	var objName=link.innerHTML.replace(/^\[(show|hide)(.*)\]/,'$2');
-	var a=el.style.display=='block'?{d:'none',t:'[show'}:{d:'block',t:'[hide'};
-	el.style.display=a.d;
-	link.replaceChild(newText(a.t+objName+']'),link.childNodes[0]);
-}
 window.ww={
 	CKEDITOR:'ckeditor'
 };
@@ -236,8 +211,7 @@ function X(d,s){
 	return $.extend(d,s);
 }
 // { variables
-var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,inCheckout=0;
-var showhideDivs=[],showhideNum=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var function_urls=[];
 var kaejax_timeouts=[],ms_select_defaults=[],ms_show_toplinks=true;
 // }
@@ -250,18 +224,9 @@ var Json = {
 	}
 };
 $(function(){
-	var p=window.plugins_to_load;
-	if (p==null) {
-		return;
-	}
-	if(p.ajaxmenu)           loadAjaxMenu();
-	if(p.image_gallery)      loadScript('/ajax/image.gallery.php?pageid='+pagedata.id);
-	if(p.showhide)           initShowHide();
-	if(p.fontsize_controls)  loadScript('/j/fonts.js');
-	if(p.os_fader)           loadScript('/j/os_fader.js');
-
-	// the following items have not yet been optimised at the PHP source
-  if(p.eventsAdmin)      loadScript('/ww.admin/ajax/events.admin.php?pageid='+pagedata.id);
-	if(p.newsAdmin)        loadScript('/ww.admin/ajax/news.admin.php?pageid='+pagedata.id);
-
+	var el=$('.ajaxmenu')[0];
+	if(!el)return;
+	var id=el.id.replace(/ajaxmenu/,'');
+	if(id && id=='am_top')return;
+	loadScript('/ajax/menu.php?pageid='+pagedata.id);
 });

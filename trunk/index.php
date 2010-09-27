@@ -46,7 +46,6 @@ if (!isset($DBVARS['version']) || $DBVARS['version']<29) {
 	redirect('/p/upgrade.php');
 }
 $id=getVar('pageid', 0);
-$plugins_to_load=array(); // to be used by javascript
 $page=getVar('page');
 // }
 // { specials
@@ -274,17 +273,6 @@ $title=($PAGEDATA->title!='')
 	:str_replace('www.', '', $_SERVER['HTTP_HOST']).' > '.$PAGEDATA->name;
 $c='<title>'.htmlspecialchars($title).'</title>';
 // }
-// { generate plugins list for those that were not already figured out
-if (strpos($template, 'class="showhide"')!==false) {
-	$GLOBALS['plugins_to_load'][]='"showhide":1';
-}
-if (strpos($template, 'class="fontsize_controls"')!==false) {
-	$GLOBALS['plugins_to_load'][]='"fontsize_controls":1';
-}
-if (strpos($template, 'class="sc_ssearch"')!==false) {
-	$GLOBALS['plugins_to_load'][]='"sc_ssearch":1';
-}
-// }
 // { show stylesheet and javascript links
 $c.='WW_CSS_GOES_HERE';
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
@@ -312,9 +300,7 @@ if (isset($_SESSION['userdata'])
 ) {
 	$c.=',discount:'.(int)$_SESSION['userdata']['discount'];
 }
-$c.='},';
-$c.='plugins_to_load={'.join(',', $GLOBALS['plugins_to_load']).'};';
-$c.='document.write("<"+"style type=\'text/css\'>'
+$c.='};document.write("<"+"style type=\'text/css\'>'
 	.'a.nojs{display:none !important}<"+"/style>");';
 $c.='</script>';
 if (is_admin()) {
