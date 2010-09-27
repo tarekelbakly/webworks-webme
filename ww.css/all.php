@@ -5,7 +5,6 @@ $files=array(
 	'language_flags.css',
 	'ui.datepicker.css',
 	'forms.css',
-	'comments.css',
 	'contextmenu.css',
 	'lightbox.css',
 	'tabs.css',
