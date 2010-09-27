@@ -34,7 +34,7 @@ if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password
 			});
 		</script>
 	</head>
- <body onload="document.getElementById('email').focus();tabs_init();">
+ <body onload="document.getElementById('email').focus();">
  	<div id="wrapper">
 	
 	<div id="header"><div id="topImage"></div></div>
