@@ -275,9 +275,6 @@ $title=($PAGEDATA->title!='')
 $c='<title>'.htmlspecialchars($title).'</title>';
 // }
 // { generate plugins list for those that were not already figured out
-if (strpos($template, 'class="tabs"')!==false) {
-	$GLOBALS['plugins_to_load'][]='"tabs":1';
-}
 if (strpos($template, 'class="showhide"')!==false) {
 	$GLOBALS['plugins_to_load'][]='"showhide":1';
 }

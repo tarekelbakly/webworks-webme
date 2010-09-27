@@ -15,7 +15,7 @@ $admin_vars=array();
 	foreach(array('action','resize') as $v)$$v=getVar($v);
 	foreach(array('show_items','start') as $v)$$v=getVar($v,0);
 	$id=(int)@$_REQUEST['id'];
-	$plugins_to_load=array('"showhide":1','"tabs":1','"vkfade":1'); // to be used by javascript
+	$plugins_to_load=array('"showhide":1','"vkfade":1'); // to be used by javascript
 // }
 WW_addScript('/j/datatables/media/js/jquery.dataTables.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');

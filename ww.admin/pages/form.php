@@ -266,5 +266,5 @@ echo '</form>';
 echo WW_getScripts();
 echo WW_getCss();
 echo '<script>//<![CDATA[
-window.page_menu_currentpage='.$id.';var plugins_to_load={"showhide":1,"tabs":1};
+window.page_menu_currentpage='.$id.';var plugins_to_load={"showhide":1};
 //]]></script></body></html>';

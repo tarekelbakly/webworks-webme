@@ -7,7 +7,6 @@ $files=array(
 	'forms.css',
 	'contextmenu.css',
 	'lightbox.css',
-	'tabs.css',
 	'../j/jquery-ui/css/smoothness/jquery-ui-1.8.1.custom.css'
 );
 $name='';
