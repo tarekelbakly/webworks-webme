@@ -13,7 +13,7 @@
   * @link       www.webworks.ie
 **/
 
-if ($version==1) {
+if ($version<=1) {
 	dbQuery(
 		'create table if not exists comments(
 			id int not null auto_increment primary key,
