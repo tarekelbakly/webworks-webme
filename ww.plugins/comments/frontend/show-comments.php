@@ -27,6 +27,7 @@ function Comments_displayComments($page) {
 	$html = '<div id="start-comments"><br />';
 	$html.= '<script src="'.$location.'"></script>';
 	WW_addScript('/ww.plugins/comments/frontend/comments-frontend.js');
+	WW_addCSS('/ww.plugins/comments/frontend/comments.css');
 	$hideComments 
 		= dbOne(
 			'select value from page_vars 
