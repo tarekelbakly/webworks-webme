@@ -46,7 +46,8 @@ $data=false;
 		foreach($data['content'] as $content){
 			$html.='<li><div class="handle">';
 			if(count($imgs) && isset($imgs[$i])) {
-				$html.='<img src="'.htmlspecialchars($imgs[$i]).'" />';
+				$size=getimagesize(USERBASE.$imgs[$i]);
+				$html.='<img src="'.htmlspecialchars($imgs[$i]).'" style="width:'.$size[0].'px" />';
 			}
 			else {
 				$html.=htmlspecialchars($content['title']);

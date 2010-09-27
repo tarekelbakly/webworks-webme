@@ -48,7 +48,7 @@ function OnlineStore_processOrder($id, $order) {
 	if (!isset($form_vals->Email)) {
 		$form_vals->Email='no-email-supplied@example.com';
 	}
-	$headers = "From: $from\r\nReply-To: $from\r\nBCC: kae@webworks.ie\r\nX-Mailer: PHP/" . phpversion();
+	$headers = "From: $from\r\nReply-To: $from\r\nX-Mailer: PHP/" . phpversion();
 	$headers.='MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 	$headers .= 'To: '.$form_vals->Email. "\r\n";

@@ -283,9 +283,9 @@
 				
 				if(settings.cycle === true){
 					$this=$(this);
-					setTimeout(function(){
+					$(window).load(function(){
 						$this.hrzAccordionLoop();
-					},1);
+					});
 				}
 			});				
 		}		
