@@ -57,8 +57,10 @@ function Comments_displayComments($page) {
 	else {
 		$query = 'select * from comments where objectid = '.$page->id;
 		$query.= ' and (isvalid = 1 or id in (';
-		foreach ($_SESSION['comment_ids'] as $comment) {
-			$query.= (int)$comment.', ';
+		if (isset($_SESSION['comment_ids']) && is_array($_SESSION['comment_ids'])) {
+			foreach ($_SESSION['comment_ids'] as $comment) {
+				$query.= (int)$comment.', ';
+			}
 		}
 		if (is_numeric(strpos($query, ', '))) {
 			$query = substr_replace($query, '', strrpos($query, ', '));
