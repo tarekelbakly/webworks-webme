@@ -21,11 +21,11 @@ $(function () {
 	});
 });
 $('div.comments').live('mouseover',function() {
-	window.commentsTimeout = clearTimeout();
-	var id = $(this).attr('id');
+	var id = $(this).attr('id').replace(/comment-wrapper-/,'');
 	if (document.getElementById('links-'+id)!=null) {
 		return;
 	}
+	$('div.comments div.comments-actions').remove();
 	var mysqldatetime = $(this).attr('cdate');
 	var mysqldate = mysqldatetime.substring(8, 10);
 	var mysqlmonth = mysqldatetime.substring(5, 7);
@@ -43,7 +43,7 @@ $('div.comments').live('mouseover',function() {
 	commentDate = Date.parse(commentDate);
 	var timeSinceCommentWasCreated = nowInMilliseconds-commentDate;
 	var fifteenMinutes = 15*60*1000;
-	var links = '<div id="links-'+id+'">';
+	var links = '<div id="links-'+id+'" class="comments-actions">';
 	if (timeSinceCommentWasCreated<fifteenMinutes) {
 		var comment = $(this).attr('comment');
 		links+= '<a '
@@ -53,11 +53,13 @@ $('div.comments').live('mouseover',function() {
 	links+= '<a href="javascript:comments_frontend_start_delete('+id+');">';
 	links+= '[x]</a>';
 	links+= '</div>';
-	$(links).insertAfter('#comment-'+id);
+	$(links).insertBefore('#comment-info-'+id);
 });
-$('div.comments').live('mouseout',function() {
-	var id = $(this).attr('id');
-	window.commentsTimeout = setTimeout('$("#links-'+id+'").remove()', 2000);
+$('div.comments').live('mouseout',function(e) {
+	if(!/^comment-wrapper-[0-9]*$/.test(e.target.id)){
+		return;
+	}
+	$("#links-"+($(this).attr('id')).replace(/comment-wrapper-/,'')).remove();
 });
 function comments_check_captcha() {
 	var correct = $('#recaptcha_challenge_field').val();
@@ -107,7 +109,7 @@ function comments_display_thank_you_message(data) {
 	if (data.add) {
 		$('#start-comments').append('<strong>Comments</strong><br /><br />');
 	}
-	var commentString = '<div id="'+data.id+'" class="comments"'
+	var commentString = '<div id="comment-wrapper-'+data.id+'" class="comments"'
 		+' cdate="'+data.mysqldate+'" '
 		+'comment="'+htmlspecialchars(data.comment)+'">';
 	commentString+= '<div id="comment-info-'+data.id+'">'

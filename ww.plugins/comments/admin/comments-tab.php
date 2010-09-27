@@ -14,10 +14,10 @@
 **/
 
 $id = $page['id'];
-$commentsDisallowed 
+$commentsAllowed 
 	=dbOne(
 		'select value from page_vars 
-		where name = "disallow_comments" and page_id = '.$id,
+		where name = "allow_comments" and page_id = '.$id,
 		'value'
 	);
 $noModeration 
@@ -28,9 +28,9 @@ $noModeration
 echo '<script>';
 echo 'noModeration = '.$noModeration;
 echo '</script>';
-$html= 'Disallow comments on this page? ';
-$html.= '<input type="checkbox" name="page_vars[disallow_comments]"';
-if ($commentsDisallowed=='on') {
+$html= 'Allow comments on this page? ';
+$html.= '<input type="checkbox" name="page_vars[allow_comments]"';
+if ($commentsAllowed=='on') {
 	$html.= ' checked="checked"';
 }
 $html.= '/>';

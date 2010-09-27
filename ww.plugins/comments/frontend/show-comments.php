@@ -34,10 +34,10 @@ function Comments_displayComments($page) {
 			where name = "hide_comments" and page_id = '.$page->id,
 			'value'
 		);
-	$disallowComments 
+	$allowComments 
 		= dbOne(
 			'select value from page_vars 
-			where name = "disallow_comments" and page_id = '.$page->id,
+			where name = "allow_comments" and page_id = '.$page->id,
 			'value'
 		);
 	if ($hideComments) {
@@ -82,7 +82,7 @@ function Comments_displayComments($page) {
 		$allowedToEdit 
 			= is_admin()||in_array($id, $_SESSION['comment_ids'], false);
 		if ($allowedToEdit) {
-			$html.= '<div class="comments" id="'.$id.'" cdate="'.$datetime.'"
+			$html.= '<div class="comments" id="comment-wrapper-'.$id.'" cdate="'.$datetime.'"
 				comment="'.htmlspecialchars($comment['comment']).'">';
 		}
 		$html.=  '<div id="comment-info-'.$id.'">Posted by ';
@@ -102,7 +102,7 @@ function Comments_displayComments($page) {
 			$html.= '</div>';
 		}
 	}
-	if ($disallowComments!='on') {
+	if ($allowComments=='on') {
 		$html.= Comments_showCommentForm($page->id);
 	}
 	return $html;
@@ -130,39 +130,26 @@ function Comments_showCommentForm($pageID) {
 		action="javascript:comments_check_captcha();">';
 	$display.= '<input type="hidden" name="page" id="page" 
 		value="'.$pageID.'" />';
-	if (!isset($user)) {
-		$display.= 'Name ';
-	}
-	$display.= '<input id="name" name="name" ';
+	$display.='<table><tr><th>Name</th>';
+	$display.= '<td><input id="name" name="name" ';
 	if (isset($user)) {
-		$display.= 'type="hidden" value="'.$user['name'].'"';
+		$display.= ' value="'.htmlspecialchars($user['name']).'"';
 	}
-	else {
-		$display.= 'type="text"';
-	}
-	$display.= ' />';
-	if (!isset($user)) {
-		$display.= '<br />Email';
-	}
-	$display.= '<input id="email" name="email"';
+	$display.= ' /></td></tr>';
+	$display.= '<tr><th>Email</th>';
+	$display.= '<td><input id="email" name="email"';
 	if (isset($user)) {
-		$display.= 'type="hidden" value="'.$user['email'].'"';
+		$display.= ' value="'.htmlspecialchars($user['email']).'"';
 	}
-	else {
-		$display.= 'type="text"';
-	}
-	$display.= ' />';
-	if (!isset($user)) {
-		$display.= '<br />';
-	}
-	$display.= 'Homepage ';
-	$display.= '<input type="text" id="site" name="site"/><br />';
-	$display.= 'Comment<br />';
-	$display.= '<textarea id="comment" name="comment"></textarea>';
-	$display.= '<div id="captcha">';
+	$display.= ' /></td></tr>';
+	$display.= '<tr><th>Website</th>';
+	$display.= '<td><input id="site" name="site" /></td></tr>';
+	$display.= '<tr><th>Comment</th>';
+	$display.= '<td><textarea id="comment" name="comment"></textarea></td></tr>';
+	$display.= '<tr><td colspan="2"><div id="captcha">';
 	$display.= recaptcha_get_html(RECAPTCHA_PUBLIC);
-	$display.= '</div>';
-	$display.= '<input type="submit" id="submit" value="Submit Comment"  />';
-	$display.= '</form>';
+	$display.= '</div></td></tr>';
+	$display.= '<tr><th>&nbsp;</th><td><input type="submit" id="submit" value="Submit Comment"  /></td></tr>';
+	$display.= '</table></form>';
 	return $display;
 }
