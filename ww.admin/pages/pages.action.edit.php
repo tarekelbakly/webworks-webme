@@ -25,19 +25,8 @@ if(allowedToEditPage($id)){
 	if($importance<0)$importance=0;
 	if($importance>1)$importance=1;
 	$template=$_REQUEST['template'];
-	$body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
-	$body=str_replace(
-		array(
-			'<u />',"</ul>\r\n<ul>",'<u></u>',' align="center"','margin: 0cm 0cm 0pt;',
-			'class="Bodytext"','<span>&nbsp; </span>',' lang="EN-US"',' lang="EN-IE"',' class="MsoNormal"',
-			'style=""','bgstyle="color:','bgcolor="',' lang="EN-GB"'),
-		array(
-			'','','','','margin:0;',
-			'','','&nbsp;','','','',
-			'','style="background:','style="background:',''),
-		$body
-	);
-	$body=preg_replace('#</?([ovw]|st1):[^>]*>#','',$body);
+	$original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
+	$body=$original_body;
 	$body=sanitise_html($body);
 	// { check that name is not duplicate of existing page
 	if(dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id')){
@@ -51,9 +40,15 @@ if(allowedToEditPage($id)){
 	$category2=$_REQUEST['category2'];
 	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
-	$q='update pages set importance="'.$importance.'",category="'.$category.'",template="'.$template.'",edate=now(),type="'.$_POST['type'].'",associated_date="'.addslashes($associated_date).'"';
-	$q.=',keywords="'.$keywords.'",description="'.$description.'",name="'.addslashes($name).'",title="'.$_POST['title'].'",body="'.addslashes($body).'"';
-	$q.=',parent='.$pid;
+	$q='update pages set importance="'.$importance.'",category="'.$category.'"'
+		.',template="'.addslashes($template).'",edate=now()'
+		.',type="'.addslashes($_POST['type']).'"'
+		.',associated_date="'.addslashes($associated_date).'"'
+		.',keywords="'.addslashes($keywords).'"'
+		.',description="'.addslashes($description).'"'
+		.',name="'.addslashes($name).'",title="'.addslashes($_POST['title']).'"'
+		.',original_body="'.addslashes($original_body).'"'
+		.',body="'.addslashes($body).'",parent='.$pid;
 	if(has_page_permissions(128))$q.=',special='.$special;
 	$q.=' where id='.$id;
 	dbQuery($q);

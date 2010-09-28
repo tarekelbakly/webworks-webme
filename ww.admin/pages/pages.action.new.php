@@ -34,7 +34,11 @@ if(allowedToEditPage($parent)){
 	else{
 		$ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;
 	}
-	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",body="'.addslashes(sanitise_html($body)).'",type="'.$type.'",associated_date="'.addslashes($associated_date).'"';
+	$original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
+	$body=$original_body;
+	$body=sanitise_html($body);
+	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
+		.'category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",original_body="'.addslashes($original_body).'",body="'.addslashes($body).'",type="'.$type.'",associated_date="'.addslashes($associated_date).'"';
 	$q.=',parent='.$pid;
 	if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
 	dbQuery($q);
