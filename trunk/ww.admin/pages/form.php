@@ -63,7 +63,7 @@ echo '<form id="pages_form" class="pageForm" method="post" action="'.$_SERVER['P
 echo '<div style="float:right">'.wInput('action','submit',($edit?__('Update Page Details'):__('Insert Page Details'))).'</div>';
 if($page['special']&2 && !isset($_REQUEST['newpage_dialog']))echo '<em>NOTE: this page is currently hidden from the front-end navigation. Use the "Advanced Options" to un-hide it.</em>';
 echo wInput('id','hidden',$page['id']);
-echo '<div id="pages-tabs">';
+echo '<div id="pages-tabs" class="tabs">';
 echo '<ul>';
 echo '<li><a href="#pages-common">Common Details</a></li>';
 echo '<li><a href="#pages-advanced">Advanced Options</a></li>';

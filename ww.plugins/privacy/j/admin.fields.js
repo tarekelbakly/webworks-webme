@@ -17,6 +17,7 @@ function privacy_export(id){
 }
 if(!privacyfieldElements)var privacyfieldElements=0;
 $(function(){
+	$('.tabs').tabs();
 	privacyfieldsAddRow();
 	$('.date').datepicker({dateFormat:'yy-m-d'});
 });

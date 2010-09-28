@@ -14,7 +14,7 @@ if($action=='Save'){
 	if (!empty($pageLengthLimit)&&is_numeric($pageLengthLimit)) {
 		$DBVARS['site_page_length_limit'] = $pageLengthLimit;
 	}
-	else (if(isset($DBVARS['site_page_length_limit']) {
+	elseif (isset($DBVARS['site_page_length_limit'])) {
 		unset($DBVARS['site_page_length_limit']);
 	}
 	config_rewrite();

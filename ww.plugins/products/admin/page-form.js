@@ -11,6 +11,7 @@ function products_what_to_show_change(){
 	$('#products_per_page').css('display',val<3?'table-row':'none');
 }
 $(function(){
+	$('.tabs').tabs();
 	$('#products_what_to_show').change(products_what_to_show_change);
 	products_what_to_show_change();
 	$('#products_order_by_select').remoteselectoptions({
