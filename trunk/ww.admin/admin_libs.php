@@ -161,15 +161,16 @@ function ckeditor($name,$value='',$height=250){
 		."//]]></script>";
 }
 function sanitise_html($original_html) {
-	$original_html= html_fixImageResizes($original_html);
+	$original_html = html_fixImageResizes($original_html);
+	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
+	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
 	do{
 		$html = $original_html;
-		$html = preg_replace('/<font([^>]*)>/', '<span\1>', $html);
-		$html = preg_replace('/<([^>]*)color="([^"]*)"([^>]*)>/', '<\1style="color:\2"\3>', $html);
-		$html = str_replace('</font>', '</span>', $html);
-		$html = preg_replace("/<p>[\s]*(<img[^>]*>)<\/p>/",'\1',$html);
-		$html = str_replace(' alt=""','',$html);
-		$html = str_replace(">\n",'>',$html);
+		$html = preg_replace("/<p>\s*(<img[^>]*>)\s*<\/p>/",'\1',$html);
+		$html = str_replace('{{LINERETURN}}{{CARRIAGERETURN}}', "{{CARRIAGERETURN}}", $html);
+		$html = str_replace('>{{CARRIAGERETURN}}','>',$html);
+		$html = str_replace('{{CARRIAGERETURN}}{{CARRIAGERETURN}}', '{{CARRIAGERETURN}}', $html);
+		$html = preg_replace('/\s+/',' ',$html);
 		$html = str_replace(">\t",'>',$html);
 		// { clean skype crap from page
 		$html = str_replace('<span class="skype_pnh_left_span" skypeaction="skype_dropdown">&nbsp;&nbsp;</span>','',$html);
@@ -185,9 +186,34 @@ function sanitise_html($original_html) {
 		$html = preg_replace('#<span class="skype_pnh_text_span">([^<]*)</span>#','\1',$html);
 		$html = preg_replace('#<span class="skype_pnh_print_container">([^<]*)</span>#','\1',$html);
 		// }
+		// { remove empty elements and parameters
+		$html = preg_replace('#<style[^>]*>\s*</style>#','',$html);
+		$html = preg_replace('#<span style="(color|font-family): [^;]*;"></span>#', '', $html);
+		$html = preg_replace('#<meta[^>]*>\s*</meta>#','',$html);
+		$html = str_replace(' alt=""','',$html);
+		$html = preg_replace('/<!--[^>]*-->/','',$html);
+		// }
+		// { clean up Word crap
+		$html = preg_replace('#<link [^>]*href="file[^>]*>#','',$html);
+		$html = preg_replace('#<m:[^>]*/>#','',$html);
+		$html = preg_replace('#<m:mathPr>\s*</m:mathPr>#','',$html);
+		$html = preg_replace('#<xml>.*?</xml>#','',$html);
+		$html = preg_replace('#<!--\[if gte mso 10\].*?<!\[endif\]-->#','',$html);
+		$html = preg_replace('#<!--\[if gte mso 9\].*?<!\[endif\]-->#','',$html);
+		// }
+		// { combine nested elements
+		$html = preg_replace('#<span style="([^"]*?);?"><span style="([^"]*)">([^<]*|<img[^>]*>)</span></span>#', '<span style="\1;\2">\3</span>', $html);
+		$html = preg_replace('#<strong>(\s*)<span style="([^"]*)">([^<]*)</span>(\s*)</strong>#', '<strong style="\2">\1\3\4</strong>', $html);
+		$html = preg_replace('#<span style="([^"]*)">(\s*)<strong>([^<]*)</strong>(\s*)</span>#', '\2<strong style="\1">\3</strong>\4', $html);
+		// }
+		// { remove unnecessary elements
+		$html = preg_replace('#<meta [^>]*>(.*?)</meta>#','\1',$html);
+		// }
 		$html=str_replace('&quot;','"',$html);
 		$has_changed=$html!=$original_html;
 		$original_html=$html;
 	}while($has_changed);
+	$html = str_replace('{{CARRIAGERETURN}}', "\n", $html);
+	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
 }

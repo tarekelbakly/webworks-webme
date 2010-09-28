@@ -205,6 +205,11 @@ if($version==28){ // update user accounts to remember last login and last view
 	dbQuery('alter table user_accounts add last_view datetime default "0000-00-00 00:00:00"');
 	$version=29;
 }
+if($version==29){ // add original_body to page data
+	dbQuery('alter table pages add original_body mediumtext after body');
+	dbQuery('update pages set original_body=body');
+	$version=30;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();

@@ -130,7 +130,7 @@ echo '</tr>';
 // }
 // }
 // { page-type-specific data
-$page['body']=html_unfixImageResizes($page['body']);
+$page['body']=$page['original_body'];
 switch($page['type']){
 	case '0': case '5': // { normal
 		echo '<tr><th><div class="help body"></div>'.__('body').'</th><td colspan="5">';
