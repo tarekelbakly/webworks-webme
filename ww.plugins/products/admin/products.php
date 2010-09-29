@@ -12,7 +12,9 @@ if(isset($_REQUEST['delete']) && is_numeric($_REQUEST['delete'])){
 			);
 		$id = kfm_api_getDirectoryId($imagesDir);
 		$dir = kfmDirectory::getInstance($id);
-		$dir->delete();
+		if ($dir) {
+			$dir->delete();
+		}
 	}
 	dbQuery('delete from products where id='.$_REQUEST['delete']);
 	echo '<em>Product deleted.</em>';
