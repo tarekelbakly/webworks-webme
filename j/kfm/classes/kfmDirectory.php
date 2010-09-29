@@ -99,7 +99,7 @@ class kfmDirectory extends kfmObject{
 		foreach($subdirs as $subdir){
 			if(!$subdir->delete())return false;
 		}
-		rmdir($this->path());
+		@rmdir($this->path());
 		if(is_dir($this->path()))return $this->error('failed to delete directory '.$this->path());
 		$kfm->db->exec("delete from ".KFM_DB_PREFIX."directories where id=".$this->id);
 		return true;
@@ -147,9 +147,11 @@ class kfmDirectory extends kfmObject{
 		if(is_array($filesdb))foreach($filesdb as $r)$fileshash[$r['name']]=$r['id'];
 		// { get files from directoryIterator, then sort them
 		$tmp=array();
-		foreach(new directoryIterator($this->path()) as $f){
-			if($f->isDot())continue;
-			if(is_file($this->path().$f) && kfmFile::checkName($f))$tmp[]=$f.'';
+		if(file_exists($this->path()) && is_dir($this->path())) {
+			foreach(new directoryIterator($this->path()) as $f){
+				if($f->isDot())continue;
+				if(is_file($this->path().$f) && kfmFile::checkName($f))$tmp[]=$f.'';
+			}
 		}
 		natsort($tmp);
 		// }
