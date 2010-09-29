@@ -161,17 +161,25 @@ function ckeditor($name,$value='',$height=250){
 		."//]]></script>";
 }
 function sanitise_html($original_html) {
+	/**
+		* this function cleans up the crud that gets inserted by programs such as Word or CKeditor, or Skype
+		*/
 	$original_html = html_fixImageResizes($original_html);
 	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
 	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
 	do{
 		$html = $original_html;
-		$html = preg_replace("/<p>\s*(<img[^>]*>)\s*<\/p>/",'\1',$html);
+		// { clean white-space
 		$html = str_replace('{{LINERETURN}}{{CARRIAGERETURN}}', "{{CARRIAGERETURN}}", $html);
 		$html = str_replace('>{{CARRIAGERETURN}}','>',$html);
 		$html = str_replace('{{CARRIAGERETURN}}{{CARRIAGERETURN}}', '{{CARRIAGERETURN}}', $html);
 		$html = preg_replace('/\s+/',' ',$html);
+		$html = preg_replace("/<p>\s*/",'<p>',$html);
+		$html = preg_replace("#\s*<br( ?/)?>\s*#",'<br />',$html);
+		$html = preg_replace("#\s*<li>\s*#",'<li>',$html);
 		$html = str_replace(">\t",'>',$html);
+		$html = preg_replace('#<p([^>]*)>\s*\&nbsp;\s*</p>#','<p\1></p>',$html);
+		// }
 		// { clean skype crap from page
 		$html = str_replace('<span class="skype_pnh_left_span" skypeaction="skype_dropdown">&nbsp;&nbsp;</span>','',$html);
 		$html = str_replace('<span class="skype_pnh_dropart_flag_span" skypeaction="skype_dropdown" style="background-position: -1999px 1px ! important;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>','',$html);
@@ -188,7 +196,7 @@ function sanitise_html($original_html) {
 		// }
 		// { remove empty elements and parameters
 		$html = preg_replace('#<style[^>]*>\s*</style>#','',$html);
-		$html = preg_replace('#<span style="(color|font-family): [^;]*;"></span>#', '', $html);
+		$html = preg_replace('#<span>\s*</span>#', '', $html);
 		$html = preg_replace('#<meta[^>]*>\s*</meta>#','',$html);
 		$html = str_replace(' alt=""','',$html);
 		$html = preg_replace('/<!--[^>]*-->/','',$html);
@@ -200,14 +208,33 @@ function sanitise_html($original_html) {
 		$html = preg_replace('#<xml>.*?</xml>#','',$html);
 		$html = preg_replace('#<!--\[if gte mso 10\].*?<!\[endif\]-->#','',$html);
 		$html = preg_replace('#<!--\[if gte mso 9\].*?<!\[endif\]-->#','',$html);
+		$html = preg_replace('#<!--\[if gte vml 1\]>.*?<!\[endif\]-->#','',$html);
 		// }
 		// { combine nested elements
-		$html = preg_replace('#<span style="([^"]*?);?"><span style="([^"]*)">([^<]*|<img[^>]*>)</span></span>#', '<span style="\1;\2">\3</span>', $html);
+		$html = preg_replace('#<span style="([^"]*?);?">(\s*)<span style="([^"]*)">([^<]*|<img[^>]*>)</span>(\s*)</span>#', '\2<span style="\1;\3">\4</span>\5', $html);
+		$html = preg_replace('#<a href="([^"]*)">(\s*)<span style="([^"]*)">([^<]*|<img[^>]*>)</span>(\s*)</a>#', '\2<a href="\1" style="\3">\4</a>\5', $html);
 		$html = preg_replace('#<strong>(\s*)<span style="([^"]*)">([^<]*)</span>(\s*)</strong>#', '<strong style="\2">\1\3\4</strong>', $html);
+		$html = preg_replace('#<b>(\s*)<span style="([^"]*)">([^<]*)</span>(\s*)</b>#', '<b style="\2">\1\3\4</b>', $html);
+		$html = preg_replace('#<li>(\s*)<span style="([^"]*)">([^<]*)</span>(\s*)</li>#', '<li style="\2">\1\3\4</li>', $html);
+		$html = preg_replace('#<p>(\s*)<span style="([^"]*)">([^<]*)</span>(\s*)</p>#', '<p style="\2">\1\3\4</p>', $html);
 		$html = preg_replace('#<span style="([^"]*)">(\s*)<strong>([^<]*)</strong>(\s*)</span>#', '\2<strong style="\1">\3</strong>\4', $html);
+		$html = preg_replace('#<span style="([^"]*?);?">(\s*)<strong style="([^"]*)">([^<]*)</strong>(\s*)</span>#', '\2<strong style="\1;\3">\4</strong>\5', $html);
+		$html = preg_replace("/<p>\s*(<img[^>]*>)\s*<\/p>/",'\1',$html);
+		$html = preg_replace('/<span( style="font-[^:]*:[^"]*")?>\s*(<img[^>]*>)\s*<\/span>/','\2',$html);
+		$html = preg_replace("/<strong>\s*(<img[^>]*>)\s*<\/strong>/",'\1',$html);
 		// }
 		// { remove unnecessary elements
 		$html = preg_replace('#<meta [^>]*>(.*?)</meta>#','\1',$html);
+		// }
+		// { strip repeated CSS inline elements (TODO: make this more efficient...)
+		$html=str_replace('font-size: large;font-size: large','font-size: large',$html);
+		// }
+		// { strip useless CSS
+		$sillystuff=' style="([^"]*)(color:[^;"]*|font-size:[^;"]*|font-family:[^;"]*|line-height:[^;"]*);([^"]*)"';
+		$html=preg_replace('#\s*<span'.$sillystuff.'>\s*</span>\s*#','<span style="\1\3"></span>',$html);
+		$html=str_replace('<span style=""></span>','<span></span>',$html);
+		$html=preg_replace('#\s*<p'.$sillystuff.'>\s*</p>\s*#','<p style="\1\3"></p>',$html);
+		$html=str_replace('<p style=""></p>','<p></p>',$html);
 		// }
 		$html=str_replace('&quot;','"',$html);
 		$has_changed=$html!=$original_html;
