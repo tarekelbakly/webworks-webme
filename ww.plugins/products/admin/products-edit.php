@@ -225,7 +225,6 @@ $dfjson=json_decode($dfjson,true);
 $dfdefs=array();
 foreach($dfjson as $d)$dfdefs[$d['n']]=$d;
 function product_dfs_show($df,$def){
-	echo '<br />';
 	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
 	switch($def['t']){
 		case 'checkbox': // {
