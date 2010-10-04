@@ -97,6 +97,8 @@ else{
 		'images_directory'=>''
 	);
 }
+echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a Product</a>'
+	.' <a href="plugin.php?_plugin=products&amp;_page=import">Import Products</a>';
 echo '<form id="products-form" action="'.$_url.'&amp;id='.$id.'" method="post" onsubmit="products_getData();">';
 echo '<input type="hidden" name="action" value="save" />';
 echo '<div id="tabs"><ul>'

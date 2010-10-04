@@ -29,10 +29,8 @@ else if(!count($rs)){
 	echo 'Click here to import products</a></em>';
 }
 else{
-	echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a Product</a>';
-	echo ' <a href="plugin.php?_plugin=products&amp;_page=import">';
-	echo 'Import Products</a>';
-	echo '<br /><br />';
+	echo '<a href="plugin.php?_plugin=products&amp;_page=products-edit">Add a Product</a>'
+		.' <a href="plugin.php?_plugin=products&amp;_page=import">Import Products</a>';
 	echo '<div style="width:50%"><table class="datatable"><thead><tr><th>Name</th><th>&nbsp;</th></tr></thead><tbody>';
 	foreach($rs as $r){
 		// do not delete the HTML comment in the next line - it's there for datatables magic. without it, sorting will not work.
