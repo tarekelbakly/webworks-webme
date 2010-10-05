@@ -14,11 +14,16 @@ $items_per_page=5;
 $p=isset($_REQUEST['news_page'])?(int)$_REQUEST['news_page']:0;
 if($p<0) $p=0;
 
-$num_stories=dbOne('select count(id) as num from pages where parent='.$GLOBALS['id'],'num');
-$rs=cache_load('pages', 'news'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page);
-if ($rs===false) {
+$arr=cache_load('pages', 'news-'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page);
+if ($arr===false) {
 	$rs=dbAll('select * from pages where parent='.$GLOBALS['id']." order by associated_date desc,cdate desc limit $p,$items_per_page");
-	cache_save('pages', 'news'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page, $rs);
+	$num_stories=dbOne('select count(id) as num from pages where parent='.$GLOBALS['id'],'num');
+	cache_save('pages', 'news-'.$GLOBALS['id'].'-'.$p.'-'.$items_per_page, array($num_stories, $rs));
+}
+else {
+	$num_stories=$arr[0];
+	$rs=$arr[1];
+	unset($arr);
 }
 
 $nextprev=array();
