@@ -114,9 +114,10 @@ echo '<textarea name="data_fields" id="data_fields">'.htmlspecialchars(str_repla
 echo '</div>';
 // }
 // { multi-view template
-echo '<div id="multiview-template"><p>This template is for how the product looks when it is in a list of products. Leave this blank to have one auto-generated when needed.</p>';
-echo ckeditor('multiview_template',$tdata['multiview_template']);
-echo '</div>';
+echo '<div id="multiview-template"><p>This template is for how the product looks when it is in a list of products. Leave this blank to have one auto-generated when needed.</p>'
+	.ckeditor('multiview_template',$tdata['multiview_template'])
+	.'<p class="sample-codes">Example codes: {{PRODUCTS_IMAGE}}, {{PRODUCTS_LINK}}, {{$_name}}</p>'
+	.'</div>';
 // }
 // { single-view template
 echo '<div id="singleview-template"><p>This template is for how the product looks when shown on its own. Leave this blank to have one auto-generated when needed.</p>';

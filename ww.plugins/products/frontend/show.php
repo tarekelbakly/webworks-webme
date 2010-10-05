@@ -447,6 +447,7 @@ class Product{
 			$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
 		}
 		$this->id=$r['id'];
+		$this->name=$r['name'];
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
@@ -504,9 +505,13 @@ class Product{
 		return false;
 	}
 	function search($search) {
+		$search=strtolower($search);
+		if (strpos(strtolower($this->name), $search)!==false) {
+			return true;
+		}
 		$pt=ProductType::getInstance($this->vals['product_type_id']);
 		foreach ($pt->data_fields as $df) {
-			if ($df->s && strpos($this->get($df->n), $search)!==false) {
+			if ($df->s && strpos(strtolower($this->get($df->n)), $search)!==false) {
 				return true;
 			}
 		}
@@ -746,6 +751,7 @@ class ProductType{
 					// }
 			}
 		}
+		$smarty->assign('_name',$product->vals['name']);
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
 				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id

@@ -42,7 +42,7 @@ if (isset($_POST['import'])) {
 			$newName = 'webworks_webme_products_import'.time().rand().'.csv';
 			$location = USERBASE.'ww.cache/products/imports';
 			if (!is_dir($location)) {
-				mkdir($location);
+				mkdir($location,0777,true);
 			}
 			move_uploaded_file(
 				$file['tmp_name'], 
@@ -61,25 +61,38 @@ if (isset($_POST['import'])) {
 			// }
 			$row = fgetcsv($file);
 			// { Build the arrays of data
-			while ($row) {
+			$numRows=0;
+			$data_fields=array();
+			while ($row && ++$numRows) {
 				$i = 0;
 				foreach ($colNames as $col) {
+					if ($col=='') { // ignore blank column headers
+						continue;
+					}
 					for ($i; $i<count($row); $i++) {
 						$data = $row[$i];
 						break;
 					}
 					if (is_array(${$col})) {
-						${$col}[] = $data;
+						if (in_array($col, array('name', 'product_type_id', 'image_default', 'enabled', 'date_created', 'images_directory'))) {
+							${$col}[$numRows-1] = $data;
+						}
+						else {
+							if (!is_array($data_fields[$numRows-1])) {
+								$data_fields[$numRows-1]=array();
+							}
+							$data_fields[$numRows-1][]=array(
+								'n'=>$col,
+								'v'=>$data
+							);
+						}
 					}
 					$i++;
 				}
 				$row = fgetcsv($file);
 			}
-			// }
-			// { How many rows of data?
-			foreach ($colNames as $col) {
-				$numRows = count(${$col});
-				break;
+			foreach($data_fields as $k=>$v) {
+				$data_fields[$k]=json_encode($v);
 			}
 			// }
 			$ids = array();
@@ -88,7 +101,11 @@ if (isset($_POST['import'])) {
 				$ids[] = $num['id'];
 			}
 			// { Put the data into the products database
+			$products_imported=0;
 			for ($i=0; $i<$numRows; $i++) {
+				if (!isset($name[$i]) || $name[$i]=='') {
+					$name[$i]='NO NAME SUPPLIED';
+				}
 				if (is_array($id)) {
 					if (in_array($id[$i], $ids, false)&&is_numeric($id[$i])) {
 						dbQuery(
@@ -172,6 +189,7 @@ if (isset($_POST['import'])) {
 							\''.addslashes($images_directory[$i]).'\''
 					);
 				}
+				++$products_imported;
 			}
 			// }
 			if (($_POST['cat_options'])!='') {
@@ -211,7 +229,7 @@ if (isset($_POST['import'])) {
 			fclose($file);
 			unlink($location.'/'.$newName);
 			$_FILES['file'] = '';
-			echo '<em>Products Imported</em>';
+			echo '<em>'.$products_imported.' products imported</em>';
 		}
 		elseif (!empty($_POST['file'])) {
 			echo '<em>Only csv files are permitted</em>';
@@ -256,6 +274,7 @@ echo '<input type="file" name="file" />';
 echo '<br />';
 echo '<input type="submit" name="import" value="Import Data" />';
 echo '</form>';
+echo '<p>The imported file must be a CSV file, where the headers exaclty match (including letter-case) the product types you are importing into.</p>';
 // }
 /**
   * Inserts categories into products. 
