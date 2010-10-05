@@ -12,7 +12,6 @@ if(isset($_REQUEST['get_messaging_notifier'])){
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	$id=(int)$_REQUEST['id'];
 	$id_was=$id;
-//	$data=addslashes($_REQUEST['data']);
 	$data=json_decode($_REQUEST['data']);
 	foreach($data as $k=>$r){
 		switch($r->type){
@@ -39,6 +38,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	}
 	$ret=array('id'=>$id,'id_was'=>$id_was);
 	echo json_encode($ret);
+	cache_clear('messaging_notifier');
 	exit;
 }
 
