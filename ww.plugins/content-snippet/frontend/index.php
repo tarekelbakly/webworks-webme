@@ -2,7 +2,6 @@
 function show_content_snippet($vars){
 	if(!is_array($vars) && isset($vars->id) && $vars->id){
 		$data=cache_load('content_snippets',$vars->id.'-data');
-$data=false;
 		if($data===false){
 			$data=dbRow('select * from content_snippets where id='.$vars->id,'content');
 			$data['content']=json_decode($data['content'],true);
