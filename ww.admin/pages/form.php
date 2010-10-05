@@ -130,7 +130,9 @@ echo '</tr>';
 // }
 // }
 // { page-type-specific data
-$page['body']=$page['original_body'];
+if (isset($page['original_body'])) {
+	$page['body']=$page['original_body'];
+}
 switch($page['type']){
 	case '0': case '5': // { normal
 		echo '<tr><th><div class="help body"></div>'.__('body').'</th><td colspan="5">';
