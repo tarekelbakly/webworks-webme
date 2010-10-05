@@ -26,6 +26,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	}
 	$ret=array('id'=>$id,'id_was'=>$id_was);
 	echo json_encode($ret);
+	cache_clear('banner-images');
 	exit;
 }
 

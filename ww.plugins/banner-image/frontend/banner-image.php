@@ -10,10 +10,14 @@
 
 function show_banner($vars){
 	if(!is_array($vars) && isset($vars->id) && $vars->id){
-		$b=dbRow('select * from banners_images where id='.$vars->id);
-		if($b && count($b) && !$b['html']){
-			$b['html']=banner_image_getImgHTML($vars->id);
-			dbQuery('update banners_pages set html="'.addslashes($b['html']).'" where id='.$vars->id);
+		$b=cache_load('banner-images','id'.$vars->id);
+		if ($b===false) {
+			$b=dbRow('select * from banners_images where id='.$vars->id);
+			if($b && count($b) && !$b['html']){
+				$b['html']=banner_image_getImgHTML($vars->id);
+				dbQuery('update banners_pages set html="'.addslashes($b['html']).'" where id='.$vars->id);
+			}
+			cache_save('banner-images','id'.$vars->id,$b);
 		}
 	}
 	else if($GLOBALS['PAGEDATA']->id){
