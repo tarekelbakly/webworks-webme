@@ -11,6 +11,7 @@
 	* @link     http://webworks.ie/
 	*/
 
+$ww_startup = microtime(true);
 // { common variables and functions
 $scripts=array();
 $css_urls=array();
@@ -341,5 +342,8 @@ echo str_replace(
 	array(WW_getScripts(),WW_getCSS()),
 	$t
 );
+
+header('X-page-generation: '.(microtime(true)-$ww_startup).'s');
+
 ob_show_and_log('page', 'Content-type: text/html; Charset=utf-8');
 // }

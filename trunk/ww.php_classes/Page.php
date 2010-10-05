@@ -10,7 +10,23 @@ class Page{
 	function __construct($v,$byField=0,$fromRow=0,$pvq=0){
 #echo "start Page constructor ".(microtime(true)-START_TIME).'<br />';
 		# byField: 0=ID; 1=Name
-		if (!$byField && is_numeric($v)) $r=$fromRow?$fromRow:($v?dbRow("select * from pages where id=$v limit 1"):array());
+		if (!$byField && is_numeric($v)) {
+			if ($fromRow) {
+				$r=$fromRow;
+			}
+			else {
+				if ($v) {
+					$r=cache_load('pages','id'.$v);
+					if($r===false){
+						$r=dbRow("select * from pages where id=$v limit 1");
+						if(count($r))cache_save('pages','id'.$v,$r);
+					}
+				}
+				else {
+					$r=array();
+				}
+			}
+		}
 		else if ($byField == 1){ // by name
 			if(preg_match('/[^a-zA-Z0-9 \-_]/',$v))return false;
 			$name=strtolower(str_replace('-','_',$v));
