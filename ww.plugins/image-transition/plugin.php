@@ -3,7 +3,8 @@ $plugin=array(
 	'name' => 'Image Transitions',
 	'admin' => array(
 		'widget' => array(
-			'form_url' => '/ww.plugins/image-transition/admin/widget-form.php'
+			'form_url'   => '/ww.plugins/image-transition/admin/widget-form.php',
+			'js_include' => '/ww.plugins/image-transition/admin/widget.js'
 		)
 	),
 	'description' => 'Add an image to a panel which transitions to other specified images.',

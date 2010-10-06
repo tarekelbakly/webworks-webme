@@ -22,17 +22,34 @@ function show_image_transition($vars){
 			}
 			asort($imgs);
 			if(!count($imgs))return '<em>no images in selected directory</em>';
-			if($r['url']){
-				$url=PAGE::getInstance($r['url'])->getRelativeUrl();
-				$html.='<a href="'.$url.'"';
+			if ($r['trans_type']=='3dCarousel') {
+				$html.='<div id="featureCarousel'.$vars->id.'" class="featureCarousel" style="height:'.($height+30).'px">';
+				$html.='<div class="feature"><img src="/f'.$r['directory'].'/'
+					.join('" /></div><div class="feature"><img style="display:none" src="/f'.$r['directory'].'/',$imgs)
+					.'" /></div>';
+				$html.='</div>';
+				WW_addScript('/ww.plugins/image-transition/frontend/jquery.featureCarousel.js');
+				WW_addCSS('/ww.plugins/image-transition/frontend/featureCarousel.css');
+				$html.='<script>$(window).load(function(){
+					$("#featureCarousel'.$vars->id.'").featureCarousel({
+						autoPlay:'.$r['pause'].',
+						topPadding:0
+					});
+				});</script>';
 			}
-			else $html.='<div';
-			$html.=' style="display:block;width:'.$width.'px;height:'.$height.'px;" id="image_transitions_'.$vars->id.'">';
-			$html.='<img src="/f'.$r['directory'].'/'.join('" /><img style="display:none" src="/f'.$r['directory'].'/',$imgs).'" />';
-			if($r['url'])$html.='</a>';
-			else $html.='</div>';
-			WW_addScript('/ww.plugins/image-transition/j/jquery.cycle.all.min.js');
-			$html.='<script>$(window).load(function(){$("#image_transitions_'.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'.$r['pause'].'})});</script>';
+			else {
+				if($r['url']){
+					$url=PAGE::getInstance($r['url'])->getRelativeUrl();
+					$html.='<a href="'.$url.'"';
+				}
+				else $html.='<div';
+				$html.=' style="display:block;width:'.$width.'px;height:'.$height.'px;" id="image_transitions_'.$vars->id.'">';
+				$html.='<img src="/f'.$r['directory'].'/'.join('" /><img style="display:none" src="/f'.$r['directory'].'/',$imgs).'" />';
+				if($r['url'])$html.='</a>';
+				else $html.='</div>';
+				WW_addScript('/ww.plugins/image-transition/frontend/jquery.cycle.all.min.js');
+				$html.='<script>$(window).load(function(){$("#image_transitions_'.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'.$r['pause'].'})});</script>';
+			}
 			return $html;
 		}
 	}
