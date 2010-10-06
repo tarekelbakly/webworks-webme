@@ -28,16 +28,6 @@ function addEls(p,c){
 	else if(c)p.appendChild($type(c)=='string'||(+c)===c?newText(c):c);
 	return p;
 }
-function addCell(a,b,c,d,e){
-	var f=a.insertCell(b);
-	f.colSpan=c;
-	addEls(f,d);
-	if(e)f.className=e;
-	return f;
-}
-function addCells(r,c,a){
-	for(var i=0;i<a.length;++i)addCell(r,c+parseInt(i),a[i].length>2?a[i][2]:1,a[i][0],(a[i].length>1?a[i][1]:0));
-}
 function Browser(){
 	var ua=navigator.userAgent;
 	this.isFirefox=ua.indexOf('Firefox')>=0;
@@ -59,29 +49,6 @@ function date_m2h(d,type){
 	var time=d.replace(/.* /,'');
 	if(type=='time')return time;
 	return time+', '+date;
-}
-function event_target(e){ // taken from http://www.quirksmode.org/js/events_properties.html
-	var targ;
-	if (!e) var e = window.event;
-	if (e.target) targ = e.target;
-	else if (e.srcElement) targ = e.srcElement;
-//	if (targ.nodeType == 3) // defeat Safari bug
-//		targ = targ.parentNode;
-	return targ;
-}
-function fixed(v,f){
-	v=parseFloat(v);
-	var l=Math.floor(f),a=v,c='',r=0;
-	v=v.toFixed?v.toFixed((f-l)*10):v;
-	while(a>=1){
-		++r;
-		a/=10;
-	}
-	for(;l>r;++r)c+='0';
-	return c+v;
-}
-function getClassName(el){
-	return el&&el.className?el.className:'';
 }
 function htmlspecialchars(str) {
 	var div=document.createElement('div');
@@ -162,7 +129,7 @@ function loadUrl(url){
 }
 function newEl(t,id,cn,els){
 	var el=document.createElement(t);
-	if(id)X(el,{id:id,name:id});
+	if(id)$.extend(el,{id:id,name:id});
 	if(els){
 		if($type(els)=='string')el.innerHTML=els;
 		else addEls(el,els);
@@ -171,45 +138,23 @@ function newEl(t,id,cn,els){
 	return el;
 }
 function newLink(h,t,id,c){
-	return X(newEl('a',id,c,t),{href:h});
+	return $.extend(newEl('a',id,c,t),{href:h});
 }
 function newScript(url){
 	var el;
 	if(document.ie)el=document.createElement('<script type="text/javascript" src="'+url+'"></script>');
 	else{
 		el=newEl('script');
-		X(el,{type:"text/javascript",src:url});
+		$.extend(el,{type:"text/javascript",src:url});
 	}
 	return el;
-}
-function newSelectbox(name,keys,vals,s,f){
-	var el2=newEl('select',name),el3,s2=0,i;
-	if(!s)s=0;
-	if(!vals)vals=keys;
-	for(var i=0;i<vals.length;++i){
-		if(!vals[i])vals[i]='';
-		var v1=vals[i].toString();
-		var v2=v1.length>20?v1.substr(0,27)+'...':v1;
-		el3=X(newEl('option',0,0,v2),{value:keys[i],title:v1});
-		if(keys[i]==s)s2=i;
-		addEls(el2,el3);
-	}
-	el2.selectedIndex=s2;
-	if(f)el2.onchange=f;
-	return el2;
 }
 function newText(a){
 	return document.createTextNode(a);
 }
-function replaceEl(f,t){
-	if(f)f.parentNode.replaceChild(t,f);
-}
 window.ww={
 	CKEDITOR:'ckeditor'
 };
-function X(d,s){
-	return $.extend(d,s);
-}
 // { variables
 var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var function_urls=[];
