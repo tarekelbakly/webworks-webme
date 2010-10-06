@@ -38,7 +38,6 @@
 				});
 				items[i]=$(items[i]);
 			}
-			console.log(positions);
 			this.style.position='relative';
 			function setPositions(){
 				for (var i=0; i<numitems; ++i) {
