@@ -7,13 +7,13 @@ $plugin=array(
 			'js_include' => '/ww.plugins/image-transition/admin/widget.js'
 		)
 	),
-	'description' => 'Add an image to a panel which transitions to other specified images.',
+	'description' => 'Show all images in a directory, transitioning between them',
 	'frontend' => array(
 		'widget' => 'showImageTransition'
 	),
 	'version' => '2'
 );
-function showImageTransition($vars=null){
-	include_once SCRIPTBASE.'ww.plugins/image-transition/frontend/index.php';
-	return show_image_transition($vars);
+function showImageTransition($vars=null) {
+	require_once SCRIPTBASE.'ww.plugins/image-transition/frontend/index.php';
+	return ImageTransition_show($vars);
 }
