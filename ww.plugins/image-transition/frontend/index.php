@@ -23,17 +23,14 @@ function show_image_transition($vars){
 			asort($imgs);
 			if(!count($imgs))return '<em>no images in selected directory</em>';
 			if ($r['trans_type']=='3dCarousel') {
-				$html.='<div id="featureCarousel'.$vars->id.'" class="featureCarousel" style="height:'.($height+30).'px">';
-				$html.='<div class="feature"><img src="/f'.$r['directory'].'/'
-					.join('" /></div><div class="feature"><img style="display:none" src="/f'.$r['directory'].'/',$imgs)
-					.'" /></div>';
+				$html.='<div id="k3dCarousel'.$vars->id.'" style="height:'.($height+30).'px">';
+				$html.='<img style="display:none" src="/f'.$r['directory'].'/'
+					.join('" /><img style="display:none" src="/f'.$r['directory'].'/',$imgs)
+					.'" />';
 				$html.='</div>';
-				WW_addScript('/ww.plugins/image-transition/frontend/jquery.featureCarousel.js');
-				WW_addCSS('/ww.plugins/image-transition/frontend/featureCarousel.css');
+				WW_addScript('/ww.plugins/image-transition/frontend/jquery.k3dCarousel.js');
 				$html.='<script>$(window).load(function(){
-					$("#featureCarousel'.$vars->id.'").featureCarousel({
-						autoPlay:'.$r['pause'].',
-						topPadding:0
+					$("#k3dCarousel'.$vars->id.'").k3dCarousel({
 					});
 				});</script>';
 			}
