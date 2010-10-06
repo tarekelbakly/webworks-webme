@@ -1,3 +1,10 @@
+function event_target(e){ // taken from http://www.quirksmode.org/js/events_properties.html
+	var targ;
+	e||e=window.event;
+	if(e.target)targ=e.target;
+	else if(e.srcElement)targ=e.srcElement;
+	return targ;
+}
 function ajaxmenu_getChildren(a){
 	if(!a)return;
 	var b=a[0];

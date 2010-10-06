@@ -37,9 +37,3 @@ background: white;
 .hrzAccordion .handle{
 	float: left;
 }
-.hrzAccordion .handleOver{	
-	background: url(../images/blade_sel.png) no-repeat;
-}
-.hrzAccordion .handleSelected{	
-	background: url(../images/blade_sel.png) no-repeat;
-}
