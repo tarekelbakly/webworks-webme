@@ -345,6 +345,9 @@ function products_show($PAGEDATA) {
 	// }
 	// { set limit variables
 	$limit=isset($PAGEDATA->vars['products_per_page'])?(int)$PAGEDATA->vars['products_per_page']:0;
+	if(isset($_REQUEST['products_per_page'])) {
+		$limit=(int)$_REQUEST['products_per_page'];
+	}
 	$start=isset($_REQUEST['start'])?(int)$_REQUEST['start']:0;
 	if ($start<0)$start=0;
 	// }
@@ -759,15 +762,3 @@ class ProductType{
 			.'</div>';
 	}
 }
-echo '<style type="text/css">';
-// { Align left
-echo '.left {';
-echo 'text-align:left';
-echo '}';
-// }
-// { Align Centre
-echo '.centre {';
-echo 'text-align:center';
-echo '}';
-// }
-echo '</style>';
