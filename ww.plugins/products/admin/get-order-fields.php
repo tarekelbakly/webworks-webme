@@ -10,11 +10,16 @@ if($_REQUEST['other_GET_params']){
 	}
 	else if(strpos($_REQUEST['other_GET_params'],'c')===0){
 		$cat=(int)str_replace('c','',$_REQUEST['other_GET_params']);
-		$rs=dbAll('select product_id from products_categories_products where category_id='.$cat);
-		$arr=array();
-		foreach($rs as $r)$arr[]=$r['product_id'];
-		if(!count($arr))exit;
-		$rs=dbAll('select distinct product_type_id from products where id in ('.join(',',$arr).')');
+		if($cat==0) {
+			$rs=dbAll('select distinct product_type_id from products');
+		}
+		else {
+			$rs=dbAll('select product_id from products_categories_products where category_id='.$cat);
+			$arr=array();
+			foreach($rs as $r)$arr[]=$r['product_id'];
+			if(!count($arr))exit;
+			$rs=dbAll('select distinct product_type_id from products where id in ('.join(',',$arr).')');
+		}
 		$arr=array();
 		foreach($rs as $r)$arr[]=$r['product_type_id'];
 		if(!count($arr))exit;
