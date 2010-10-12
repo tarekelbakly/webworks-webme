@@ -569,6 +569,7 @@ class Products{
 				$product_ids[]=$r['id'];
 			}
 			new Products($product_ids, $md5, $search);
+			self::$instances[$md5]->subCategories=dbAll('select id,name from products_categories where parent_id='.$id.' order by name');
 		}
 		return self::$instances[$md5];
 	}
@@ -666,14 +667,8 @@ class Products{
 		if (isset($PAGEDATA->vars['products_add_a_search_box'])
 			&& $PAGEDATA->vars['products_add_a_search_box']
 		) {
-			if (!count($prods)) {
-				return '<div class="error">No products found matching that search. '
-					.'Try using less specific terms.</div>';
-			}
-			else {
-				$c.='<div class="products-num-results"><strong>'
-					.count($prods).'</strong> results found.</div>';
-			}
+			$c.='<div class="products-num-results"><strong>'
+				.count($prods).'</strong> results found.</div>';
 		}
 		// }
 		foreach ($prods as $pid) {
@@ -691,7 +686,15 @@ class Products{
 				}
 			}
 		}
-		return $prevnext.$c.$prevnext;
+		$categories='';
+		if(isset($this->subCategories) && count($this->subCategories)) {
+			$categories='<ul class="categories">';
+			foreach ($this->subCategories as $cat) {
+				$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl.'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name']).'</a></li>';
+			}
+			$categories.='</ul>';
+		}
+		return $categories.$prevnext.$c.$prevnext;
 	}
 }
 class ProductType{
