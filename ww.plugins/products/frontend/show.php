@@ -561,10 +561,26 @@ class Products{
 		$md5=md5($id.'|'.$search);
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
-			$rs=dbAll(
-				'select id from products,products_categories_products '
-				.'where id=product_id and enabled and category_id='.$id
-			);
+			if ($search=='') {
+				$rs=dbAll(
+					'select id from products,products_categories_products'
+					.' where id=product_id and enabled and category_id='.$id
+				);
+			}
+			else {
+				$rs=dbAll(
+					'select id from products,products_categories_products'
+					.' where id=product_id and enabled and category_id='.$id
+					.' and name like "%'.addslashes($search).'%"'
+				);
+				$cats=dbAll('select id from products_categories where parent_id='.$id);
+				foreach ($cats as $cat) {
+					$ps=Products::getByCategory($cat['id'], $search);
+					foreach ($ps->product_ids as $p) {
+						$rs[]=array('id'=>$p);
+					}
+				}
+			}
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
 			}
