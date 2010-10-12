@@ -15,7 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $now = dbOne('select now()', 'now()');
 $filename = 'webworks_webme_products_export_'.$now.'.csv';
 header('Content-Type: text/csv');
-header('Content-Dispositon: attachment; filename="'.$filename.'"');
+header('Content-Disposition: attachment; filename="'.$filename.'"');
 // { Get the headers
 $fields = dbAll('describe products');
 $row = '';
