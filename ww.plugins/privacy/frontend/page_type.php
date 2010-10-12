@@ -81,7 +81,7 @@ function userloginandregistrationDisplay(){
 		$c.='</ul>';
 		// { tabs
 		if($PAGEDATA->vars['userlogin_visibility']&1){
-			$c.=userLoginBoxDisplay();
+			$c.= userLoginBoxDisplay();
 			$c.=userPasswordReminder();
 		}
 		if($PAGEDATA->vars['userlogin_visibility']&2)$c.=userregistration();
@@ -92,7 +92,7 @@ function userloginandregistrationDisplay(){
 }
 function userLoginBoxDisplay(){
 	global $PAGEDATA;
-	$c='<div id="userLoginBoxDisplay"><h2>Login</h2>';
+	$c='<div id="userLoginBoxDisplay">';
 	if(getVar('action')=='Login')$c.='<em>incorrect email or password given.</em>';
 	if(isset($PAGEDATA->vars['userlogin_message_login']))$c.=$PAGEDATA->vars['userlogin_message_login'];
 	$c.='<form class="userLoginBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#tab=Login" method="post"><table>';
@@ -106,7 +106,7 @@ function userLoginBoxDisplay(){
 }
 function userPasswordReminder(){
 	global $PAGEDATA;
-	$c='<div id="userPasswordReminder"><h2>Password Reminder</h2>';
+	$c='<div id="userPasswordReminder">';
 	if(isset($PAGEDATA->vars['userlogin_message_reminder']))$c.=$PAGEDATA->vars['userlogin_message_reminder'];
 	$c.='<form class="userLoginBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#tab=Password Reminder" method="post"><table>';
 	$c.='<tr><th><label for="email">Email</label></th><td><input type="text" name="email" /></td></tr></table>';
@@ -120,7 +120,7 @@ function userregistration(){
 }
 function userregistration_form($error='',$alert=''){
 	global $PAGEDATA;
-	$c='<div id="userregistration"><h2>Register</h2>';
+	$c='<div id="userregistration">';
 	if(isset($PAGEDATA->vars['userlogin_message_registration']))$c.=$PAGEDATA->vars['userlogin_message_registration'];
 	$c.=$error.'<form class="userRegistrationBox" action="'.$GLOBALS['PAGEDATA']->getRelativeUrl().'#userregistration" method="post"><table>'
 		.'<tr><th>Name</th><td><input type="text" name="name" value="'.htmlspecialchars(getVar('name')).'" /></td>'
