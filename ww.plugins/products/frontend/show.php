@@ -703,12 +703,14 @@ class Products{
 			}
 		}
 		$categories='';
-		if(isset($this->subCategories) && count($this->subCategories)) {
-			$categories='<ul class="categories">';
-			foreach ($this->subCategories as $cat) {
-				$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl.'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name']).'</a></li>';
+		if (!isset($_REQUEST['products-search'])) {
+			if (isset($this->subCategories) && count($this->subCategories)) {
+				$categories='<ul class="categories">';
+				foreach ($this->subCategories as $cat) {
+					$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl.'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name']).'</a></li>';
+				}
+				$categories.='</ul>';
 			}
-			$categories.='</ul>';
 		}
 		return $categories.$prevnext.$c.$prevnext;
 	}
