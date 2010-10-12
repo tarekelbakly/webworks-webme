@@ -1,19 +1,16 @@
 /*Main Container*/
-.hrzAccordion>li{
-	list-style:none;
-}
-.hrzAccordion .container {
+.container {
 	width:100%;	
 
 
 }
-.hrzAccordion .container ul{
+.container ul{
 	list-style-type: none;
 	margin: 0;
 	padding:0;	
 		
 }
-.hrzAccordion .container li{
+.container li{
 	display: inline;
 	margin: 0px;
 	padding:0px;
