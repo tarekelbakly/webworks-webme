@@ -331,7 +331,7 @@ function products_reviews ($params, &$smarty) {
 function products_show($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
 	WW_addScript('/ww.plugins/products/j/jquery.lightbox-0.5.min.js');
-	WW_addScript('/ww.plugins/products/j/js.js');
+	WW_addScript('/ww.plugins/products/frontend/js.min.js');
 	WW_addCSS('/ww.plugins/products/c/jquery.lightbox-0.5.css');
 	$c='';
 	// { search
