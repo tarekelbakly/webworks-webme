@@ -403,6 +403,8 @@ function products_setup_smarty() {
 	$smarty=smarty_setup();
 	$smarty->compile_dir=USERBASE.'/ww.cache/products/templates_c';
 	$smarty->template_dir='/ww.cache/products/templates';
+	$smarty->assign('PAGEDATA',$GLOBALS['PAGEDATA']);
+	$smarty->assign('USERDATA',$_SESSION['userdata']);
 	return $smarty;
 }
 function products_submit_review_form ($productid, $userid) {

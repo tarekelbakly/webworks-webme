@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/ww.admin/admin_libs.php';
 if(isset($_REQUEST['get_content_snippet'])){
 	$id=(int)$_REQUEST['get_content_snippet'];
 	$r=dbRow('select * from content_snippets where id='.$id);
-	if(!$r){
+	if(!$r || $r['content']=='null'){
 		echo '{"id":0,"content":[{"html":""}]}';
 	}
 	else{
