@@ -37,7 +37,7 @@ function displayPageSummaries($id){
 	return rss_to_html($rss);
 }
 function get_contained_pageids($id,$containedpages=array()){
-	$q=dbAll('select id,type,special,category from pages where parent="'.$id.'" and !(special&32)');
+	$q=dbAll('select id,type,special,category from pages where parent="'.$id.'" and !(special&4)');
 	foreach($q as $r){
 		switch($r['type']){
 			case 0: {
