@@ -75,6 +75,7 @@ if(allowedToEditPage($id)){
 		displayPageSummaries($_POST['id']);
 	}
 	$msgs.='<em>'.__('An item\'s details have been updated.').'</em>';
+	dbQuery('update page_summaries set rss=""');
 	cache_clear('menus');
 	cache_clear('pages');
 }
