@@ -222,7 +222,7 @@ echo '</table>';
 echo '</td><td>';
 // { special
 echo '<h4>'.__('Special').'</h4>';
-$specials=array(__('Is Home Page'), __('Does not appear in navigation'));
+$specials=array(__('Is Home Page'), __('Does not appear in navigation'), __('Is not summarised'));
 for($i=0;$i<count($specials);++$i){
 	if($specials[$i]!=''){
 		echo wInput('special['.$i.']','checkbox',($page['special']&pow(2,$i))?1:0).$specials[$i].'<br />';
