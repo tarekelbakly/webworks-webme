@@ -15,7 +15,7 @@ function form_export(id){
 		return alert('this form doesn\'t record to database');
 	}
 	var d=$('#export_from').val();
-	document.location='/ww.plugins/forms/j/export.php?date='+d+'&id='+id;
+	document.location='/ww.plugins/forms/admin/export.php?date='+d+'&id='+id;
 }
 if (!formfieldElements) {
 	var formfieldElements=0;
