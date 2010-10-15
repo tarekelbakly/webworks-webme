@@ -71,12 +71,9 @@ if (!isset($vars['forms_replyto']) || !$vars['forms_replyto']) {
 	$vars['forms_replyto']='FIELD{email}';
 }
 $c.= '<th>Reply-To</th><td>'
-	.wInput(
-		'page_vars[forms_replyto]',
-		'',
-		htmlspecialchars(@$vars['forms_replyto'])
-	)
-	.'</td></tr>';
+	.'<select name="page_vars[forms_replyto]" id="form-replyto">'
+	.'<option>'. htmlspecialchars(@$vars['forms_replyto']).'</option>'
+	.'</select></td></tr>';
 // }
 // { record in database
 $c.= '<tr><th>Record In DB</th><td>'

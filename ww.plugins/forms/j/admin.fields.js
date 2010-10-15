@@ -7,8 +7,6 @@ function formfieldsAddRow(){
 		ev.target.focus();
 	});
 }
-function formfieldsChange(e){
-}
 function form_export(id){
 	if (!id) {
 		return alert('cannot export from an empty form database');
@@ -23,7 +21,32 @@ if (!formfieldElements) {
 	var formfieldElements=0;
 }
 $(function(){
+	function form_updateReplyto(){
+		var $r=$('#form-replyto'),old=$r.val(),names=[];
+		$('#form_fields select').each(function(){
+			var val=$(this).val(),name;
+			if (val!='email') {
+				return;
+			}
+			name=$(this).closest('tr').find('input')[0].value;
+			if (name=='') {
+				return;
+			}
+			names.push(name);
+		});
+		$r
+			.html('<option>'+names.join('</option><option>')+'</option>')
+			.val(old);
+	}
 	formfieldsAddRow();
 	$('.date').datepicker({dateFormat:'yy-m-d'});
 	$('#tabs').tabs();
+	$('#pages_form').submit(function(){
+		form_updateReplyto();
+		if (!$('#form-replyto').val()) {
+			alert('the Reply-To on the Main Details tab must correspond to an Email field in the Form Fields tab');
+			return false;
+		}
+	});
+	$('#form_fields select').live('change',form_updateReplyto);
 });
