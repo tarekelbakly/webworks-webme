@@ -404,7 +404,9 @@ function products_setup_smarty() {
 	$smarty->compile_dir=USERBASE.'/ww.cache/products/templates_c';
 	$smarty->template_dir='/ww.cache/products/templates';
 	$smarty->assign('PAGEDATA',$GLOBALS['PAGEDATA']);
-	$smarty->assign('USERDATA',$_SESSION['userdata']);
+	if (isset($_SESSION['userdata'])) {
+		$smarty->assign('USERDATA',$_SESSION['userdata']);
+	}
 	return $smarty;
 }
 function products_submit_review_form ($productid, $userid) {
@@ -709,7 +711,7 @@ class Products{
 			if (isset($this->subCategories) && count($this->subCategories)) {
 				$categories='<ul class="categories">';
 				foreach ($this->subCategories as $cat) {
-					$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl.'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name']).'</a></li>';
+					$categories.='<li><a href="'.$PAGEDATA->getRelativeUrl().'?product_cid='.$cat['id'].'">'.htmlspecialchars($cat['name']).'</a></li>';
 				}
 				$categories.='</ul>';
 			}

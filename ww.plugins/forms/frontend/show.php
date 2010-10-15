@@ -247,7 +247,7 @@ function Form_showForm(
 						'#.* ([a-zA-Z]*, [0-9]+)#',
 						"$1",
 						date_m2h($_REQUEST[$name])
-					):
+					);
 				}
 				else {
 					$d='<input name="'.$name.'" value="'
