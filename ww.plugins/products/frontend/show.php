@@ -573,7 +573,7 @@ class Products{
 				$rs=dbAll(
 					'select id from products,products_categories_products'
 					.' where id=product_id and enabled and category_id='.$id
-					.' and name like "%'.addslashes($search).'%"'
+					.' and (name like "%'.addslashes($search).'%" or data_fields like "%'.addslashes($search).'%")'
 				);
 				$cats=dbAll('select id from products_categories where parent_id='.$id);
 				foreach ($cats as $cat) {
