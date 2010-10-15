@@ -92,8 +92,6 @@ if (isset($_POST['import'])) {
 					}
 					if (is_array(${$col})) {
 						if (in_array($col, $cols)) {
-							echo $col.' is a field for the database';
-							echo '<br />';
 							${$col}[$numRows-1] = $data;
 						}
 						else {
