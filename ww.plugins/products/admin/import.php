@@ -62,7 +62,24 @@ if (isset($_POST['import'])) {
 			$row = fgetcsv($file);
 			// { Build the arrays of data
 			$numRows=0;
-			$data_fields=array();
+			if (!is_array($data_fields)) {
+				//Allow the data fields to be imported as json
+				$data_fields=array();
+			}
+			$cols 
+				= array(
+					'id', //Needed for updates
+					'name', 
+					'product_type_id', 
+					'image_default', 
+					'enabled',
+					'date_created',
+					'images_directory',
+					'categories'
+				);
+			if ($_POST['data_fields_option']=='json') {
+				$cols[] = 'data_fields';
+			}
 			while ($row && ++$numRows) {
 				$i = 0;
 				foreach ($colNames as $col) {
@@ -74,14 +91,16 @@ if (isset($_POST['import'])) {
 						break;
 					}
 					if (is_array(${$col})) {
-						if (in_array($col, array('name', 'product_type_id', 'image_default', 'enabled', 'date_created', 'images_directory'))) {
+						if (in_array($col, $cols)) {
+							echo $col.' is a field for the database';
+							echo '<br />';
 							${$col}[$numRows-1] = $data;
 						}
 						else {
 							if (!is_array($data_fields[$numRows-1])) {
-								$data_fields[$numRows-1]=array();
+								$data_fields[$numRows-1] = array();
 							}
-							$data_fields[$numRows-1][]=array(
+							$data_fields[$numRows-1][] = array(
 								'n'=>$col,
 								'v'=>$data
 							);
@@ -91,8 +110,10 @@ if (isset($_POST['import'])) {
 				}
 				$row = fgetcsv($file);
 			}
-			foreach($data_fields as $k=>$v) {
-				$data_fields[$k]=json_encode($v);
+			if ($_POST['data_fields_option']=='cols') {
+				foreach($data_fields as $k=>$v) {
+					$data_fields[$k]=json_encode($v);
+				}
 			}
 			// }
 			$ids = array();
@@ -242,6 +263,11 @@ echo 'Delete products before import? ';
 echo '<input type="checkbox" id="clear_database" name="clear_database"
 	onchange="toggle_remove_associated_files();" />';
 echo '<div id="new_line"></div>'; // a <br /> will keep an extra line
+echo 'Import data fields as ';
+echo '<select name="data_fields_option">';
+echo '<option value="cols">individual columns in file</option>';
+echo '<option value="json">data_fields column in file</option>';
+echo '</select><br />';
 $cats = dbAll('select name, id from products_categories');
 $jsonCats = json_encode($cats);
 echo 'Delete categories before import? ';
