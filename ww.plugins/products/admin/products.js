@@ -103,18 +103,20 @@ function update_data_fields(data) {
 	html = '<table id="data-fields-table">'; 
 	for (i=0; i<data.type.length; ++i) {
 		var value='';
-		for (j=0; j<data.oldType.length; ++j) {	
-			if (data.oldType[j].n==data.type[i].n) {
-				if (data.oldType[j].t=='checkbox'&&data.type[i].t!='checkbox') {
-					if (data.product[j]!=null) {
-						value='Yes';
+		if (data.oldType != null) {
+			for (j=0; j<data.oldType.length; ++j) {	
+				if (data.oldType[j].n==data.type[i].n) {
+					if (data.oldType[j].t=='checkbox'&&data.type[i].t!='checkbox') {
+						if (data.product[j]!=null) {
+							value='Yes';
+						}
+						else {
+							value='No';
+						}
 					}
-					else {
-						value='No';
+					else if (data.product[j]!=null) {
+						value=data.product[j].v;
 					}
-				}
-				else if (data.product[j]!=null) {
-					value=data.product[j].v;
 				}
 			}
 		}

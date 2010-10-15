@@ -29,22 +29,27 @@ else {
 			'select data_fields from products_types where id = '.$typeID,
 			'data_fields'
 		);
-	$product 
-		= dbRow(
-			'select data_fields, product_type_id 
-			from products where id = '.$productID
-		);
-	$productFields = $product['data_fields'];
-	$oldType 
-		= dbOne(
-			'select data_fields 
-			from products_types 
-			where id = '.$product['product_type_id'],
-			'data_fields'
-		);
-	echo '{
-		"type":'.$typeFields.', 
-		"product":'.$productFields.',
-		"oldType":'.$oldType.
-	'}';
+	if ($productID != 0) {
+		$product 
+			= dbRow(
+				'select data_fields, product_type_id 
+				from products where id = '.$productID
+			);
+		$productFields = $product['data_fields'];
+		$oldType 
+			= dbOne(
+				'select data_fields 
+				from products_types 
+				where id = '.$product['product_type_id'],
+				'data_fields'
+			);
+	}
+	echo '{"type":'.$typeFields;
+	if (isset($productFields)) {
+		echo '"product": '.$productFields;
+	}
+	if (isset($oldType)) {
+		echo '"oldType": '.$oldType;
+	}
+	echo '}';
 }
