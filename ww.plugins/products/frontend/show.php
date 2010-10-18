@@ -171,7 +171,7 @@ function Product_datatableMultiple (&$products, $direction) {
 		foreach($type->data_fields as $df){
 			switch ($df->t) {
 				case 'checkbox': // {
-					$row[$df->n] = isset($product->vals[$df->n])?'Yes':'No';
+					$row[$df->n] = (isset($product->vals[$df->n])&&$product->vals[$df->n])?'Yes':'No';
 				break; // }
 				case 'date': // {
 					$row[$df->n] = date_m2h($product->vals[$df->n]);
