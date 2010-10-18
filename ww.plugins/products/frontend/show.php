@@ -199,7 +199,7 @@ function Product_datatableMultiple (&$products, $direction) {
 		case 'vertical': // {
 			$html='<table class="product-vertical">';
 			foreach ($headers as $n=>$d) {
-				$html.='<tr><th>'.$d.'</th>';
+				$html.='<tr class="'.$n.'"><th>'.$d.'</th>';
 				foreach ($data as $row) {
 					$html.='<td>'.$row[$n].'</td>';
 				}
