@@ -13,6 +13,8 @@
   * @link       www.webworks.ie
  */
 // { Move to a new location. When I try to use this file I get a strange table
+
+// TODO: kae to check this. what's the point of this file?
 $location = 'http://webworks-webme/ww.plugins/products/admin/save-file.php';
 header('Location: '.$location);
 // }

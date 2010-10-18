@@ -156,6 +156,51 @@ function products_datatable ($params, &$smarty) {
 	$c.= '</table>';
 	return $c;
 }
+function Product_datatableMultiple (&$products, &$PAGEDATA, $direction) {
+	$headers=array('name');
+	$data=array();
+	foreach ($products->product_ids as $pid) {
+		$row=array();
+		$product=Product::getInstance($pid);
+		$type=ProductType::getInstance($product->vals['product_type_id']);
+		$row['name']=$product->name;
+		foreach($type->data_fields as $df){
+			$row[$df->n]=$product->vals[$df->n];
+			if(!in_array($df->n,$headers)){
+				$headers[]=$df->n;
+			}
+		}
+		$data[]=$row;
+	}
+	switch ($direction){
+		case 'horizontal': // {
+			$html='<table class="product-horizontal">';
+			$html.='<thead><tr><th>'.join('</th><th>',$headers).'</th></tr></thead>';
+			$html.='<tbody>';
+			foreach ($data as $row) {
+				$html.='<tr>';
+				foreach ($headers as $n) {
+					$html.='<td>'.$row[$n].'</td>';
+				}
+				$html.='</tr>';
+			}
+			$html.='</tbody></table>';
+			return $html;
+		// }
+		case 'vertical': // {
+			$html='<table class="product-vertical">';
+			foreach ($headers as $n) {
+				$html.='<tr><th>'.$n.'</th>';
+				foreach ($data as $row) {
+					$html.='<td>'.$row[$n].'</td>';
+				}
+				$html.='</tr>';
+			}
+			$html.='</table>';
+			return $html;
+		// }
+	}
+}
 function products_get_add_to_cart_button($params,&$smarty) {
 	return '<form method="POST"><input type="hidden" name="products_action" value="add_to_cart" /><input type="submit" value="Add to Cart" />'
 		.'<input type="hidden" name="product_id" value="'. $smarty->_tpl_vars['product']->id .'" /></form>';
@@ -387,7 +432,22 @@ function products_show_by_type($PAGEDATA, $id=0, $start=0, $limit=0, $order_by='
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
 	$products=Products::getByType($id,$search);
-	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
+	if (!isset($PAGEDATA->vars['products_show_multiple_with'])) {
+		$PAGEDATA->vars['products_show_multiple_with']=0;
+	}
+	switch ($PAGEDATA->vars['products_show_multiple_with']) {
+		case 1: // { horizontal table, headers on top
+			return Product_datatableMultiple($products, $PAGEDATA, 'horizontal');
+		break;
+		// }
+		case 2: // { vertical table, headers on left
+			return Product_datatableMultiple($products, $PAGEDATA, 'vertical');
+		break;
+		// }
+		default: // { use template
+			return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
+		// }
+	}
 }
 function products_show_all($PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='') {
 	if (isset($_REQUEST['product_id'])) {

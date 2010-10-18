@@ -9,7 +9,7 @@ function products_what_to_show_change(){
 	$('#products_search').css('display',val<3?'table-row':'none');
 	$('#products_order_by').css('display',val<3?'table-row':'none');
 	$('#products_per_page').css('display',val<3?'table-row':'none');
-	$('#products-show-multiple-with-row').css('display',val!=1?'table-row':'none');
+	$('#products-show-multiple-with-row').css('display',val!=3?'table-row':'none');
 }
 $(function(){
 	$('.tabs').tabs();
