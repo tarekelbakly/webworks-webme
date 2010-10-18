@@ -169,7 +169,20 @@ function Product_datatableMultiple (&$products, $direction) {
 		$type=ProductType::getInstance($product->vals['product_type_id']);
 		$row['name']=$product->name;
 		foreach($type->data_fields as $df){
-			$row[$df->n]=$product->vals[$df->n];
+			switch ($df->t) {
+				case 'checkbox': // {
+					$row[$df->n] = isset($product->vals[$df->n])?'Yes':'No';
+				break; // }
+				case 'date': // {
+					$row[$df->n] = date_m2h($product->vals[$df->n]);
+				break; // }
+				case 'textarea' : // {
+					$row[$df->n] = $product->vals[$df->n];
+				break; // }
+				default :
+					$row[$df->n] = htmlspecialchars($product->vals[$df->n]);
+				break; // }
+			}
 			if(!in_array($df->n,$headers)){
 				if ($df->ti) {
 					$headers[$df->n]=$df->ti;
@@ -179,7 +192,7 @@ function Product_datatableMultiple (&$products, $direction) {
 				}
 			}
 		}
-		$data[]=$row;
+		$data[] = $row;
 	}
 	switch ($direction){
 		case 'horizontal': // {
