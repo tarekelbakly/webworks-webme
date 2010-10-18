@@ -115,6 +115,6 @@ if ($version==11) { // cdate should be datetime
 	dbQuery('alter table products_reviews change cdate cdate datetime');
 	$version=12;
 }
-			
+
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

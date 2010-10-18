@@ -80,7 +80,9 @@ function products_datatable ($params, &$smarty) {
 	$c = '<table>';
 	if ($params['align']!='horizontal') {
 		foreach ($datafields as $data) {
-			$name = str_replace('_', ' ', $data->n);
+			$name = $data->ti
+				?$data->ti
+				:ucwords(str_replace('_', ' ', $data->n));
 			$c.= '<tr><th class="left">';
 			$c.= htmlspecialchars(ucfirst($name));
 			$c.= '</th><td>';
@@ -115,7 +117,9 @@ function products_datatable ($params, &$smarty) {
 		$c.= '<thead>';
 		$c.= '<tr>';
 		foreach ($datafields as $data) {
-			$name= str_replace('_', ' ', $data->n);
+			$name = $data->ti
+				?$data->ti
+				:ucwords(str_replace('_', ' ', $data->n));
 			$c.= '<th>'.htmlspecialchars(ucfirst($name)).'</th>';
 		}
 		$c.= '</tr>';
@@ -156,10 +160,10 @@ function products_datatable ($params, &$smarty) {
 	$c.= '</table>';
 	return $c;
 }
-function Product_datatableMultiple (&$products, &$PAGEDATA, $direction) {
-	$headers=array('name');
+function Product_datatableMultiple (&$products, $direction) {
+	$headers=array('name'=>'Name');
 	$data=array();
-	foreach ($products->product_ids as $pid) {
+	foreach ($products as $pid) {
 		$row=array();
 		$product=Product::getInstance($pid);
 		$type=ProductType::getInstance($product->vals['product_type_id']);
@@ -167,7 +171,12 @@ function Product_datatableMultiple (&$products, &$PAGEDATA, $direction) {
 		foreach($type->data_fields as $df){
 			$row[$df->n]=$product->vals[$df->n];
 			if(!in_array($df->n,$headers)){
-				$headers[]=$df->n;
+				if ($df->ti) {
+					$headers[$df->n]=$df->ti;
+				}
+				else {
+					$headers[$df->n]=ucwords($df->n);
+				}
 			}
 		}
 		$data[]=$row;
@@ -179,7 +188,7 @@ function Product_datatableMultiple (&$products, &$PAGEDATA, $direction) {
 			$html.='<tbody>';
 			foreach ($data as $row) {
 				$html.='<tr>';
-				foreach ($headers as $n) {
+				foreach ($headers as $n=>$d) {
 					$html.='<td>'.$row[$n].'</td>';
 				}
 				$html.='</tr>';
@@ -189,8 +198,8 @@ function Product_datatableMultiple (&$products, &$PAGEDATA, $direction) {
 		// }
 		case 'vertical': // {
 			$html='<table class="product-vertical">';
-			foreach ($headers as $n) {
-				$html.='<tr><th>'.$n.'</th>';
+			foreach ($headers as $n=>$d) {
+				$html.='<tr><th>'.$d.'</th>';
 				foreach ($data as $row) {
 					$html.='<td>'.$row[$n].'</td>';
 				}
@@ -432,22 +441,7 @@ function products_show_by_type($PAGEDATA, $id=0, $start=0, $limit=0, $order_by='
 		$id=(int)$PAGEDATA->vars['products_type_to_show'];
 	}
 	$products=Products::getByType($id,$search);
-	if (!isset($PAGEDATA->vars['products_show_multiple_with'])) {
-		$PAGEDATA->vars['products_show_multiple_with']=0;
-	}
-	switch ($PAGEDATA->vars['products_show_multiple_with']) {
-		case 1: // { horizontal table, headers on top
-			return Product_datatableMultiple($products, $PAGEDATA, 'horizontal');
-		break;
-		// }
-		case 2: // { vertical table, headers on left
-			return Product_datatableMultiple($products, $PAGEDATA, 'vertical');
-		break;
-		// }
-		default: // { use template
-			return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
-		// }
-	}
+	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
 function products_show_all($PAGEDATA, $start=0, $limit=0, $order_by='', $order_dir=0, $search='') {
 	if (isset($_REQUEST['product_id'])) {
@@ -718,6 +712,7 @@ class Products{
 		// }
 		// { build array of items
 		$prevnext='';
+		$total_found=count($tmpprods);
 		if ($cnt==$limit) {
 			$prods=&$tmpprods;
 		}
@@ -748,23 +743,38 @@ class Products{
 			&& $PAGEDATA->vars['products_add_a_search_box']
 		) {
 			$c.='<div class="products-num-results"><strong>'
-				.count($prods).'</strong> results found.</div>';
+				.$total_found.'</strong> results found.</div>';
 		}
 		// }
-		foreach ($prods as $pid) {
-			$product=Product::getInstance($pid);
-			if ($product) {
-				$type=ProductType::getInstance($product->get('product_type_id'));
-				if (!$type) {
-					$c.='Missing product type: '.$product->get('product_type_id');
+		if (!isset($PAGEDATA->vars['products_show_multiple_with'])) {
+			$PAGEDATA->vars['products_show_multiple_with']=0;
+		}
+		switch ($PAGEDATA->vars['products_show_multiple_with']) {
+			case 1: // { horizontal table, headers on top
+				$c.=Product_datatableMultiple($prods, 'horizontal');
+			break;
+			// }
+			case 2: // { vertical table, headers on left
+				$c.=Product_datatableMultiple($prods, 'vertical');
+			break;
+			// }
+			default: // { use template
+				foreach ($prods as $pid) {
+					$product=Product::getInstance($pid);
+					if ($product) {
+						$type=ProductType::getInstance($product->get('product_type_id'));
+						if (!$type) {
+							$c.='Missing product type: '.$product->get('product_type_id');
+						}
+						else if (isset($_REQUEST['product_id'])) {
+							$c.= $type->render($product, 'singleview');
+						}
+						else {
+							$c.=$type->render($product, 'multiview');
+						}
+					}
 				}
-				else if (isset($_REQUEST['product_id'])) {
-					$c.= $type->render($product, 'singleview');
-				}
-				else {
-					$c.=$type->render($product, 'multiview');
-				}
-			}
+			// }
 		}
 		$categories='';
 		if (!isset($_REQUEST['products-search'])) {
@@ -791,6 +801,7 @@ class ProductType{
 			return false;
 		}
 		$this->data_fields=json_decode($r['data_fields']);
+		echo '<!-- '; var_dump($this->data_fields); echo ' -->';
 		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v;
 		if (!file_exists($tpl_cache)) {
 			file_put_contents($tpl_cache, $r['multiview_template']);
