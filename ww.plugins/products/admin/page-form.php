@@ -99,6 +99,23 @@ $c.='<option value="0">Ascending (A-Z)</option><option value="1"';
 if(isset($vars['products_order_direction']) && $vars['products_order_direction']=='1')$c.=' selected="selected"';
 $c.='>Descending (Z-A)</option></select></td></tr>';
 // }
+// { template to use for multiple products
+$c.= '<tr id="products-show-multiple-with-row"><th>Show multiple products using</th>';
+$c.= '<td><select id="products_show_multiple_with" name="page_vars[products_show_multiple_with]">';
+$arr
+	=array(
+		'product type template',
+		'horizontal table (headers on top)',
+		'vertical table (headers on left)'
+	);
+if (!isset($vars['products_show_multiple_with']))$vars['products_show_multiple_with']=0;
+foreach($arr as $k=>$r){
+	$c.= '<option value="'.$k.'"';
+	if($k==$vars['products_show_multiple_with'])$c.= ' selected="selected"';
+	$c.= '>'.htmlspecialchars($r).'</option>';
+}
+$c.= '</select></td></tr>';
+// }
 // { products per page
 $c.= '<tr id="products_per_page"><th>Products per page</th><td>';
 $c.= '<input name="page_vars[products_per_page]" class="small" value="';
