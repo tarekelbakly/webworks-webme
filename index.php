@@ -285,7 +285,6 @@ $c.='<style type="text/css">.loggedin{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
-#$c.='<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>';
 if(is_admin()){
 	$c.='<script src="/ww.admin/j/common.js"></script>';
 }
