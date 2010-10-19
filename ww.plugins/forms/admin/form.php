@@ -16,7 +16,7 @@ if (!$edit && isset($replytoid) && $replytoid) {
 	$c.= wInput('replytoid', 'hidden', $replytoid);
 }
 // { tabs nav
-$c.= '<div id="tabs">'
+$c.= '<div class="tabs">'
 	.'<ul>'
 	.'<li><a href="#before">Header</a></li>'
 	.'<li><a href="#main">Main Details</a></li>'
