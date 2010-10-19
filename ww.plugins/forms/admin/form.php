@@ -73,8 +73,8 @@ $c.= '<tr><th>Captcha Required</th><td>'
 		$vars['forms_captcha_required']
 	)
 	.'</td>';
-if (!isset($vars['forms_replyto']) || !$vars['forms_replyto']) {
-	$vars['forms_replyto']='FIELD{email}';
+if (!isset($vars['forms_replyto'])) {
+	$vars['forms_replyto']='';
 }
 $c.= '<th>Reply-To</th><td>'
 	.'<select name="page_vars[forms_replyto]" id="form-replyto">'
