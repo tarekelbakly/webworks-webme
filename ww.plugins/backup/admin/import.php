@@ -6,18 +6,21 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 	mkdir($tmpdir);
 	$uname=$_FILES['file']['tmp_name'];
 	$password=addslashes($_POST['password']);
-	`cd $tmpdir && unzip -P "$password" $uname`;
+	`cd $tmpdir && unzip -oP "$password" "$uname"`;
 	if(!file_exists( $tmpdir.'/site' )) {
 		echo '<em>unzipping failed. incorrect password?</em>';
 	}
 	else {
 		$udir=USERBASE;
 
+		echo 'clearing local cache...<br />';
+		`rm $udir/ww.cache/* -fr`;
+
 		echo 'extracting files...<br />';
-		`cd $udir && rm -rf f && unzip $tmpdir/site/files.zip`;
+		`cd $udir && rm -rf f && unzip -o $tmpdir/site/files.zip`;
 
 		echo 'extracting themes...<br />';
-		`cd $udir && rm -rf f && unzip $tmpdir/site/theme.zip`;
+		`cd $udir && rm -rf f && unzip -o $tmpdir/site/theme.zip`;
 
 		echo 'extracting database...<br />';
 		$dbbackup=json_decode(file_get_contents($tmpdir.'/site/db.json'));
@@ -45,6 +48,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		$config['plugins']=(isset($config['plugins']) && $config['plugins']!='')?explode(',',$config['plugins']):array();
 		$DBVARS=$config;
 		config_rewrite();
+
+		echo 'cleaning up.<br />';
+//		`rm -rf $tmpdir`;
 
 		echo 'done<img style="width:1px;height:1px" src="./" /><p>Import completed.</p>';
 		return;

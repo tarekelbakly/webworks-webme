@@ -21,9 +21,9 @@ $ubase=USERBASE;
 $fdir=USERBASE.'f';
 $tdir=USERBASE.'themes-personal';
 
-`cd $ubase  && zip -9r $dir/files.zip f`;
+`cd $ubase  && zip -r $dir/files.zip f`;
 
-`cd $ubase  && zip -9r $dir/theme.zip themes-personal`;
+`cd $ubase  && zip -r $dir/theme.zip themes-personal`;
 
 $data=array();
 $tables=dbAll('show tables');
@@ -45,7 +45,7 @@ unset($DBVARS['theme_dir_personal']);
 file_put_contents($dir.'/config.json',json_encode($DBVARS));
 
 $sname=$_SERVER['HTTP_HOST'].date('-Y-m-d').'.zip';
-`cd $tmpdir && zip -9r -P "$password" $sname site`;
+`cd $tmpdir && zip -r -P "$password" $sname site`;
 
 header('Content-type: force/download');
 header('Content-Disposition: attachment; filename="'.$sname.'"');
