@@ -219,6 +219,7 @@ var Lightbox={
 };
 $(function(){
 	ig.gallery=document.getElementById('image_gallery');
+	ig.hoverphoto=document.getElementById('image_gallery_picture')?1:0;
 	$.extend(ig,eval('('+ig.gallery.className.replace(/^[^{]*/,'')+')'));
 	x_ig_getImages(ig.dirid,ig_setImages);
 });

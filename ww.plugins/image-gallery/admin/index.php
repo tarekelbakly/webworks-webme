@@ -24,7 +24,6 @@ $gvars=array(
 	'image_gallery_slidedelay'   =>5000,
 	'image_gallery_thumbsize'    =>150,
 	'image_gallery_captionlength'=>100,
-	'image_gallery_hoverphoto'   =>0,
 	'image_gallery_type'         =>'ad-gallery'
 );
 foreach($gvars as $n=>$v)if(isset($vars[$n]))$gvars[$n]=$vars[$n];

@@ -1,5 +1,5 @@
 <?php
-$c.='<table id="image_gallery" class="image_gallery {hoverphoto:'.($vars['image_gallery_hoverphoto']?'true':'false').',thumbsize:'.$vars['image_gallery_thumbsize'].',captionlength:'.$vars['image_gallery_captionlength'].',imgAt:'.$start.',dirid:'.$dir_id.',x:'.$vars['image_gallery_x'].',y:'.$vars['image_gallery_y'].'}">';
+$c.='<table id="image_gallery" class="image_gallery {thumbsize:'.$vars['image_gallery_thumbsize'].',captionlength:'.$vars['image_gallery_captionlength'].',imgAt:'.$start.',dirid:'.$dir_id.',x:'.$vars['image_gallery_x'].',y:'.$vars['image_gallery_y'].'}">';
 if($n>$imagesPerPage){
 	$prespage=preg_replace('/\?.*/','',$_SERVER['REQUEST_URI']);
 	// { # prev

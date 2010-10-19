@@ -11,7 +11,6 @@ function image_gallery_show($PAGEDATA){
 		'image_gallery_y'            =>2,
 		'image_gallery_thumbsize'    =>150,
 		'image_gallery_captionlength'=>100,
-		'image_gallery_hoverphoto'   =>0,
 		'image_gallery_type'         =>'simple gallery',
 		'image_gallery_forsale'      =>false
 	),$vars);
