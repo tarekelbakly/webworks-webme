@@ -18,7 +18,8 @@ if (!$edit && isset($replytoid) && $replytoid) {
 // { tabs nav
 $c.= '<div class="tabs">'
 	.'<ul>'
-	.'<li><a href="#before">Header</a></li>'
+	.'<li><a href="#f-header">Header</a></li>'
+	.'<li><a href="#footer">Footer</a></li>'
 	.'<li><a href="#main">Main Details</a></li>'
 	.'<li><a href="#fields">Form Fields</a></li>'
 	.'<li><a href="#success">Success Message</a></li>'
@@ -26,9 +27,14 @@ $c.= '<div class="tabs">'
 	.'</ul>';
 // }
 // { header
-$c.='<div id="before"><p>Text to be shown above the form</p>'
+$c.='<div id="f-header"><p>Text to be shown above the form</p>'
 	.ckeditor('body', $page['body'])
 	.'</div>';
+// }
+// { footer
+$c.='<div id="footer"><p>Text to appear below the form.</p>';
+$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''),0,$cssurl);
+$c.='</div>';
 // }
 // { main details
 $c.= '<div id="main"><table>';

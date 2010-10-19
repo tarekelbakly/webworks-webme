@@ -52,5 +52,8 @@ function Form_adminPageForm($page, $vars) {
   */
 function Form_frontend($PAGEDATA) {
 	require dirname(__FILE__).'/frontend/show.php';
-	return $PAGEDATA->render().Form_show($PAGEDATA->dbVals, $PAGEDATA->vars);
+	if(!isset($PAGEDATA->vars['footer']))$PAGEDATA->vars['footer']='';
+	return $PAGEDATA->render()
+		.Form_show($PAGEDATA->dbVals, $PAGEDATA->vars)
+		.$PAGEDATA->vars['footer'];
 }
