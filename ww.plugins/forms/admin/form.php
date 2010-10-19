@@ -164,4 +164,4 @@ $c.= '</div>';
 $c.= '</div>';
 // }
 $c.= '<script>var formfieldElements='.$i.';</script>'
-	.'<script src="/ww.plugins/forms/admin/admin.fields.min/js"></script>';
+	.'<script src="/ww.plugins/forms/admin/admin.fields.min.js"></script>';
