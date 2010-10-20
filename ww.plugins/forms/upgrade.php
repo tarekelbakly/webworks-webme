@@ -50,13 +50,16 @@ if ($version==2) { // forms_saved_values
 	$version=3;
 }
 if ($version==3) { // replace FIELD{blah} with blah
-	$rs=dbAll('select * from page_vars where name="forms_replyto"');
-	foreach ($rs as $r) {
-		dbQuery(
-			'update page_vars set value="'
-			.preg_replace('/^FIELD{|}$/', '', $r['value'])
-			.'" where page_id='.$r['page_id'].' and name="forms_replyto"'
-		);
+	$r=dbAll('show tables like "page_vars"','table');
+	if (count($r)) {
+		$rs=dbAll('select * from page_vars where name="forms_replyto"');
+		foreach ($rs as $r) {
+			dbQuery(
+				'update page_vars set value="'
+				.preg_replace('/^FIELD{|}$/', '', $r['value'])
+				.'" where page_id='.$r['page_id'].' and name="forms_replyto"'
+			);
+		}
 	}
 	$version=4;
 }
