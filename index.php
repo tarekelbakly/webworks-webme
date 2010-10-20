@@ -121,7 +121,9 @@ if (!$allowed) {
 	$c.='<h2>Permission Denied</h2><p>This is a protected document.</p>';
 	if (isset($_SESSION['userdata'])) {
 		$c.='<p>You are not in a user-group which has access to this page. '
-			.'If you think you should be, please contact the site administrator.</p>';
+			.'If you think you should be, please contact the site administrator.</p>'
+			.'<p>If you have been supplied with a password for the page, please enter it here and submit the form:</p>'
+			.'<form method="post"><input type="password" name="privacy_password" /><input type="submit" /></form>';
 	}
 	else {
 		$c.='<p>Click <a href="/_r?type=loginpage">here</a> to log in.</p>';
