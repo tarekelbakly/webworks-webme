@@ -209,6 +209,9 @@ function sanitise_html($original_html) {
 		$html = preg_replace('#<!--\[if gte mso 10\].*?<!\[endif\]-->#','',$html);
 		$html = preg_replace('#<!--\[if gte mso 9\].*?<!\[endif\]-->#','',$html);
 		$html = preg_replace('#<!--\[if gte vml 1\]>.*?<!\[endif\]-->#','',$html);
+		$html = preg_replace('#<object classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=[^>]*></object>#','',$html);
+		$html = preg_replace('#<style>\s[a-z0-9]*.:[^<]*</style>#','',$html);
+		$html = preg_replace('#<!--\[if !mso\][^<]*<!\[endif\]-->#','',$html);
 		// }
 		// { combine nested elements
 		$html = preg_replace('#<span style="([^"]*?);?">(\s*)<span style="([^"]*)">([^<]*|<img[^>]*>)</span>(\s*)</span>#', '\2<span style="\1;\3">\4</span>\5', $html);
