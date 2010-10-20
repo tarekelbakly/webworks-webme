@@ -37,7 +37,11 @@ if(isset($_REQUEST['action'])){
 		$rs=dbAll('select id from (select groups.id,groups_id from groups left join users_groups on groups.id=groups_id) as derived where groups_id is null');
 		foreach($rs as $r)if($r['id']!='1')dbRow('delete from groups where id='.$r['id']);
 		// }
-		echo '<em>'.__('users updated').'</em>';
+		echo '<em>users updated</em>';
+		if (isset($_REQUEST['email-to-send'])) {
+			$site=preg_replace('/www\./','',$_SERVER['HTTP_HOST']);
+			mail($_REQUEST['email'],'['.$site.'] user status update',$_REQUEST['email-to-send'],'Reply-to: no-reply@'.$site."\nFrom: no-reply@".$site);
+		}
 	}
 }
 // }
@@ -70,6 +74,7 @@ if(isset($_REQUEST['id'])){
 	echo '</td></tr>';
 	// }
 	echo '<tr><th>Active</th><td><select name="active"><option value="0">No</option><option value="1"'.($r['active']?' selected="selected"':'').'>Yes</option></select></td></tr>';
+	echo '<tr style="display:none" id="users-email-to-send"><th>Email to send to user</th><td colspan="3" id="users-email-to-send-holder"></td></tr>';
 	echo '</table>';
 	echo '<input type="submit" name="action" value="Save" />';
 	echo '</form>';
