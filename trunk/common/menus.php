@@ -13,7 +13,7 @@ function menu_getChildren($parentid,$currentpage=0,$isadmin=0,$topParent=0,$sear
 	$PARENTDATA=Page::getInstance($parentid);
 	$PARENTDATA->initValues();
 	$filter=$isadmin?'':'&& !(special&2)';
-	// menu order
+	// { menu order
 	$order='ord,name';
 	if(isset($PARENTDATA->vars['order_of_sub_pages'])){
 		switch($PARENTDATA->vars['order_of_sub_pages']){
