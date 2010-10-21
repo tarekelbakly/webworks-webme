@@ -1,4 +1,16 @@
 $(function(){
+	function randchar(arg) {
+		return arg[Math.floor(Math.random() * arg.length)];
+	}
+	function makepass() {
+		var consts = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z'],
+			hard_consts = ['b','c','d','f','g','h','k','m','p','s','t','v','z'],
+			link_consts = ['h','l','r'],
+			vowels = ['a','e','i','o','u'],
+			digits = ['1','2','3','4','5','6','7','8','9'];
+		return randchar(hard_consts) + randchar(link_consts) + randchar(vowels) + randchar(consts) + randchar(digits) + randchar(hard_consts) + randchar(vowels) + randchar(consts);
+	}
+
 	var active=$('select[name=active]').val();
 	$('<a href="javascript:;" style="float:right;text-decoration:none" title="add a new group">[+]</a>')
 		.click(function(){
@@ -13,6 +25,10 @@ $(function(){
 			return;
 		}
 		var name=$('input[name=name]').val(),email=$('input[name=email]').val(),password=$('input[name=password]').val();
+		if (password=='' && val) {
+			password=makepass();
+			$('input[name=password],input[name=password2]').val(password);
+		}
 		msg=val
 			?'Dear '+name+',\n\nWe have activated your account.\n\nYou can log in using your email address "'+email+'" and the password "'+password+'"\n\nThank you.'
 			:'Dear '+name+',\n\nWe have de-activated your account.\n\nThank you.'
