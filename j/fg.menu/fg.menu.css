@@ -6,6 +6,9 @@ div.fg-menu-container{
 	padding:0;
 	list-style:none;
 }
+li.fg-menu-container{
+	position:relative;
+}
 div.fg-menu-container ul li a{
 	display:block;
 }

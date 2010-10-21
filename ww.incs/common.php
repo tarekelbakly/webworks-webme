@@ -234,13 +234,8 @@ function menu_show_fg($opts){
 		$posopts='';
 	}
 	$c.="<script>
-jQuery.fn.outer = function() {
-  return $( $('<div></div>').html(this.clone()) ).html();
-
-}
 $(function(){
 	$('#menu-fg-$menuid>ul>li>a').each(function(){
-		if(!$(this).next().length)return; // empty
 		$(this).menu({
 			content:$(this).next().outer(),
 			choose:function(ev,ui){

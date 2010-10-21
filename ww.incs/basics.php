@@ -175,9 +175,15 @@ define('CKEDITOR','ckeditor');
 if(!defined('KFM_BASE_PATH'))define('KFM_BASE_PATH', SCRIPTBASE.'j/kfm/');
 set_include_path(SCRIPTBASE.'ww.php_classes'.PATH_SEPARATOR.KFM_BASE_PATH.'classes'.PATH_SEPARATOR.get_include_path());
 // { theme variables
-if(isset($DBVARS['theme_dir_personal']))define('THEME_DIR',$DBVARS['theme_dir_personal']);
-else if(isset($DBVARS['theme_dir']))define('THEME_DIR',$DBVARS['theme_dir']);
-else define('THEME_DIR',SCRIPTBASE.'ww.skins');
+if (isset($DBVARS['theme_dir_personal']) && $DBVARS['theme_dir_personal']) {
+	define('THEME_DIR',$DBVARS['theme_dir_personal']);
+}
+else if (isset($DBVARS['theme_dir']) && $DBVARS['theme_dir']) {
+	define('THEME_DIR',$DBVARS['theme_dir']);
+}
+else {
+	define('THEME_DIR',SCRIPTBASE.'ww.skins');
+}
 if(isset($DBVARS['theme']) && $DBVARS['theme'])define('THEME',$DBVARS['theme']);
 else{
 	$dir=new DirectoryIterator(THEME_DIR);
