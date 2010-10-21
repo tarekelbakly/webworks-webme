@@ -61,7 +61,7 @@ function Menu(caller, options){
 		crumbDefaultText: 'Choose an option:',
 		backLink: true, // in the ipod-style menu: instead of breadcrumbs, show only a 'back' link
 		backLinkText: 'Back',
-		flyOut: false, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
+		flyOut: true, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
 		flyOutOnState: 'ui-state-default',
 		nextMenuLink: 'ui-icon-triangle-1-e', // class to style the link (specifically, a span within the link) used in the multi-level menu to show the next level
 		topLinkText: 'All',
@@ -104,7 +104,6 @@ function Menu(caller, options){
 		container.hide().slideDown(options.showSpeed).find('.fg-menu:eq(0)');
 		menu.menuOpen = true;
 		caller.removeClass(options.loadingState);
-		$(document).click(killAllMenus);
 		
 		// assign key events
 		$(document).keydown(function(event){
@@ -200,7 +199,7 @@ function Menu(caller, options){
 		
 		// when there are multiple levels of hierarchy, create flyout or drilldown menu
 		if (container.find('ul').size() > 1) {
-			if (options.flyOut) { menu.flyout(container, options); }
+			if (1 || options.flyOut) { menu.flyout(container, options); }
 			else { menu.drilldown(container, options); }	
 		}
 		else {
@@ -258,9 +257,16 @@ Menu.prototype.flyout = function(container, options) {
 	container.addClass('fg-menu-flyout').find('li:has(ul)').each(function(){
 		var linkWidth = container.width();
 		var showTimer, hideTimer;
-		var allSubLists = $(this).find('ul');		
+		var allSubLists = $(this).find('ul');	
 		
-		allSubLists.css({ left: linkWidth, width: linkWidth }).hide();
+		allSubLists
+			.css({
+				"position":"absolute",
+				left: linkWidth,
+				width: linkWidth,
+				top: this.offsetTop
+			})
+			.hide();
 			
 		$(this).find('a:eq(0)').addClass('fg-menu-indicator').html('<span>' + $(this).find('a:eq(0)').text() + '</span><span class="ui-icon '+options.nextMenuLink+'"></span>').hover(
 			function(){
