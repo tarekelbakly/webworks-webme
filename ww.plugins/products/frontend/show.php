@@ -531,46 +531,32 @@ class Product{
 		return self::$instances[$id];
 	}
 	function getRelativeURL () {
+		if ($this->relativeUrl) {
+			return $this->relativeUrl;
+		}
 		// { Does the product have a page assigned to display the product?
-		$pageID
-			= dbOne(
-				'select page_id 
-				from page_vars 
-				where name=\'products_product_to_show\' 
-				and value='.$this->id, 'page_id'
-			);
+		$pageID = dbOne( 'select page_id from page_vars where name=\'products_product_to_show\' and value='.$this->id.' limit 1', 'page_id');
 		if ($pageID) {
-			$page= Page::getInstance($pageID);
-			return $page->getRelativeUrl();
-
+			$this->relativeUrl=Page::getInstance($pageID)->getRelativeUrl();
+			return $this->relativeUrl; 
 		}
 		// }
 		// { Is there a page designed to display its category?
-		$pages= dbAll('select id from pages where type= \'products\'');
-		$productCats = dbAll(
-				'select category_id 
-				from products_categories_products 
-				where product_id='.$this->id
-			);
-		foreach ($pages as $page) {
-			$pageID= $page['id'];
-			$shownCats = dbAll(
-					'select value 
-					from page_vars 
-					where name= \'products_category_to_show\' 
-					and page_id='.$pageID
-				);
-			foreach ($shownCats as $shownCat) {
-				foreach ($productCats as $productCat) {
-					if ($shownCat['value']==$productCat['category_id']) {
-						$page=Page::getInstance($pageID);
-						return $page->getRelativeUrl().'?product_id='.$this->id;
-					}
-				}
+		$productCats = dbAll( 'select category_id from products_categories_products where product_id='.$this->id);
+		if (count($productCats)) {
+			$pcats=array();
+			foreach ($productCats as $productCat) {
+				$pcats[]=$productCat['category_id'];
+			}
+			$pid=dbOne('select page_id from page_vars where name="products_category_to_show" and value in ('.join(',',$pcats).') limit 1','page_id');
+			if ($pid) {
+				$this->relativeUrl=Page::getInstance($pid)->getRelativeUrl().'?product_id='.$this->id;
+				return $this->relativeUrl;
 			}
 		}
 		// }
-		return '/_r?type=products&amp;product_id='.$this->id;
+		$this->relativeUrl='/_r?type=products&amp;product_id='.$this->id;
+		return $this->relativeUrl;
 	}
 	function get($name) {
 		if (isset($this->vals[$name])) {
