@@ -1,10 +1,10 @@
 <?php
-
 $errors=array();
 if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 	$tmpdir='/tmp/webmeBackup-import-'.md5($_SERVER['HTTP_HOST'].microtime(true));
 	mkdir($tmpdir);
 	$uname=$_FILES['file']['tmp_name'];
+#	$uname='/site.zip';
 	$password=addslashes($_POST['password']);
 	`cd $tmpdir && unzip -oP "$password" "$uname"`;
 	if(!file_exists( $tmpdir.'/site' )) {
@@ -17,10 +17,40 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 		`rm $udir/ww.cache/* -fr`;
 
 		echo 'extracting files...<br />';
-		`cd $udir && rm -rf f && unzip -o $tmpdir/site/files.zip`;
+		`cd $udir && unzip -o $tmpdir/site/files.zip`;
 
 		echo 'extracting themes...<br />';
-		`cd $udir && rm -rf f && unzip -o $tmpdir/site/theme.zip`;
+		`cd $udir && unzip -o $tmpdir/site/theme.zip`;
+
+		echo 'importing config file...<br />';
+		$config=json_decode(file_get_contents($tmpdir.'/site/config.json'),true);
+		// { remove any version info from the archive - it could be out of date
+		foreach ($config as $key=>$val) {
+			if (preg_match('/.*\|version/',$key)) {
+				unset($config[$key]);
+			}
+		}
+		// }
+		// { add back in any version info from the current site
+		foreach ($DBVARS as $key=>$val){
+			if (preg_match('/.*\|version/',$key)) {
+				$config[$key]=$val;
+			}
+		}
+		// }
+		$config['username']=$DBVARS['username'];
+		$config['password']=$DBVARS['password'];
+		$config['hostname']=$DBVARS['hostname'];
+		$config['db_name']=$DBVARS['db_name'];
+		$config['userbase']=$DBVARS['userbase'];
+		$config['theme_dir']=$DBVARS['theme_dir'];
+		$config['theme_dir_personal']=$DBVARS['theme_dir_personal'];
+		$config['plugins']=(isset($config['plugins']) && $config['plugins']!='')?explode(',',$config['plugins']):array();
+		$DBVARS=$config;
+		config_rewrite();
+
+		echo 'updating database if necessary...<br />';
+		file_get_contents('http://'.$_SERVER['HTTP_HOST'].'/');
 
 		echo 'extracting database...<br />';
 		$dbbackup=json_decode(file_get_contents($tmpdir.'/site/db.json'));
@@ -36,21 +66,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 			}
 		}
 
-		echo 'importing config file...<br />';
-		$config=json_decode(file_get_contents($tmpdir.'/site/config.json'),true);
-		$config['username']=$DBVARS['username'];
-		$config['password']=$DBVARS['password'];
-		$config['hostname']=$DBVARS['hostname'];
-		$config['db_name']=$DBVARS['db_name'];
-		$config['userbase']=$DBVARS['userbase'];
-		$config['theme_dir']=$DBVARS['theme_dir'];
-		$config['theme_dir_personal']=$DBVARS['theme_dir_personal'];
-		$config['plugins']=(isset($config['plugins']) && $config['plugins']!='')?explode(',',$config['plugins']):array();
-		$DBVARS=$config;
-		config_rewrite();
-
 		echo 'cleaning up.<br />';
-//		`rm -rf $tmpdir`;
+		`rm -rf $tmpdir`;
 
 		echo 'done<img style="width:1px;height:1px" src="./" /><p>Import completed.</p>';
 		return;
