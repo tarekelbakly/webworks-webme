@@ -4,9 +4,17 @@ require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
 	$date = explode(' ', $date);
-	if ($type == 'date') return @date('l jS F, Y', mktime(0, 0, 0, $date[1], $date[2], $date[0]));
-	if ($type == 'shortdate') return @date('D jS M, Y', mktime(0, 0, 0, $date[1], $date[2], $date[0]));
-	return @date(DATE_RFC822, mktime($date[5], $date[4], $date[3], $date[1], $date[2], $date[0]));
+	$utime=mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
+	if ($type == 'date') {
+		return date('l jS F, Y', $utime);
+	}
+	if ($type == 'shortdate') {
+		return date('D jS M, Y', $utime);
+	}
+	if ($type == 'datetime') {
+		return date('D jS M, Y h:iA', $utime);
+	}
+	return @date(DATE_RFC822, $utime);
 }
 function getVar($v, $d = '') {
 	if (isset($_GLOBAL[$v])) return $_GLOBAL[$v];
