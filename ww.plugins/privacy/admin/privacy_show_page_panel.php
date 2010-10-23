@@ -16,6 +16,9 @@ foreach($rs as $r){
 echo '</td></tr>';
 // }
 // { optionally allow non-logged-in readers to view the page if they know a password
+if (!isset($page_vars['privacy_password'])) {
+	$page_vars['privacy_password']='';
+}
 echo '<tr><th>Allow non-logged-in readers to view the page if they enter this password:</td>'
 	.'<td><input name="page_vars[privacy_password]" value="'
 	.htmlspecialchars($page_vars['privacy_password'])
