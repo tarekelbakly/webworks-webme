@@ -40,6 +40,7 @@ else{
 	header('Pragma:');
 }
 header('Content-Length: ' . filesize($file));
+header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($file))." GMT");
 ob_clean();
 flush();
 readfile($file);

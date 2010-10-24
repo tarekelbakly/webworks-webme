@@ -2,11 +2,9 @@
 require_once '../ww.incs/basics.php';
 $files=array(
 	'menus.css',
-	'language_flags.css',
 	'ui.datepicker.css',
 	'forms.css',
 	'contextmenu.css',
-	'lightbox.css',
 	'../j/jquery-ui/css/smoothness/jquery-ui-1.8.1.custom.css'
 );
 $name='';

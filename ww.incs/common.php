@@ -241,11 +241,10 @@ function menu_show_fg($opts){
 	else{
 		$posopts='';
 	}
-	$c.="<script>
-$(function(){
+	WW_addInlineScript("$(function(){
 	$('#menu-fg-$menuid>ul>li>a').each(function(){
 		$(this).menu({
-			content:$(this).next().outer(),
+			content:$(this).next().outerHTML(),
 			choose:function(ev,ui){
 				document.location=ui.item[0].childNodes(0).href;
 			},
@@ -254,8 +253,7 @@ $(function(){
 		});
 	});
 	$('.menu-fg>ul>li').addClass('fg-menu-top-level');
-});
-</script>";
+});");
 	return $c;
 	cache_save('menus',$md5,$c);
 	return $c;

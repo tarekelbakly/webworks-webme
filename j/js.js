@@ -1,4 +1,7 @@
 $j=jQuery;
+jQuery.fn.outerHTML = function() {
+	return $('<div>').append( this.eq(0).clone() ).html();
+};
 function $type(obj){
 	if (obj==undefined) return false;
 	if (obj.htmlElement) return 'element';
