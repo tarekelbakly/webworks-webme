@@ -32,7 +32,7 @@ $(function(){
 				if (ret.errors) {
 					return alert(ret.errors.join("\n"));
 				}
-				document.location=document.location.toString().replace(/\?.*/,'')
+				document.location=document.location.toString().replace(/(\?|#).*/,'')
 					+'?forum-f='+ret.forum_id+'&forum-t='+ret.thread_id
 					+'&'+ret.post_id+'#forum-c-'+ret.post_id;
 			},'json');
