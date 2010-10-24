@@ -49,9 +49,9 @@ function ImageTransition_show($vars) {
 					'/ww.plugins/image-transition/frontend/k3dCarousel/'
 					.'jquery.k3dCarousel.min.js'
 				);
-				$html.='<script>$(window).load(function(){
+				WW_addInlineScript('$(window).load(function(){
 					$("#k3dCarousel'.$vars->id.'").k3dCarousel();
-				});</script>';
+				});');
 			}
 			else {
 				if ($r['url']) {
@@ -77,9 +77,9 @@ function ImageTransition_show($vars) {
 				WW_addScript(
 					'/ww.plugins/image-transition/frontend/jquery.cycle.all.min.js'
 				);
-				$html.='<script>$(window).load(function(){$("#image_transitions_'
+				WW_addInlineScript('<script>$(window).load(function(){$("#image_transitions_'
 					.$vars->id.'").cycle({fx:"'.$r['trans_type'].'",speed:'
-					.$r['pause'].'})});</script>';
+					.$r['pause'].'})});</script>');
 			}
 			return $html;
 		}

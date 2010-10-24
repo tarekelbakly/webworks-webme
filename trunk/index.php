@@ -15,6 +15,7 @@ $ww_startup = microtime(true);
 // { common variables and functions
 $scripts=array();
 $css_urls=array();
+$scripts_inline=array();
 function WW_addCSS($url){
 	global $css_urls;
 	if(in_array($url,$css_urls))return;
@@ -31,11 +32,26 @@ function WW_addScript($url){
 	if(in_array($url,$scripts))return;
 	$scripts[]=$url;
 }
+function WW_addInlineScript($script){
+	global $scripts_inline;
+	$script=preg_replace('/\s+/',' ',str_replace(array("\n","\r"),' ',$script));
+	if(in_array($script,$scripts_inline))return;
+	$scripts_inline[]=$script;
+}
 function WW_getScripts(){
 	global $scripts;
 	$url='/js/'.filemtime(SCRIPTBASE.'j/js.js');
-	foreach($scripts as $s)$url.='|'.$s;
+	foreach ($scripts as $s) {
+		$url.='|'.$s;
+	}
 	return $url;
+}
+function WW_getInlineScripts(){
+	global $scripts_inline;
+	if (!count($scripts_inline)) {
+		return '';
+	}
+	return '<script>'.join('',$scripts_inline).'</script>';
 }
 require_once 'ww.incs/common.php';
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
@@ -288,27 +304,24 @@ $c.='<style type="text/css">.loggedin{display:'
 	.'}</style>';
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
 if(is_admin()){
-	$c.='<script src="/ww.admin/j/common.js"></script>';
+	WW_addScript('/ww.admin/j/common.js');
 }
-$c.='<script>var pagedata={id:'.$PAGEDATA->id.',url:"'
-	.$PAGEDATA->getRelativeURL()
-	.'",country:"'
-	.(isset($_SESSION['os_country'])?$_SESSION['os_country']:'').'"';
-$c.=plugin_trigger('displaying-pagedata');
-$c.='},';
-$c.='userdata={isAdmin:'.(is_admin()?1:0);
+$tmp='var pagedata={id:'.$PAGEDATA->id.''
+	.plugin_trigger('displaying-pagedata')
+	.'},'
+	.'userdata={isAdmin:'.(is_admin()?1:0);
 if (isset($_SESSION['userdata'])
 	&& isset($_SESSION['userdata']['discount'])
 ) {
-	$c.=',discount:'.(int)$_SESSION['userdata']['discount'];
+	$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
 }
-$c.='};document.write("<"+"style type=\'text/css\'>'
+$tmp.='};document.write("<"+"style>'
 	.'a.nojs{display:none !important}<"+"/style>");';
-$c.='</script>';
+array_unshift($scripts_inline,$tmp);
 if (is_admin()) {
 	WW_addScript('/ww.admin/j/admin-frontend.js');
-	$c.='<script src="/j/ckeditor/ckeditor.js"></script>';
-	$c.='<script src="/j/ckeditor/adapters/jquery.js"></script>';
+	WW_addScript('/j/ckeditor/ckeditor.js');
+	WW_addScript('/j/ckeditor/adapters/jquery.js');
 	WW_addCSS('/ww.admin/theme/admin-frontend.css');
 	foreach ($GLOBALS['PLUGINS'] as $p) {
 		if (isset($p['frontend']['admin-script'])) {
@@ -339,8 +352,8 @@ if (strpos($template, '/')===false) {
 }
 $t=$smarty->fetch($template);
 echo str_replace(
-	array('WW_SCRIPTS_GO_HERE','WW_CSS_GOES_HERE'),
-	array(WW_getScripts(),WW_getCSS()),
+	array('WW_SCRIPTS_GO_HERE','WW_CSS_GOES_HERE','</body>'),
+	array(WW_getScripts(),WW_getCSS(),WW_getInlineScripts().'</body>'),
 	$t
 );
 

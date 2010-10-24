@@ -12,6 +12,7 @@
   * @link       www.webworks.ie
  */
 
+WW_addScript('/ww.plugins/forums/admin/form.js');
 // { tabs nav
 $c.= '<div class="tabs">'
 	.'<ul>'

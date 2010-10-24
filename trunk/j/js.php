@@ -45,18 +45,8 @@ if(
 $js=cache_load('j','js-'.$name);
 if($js==false){
 	$js='';
-//	$i=0;
 	foreach($files as $f){
-//		$js.="\ndocument.title=".$i.";\n";
 		$js.=file_get_contents($f).';';
-//		$i++;
-	}
-	if(function_exists('jsmin')){
-		$js=jsmin($js);
-	}
-	else{
-		require_once 'kfm/includes/jsmin-1.1.1.php';
-		$js=JSMin::minify($js);
 	}
 	cache_save('j','js-'.$name,$js);
 }

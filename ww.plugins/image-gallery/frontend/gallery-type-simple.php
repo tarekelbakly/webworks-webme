@@ -45,3 +45,4 @@ for($row=0;$row<$vars['image_gallery_y'];++$row){
 	$c.='</td>';
 }
 $c.='</table><script type="text/javascript" src="/ww.plugins/image-gallery/j/image.gallery.php"></script>';
+WW_addCSS('/ww.plugins/image-gallery/frontend/lightbox.css');

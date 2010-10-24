@@ -9,7 +9,7 @@
 	padding:2px 20px;
 	z-index:1001;
 }
-#admin-menubar *{
+#admin-menubar a{
 	color:#fff;
 	font-size:16px;
 }
