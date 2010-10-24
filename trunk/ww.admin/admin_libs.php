@@ -117,7 +117,12 @@ function wFormRow($title,$input){
 }
 function WW_addCSS($url){
 	global $css_urls;
-	if(in_array($url,$css_urls))return;
+	if (!is_array($css_urls)) {
+		$css_urls=array();
+	}
+	if (in_array($url,$css_urls)) {
+		return;
+	}
 	$css_urls[]=$url;
 }
 function WW_addScript($url){
