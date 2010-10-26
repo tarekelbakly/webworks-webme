@@ -110,7 +110,9 @@ echo '</table></div>';
 // }
 // { data fields
 echo '<div id="data-fields"><p>Create the data fields of your product type here. Examples: colour, size, weight, description.</p>';
-echo '<textarea name="data_fields" id="data_fields">'.htmlspecialchars(str_replace(array("\n","\r"),array('\n','\r'),$tdata['data_fields'])).'</textarea>';
+echo '<textarea name="data_fields" id="data_fields">'
+	.htmlspecialchars(str_replace(array("\n","\r"),array('\n','\r'),$tdata['data_fields']))
+	.'</textarea>';
 echo '</div>';
 // }
 // { multi-view template
