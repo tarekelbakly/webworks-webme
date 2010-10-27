@@ -58,8 +58,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			);
 		}
 		$online_store_data = array();
-		foreach ($_REQUEST['online-store-fields'] as $name=>$value) {
-			$online_store_data[$name] = $value;
+		if (isset($_REQUEST['online-store-fields'])) {
+			foreach ($_REQUEST['online-store-fields'] as $name=>$value) {
+				$online_store_data[$name] = $value;
+			}
 		}
 		$online_store_data = json_encode($online_store_data);
 		$sql.=',data_fields="'.addslashes(json_encode($dfs)).'"';
@@ -83,7 +85,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		// }
 		echo '<em>Product saved</em>';
 		if(isset($_REQUEST['frontend-admin'])){
-			echo '<script type="text/javascript">parent.location=parent.location;</script>';
+			echo '<script type="text/javascript">'
+				.'parent.location=parent.location;'
+			.'</script>';
 		}
 	}
 }
@@ -121,9 +125,11 @@ echo '<div id="tabs"><ul>'
 				.'where id ='.$pdata['product_type_id'],
 				'is_for_sale'
 			);
-		if ($addOnlineStoreFields) {
-			echo '<li><a href="#online-store-fields">Online Store</a></li>';
+		echo '<li class="products-online-store"';
+		if (!$addOnlineStoreFields) {
+			echo ' style="display:none";';
 		}
+		echo '><a href="#online-store-fields">Online Store</a></li>';
 	}
 echo '<li><a href="#categories">Categories</a></li>';
 $relations=dbAll('select id,name from products_relation_types order by name');
@@ -361,8 +367,12 @@ $online_store_fields
 			)
 	);
 $online_store_data = json_decode($pdata['online_store_fields']);
-if (isset($addOnlineStoreFields)&&$addOnlineStoreFields) {
-	echo '<div id="online-store-fields">';
+if (isset($PLUGINS['online-store'])) {
+	echo '<div id="online-store-fields" class="products-online-store"';
+	if (!isset($addOnlineStoreFields)||!$addOnlineStoreFields) {
+		echo ' style="display:none';
+	}
+	echo '>';
 	echo '<table>';
 	foreach ($online_store_fields as $internal=>$display) {
 		echo '<tr><th>';
@@ -385,8 +395,10 @@ if (isset($addOnlineStoreFields)&&$addOnlineStoreFields) {
 			echo '<select name="online-store-fields['.$internal.']">';
 			for ($i=0; $i<count($display['Options']); ++$i) {
 				echo '<option value="'.$i.'"';
-				if ($i==$online_store_data->$internal) {
-					echo 'selected="selected"';
+				if (isset($online_store_data->$internal)) {
+					if ($i==$online_store_data->$internal) {
+						echo 'selected="selected"';
+					}
 				}
 				echo '>'.$display['Options'][$i]
 					.'</option>';

@@ -19,12 +19,16 @@ $(function(){
 					response( cache[ term ] );
 					return;
 				}
-				lastXhr = $.getJSON( "/ww.plugins/products/frontend/search.php", request, function( data, status, xhr ) {
-					cache[ term ] = data;
-					if ( xhr === lastXhr ) {
-						response( data );
+				lastXhr = $.getJSON( 
+					"/ww.plugins/products/frontend/search.php", 
+					request, 
+					function( data, status, xhr ) {
+						cache[ term ] = data;
+						if ( xhr === lastXhr ) {
+							response( data );
+						}
 					}
-				});
+				);
 			}
 		})
 		.focus(function(){
@@ -34,7 +38,8 @@ $(function(){
 			var $this=$(this)
 				,$form=$this.closest('form');
 			if(!$form.length){
-				$form=$this.wrap('<form style="display:inline" action="'+(document.location.toString())+'" />');
+				$form=$this.wrap('<form style="display:inline" action="'+
+					(document.location.toString())+'" />');
 			}
 			setTimeout(function(){
 				$this.closest('form').submit();

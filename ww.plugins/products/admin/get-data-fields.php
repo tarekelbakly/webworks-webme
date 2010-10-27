@@ -24,18 +24,23 @@ if (!dbOne('select id from products_types where id = '.$typeID, 'id')) {
 	echo '{"status":0, "message":"Could not find this type"}';
 }
 else {
-	$typeFields 
-		= dbOne(
-			'select data_fields from products_types where id = '.$typeID,
-			'data_fields'
+	$data = array();
+	$typeData 
+		 = dbRow(
+			'select data_fields, is_for_sale '
+			.'from products_types '
+			.'where id = '.$typeID
 		);
+	$typeFields = json_decode($typeData['data_fields']);
+	$data['type'] = $typeFields;
+	$data['isForSale'] = $typeData['is_for_sale'];
 	if ($productID != 0) {
 		$product 
 			= dbRow(
 				'select data_fields, product_type_id 
 				from products where id = '.$productID
 			);
-		$productFields = $product['data_fields'];
+		$productFields = json_decode($product['data_fields']);
 		$oldType 
 			= dbOne(
 				'select data_fields 
@@ -43,13 +48,9 @@ else {
 				where id = '.$product['product_type_id'],
 				'data_fields'
 			);
+		$oldType = json_decode($oldType);
+		$data['product'] = $productFields;
+		$data['oldType'] = $oldType;
 	}
-	echo '{"type":'.$typeFields;
-	if (isset($productFields)) {
-		echo '"product": '.$productFields;
-	}
-	if (isset($oldType)) {
-		echo '"oldType": '.$oldType;
-	}
-	echo '}';
+	echo json_encode($data);
 }

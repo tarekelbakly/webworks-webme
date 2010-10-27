@@ -196,6 +196,12 @@ function update_data_fields(data) {
 			CKEDITOR.add(editor);
 		}
 	}
+	if (data.isForSale==1) {
+		$('.products-online-store').show();
+	}
+	else {
+		$('.products-online-store').hide();
+	}
 }
 function products_getData () {
 	var elements = document.getElementsByTagName('div');

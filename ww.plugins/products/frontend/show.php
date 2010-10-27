@@ -277,7 +277,9 @@ function products_image($params,&$smarty) {
 	),$params);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
-	if (!$vals['images_directory'])return products_image_not_found($params,$smarty);
+	if (!$vals['images_directory']) {
+		return products_image_not_found($params,$smarty);
+	}
 	$iid=0;
 	if ($vals['image_default']) {
 		$iid=$vals['image_default'];
@@ -285,13 +287,17 @@ function products_image($params,&$smarty) {
 		if (!$image->exists())$iid=0;
 	}
 	if (!$iid) {
-		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$vals['images_directory']));
+		$directory = $vals['images_directory'];
+		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
 		if (!$dir_id)return products_image_not_found($params,$smarty);
 		$images=kfm_loadFiles($dir_id);
 		if (count($images['files']))$iid=$images['files'][0]['id'];
 	}
 	if (!$iid)return products_image_not_found($params,$smarty);
-	return '<a class="products-lightbox" href="/kfmget/'.$iid.'"><img src="/kfmget/'.$iid.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" /></a>';
+	return '<a class="products-lightbox" href="/kfmget/'.$iid.'">'
+		.'<img src="/kfmget/'.$iid
+		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />'
+		.'</a>';
 }
 function products_image_not_found($params,&$smarty) {
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
@@ -307,12 +313,15 @@ function products_images($params,&$smarty) {
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
 	if (!$vals['images_directory'])return ''; // TODO: no-image here
-	$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$vals['images_directory']));
+	$directory = $vals['images_directory'];
+	$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
 	if (!$dir_id)return ''; // TODO: no-image here
 	$images=kfm_loadFiles($dir_id);
 	$arr=array();
 	foreach($images['files'] as $image) {
-		$arr[]='<img src="/kfmget/'.$image['id'].'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';
+		$arr[]='<img src="/kfmget/'.$image['id']
+			.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"'
+			.' />';
 	}
 	return '<div class="product-images">'.join('',$arr).'</div>';
 }
@@ -439,14 +448,21 @@ function products_reviews ($params, &$smarty) {
 	return $c;
 }
 function products_show($PAGEDATA) {
-	if (!isset($PAGEDATA->vars['products_what_to_show']))$PAGEDATA->vars['products_what_to_show']='0';
+	if (!isset($PAGEDATA->vars['products_what_to_show'])) {
+		$PAGEDATA->vars['products_what_to_show']='0';
+	}
 	WW_addScript('/ww.plugins/products/j/jquery.lightbox-0.5.min.js');
 	WW_addScript('/ww.plugins/products/frontend/js.min.js');
 	WW_addCSS('/ww.plugins/products/c/jquery.lightbox-0.5.css');
 	$c='';
 	// { search
-	$search=isset($_REQUEST['products-search'])?$_REQUEST['products-search']:'';
-	if (isset($PAGEDATA->vars['products_add_a_search_box']) && $PAGEDATA->vars['products_add_a_search_box']) {
+	$search=isset($_REQUEST['products-search'])
+		?$_REQUEST['products-search']
+		:'';
+	if (isset($PAGEDATA->vars['products_add_a_search_box'])) {
+		$addASearchBox = $PAGEDATA->vars['products_add_a_search_box'];
+	}
+	if (isset($addASearchBox) && $addASearchBox) {
 		$c.='<form action="'.$PAGEDATA->getRelativeUrl()
 			.'" class="products-search"><input name="products-search" value="'
 			.htmlspecialchars($search)
@@ -454,7 +470,9 @@ function products_show($PAGEDATA) {
 	}
 	// }
 	// { set limit variables
-	$limit=isset($PAGEDATA->vars['products_per_page'])?(int)$PAGEDATA->vars['products_per_page']:0;
+	$limit=isset($PAGEDATA->vars['products_per_page'])
+		?(int)$PAGEDATA->vars['products_per_page']
+		:0;
 	if(isset($_REQUEST['products_per_page'])) {
 		$limit=(int)$_REQUEST['products_per_page'];
 	}
@@ -462,18 +480,48 @@ function products_show($PAGEDATA) {
 	if ($start<0)$start=0;
 	// }
 	// { set order fields
-	$order_by=isset($PAGEDATA->vars['products_order_by'])?$PAGEDATA->vars['products_order_by']:'';
-	$order_dir=isset($PAGEDATA->vars['products_order_direction'])?(int)$PAGEDATA->vars['products_order_direction']:0;
+	$order_by=isset($PAGEDATA->vars['products_order_by'])
+		?$PAGEDATA->vars['products_order_by']
+		:'';
+	$order_dir=isset($PAGEDATA->vars['products_order_direction'])
+		?(int)$PAGEDATA->vars['products_order_direction']#
+		:0;
 	// }
 	switch($PAGEDATA->vars['products_what_to_show']) {
 		case '1':
-			return $c.products_show_by_type($PAGEDATA,0,$start,$limit,$order_by,$order_dir,$search);
+			return $c
+				.products_show_by_type(
+					$PAGEDATA,
+					0,
+					$start,
+					$limit,
+					$order_by,
+					$order_dir,
+					$search
+				);
 		case '2':
-			return $c.products_show_by_category($PAGEDATA,0,$start,$limit,$order_by,$order_dir,$search);
+			return $c
+				.products_show_by_category(
+					$PAGEDATA,
+					0,
+					$start,
+					$limit,
+					$order_by,
+					$order_dir,
+					$search
+				);
 		case '3':
 			return $c.products_show_by_id($PAGEDATA);
 	}
-	return $c.products_show_all($PAGEDATA,$start,$limit,$order_by,$order_dir,$search);
+	return $c
+		.products_show_all(
+			$PAGEDATA,
+			$start,
+			$limit,
+			$order_by,
+			$order_dir,
+			$search
+		);
 }
 function products_show_by_id($PAGEDATA,$id=0) {
 	if ($id==0) {
@@ -481,8 +529,11 @@ function products_show_by_id($PAGEDATA,$id=0) {
 	}
 	if ($id<1)return '<em>product '.$id.' does not exist.</em>';
 	$product=Product::getInstance($id);
-	$type=ProductType::getInstance($product->get('product_type_id'));
-	if (!$type)return '<em>product type '.$product->get('product_type_id').' does not exist.</em>';
+	$typeID = $product->get('product_type_id');
+	$type=ProductType::getInstance($typeID);
+	if (!$type) {
+		return '<em>product type '.$typeID.' does not exist.</em>';
+	}
 	return $type->render($product);
 }
 function products_show_by_category($PAGEDATA, $id=0, $start=0, $limit=0, $order_by='', $order_dir=0, $search='') {
@@ -558,10 +609,15 @@ class Product{
 		if (!count($r) || !is_array($r))return false;
 		$vals=json_decode($r['data_fields']);
 		unset($r['data_fields']);
+		$online_store_data=json_decode($r['online_store_fields']);
+		unset($r['online_store_fields']);
 		$this->vals=array();
 		foreach($r as $k=>$v)$this->vals[$k]=$v;
 		foreach($vals as $val) {
 			$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
+		}
+		foreach($online_store_data as $name=>$value) {
+			$this->vals[$name]=$value;
 		}
 		$this->id=$r['id'];
 		$this->name=$r['name'];
@@ -578,22 +634,41 @@ class Product{
 			return $this->relativeUrl;
 		}
 		// { Does the product have a page assigned to display the product?
-		$pageID = dbOne( 'select page_id from page_vars where name=\'products_product_to_show\' and value='.$this->id.' limit 1', 'page_id');
+		$pageID 
+			= dbOne(
+				'select page_id '
+				.'from page_vars where name= "products_product_to_show" '
+				.'and value='.$this->id.' limit 1', 
+				'page_id'
+			);
 		if ($pageID) {
 			$this->relativeUrl=Page::getInstance($pageID)->getRelativeUrl();
 			return $this->relativeUrl; 
 		}
 		// }
 		// { Is there a page designed to display its category?
-		$productCats = dbAll( 'select category_id from products_categories_products where product_id='.$this->id);
+		$productCats 
+			= dbAll(
+				'select category_id '
+				.'from products_categories_products '
+				.'where product_id='.$this->id
+			);
 		if (count($productCats)) {
 			$pcats=array();
 			foreach ($productCats as $productCat) {
 				$pcats[]=$productCat['category_id'];
 			}
-			$pid=dbOne('select page_id from page_vars where name="products_category_to_show" and value in ('.join(',',$pcats).') limit 1','page_id');
+			$pid
+			=dbOne(
+				'select page_id '
+				.'from page_vars where name="products_category_to_show" '
+				.'and value in ('.join(',',$pcats).') limit 1',
+				'page_id'
+			);
 			if ($pid) {
-				$this->relativeUrl=Page::getInstance($pid)->getRelativeUrl().'?product_id='.$this->id;
+				$page = Page::getInstance($pid);
+				$this->relativeUrl=$page->getRelativeUrl()
+					.'?product_id='.$this->id;
 				return $this->relativeUrl;
 			}
 		}
@@ -804,7 +879,8 @@ class Products{
 				foreach ($prods as $pid) {
 					$product=Product::getInstance($pid);
 					if ($product) {
-						$type=ProductType::getInstance($product->get('product_type_id'));
+						$typeID = $product->get('product_type_id');
+						$type=ProductType::getInstance($typeID);
 						if (!$type) {
 							$c.='Missing product type: '.$product->get('product_type_id');
 						}
@@ -894,7 +970,8 @@ class ProductType{
 		$smarty->assign('_name',$product->vals['name']);
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
-				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
+				USERBASE.'/ww.cache/products/templates/types_'.$template
+					.'_'.$this->id
 			)
 			.'</div>';
 	}

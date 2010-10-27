@@ -81,5 +81,12 @@ function products_add_to_cart($PAGEDATA){
 	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
 	if(!$product)return;
-	OnlineStore_addToCart((float)$product->get('price'),1,$product->get('name'),'','products_'.$id,$_SERVER['HTTP_REFERER']);
+	OnlineStore_addToCart(
+		(float)$product->get('_price'),
+		1,
+		$product->get('name'),
+		'',
+		'products_'.$id,
+		$_SERVER['HTTP_REFERER']
+	);
 }
