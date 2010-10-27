@@ -843,7 +843,6 @@ class ProductType{
 			return false;
 		}
 		$this->data_fields=json_decode($r['data_fields']);
-		echo '<!-- '; var_dump($this->data_fields); echo ' -->';
 		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v;
 		if (!file_exists($tpl_cache)) {
 			file_put_contents($tpl_cache, $r['multiview_template']);
