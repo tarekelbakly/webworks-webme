@@ -68,7 +68,8 @@ function os_update_fields(force){
 		$wrapper.append('<em>no fields defined. please create a form in the Form tab.</em>');
 	}
 	else{
-		var table='<table id="online_stores_fields_table" style="width:100%"><tr><th>Name</th><th>Required</th></tr>';
+		var table='<table id="online_stores_fields_table" style="width:100%">'
+			+'<tr><th>Name</th><th>Required</th></tr>';
 		for(var i=0;i<c;++i){
 			table+='<tr><td></td><td></td><td></td></tr>';
 		}
@@ -79,7 +80,11 @@ function os_update_fields(force){
 			$row.data('os_name',to_show[i]);
 			var $cells=$row.find('td');
 			$($cells[0]).text(to_show[i]);
-			$('<input class="is-required" type="checkbox"'+(os_fields[to_show[i]].required?' checked="checked"':'')+' />').appendTo($cells[1]);
+			$(
+				'<input class="is-required" type="checkbox"'
+				+(os_fields[to_show[i]].required?' checked="checked"':'')
+				+' />'
+			).appendTo($cells[1]);
 		}
 	}
 	$('<input id="online_stores_fields_input" type="hidden" name="page_vars[online_stores_fields]" />').val(Json.toString(os_fields)).appendTo($wrapper);
@@ -106,7 +111,9 @@ function os_status_change(ev){
 $(function(){
 	$('.tabs').tabs();
 	$('#online-store-status').change(function(ev){
-		document.location='/ww.admin/pages/form.php?id='+window.page_menu_currentpage+'&online-store-status='+$(ev.target).val();
+		document.location='/ww.admin/pages/form.php?id='
+			+window.page_menu_currentpage+'&online-store-status='
+			+$(ev.target).val();
 	});
 	os_update_fields();
 	$('.ui-tabs-nav').live('mousedown',os_update_fields);

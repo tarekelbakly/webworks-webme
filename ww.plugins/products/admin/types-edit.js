@@ -104,7 +104,7 @@ function products_validate_form(){
 }
 $(function(){
 	products_data_fields_setup();
-	$("#tabs").tabs();
+	$(".tabs").tabs();
 	$('input[type=submit]').mousedown(products_data_fields_reset_value);
 	$('div.has-left-menu>form').submit(products_validate_form);
 	$('#data_fields_rows .product-type-fd-name').live('keyup',function(){

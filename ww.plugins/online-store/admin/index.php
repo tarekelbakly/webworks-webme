@@ -38,7 +38,9 @@ if (!isset($_SESSION['online-store']['status'])) {
 if (isset($_REQUEST['online-store-status'])) {
 	$_SESSION['online-store']['status']=(int)$_REQUEST['online-store-status'];
 }
-$c.='<p>This list shows orders with the status: <select id="online-store-status">';
+$c.='<p>'
+	.'This list shows orders with the status: '
+	.'<select id="online-store-status">';
 $arr=array('Unpaid','Paid','Paid and Delivered');
 foreach ($arr as $k=>$v) {
 	$c.='<option value="'.$k.'"';
@@ -53,16 +55,26 @@ $rs=dbAll(
 	.((int)$_SESSION['online-store']['status']).' order by date_created desc'
 );
 if (is_array($rs) && count($rs)) {
-	$c.='<div style="margin:0 20%"><table width="100%" class="datatable"><thead><tr>'
-		.'<th>Date</th><th>Amount</th><th>Invoice</th><th>Checkout Form</th><th>Status'
-		.'</th></tr></thead><tbody>';
+	$c.='<div style="margin:0 20%">'
+		.'<table width="100%" class="datatable"><thead><tr>'
+		.'<th>Date</th>'
+		.'<th>Amount</th>'
+		.'<th>Invoice</th>'
+		.'<th>Checkout Form</th>'
+		.'<th>Status</th>'
+		.'</tr></thead><tbody>';
 	foreach ($rs as $r) {
 		$c.='<tr><td><span style="display:none">'.$r['date_created'].'</span>'
-			.date_m2h($r['date_created']).'</td><td>'.$csym.$r['total'].'</td><td>'
+			.date_m2h($r['date_created']).'</td><td>'.$csym.$r['total']
+			.'</td><td>'
 			.'<a href="javascript:os_invoice('.$r['id'].')">Invoice</a></td>'
-			.'<td><a href="javascript:os_form_vals('.$r['id'].')">Checkout Form</a></td>'
-			.'<td><a href="javascript:os_status('.$r['id'].','.(int)$r['status'].')" '
-			.'id="os_status_'.$r['id'].'">'.htmlspecialchars($arr[(int)$r['status']]).'</a>'
+			.'<td>'
+			.'<a href="javascript:os_form_vals('.$r['id'].')">Checkout Form</a>'
+			.'</td>'
+			.'<td><a href="javascript:os_status('.$r['id'].','
+			.(int)$r['status'].')" '
+			.'id="os_status_'.$r['id'].'">'
+			.htmlspecialchars($arr[(int)$r['status']]).'</a>'
 			.'</td></tr>';
 	}
 	$c.='</tbody></table></div>';
@@ -78,7 +90,8 @@ $c.='<p>This is the form that will be presented as the checkout.</p>';
 if ($page['body']==''
 	|| $page['body']=='<h1>'.htmlspecialchars($page['name']).'</h1><p>&nbsp;</p>'
 ) {
-	$page['body']=file_get_contents(dirname(__FILE__).'/body_template_sample.html');
+	$page['body']
+		=file_get_contents(dirname(__FILE__).'/body_template_sample.html');
 }
 $c.=ckeditor('body', $page['body']);
 $c.='</div>';
@@ -97,7 +110,8 @@ $c.='<div id="online-stores-fields">'
 // }
 // { invoice details
 $c.='<div id="online-store-invoice">';
-$c.='<p>This is what will be sent out to the buyer after the payment succeeds.</p>';
+$c.='<p>This is what will be sent out to the buyer after the payment succeeds.'
+	.'</p>';
 if (!isset($vars['online_stores_invoice']) || $vars['online_stores_invoice']=='') {
 	$vars['online_stores_invoice']=file_get_contents(
 		dirname(__FILE__).'/invoice_template_sample.html'

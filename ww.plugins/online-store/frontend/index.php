@@ -11,6 +11,7 @@
 	* @link     None
 	*/
 
+WW_addScript('/ww.plugins/online-store/j/basket.js');
 $c='';
 global $DBVARS,$online_store_currencies;
 $csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
@@ -76,7 +77,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 	unset($_REQUEST['action']);
 	unset($_REQUEST['page']);
 	if (count($errors)) {
-		$c.='<div class="errors"><em>'.join('</em><br /><em>', $errors).'</em></div>';
+		$c.='<div class="errors"><em>'.join('</em><br /><em>', $errors)
+			.'</em></div>';
 	}
 	else {
 		$formvals=addslashes(json_encode($_REQUEST));
@@ -99,7 +101,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		}
 		// { table of items
 		$table='<table width="100%"><tr><th class="quantityheader">Quantity</th>'
-			.'<th class="descriptionheader">Description</th><th class="unitamountheader">'
+			.'<th class="descriptionheader">Description</th>'
+			.'<th class="unitamountheader">'
 			.'Unit Price</th><th class="amountheader">Amount</th></tr>';
 		foreach ($_SESSION['online-store']['items'] as $key=>$item) {
 			$table.='<tr><td class="quantitycell">'.$item['amt']
@@ -109,8 +112,10 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 				.'</td><td class="amountcell">'.$csym.sprintf("%.2f", $item['cost']*$item['amt'])
 				.'</td></tr>';
 		}
-		$table.='<tr class="os_basket_totals"><td colspan="3" style="text-align:right">'
-			.'Subtotal</td><td class="totals amountcell">'.$csym.sprintf("%.2f", $total)
+		$table.='<tr class="os_basket_totals">'
+			.'<td colspan="3" style="text-align:right">'
+			.'Subtotal</td><td class="totals amountcell">'
+			.$csym.sprintf("%.2f", $total)
 			.'</td></tr>';
 		$table.='</table>';
 		$smarty->assign('_invoice_table', $table);
@@ -146,7 +151,44 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 	}
 }
 if (!$submitted) {
-	$c.='<form method="post">';
-	$c.=$PAGEDATA->render();
-	$c.='<input type="submit" name="action" value="Proceed to Payment" /></form>';
+	if (
+		isset($_SESSION['online-store'])
+		&&isset($_SESSION['online-store']['items'])
+		&&count($_SESSION['online-store']['items'])>0
+	) {
+		$c.='<table><tr>';
+		$c.='<th>Item</th>';
+		$c.='<th>Price</th>';
+		$c.='<th>Amount</th>';
+		$c.='<th>Total</th>';
+		$c.='</tr>';
+		$grandTotal = 0;
+		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
+			$c.='<tr id="'.$md5.'" class="os_item_numbers"><td>';
+			if (isset($item['url'])&&!empty($item['url'])) {
+				$c.='<a href="'.$item['url'].'">';
+			}
+			$c.= htmlspecialchars($item['short_desc']);
+			if (isset($item['url'])&&!empty($item['url'])) {
+				$c.='</a>';
+			}
+			$c.='</td><td>'.$csym.$item['cost'].'</td>';
+			$c.='<td class="amt"><span class="'.$md5.'-amt amt-num">'
+				.$item['amt']
+				.'</span></td>';
+			$totalItemCost=$item['cost']*$item['amt'];
+			$grandTotal+=$totalItemCost;
+			$c.='<td class="'.$md5.'-item-total">'.$totalItemCost.'</td></tr>';
+		}
+		$c.='<tr class="os_total"><th colspan="2">Grand Total</th>';
+		$c.='<td colspan="2" class="total">'.$csym.$grandTotal.'</td></tr>';
+		$c.='</table>';
+		$c.='<form method="post">';
+		$c.=$PAGEDATA->render();
+		$c.='<input type="submit" name="action" value="Proceed to Payment" />'
+		.'</form>';
+	}
+	else {
+		$c.='<em>No items in your basket</em>';
+	}
 }

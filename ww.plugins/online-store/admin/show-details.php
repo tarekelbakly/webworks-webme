@@ -21,7 +21,11 @@ if (!isset($_REQUEST['id'])) {
 }
 $id=(int)$_REQUEST['id'];
 
-$vals=dbOne('select form_vals from online_store_orders where id='.$id, 'form_vals');
+$vals
+	=dbOne(
+		'select form_vals from online_store_orders where id='.$id, 
+		'form_vals'
+	);
 echo '<html><head><style type="text/css">div{display:inline-block;width:170px;'
 	.'margin:5px}</style></head><body>';
 $vals=json_decode($vals);

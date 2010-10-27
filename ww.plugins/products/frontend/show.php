@@ -7,7 +7,11 @@ if (!file_exists(USERBASE.'/ww.cache/products')) {
 function products_categories ($params, &$smarty) {
 	$product = $smarty->_tpl_vars['product'];
 	$productID = $product->id;
-	$categoryIDs = dbAll('select category_id from products_categories_products where product_id='.$productID);
+	$categoryIDs 
+		= dbAll(
+			'select category_id '.
+			'from products_categories_products '
+			.'where product_id='.$productID);
 	if ($categoryIDs) {
 		$query
 			= 'select count(id) 
@@ -21,43 +25,79 @@ function products_categories ($params, &$smarty) {
 		$numEnabledCats = dbOne($query, 'count(id)'); 	
 	}
 	if ($numEnabledCats==0) {
-		return '<div class="products-categories">No Categories exist for this product</div>';
+		return '<div class="products-categories">'
+		.'No Categories exist for this product</div>';
 	}
 	$c= '<ul>';
-	$directCategoryPages= dbAll('select page_id from page_vars where name=\'products_what_to_show\' and value=2'); 
+	$directCategoryPages
+		= dbAll(
+			'select page_id '
+			.'from page_vars '
+			.'where name= "products_what_to_show" and value=2'
+		); 
 	foreach ($categoryIDs as $catID) {
 		$pageFound = false;
 		$cid = $catID['category_id'];
-		$catDetails = dbRow('select name, enabled from products_categories where id='.$cid);
+		$catDetails 
+			= dbRow(
+				'select name, enabled, parent_id '
+				.'from products_categories '
+				.'where id='.$cid
+			);
 		$catIsEnabled = $catDetails['enabled'];
 		$catName = $catDetails['name'];
 		if ($catIsEnabled==1) {
 			foreach ($directCategoryPages as $catPage) {
 				$pageID = $catPage['page_id'];
-				$shownCat = dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id='.$pageID, 'value');
+				$shownCat 
+					= dbOne(
+						'select value '
+						.'from page_vars '
+						.'where name = "products_category_to_show" '
+						.'and page_id='.$pageID, 
+						'value'
+					);
 				if ($shownCat==$cid) {
 					$page=  Page::getInstance($pageID);
-					$c.='<li><a href="'.$page->getRelativeUrl().'">'.htmlspecialchars($catName).'</a></li>';
+					$c.='<li>'
+						.'<a href="'.$page->getRelativeUrl().'">'
+						.htmlspecialchars($catName)
+						.'</a></li>';
 					$pageFound= true;
 					break;
 				}
 			}
 			if (!$pageFound) {
-				//$parent = dbOne('select parent_id from products_categories where id='.$cid, 'parent_id');
+				$parent = $catDetails['parent_id'];
 				while ($parent>0) {
 					foreach ($directCategoryPages as $catPage) {
 						$pageID= $catPage['page_id'];
-						$shownCat= dbOne('select value from page_vars where name = \'products_category_to_show\' and page_id= '.$pageID, 'value');
+						$shownCat
+							= dbOne(
+								'select value '
+								.'from page_vars '
+								.'where name = "products_category_to_show" '
+								.'and page_id= '.$pageID, 
+								'value'
+							);
 						if ($parent==$shownCat) {
 							$page = Page::getInstance($pageID);
-							$c.= '<li><a href="'.$page->getRelativeUrl().'?product_cid='.$cid.'">';
+							$c.= '<li><a href="'.$page->getRelativeUrl()
+								.'?product_cid='.$cid.'">';
 							$c.= htmlspecialchars($catName);
 							$c.='</a></li>';
 							$pageFound= true;
 							break;
 						}
-					}
-					//$parent= dbOne('select parent_id from products_categories where id='.$parent, 'parent_id');
+					}	
+					$parent 
+						= dbOne(
+							'select parent_id '
+							.'from products_categories '
+							.'where id = '.$parent,
+							'parent_id'
+						);
+
 				}
 			}
 			if (!$pageFound) {
@@ -224,8 +264,11 @@ function Product_datatableMultiple (&$products, $direction) {
 	}
 }
 function products_get_add_to_cart_button($params,&$smarty) {
-	return '<form method="POST"><input type="hidden" name="products_action" value="add_to_cart" /><input type="submit" value="Add to Cart" />'
-		.'<input type="hidden" name="product_id" value="'. $smarty->_tpl_vars['product']->id .'" /></form>';
+	return '<form method="POST">'
+		.'<input type="hidden" name="products_action" value="add_to_cart" />'
+		.'<input type="submit" value="Add to Cart" />'
+		.'<input type="hidden" name="product_id" value="'
+		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
 function products_image($params,&$smarty) {
 	$params=array_merge(array(

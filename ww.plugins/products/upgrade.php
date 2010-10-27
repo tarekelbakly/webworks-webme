@@ -115,6 +115,13 @@ if ($version==11) { // cdate should be datetime
 	dbQuery('alter table products_reviews change cdate cdate datetime');
 	$version=12;
 }
-
+if ($version==12) { // Types needs an is_for_sale flag
+	dbQuery('alter table products_types add is_for_sale smallint default 0');
+	$version=13;
+}
+if ($version==13) { // Online store column for products
+	dbQuery('alter table products add online_store_fields text');
+	$version=14;
+}
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

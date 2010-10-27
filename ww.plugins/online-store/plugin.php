@@ -209,7 +209,8 @@ function OnlineStore_showBasketWidget() {
 	}
 	if (count($_SESSION['online-store']['items'])) {
 		$html.='<table>';
-		$html.='<tr><th>&nbsp;</th><th>Price</th><th>Amount</th><th>Total</th></tr>';
+		$html.='<tr><th>&nbsp;</th><th>Price</th><th>Amount</th>'
+			.'<th>Total</th></tr>';
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 			// { name
 			$html.='<tr class="os_item_name"><td colspan="4">';
@@ -222,14 +223,19 @@ function OnlineStore_showBasketWidget() {
 			}
 			$html.='</td></tr>';
 			// }
-			$html.='<tr class="os_item_numbers" id="'.$md5.'"><td>&nbsp;</td><td>'
+			$html.='<tr class="os_item_numbers" id="'.$md5.'">'
+				.'<td>&nbsp;</td><td>'
 				.$csym.$item['cost'].'</td>';
 			// { amount
-			$html.='<td class="amt">'.$item['amt'].'</td>';
+			$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt']
+				.'</span></td>';
 			// }
-			$html.='<td class="item-total">'.$csym.($item['cost']*$item['amt']).'</td></tr>';
+			$html.='<td class="'.$md5.'-item-total">'
+				.$csym.($item['cost']*$item['amt'])
+				.'</td></tr>';
 		}
-		$html.='<tr class="os_total"><th colspan="3">Total</th><td class="total">'
+		$html.='<tr class="os_total"><th colspan="3">Total</th>'
+			.'<td class="total">'
 			.$csym.$_SESSION['online-store']['total'].'</td></tr>';
 		$html.='</table>';
 		$html.='<a href="/_r?type=online-store">'

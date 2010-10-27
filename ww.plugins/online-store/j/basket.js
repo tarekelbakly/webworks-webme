@@ -16,21 +16,31 @@ function os_remove_all(ev){
 	os_set_amt(md5,0,tr);
 }
 function os_set_amt(md5,amt,tr){
-	$.getJSON('/ww.plugins/online-store/j/set_amt.php?md5='+md5+'&amt='+amt,function(ret){
-		amt=ret.amt;
-		tr.data('amt',amt);
-		$('.amt-number',tr).text(amt);
-		$('.item-total',tr).text(pagedata.currency+ret.item_total);
-		$('.total',tr.closest('table')).text(pagedata.currency+ret.total);
-		if(amt<1){
-			tr.prev().fadeOut("normal",function(){
-				$(this).remove();
-			});
-			tr.fadeOut("normal",function(){
-				$(this).remove();
-			});
+	$.getJSON(
+		'/ww.plugins/online-store/j/set_amt.php?md5='+md5+'&amt='+amt,
+		function(ret){
+			amt=ret.amt;
+			tr.data('amt',amt);
+			$('.'+ret.md5+'-amt').text(amt);
+			$('.'+ret.md5+'-item-total').text(pagedata.currency+ret.item_total);
+			$('.total').text(pagedata.currency+ret.total);
+			if(amt<1){
+				$('.'+ret.md5).fadeOut
+					(
+						"normal",
+						function(){
+							$(this).remove();
+						}
+					);
+					tr.fadeOut(
+						"normal",
+						function(){
+							$(this).remove();
+						}
+					);
+			}
 		}
-	});
+	);
 }
 function os_wheres_the_basket(from){
 	var f_off=from.offset();
@@ -52,30 +62,41 @@ function os_wheres_the_basket(from){
 	});
 }
 function os_reset_basket(res){
-	var html='<table><tr><th>&nbsp;</th><th>Price</th><th>Amount</th><th>Total</th></tr>';
+	var html='<table><tr><th>&nbsp;</th><th>Price</th><th>Amount</th>'
+		+'<th>Total</th></tr>';
 	for(var md5 in res.items){
 		var item=res.items[md5];
 		if(md5.length!='32' || !item.amt){
 			continue;
 		}
-		html+='<tr class="os_item_name"><td colspan="4"><a href="'+item.url+'">'+item.short_desc+'</a></td></tr><tr class="os_item_numbers" id="'+md5+'"><td>&nbsp;</td><td>'+pagedata.currency+item.cost+'</td><td class="amt">'+item.amt+'</td><td class="item-total">'+(item.cost*item.amt)+'</td></tr>';
+		html+='<tr class="os_item_name"><td colspan="4"><a href="'
+			+item.url+'">'+item.short_desc
+			+'</a></td></tr><tr class="os_item_numbers" id="'+md5
+			+'"><td>&nbsp;</td><td>'+pagedata.currency+item.cost
+			+'</td><td class="amt">'+item.amt+'</td><td class="item-total">'
+			+(item.cost*item.amt)+'</td></tr>';
 	}
-	html+='<tr class="os_total"><th colspan="3">Total</th><td class="total">'+pagedata.currency+res.total+'</td></tr></table><a href="/_r?type=online-store">Proceed to Checkout</a>';
+	html+='<tr class="os_total"><th colspan="3">Total</th><td class="total">'
+		+pagedata.currency+res.total
+		+'</td></tr></table>'
+		+'<a href="/_r?type=online-store">Proceed to Checkout</a>';
 	$('.online-store-basket-widget').html(html);
 	os_setup_basket_events();
 }
 function os_setup_basket_events(){
 	$('tr.os_item_numbers .amt').each(function(){
 		var $this=$(this);
-		var amt=parseInt($this.text());
-		$this.html('<span class="amt-number">'+amt+'</span><span class="amt-links">('
+		var contents=($this.html());
+		var amt = $this.text();
+		$this.html(contents
+			+'<span class="amt-links">('
 			+'<a href="javascript:;" class="amt-plus">+</a>|'
 			+'<a href="javascript:;" class="amt-minus">-</a>|'
 			+'<a href="javascript:;" class="amt-del">x</a>'
 			+')</span>'
 		);
 		var tr=$this.closest('tr');
-		tr.data('amt',amt);
+		tr.data('amt',parseInt(amt));
 	});
 	$('.amt .amt-plus').click(os_add_one);
 	$('.amt .amt-minus').click(os_subtract_one);

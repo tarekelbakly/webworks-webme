@@ -44,7 +44,11 @@ if (!$fp) {
 				foreach ($_POST as $key => $value) {
 					$str.=$key." = ". $value."\n";
 				}
-				mail('kae@verens.com', $_SERVER['HTTP_HOST'].' paypal hack', $str);
+				mail(
+					'kae@verens.com', 
+					$_SERVER['HTTP_HOST'].' paypal hack'
+					, $str
+				);
 				exit;
 			}
 
@@ -55,7 +59,8 @@ if (!$fp) {
 		else if (strcmp($res, "INVALID") == 0) {
 			// echo the response
 			mail(
-				'kae@webworks.ie', '['.$_SERVER['HTTP_HOST'].'] error in paypal response',
+				'kae@webworks.ie', 
+				'['.$_SERVER['HTTP_HOST'].'] error in paypal response',
 				"The response from IPN was: <b>" .$res ."</b>"
 			);
 		}
