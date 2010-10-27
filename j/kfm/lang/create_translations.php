@@ -25,7 +25,6 @@ while($file=readdir($h)){
 	}
 	if(gettype($ob)!='array'){
 		print "lang $lang.js cannot be interpreted\n";
-		var_dump($js);
 		continue;
 	}
 	$f=$kfm_langStrings;
