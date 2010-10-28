@@ -1,18 +1,18 @@
 function os_add_one(ev){
 	var tr=$(ev.target).closest('tr');
-	var md5=tr.attr('id');
+	var md5=tr.attr('product');
 	var amt=tr.data('amt');
 	os_set_amt(md5,amt+1,tr);
 }
 function os_subtract_one(ev){
 	var tr=$(ev.target).closest('tr');
-	var md5=tr.attr('id');
+	var md5=tr.attr('product');
 	var amt=tr.data('amt');
 	os_set_amt(md5,amt-1,tr);
 }
 function os_remove_all(ev){
 	var tr=$(ev.target).closest('tr');
-	var md5=tr.attr('id');
+	var md5=tr.attr('product');
 	os_set_amt(md5,0,tr);
 }
 function os_set_amt(md5,amt,tr){
@@ -25,14 +25,8 @@ function os_set_amt(md5,amt,tr){
 			$('.'+ret.md5+'-item-total').text(pagedata.currency+ret.item_total);
 			$('.total').text(pagedata.currency+ret.total);
 			if(amt<1){
-				$('.'+ret.md5).fadeOut
+				$('tr[product="'+ret.md5+'"]').fadeOut
 					(
-						"normal",
-						function(){
-							$(this).remove();
-						}
-					);
-					tr.fadeOut(
 						"normal",
 						function(){
 							$(this).remove();
@@ -69,10 +63,11 @@ function os_reset_basket(res){
 		if(md5.length!='32' || !item.amt){
 			continue;
 		}
-		html+='<tr class="os_item_name"><td colspan="4"><a href="'
+		html+='<tr class="os_item_name" product="'+md5+'">'
+			+'<td colspan="4"><a href="'
 			+item.url+'">'+item.short_desc
-			+'</a></td></tr><tr class="os_item_numbers" id="'+md5
-			+'"><td>&nbsp;</td><td>'+pagedata.currency+item.cost
+			+'</a></td></tr><tr class="os_item_numbers" product="'+ret.md5+'">' 
+			+'<td>&nbsp;</td><td>'+pagedata.currency+item.cost
 			+'</td><td class="amt">'+item.amt+'</td><td class="item-total">'
 			+(item.cost*item.amt)+'</td></tr>';
 	}

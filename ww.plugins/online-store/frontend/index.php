@@ -164,7 +164,7 @@ if (!$submitted) {
 		$c.='</tr>';
 		$grandTotal = 0;
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
-			$c.='<tr id="'.$md5.'" class="os_item_numbers"><td>';
+			$c.='<tr product="'.$md5.'" class="os_item_numbers '.$md5.'"><td>';
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='<a href="'.$item['url'].'">';
 			}
@@ -180,7 +180,7 @@ if (!$submitted) {
 			$grandTotal+=$totalItemCost;
 			$c.='<td class="'.$md5.'-item-total">'.$totalItemCost.'</td></tr>';
 		}
-		$c.='<tr class="os_total"><th colspan="2">Grand Total</th>';
+		$c.='<tr class="os_total"><th colspan="2">Total</th>';
 		$c.='<td colspan="2" class="total">'.$csym.$grandTotal.'</td></tr>';
 		$c.='</table>';
 		$c.='<form method="post">';

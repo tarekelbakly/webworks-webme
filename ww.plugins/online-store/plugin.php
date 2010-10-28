@@ -213,7 +213,8 @@ function OnlineStore_showBasketWidget() {
 			.'<th>Total</th></tr>';
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 			// { name
-			$html.='<tr class="os_item_name"><td colspan="4">';
+			$html.='<tr class="os_item_name" product="'.$md5.'">'
+				.'<td colspan="4">';
 			if ($item['url']) {
 				$html.='<a href="'.$item['url'].'">';
 			}
@@ -223,7 +224,7 @@ function OnlineStore_showBasketWidget() {
 			}
 			$html.='</td></tr>';
 			// }
-			$html.='<tr class="os_item_numbers" id="'.$md5.'">'
+			$html.='<tr class="os_item_numbers '.$md5.'" product="'.$md5.'">'
 				.'<td>&nbsp;</td><td>'
 				.$csym.$item['cost'].'</td>';
 			// { amount
