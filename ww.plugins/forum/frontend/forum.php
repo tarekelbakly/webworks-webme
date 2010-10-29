@@ -182,7 +182,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	$c.='<table id="forum-posts"><tr><th>Author</th><th>Post</th></tr>';
 	$posts=dbAll(
 		'select * from forums_posts where thread_id='
-		.$id.' order by created_date desc'
+		.$id.' order by created_date'
 	);
 	foreach ($posts as $post) {
 		$user=User::getInstance($post['author_id']);
@@ -190,7 +190,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 			.'"></a>'.htmlspecialchars($user->dbVals['name']).'</td>'
 			.'<td><div class="post-header">Posted: '
 			.date_m2h($post['created_date'], 'datetime')
-			.'</div>'.htmlspecialchars($post['body']).'</td></tr>';
+			.'</div>'.nl2br(htmlspecialchars($post['body'])).'</td></tr>';
 	}
 	$c.='</table>';
 	// { post form

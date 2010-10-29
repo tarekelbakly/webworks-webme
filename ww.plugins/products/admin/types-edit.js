@@ -84,7 +84,7 @@ function products_data_fields_reset_value(){
 function products_data_check_field_name(el){
 	var name=$(el).val();
 	var errors=[];
-	if(name.replace(/[^a-zA-Z_]/,'')!==name)errors.push('please only use letters a-z and underscores _');
+	if(name.replace(/[^a-zA-Z0-9_]/,'')!==name)errors.push('please only use letters a-z and underscores _');
 	if(name.toLowerCase()!==name)errors.push('please only use lowercase letters');
 	if(errors.length){
 		el.title=errors.join(', ');

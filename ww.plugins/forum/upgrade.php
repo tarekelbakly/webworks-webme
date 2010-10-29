@@ -45,6 +45,23 @@ if ($version==0) { // forums table
 	);
 	$version=1;
 }
+if ($version==1) { // subscribers
+	dbQuery(
+		'alter table forums_threads add subscribers text'
+	);
+	$threads=dbAll('select id from forums_threads');
+	foreach ($threads as $thread) {
+		$subscribers=array();
+		$posts=dbAll('select author_id from forums_posts where thread_id='.$thread['id']);
+		foreach ($posts as $post) {
+			if (!in_array($post['author_id'], $subscribers)) {
+				$subscribers[]=$post['author_id'];
+			}
+		}
+		dbQuery('update forums_threads set subscribers="'.join(',',$subscribers).'" where id='.$thread['id']);
+	}
+	$version=2;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

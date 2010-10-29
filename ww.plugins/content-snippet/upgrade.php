@@ -20,9 +20,9 @@ if($version=='1'){ // convert to accordion
 				.addslashes(json_encode($arr))
 				.'" where id='.$r['id']);
 		}
-		dbQuery('alter table content_snippets change html content text');
 		cache_clear('content_snippets');
 	}
+	@dbQuery('alter table content_snippets change html content text');
 	$version=2;
 }
 if($version=='2'){ // add directory of images
