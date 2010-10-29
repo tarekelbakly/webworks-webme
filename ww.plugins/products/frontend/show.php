@@ -609,15 +609,19 @@ class Product{
 		if (!count($r) || !is_array($r))return false;
 		$vals=json_decode($r['data_fields']);
 		unset($r['data_fields']);
-		$online_store_data=json_decode($r['online_store_fields']);
+		if (isset($r['online_store_fields'])) {
+			$online_store_data=json_decode($r['online_store_fields']);
+		}
 		unset($r['online_store_fields']);
 		$this->vals=array();
 		foreach($r as $k=>$v)$this->vals[$k]=$v;
 		foreach($vals as $val) {
 			$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
 		}
-		foreach($online_store_data as $name=>$value) {
-			$this->vals[$name]=$value;
+		if (isset($online_store_data)) {
+			foreach($online_store_data as $name=>$value) {
+				$this->vals['online-store'][$name]=$value;
+			}
 		}
 		$this->id=$r['id'];
 		$this->name=$r['name'];
@@ -930,6 +934,7 @@ class ProductType{
 		}
 		unset($r['singleview_template']);
 		$this->id=$r['id'];
+		$this->is_for_sale=$r['is_for_sale'];
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
@@ -947,6 +952,11 @@ class ProductType{
 			.'/image-not-found.png,width='.$maxsize.',height='.$maxsize.'" />';
 	}
 	function render($product, $template='singleview') {
+		global $DBVARS;
+		var_dump($DBVARS);
+		if (isset($DBVARS['online_store_currency'])) {
+			$csym=$DBVARS['online_store_currency'];
+		}
 		$smarty=products_setup_smarty();
 		$smarty->assign('product', $product);
 		$smarty->assign('product_id', $product->get('id'));
@@ -965,6 +975,22 @@ class ProductType{
 				default: // { everything else
 					$smarty->assign($f->n, $val);
 					// }
+			}
+		}
+		if ($this->is_for_sale==1) {
+			echo 'assigning prices';
+			foreach ($product->vals['online-store'] as $name=>$value) {
+				if (strpos($name, 'price')===false) {
+						$smarty->assign($name, $value);
+				}
+				else {
+					if (!empty($value)) {
+						$smarty->assign($name, $csym.$value);
+					}
+					else {
+						$smarty->assign($name, $csym.'0.00');
+					}
+				}
 			}
 		}
 		$smarty->assign('_name',$product->vals['name']);
