@@ -109,6 +109,15 @@ function os_status_change(ev){
 	});
 }
 $(function(){
+	var html = '<span><select class="online-store-delivery-option last">';
+	html+= '<option value="set_postage">set postage to</option>';
+	html+= '<option value="if_total_greater_or_equal">if total greater than or equal to</option>';
+	html+= '<option value="if_total_less_or_equal">if total less than or equal to</option>';
+	html+= '<option value="if_weight_greater_or_equal">if weight greater than or equal to</option>';
+	html+= '<option value="if_weight_less_or_equal">if weight less than or equal to</option>';
+	html+= '</select>';
+	html+= '<input name="page_vars[set_postage]" class="small" /></span>';
+	$('#online-store-delivery').append(html);
 	$('.tabs').tabs();
 	$('#online-store-status').change(function(ev){
 		document.location='/ww.admin/pages/form.php?id='
@@ -120,6 +129,33 @@ $(function(){
 	$('form').bind('submit',os_update_fields);
 	$("#online_store_redirect_to").remoteselectoptions({
 		url:"/ww.admin/pages/get_parents.php"
+	});
+	$('.online-store-delivery-option').change(function() {
+		var $this = $(this);
+		var val = $this.val();
+		if (val=='set_postage') {
+			$this.next('input').attr('name', 'page_vars[set_postage]');
+			return;
+		}
+		if (($this).hasClass('last')) {
+			$this.removeClass('last');
+			var html='<span><input name="page_vars['+val+']" /><br />';
+			html+= '<select class="online-store-delivery-option last">';
+			html+= '<option value="set_postage">else set postage to</option>';
+			html+= '<option value="if_total_greater_or_equal">else if total greater than or equal to'
+				+'</option>';
+			html+= '<option value="if_total_less_or_equal">else if total less than or equal to'
+				+'</option>';
+			html+= '<option value="if_weight_greater_or_equal">else if weight greater than or equal to'
+				+'</option>';
+			html+= '<option value="if_weight_less_or_equal">else if weight less than or equal to'
+				+'</option>';
+			html+= '</select></span>';
+			$(html).insertAfter($this);
+		}
+		else {
+			$this.next('input').attr('name', 'page_vars['+val+'_set_postage]')
+		}
 	});
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);

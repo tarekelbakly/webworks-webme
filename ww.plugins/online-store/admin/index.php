@@ -22,10 +22,12 @@ $csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 $c='<div class="tabs">';
 $c.= '<ul>';
 $c.='<li><a href="#online-store-orders">Orders</a></li>';
+$c.='<li><a href="#online-store-delivery">Postage and Packaging</a></li>';
 $c.='<li><a href="#online-store-form">Form</a></li>';
 $c.='<li><a href="#online-stores-fields">Fields</a></li>';
 $c.='<li><a href="#online-store-invoice">Invoice</a></li>';
 $c.='<li><a href="#online-store-payment">Payment Details</a></li>';
+$c.='<li><a href="#online-store-countries">Countries</a></li>';
 $c.='</ul>';
 // { orders
 $c.='<div id="online-store-orders">';
@@ -82,6 +84,11 @@ if (is_array($rs) && count($rs)) {
 else {
 	$c.='<em>No orders with this status exist.</em>';
 }
+$c.='</div>';
+// }
+// { postage and packaging
+$c.='<div id="online-store-delivery">';
+$c.='</select>';
 $c.='</div>';
 // }
 // { form
@@ -220,6 +227,11 @@ $c.=' </table></div>';
 $c.='</div></td></tr>';
 // }
 $c.='</table></div>';
+// }
+// { countries todo
+$c.='<div id="online-store-countries">';
+$c.='todo';
+$c.='</div>';
 // }
 $c.='</div>';
 WW_addScript('/ww.plugins/online-store/admin/index.js');
