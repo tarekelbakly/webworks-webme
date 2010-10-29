@@ -279,7 +279,7 @@ function userregistration_register(){
 		$missing[]='your email address';
 	}
 	foreach ($rs as $r) {
-		if ($r->is_required && (!isset($_REQUEST['privacy_extras_'.$name]) || !$_REQUEST['privacy_extras_'.$name])) {
+		if ($r->is_required && (!isset($_REQUEST['privacy_extras_'.$r->name]) || !$_REQUEST['privacy_extras_'.$r->name])) {
 			$missing[]=$r->name;
 		}
 	}
