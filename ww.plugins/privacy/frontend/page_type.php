@@ -240,7 +240,9 @@ function userregistration_form($error='',$alert=''){
 		$c.='<input type="checkbox" name="terms_and_conditions" /> I agree to the <a href="javascript:userlogin_t_and_c()">terms and conditions</a>.<br />';
 		$c.='<script>function userlogin_t_and_c(){$("<div>'.addslashes(str_replace(array("\n","\r"),' ',$PAGEDATA->vars['userlogin_terms_and_conditions'])).'</div>").dialog({modal:true,width:"90%"});}</script>';
 	}
-	if($alert)$c.='<script>$(document).ready(function(){$(\'<div>'.addslashes($alert).'</div>\').dialog({modal:true});});</script>';
+	if ($alert) {
+		WW_addInlineScript('$(function(){$(\'<div>'.addslashes($alert).'</div>\').dialog({modal:true});});');
+	}
 	$c.='<input type="submit" name="a" value="Register" />'
 		.'</form></div>';
 	return $c;
@@ -259,20 +261,35 @@ function userregistration_register(){
 		$howyouheard=getVar('howyouheard');
 	// }
 	if(isset($PAGEDATA->vars['userlogin_terms_and_conditions']) && $PAGEDATA->vars['userlogin_terms_and_conditions'] && !isset($_REQUEST['terms_and_conditions']))return '<em>You must agree to the terms and conditions. Please press "Back" and try again.</em>';
-	if(!$name||!$email)return userregistration_form('<em>You must fill in at least your name and email.</em>');
-	// { check if the email address is already registered
-		$r=dbRow('select id from user_accounts where email="'.$email.'"');
-		if($r && count($r))return userregistration_form('<p><em>That email is already registered.</em></p>');
-	// }
 	// { check for user_account table "extras"
 		$extras=array();
 		$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
 		foreach($rs as $r){
 			if(!$r->name)continue;
-			$name=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
-			if($r->is_required && (!isset($_REQUEST['privacy_extras_'.$name]) || !$_REQUEST['privacy_extras_'.$name]))return userregistration_form('<p><em>The field <strong>'.$r->name.'</strong> is required.</em></p>');
-			$extras[$r->name]=$_REQUEST['privacy_extras_'.$name];
+			$ename=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
+			$extras[$r->name]=$_REQUEST['privacy_extras_'.$ename];
 		}
+	// }
+	// { check for required fields
+	$missing=array();
+	if (!$name) {
+		$missing[]='your name';
+	}
+	if (!$email) {
+		$missing[]='your email address';
+	}
+	foreach ($rs as $r) {
+		if ($r->is_required && (!isset($_REQUEST['privacy_extras_'.$name]) || !$_REQUEST['privacy_extras_'.$name])) {
+			$missing[]=$r->name;
+		}
+	}
+	if(count($missing)) {
+		return userregistration_form('<em>You must fill in the following fields: '.join(', ', $missing).'</em>');
+	}
+	// }
+	// { check if the email address is already registered
+		$r=dbRow('select id from user_accounts where email="'.$email.'"');
+		if($r && count($r))return userregistration_form('<p><em>That email is already registered.</em></p>');
 	// }
 	// { register the account
 		$password=Password::getNew();
@@ -333,4 +350,5 @@ function loginBox(){
 	}
 	return $c;
 }
-$html=userloginandregistrationDisplay().'<script>$(function(){$(".tabs").tabs()});</script>';
+$html=userloginandregistrationDisplay();
+WW_addInlineScript('$(function(){$(".tabs").tabs()});');
