@@ -62,9 +62,6 @@ function htmlspecialchars(str) {
 function isArray(o){
 	return o instanceof Array||typeof o=='array';
 }
-function isLoaded(url){
-	for(var i=0;i<loadedScripts.length;++i)if(loadedScripts[i]==url)return 1;
-}
 // { kaejax
 function kaejax_create_functions(url,f){
 	kaejax_is_loaded=1;
@@ -120,7 +117,7 @@ function loadArray(k,v){
 	return a;
 }
 function loadScript(url){
-	if(isLoaded(url))return 0;
+	for(var i=0;i<loadedScripts.length;++i)if(loadedScripts[i]==url)return 0;
 	loadedScripts.push(url);
 	if(kaejax_is_loaded&&/\.php/.test(url))url+=(/\?/.test(url)?'&':'?')+'kaejax_is_loaded';
 	var el=newScript(url);
