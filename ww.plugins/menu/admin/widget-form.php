@@ -1,5 +1,4 @@
 <?php
-// var_dump($_REQUEST);
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if(!is_admin())die('access denied');
 

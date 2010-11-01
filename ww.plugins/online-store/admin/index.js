@@ -1,6 +1,5 @@
 window.os_statuses=['Unpaid','Paid','Paid and Delivered'];
 $('.online-store-delivery-option').change(function() {
-	alert('test');
 	var $this = $(this);
 	var val = $this.val();
 	if (val=='set_postage') {
@@ -160,7 +159,6 @@ $(function(){
 		url:"/ww.admin/pages/get_parents.php"
 	});
 	$('.online-store-delivery-option').bind('change', function() {
-		alert('test');
 		var $this = $(this);
 		var val = $this.val();
 		if (val=='set_postage') {
