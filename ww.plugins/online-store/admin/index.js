@@ -1,4 +1,33 @@
 window.os_statuses=['Unpaid','Paid','Paid and Delivered'];
+$('.online-store-delivery-option').change(function() {
+	alert('test');
+	var $this = $(this);
+	var val = $this.val();
+	if (val=='set_postage') {
+		$this.next('input').attr('name', 'page_vars[set_postage]');
+		return;
+	}
+	if (($this).hasClass('last')) {
+		$this.removeClass('last');
+		var html='<span><input name="page_vars['+val+']" class="small"/>'
+			+'<br />';
+		html+= '<select class="online-store-delivery-option last">';
+		html+= '<option value="set_postage">else set postage to</option>';
+		html+= '<option value="if_total_greater_or_equal">else if total greater than or equal to'
+			+'</option>';
+		html+= '<option value="if_total_less_or_equal">else if total less than or equal to'
+			+'</option>';
+		html+= '<option value="if_weight_greater_or_equal">else if weight greater than or equal to'
+			+'</option>';
+		html+= '<option value="if_weight_less_or_equal">else if weight less than or equal to'
+			+'</option>';
+		html+= '</select></span>';
+		$(html).insertAfter($this);
+	}
+	else {
+		$this.next('input').attr('name', 'page_vars['+val+'_set_postage]')
+	}
+});
 function os_invoice(id){
 	var w=$(window);
 	var wh=w.height(),ww=w.width();
@@ -130,7 +159,8 @@ $(function(){
 	$("#online_store_redirect_to").remoteselectoptions({
 		url:"/ww.admin/pages/get_parents.php"
 	});
-	$('.online-store-delivery-option').change(function() {
+	$('.online-store-delivery-option').bind('change', function() {
+		alert('test');
 		var $this = $(this);
 		var val = $this.val();
 		if (val=='set_postage') {
@@ -139,7 +169,8 @@ $(function(){
 		}
 		if (($this).hasClass('last')) {
 			$this.removeClass('last');
-			var html='<span><input name="page_vars['+val+']" /><br />';
+			var html='<span><input name="page_vars['+val+']" class="small"/>'
+				+'<br />';
 			html+= '<select class="online-store-delivery-option last">';
 			html+= '<option value="set_postage">else set postage to</option>';
 			html+= '<option value="if_total_greater_or_equal">else if total greater than or equal to'

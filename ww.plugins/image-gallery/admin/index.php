@@ -40,9 +40,11 @@ if (isset($GLOBALS['PLUGINS']['online-store'])) {
 $c.= '</ul>';
 // { images
 $c.='<div id="image-gallery-images">';
+$invalid = '/[^A-Za-z0-9_\-]/';
+$name = preg_replace($invalid, '|', $page['name']);
 if(!$gvars['image_gallery_directory'] || !is_dir(USERBASE.'f/'.$gvars['image_gallery_directory'])){
 	mkdir(USERBASE.'f/image-galleries');
-	$gvars['image_gallery_directory']='/image-galleries/page-'.$page['id'];
+	$gvars['image_gallery_directory']='/image-galleries/page-'.$name;
 	mkdir(USERBASE.'f/'.$gvars['image_gallery_directory']);
 }
 $dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$gvars['image_gallery_directory']));

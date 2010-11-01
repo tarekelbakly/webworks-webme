@@ -953,7 +953,6 @@ class ProductType{
 	}
 	function render($product, $template='singleview') {
 		global $DBVARS;
-		var_dump($DBVARS);
 		if (isset($DBVARS['online_store_currency'])) {
 			$csym=$DBVARS['online_store_currency'];
 		}
@@ -978,18 +977,15 @@ class ProductType{
 			}
 		}
 		if ($this->is_for_sale==1) {
-			echo 'assigning prices';
 			foreach ($product->vals['online-store'] as $name=>$value) {
+				if (!isset($value)||$value=='') {
+					$value=0;
+				}
 				if (strpos($name, 'price')===false) {
 						$smarty->assign($name, $value);
 				}
 				else {
-					if (!empty($value)) {
-						$smarty->assign($name, $csym.$value);
-					}
-					else {
-						$smarty->assign($name, $csym.'0.00');
-					}
+					$smarty->assign($name, $csym.$value);
 				}
 			}
 		}
