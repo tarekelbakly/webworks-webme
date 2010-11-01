@@ -47,7 +47,8 @@ if(!$gvars['image_gallery_directory'] || !is_dir(USERBASE.'f/'.$gvars['image_gal
 	$gvars['image_gallery_directory']='/image-galleries/page-'.$name;
 	mkdir(USERBASE.'f/'.$gvars['image_gallery_directory']);
 }
-$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$gvars['image_gallery_directory']));
+$dir=preg_replace('/^\//','',$gvars['image_gallery_directory']);
+$dir_id=kfm_api_getDirectoryID($dir);
 $images=kfm_loadFiles($dir_id);
 $images=$images['files'];
 $n=count($images);
@@ -64,19 +65,36 @@ if($n){
 $c.='</div>';
 // }
 // { header
-$c.='<div id="image-gallery-header"><p>This text will appear above the gallery.</p>';
+$c.='<div id="image-gallery-header">'
+	.'<p>This text will appear above the gallery.</p>';
 $c.=ckeditor('body',$page['body'],0,$cssurl);
 $c.='</div>';
 // }
 // { footer
-$c.='<div id="image-gallery-footer"><p>This text will appear below the gallery.</p>';
-$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''),0,$cssurl);
+$c.='<div id="image-gallery-footer">'
+	.'<p>This text will appear below the gallery.</p>';
+$c
+	.=ckeditor(
+		'page_vars[footer]',
+		(isset($vars['footer'])?$vars['footer']:''),
+		0,
+		$cssurl
+	);
 $c.='</div>';
 // }
 // { advanced settings
 $c.='<div id="image-gallery-advanced">';
-if(!isset($gvars['image_gallery_directory']) || !$gvars['image_gallery_directory'])$gvars['image_gallery_directory']='/';
-$c.='<table><tr><th>Image Directory</th><td><select id="image_gallery_directory" name="page_vars[image_gallery_directory]"><option value="'.htmlspecialchars($gvars['image_gallery_directory']).'">'.htmlspecialchars($gvars['image_gallery_directory']).'</option>';
+if(
+	!isset($gvars['image_gallery_directory']) 
+	|| !$gvars['image_gallery_directory']
+) {
+	$gvars['image_gallery_directory']='/';
+}
+$c.='<table><tr><th>Image Directory</th>'
+	.'<td><select id="image_gallery_directory" '
+	.'name="page_vars[image_gallery_directory]">'
+	.'<option value="'.htmlspecialchars($gvars['image_gallery_directory']).'">'
+	.htmlspecialchars($gvars['image_gallery_directory']).'</option>';
 echo '</select></td></tr>';
 foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 	$c.='<option value="'.htmlspecialchars($d).'"';
@@ -84,8 +102,15 @@ foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 	$c.='>'.htmlspecialchars($d).'</option>';
 }
 $c.='</select></td>';
-$c.='<td colspan="2"><a style="background:#ff0;font-weight:bold;color:red;display:block;text-align:center;" href="#page_vars[image_gallery_directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
-$c.='<tr><th>'.__('Columns').'</th><td><input name="page_vars[image_gallery_x]" value="'.(int)$gvars['image_gallery_x'].'" /></td>';
+$c.='<td colspan="2">'
+	.'<a style="background:#ff0;font-weight:bold;color:red;display:block;'
+	.'text-align:center;" href="#page_vars[image_gallery_directory]" '
+	.'onclick="javascript:window.open(\'/j/kfm/'
+	.'?startup_folder=\'+$(\'#image_gallery_directory\').attr(\'value\'),'
+	.'\'kfm\',\'modal,width=800,height=600\');">Manage Images</a></td></tr>';
+$c.='<tr><th>'.__('Columns').'</th><td>'
+	.'<input name="page_vars[image_gallery_x]" value="'
+	.(int)$gvars['image_gallery_x'].'" /></td>';
 // { gallery type
 $c.='<th>'.__('Gallery Type').'</th><td><select name="page_vars[image_gallery_type]">';
 $types=array('ad-gallery','simple gallery');
@@ -97,25 +122,35 @@ foreach($types as $t){
 $c.='</select></td></tr>';
 // }
 // { rows
-$c.='<tr><th>'.__('Rows').'</th><td><input name="page_vars[image_gallery_y]" value="'.(int)$gvars['image_gallery_y'].'" /></td>';
+$c.='<tr><th>'.__('Rows').'</th><td>'
+	.'<input name="page_vars[image_gallery_y]" value="'
+	.(int)$gvars['image_gallery_y'].'" /></td>';
 // }
 // { autostart the slideshow
-$c.='<th>Autostart slide-show</th><td><select name="page_vars[image_gallery_autostart]"><option value="0">No</option><option value="1"';
+$c.='<th>Autostart slide-show</th><td>'
+	.'<select name="page_vars[image_gallery_autostart]">'
+	.'<option value="0">No</option><option value="1"';
 if($gvars['image_gallery_autostart'])$c.=' selected="selected"';
 $c.='>Yes</option></select></td></tr>';
 // }
 // { caption length
 $cl=(int)@$gvars['image_gallery_captionlength'];
 $cl=$cl?$cl:100;
-$c.='<tr><th>'.__('Caption Length').'</th><td><input name="page_vars[image_gallery_captionlength]" value="'.$cl.'" /></td>';
+$c.='<tr><th>'.__('Caption Length').'</th><td>'
+	.'<input name="page_vars[image_gallery_captionlength]" value="'.$cl.'" />'
+	.'</td>';
 // }
 // { slide delay
 $sd=(int)@$gvars['image_gallery_slidedelay'];
-$c.='<th>Slide Delay</th><td><input name="page_vars[image_gallery_slidedelay]" class="small" value="'.$sd.'" />ms</td></tr>';
+$c.='<th>Slide Delay</th><td>'
+	.'<input name="page_vars[image_gallery_slidedelay]" class="small" '
+	.'value="'.$sd.'" />ms</td></tr>';
 // }
 $ts=(int)@$gvars['image_gallery_thumbsize'];
 $ts=$ts?$ts:150;
-$c.='<tr><th>'.__('Thumb Size').'</th><td><input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" /></td></tr>';
+$c.='<tr><th>'.__('Thumb Size').'</th><td>'
+	.'<input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" />'
+	.'</td></tr>';
 $c.='</table>';
 $c.='</div>';
 // }
@@ -123,9 +158,16 @@ $c.='</div>';
 if(isset($GLOBALS['PLUGINS']['online-store'])){
 	$c.='<div id="image-gallery-shop"><table>';
 	// { for sale
-	$c.='<tr><th>Are these images for sale?</th><td><select name="page_vars[image_gallery_forsale]"><option value="">No</option>';
+	$c.='<tr><th>Are these images for sale?</th><td>'
+	.'<select name="page_vars[image_gallery_forsale]">'
+	.'<option value="">No</option>';
 	$c.='<option value="yes"';
-	if(isset($vars['image_gallery_forsale']) && $vars['image_gallery_forsale']=='yes')$c.=' selected="selected"';
+	if(
+		isset($vars['image_gallery_forsale']) 
+		&& $vars['image_gallery_forsale']=='yes'
+	) {
+		$c.=' selected="selected"';
+	}
 	$c.='>Yes</option></td></tr>';
 	// }
 	// { prices
@@ -134,14 +176,27 @@ if(isset($GLOBALS['PLUGINS']['online-store'])){
 	for($i=0;isset($vars['image_gallery_prices_'.$i]);++$i){
 		$price=preg_replace('/[^0-9.]/','',$vars['image_gallery_prices_'.$i]);
 		if(!((float)$price))continue;
-		$ps[]=array('description'=>$vars['image_gallery_pricedescs_'.$i],'price'=>(float)$price);
+		$ps[]
+			=array(
+				'description'=>$vars['image_gallery_pricedescs_'.$i],
+				'price'=>(float)$price
+			);
 	}
 	for($cnt=0;isset($ps[$cnt]);++$cnt){
-		$c.='<input class="medium" name="page_vars[image_gallery_pricedescs_'.$cnt.']" value="'.htmlspecialchars($ps[$cnt]['description']).'" />'
-				.'<input class="ig_price small" name="page_vars[image_gallery_prices_'.$cnt.']" value="'.$ps[$cnt]['price'].'" /><br />';
-	}
-	$c.='<input class="medium" name="page_vars[image_gallery_pricedescs_'.$cnt.']" value="description" /><input class="ig_price small" name="page_vars[image_gallery_prices_'.$cnt.']" value="0" /><br />';
-	$c.='<a id="ig_prices_more" href="javascript:image_gallery_add_price()">[more]</a></td></tr>';
+		$c.='<input class="medium" '
+			.'name="page_vars[image_gallery_pricedescs_'.$cnt.']" '
+			.'value="'.htmlspecialchars($ps[$cnt]['description']).'" />'
+			.'<input class="ig_price small" '
+			.'name="page_vars[image_gallery_prices_'.$cnt.']" '
+			.'value="'.$ps[$cnt]['price'].'" /><br />';
+		}
+	$c.='<input class="medium" '
+		.'name="page_vars[image_gallery_pricedescs_'.$cnt.']" '
+		.'value="description" />'
+		.'<input class="ig_price small" '
+		.'name="page_vars[image_gallery_prices_'.$cnt.']" value="0" /><br />';
+	$c.='<a id="ig_prices_more" href="javascript:image_gallery_add_price()">'
+		.'[more]</a></td></tr>';
 	// }
 	$c.='</table><script>var ig_price_count='.$cnt.';</script></div>';
 }
