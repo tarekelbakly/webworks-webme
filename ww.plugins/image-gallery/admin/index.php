@@ -194,7 +194,7 @@ if(isset($GLOBALS['PLUGINS']['online-store'])){
 	) {
 		$c.=' selected="selected"';
 	}
-	$c.='>Yes</option></td></tr>';
+	$c.='>Yes</option></select></td></tr>';
 	// }
 	// { prices
 	$c.='<tr><th>Prices</th><td>';

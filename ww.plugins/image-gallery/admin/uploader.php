@@ -9,5 +9,4 @@ echo '<form action="/j/kfm/upload.php" method="POST" '
 	.'value="9999999999">'
 	.'<input type="hidden" name="directory_name" '
 	.'value="'.htmlspecialchars($dir).'" />'
-	//<input type="hidden" name="js" value="parent.location=\'/\';" />
 	.'</form>';
