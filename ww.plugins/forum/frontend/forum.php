@@ -186,11 +186,16 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	);
 	foreach ($posts as $post) {
 		$user=User::getInstance($post['author_id']);
-		$c.='<tr><td><a name="forum-c-'.$post['id']
+		$c.='<tr><td class="user-details"><a name="forum-c-'.$post['id']
 			.'"></a>'.htmlspecialchars($user->dbVals['name']).'</td>'
 			.'<td><div class="post-header">Posted: '
 			.date_m2h($post['created_date'], 'datetime')
-			.'</div>'.nl2br(htmlspecialchars($post['body'])).'</td></tr>';
+			.'</div></td></tr>';
+		$emailHash=md5(trim(strtolower($user->dbVals['email'])));
+		$c.='<tr><td><img src="http://www.gravatar.com/avatar/'
+			.$emailHash.'" />';
+		$c.='</td><td class="post">'.nl2br(htmlspecialchars($post['body']))
+			.'</td></tr>';
 	}
 	$c.='</table>';
 	// { post form
