@@ -52,14 +52,39 @@ $dir_id=kfm_api_getDirectoryID($dir);
 $images=kfm_loadFiles($dir_id);
 $images=$images['files'];
 $n=count($images);
-$c.='<iframe src="/ww.plugins/image-gallery/admin/uploader.php?image_gallery_directory='.urlencode($gvars['image_gallery_directory']).'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe><script>window.kfm={alert:function(){}};window.kfm_vars={};function x_kfm_loadFiles(){}function kfm_dir_openNode(){document.location=document.location;}</script>';
+$c.='<iframe src="/ww.plugins/image-gallery/admin/uploader.php'
+	.'?image_gallery_directory='.urlencode($gvars['image_gallery_directory']).'"'
+	.' style="width:400px;height:50px;border:0;overflow:hidden">'
+	.'</iframe>'
+	.'<script>window.kfm={alert:function(){}};window.kfm_vars={};'
+	.'function x_kfm_loadFiles(){}function kfm_dir_openNode(){'
+	.'document.location=document.location;}'
+	.'</script>';
 if($n){
 	$c.='<div id="image-gallery-wrapper">';
 	for($i=0;$i<$n;$i++){
-		$c.='<div><img src="/kfmget/'.$images[$i]['id'].',width=64,height=64" title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" /><br /><input type="checkbox" id="image-gallery-dchk-'.$images[$i]['id'].'" /><a href="javascript:;" id="image-gallery-dbtn-'.$images[$i]['id'].'">delete</a></div>';
+		$c.='<div><img src="/kfmget/'.$images[$i]['id'].','
+		.'width=64,height=64" id="image-gallery-image'.$images[$i]['id'].'" '
+		.'title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" />'
+		.'<br />'
+		.'<input type="checkbox" '
+		.'id="image-gallery-dchk-'.$images[$i]['id'].'" />'
+		.'<a href="javascript:;" id="image-gallery-dbtn-'.$images[$i]['id'].'"'
+		.'class="image-gallery-delete-link">delete</a><br />'
+		.'<a href="javascript:;" caption="'.$images[$i]['caption'].'"'
+		.'class="image-gallery-caption-link" id="image-gallery-caption-link-'
+		.$images[$i]['id'].'">';
+		if (isset($images[$i]['caption'])&&!empty($images[$i]['caption'])) {
+			$c.='Edit Caption';
+		}
+		else {
+			$c.='Add Caption';
+		}
+		$c.='</a></div>';
 	}
 	$c.='</div>';
-}else{
+}
+else{
 	$c.='<em>no images yet. please upload some.</em>';
 }
 $c.='</div>';
