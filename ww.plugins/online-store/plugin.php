@@ -15,7 +15,10 @@
 $plugin=array(
 	'name' => 'Online Store',
 	'admin' => array(
-		'page_type' => 'OnlineStore_adminPageForm'
+		'page_type' => 'OnlineStore_adminPageForm',
+		'menu' => array(
+			'Site Options>Online Store' => 'site-options',
+		)
 	),
 	'description' => 'Add online-shopping capabilities to a number of other plugins.',
 	'frontend' => array(

@@ -14,8 +14,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
-		$_REQUEST['action'] = 'prune';
-		require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/rpc.php';
 		// { Recreate the directory because for some reason it was looking
 		//   in the old directory for the image files
 		if (!is_dir(USERBASE.'f'.$_REQUEST['images_directory'])) {    
@@ -27,7 +25,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 				}
 				echo 'Creating image directory ';
 				$parent_id = kfm_api_getDirectoryId('products');
-				_create_Directory($parent_id, 'product-images');
+				_createDirectory($parent_id, 'product-images');
 			}
 			$pos = strrpos($_REQUEST['images_directory'], '/');
 			if ($pos===false) {
@@ -49,6 +47,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			.',product_type_id='.((int)$_REQUEST['product_type_id'])
 			.',enabled='.(int)$_REQUEST['enabled']
 			.',images_directory="'.addslashes($_REQUEST['images_directory']).'"';
+		// { add data fields to SQL
 		$dfs=array();
 		if(!isset($_REQUEST['data_fields']))$_REQUEST['data_fields']=array();
 		foreach($_REQUEST['data_fields'] as $n=>$v){
@@ -57,15 +56,18 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 				'v'=>$v
 			);
 		}
-		$online_store_data = array();
+		$sql.=',data_fields="'.addslashes(json_encode($dfs)).'"';
+		// }
+		// { add online store data to SQL, if it exists
 		if (isset($_REQUEST['online-store-fields'])) {
+			$online_store_data = array();
 			foreach ($_REQUEST['online-store-fields'] as $name=>$value) {
 				$online_store_data[$name] = $value;
 			}
+			$online_store_data = json_encode($online_store_data);
+			$sql.=',online_store_fields="'.addslashes($online_store_data).'"';
 		}
-		$online_store_data = json_encode($online_store_data);
-		$sql.=',data_fields="'.addslashes(json_encode($dfs)).'"';
-		$sql.=',online_store_fields="'.addslashes($online_store_data).'"';
+		// }
 		if($id){
 			dbQuery("update products $sql where id=$id");
 		}
@@ -338,36 +340,27 @@ foreach($dfdefs as $def){
 echo '</table></div>';
 // }
 // { Online Store
-$online_store_fields 
-	= array (
-		'_price' => 'Price',
-		'_trade_price' => 'Trade Price',
-		'_sale_price' => 'Sale Price',
-		'_bulk_price' => 'Bulk Price',
-		'_bulk_amount' => 'Bulk Amount',
-		'_weight(kg)' => 'Weight (kg)',
-		'_apply_vat'  
-			=> array (
-				'Apply VAT', 
-				'Options' 
-					=>array(
-						'No', 
-						'Yes'
-					)
-			),
-		'_custom_vat_amount' => 'Custom VAT Amount',
-		'_perscription_required' 
-			=> array (
-				'Perscription Required', 
-				'Options'
-					=> array(
-						'No',
-						'Yes'
-					)
-			)
-	);
-$online_store_data = json_decode($pdata['online_store_fields']);
 if (isset($PLUGINS['online-store'])) {
+	$online_store_fields 
+		= array (
+			'_price' => 'Price',
+			'_trade_price' => 'Trade Price',
+			'_sale_price' => 'Sale Price',
+			'_bulk_price' => 'Bulk Price',
+			'_bulk_amount' => 'Bulk Amount',
+			'_weight(kg)' => 'Weight (kg)',
+			'_apply_vat'  
+				=> array (
+					'Apply VAT', 
+					'Options' 
+						=>array(
+							'Yes',
+							'No'
+						)
+				),
+			'_custom_vat_amount' => 'Custom VAT Amount'
+		);
+	$online_store_data = json_decode($pdata['online_store_fields']);
 	echo '<div id="online-store-fields" class="products-online-store"';
 	if (!isset($addOnlineStoreFields)||!$addOnlineStoreFields) {
 		echo ' style="display:none';
