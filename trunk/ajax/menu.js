@@ -100,19 +100,23 @@ function ajaxmenu_removeInvalidMenus(i){
 		p=p.parentId;
 		ajaxmenu_validMenus[ajaxmenu_validMenus.length]=p;
 	}
+	$('a.menuItemTop.opened,a.menuItem.opened').removeClass('opened');
 	for(p=0;p<_am.openMenus.length;++p){
 		r=0;
 		for(v=0;v<ajaxmenu_validMenus.length;++v)if(ajaxmenu_validMenus[v]==_am.openMenus[p])r=1;
 		if(!r){
-			var el=document.getElementById('ajaxmenu'+_am.openMenus[p]);
-			if(!el)continue;
+			var el=$('#ajaxmenu'+_am.openMenus[p]);
+			if(!el.length)continue;
 			if(_am.accordion){
-				$(el).slideUp(300);
+				el.slideUp(300);
 			}
-			else $(el).remove();
+			else el.remove();
 		}
 	}
 	_am.openMenus=ajaxmenu_validMenus;
+	for (p=0;p<ajaxmenu_validMenus.length;++p) {
+		$('#ajaxmenu_link'+ajaxmenu_validMenus[p]).addClass('opened');
+	}
 }
 function ajaxmenu_setActiveMenu(i){
 	if(_am.activeSetTimeout){
