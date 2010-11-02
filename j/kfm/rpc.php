@@ -18,6 +18,10 @@ switch($_REQUEST['action']){
 		$root_directory = kfmDirectory::getInstance($root_id);
 		kfm_prune($root_directory);
 	break; // }
+	case 'change_caption': // {
+		$id = $_REQUEST['id'];
+		$caption = $_REQUEST['caption'];
+		kfm_editCaption($id, $caption);
 }
 
 function kfm_prune ($dir) {
@@ -34,5 +38,11 @@ function kfm_prune ($dir) {
 		return $dir->delete();
 	}
 	// }
-	
+}
+function kfm_editCaption ($imgID, $caption) {
+	$img = kfmImage::getInstance($imgID);
+	$img->setCaption($caption);
+	$data['id'] = $imgID;
+	$data['caption'] = $caption;
+	echo json_encode($data);
 }
