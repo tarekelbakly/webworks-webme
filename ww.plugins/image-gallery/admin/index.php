@@ -43,7 +43,9 @@ $c.='<div id="image-gallery-images">';
 $invalid = '/[^A-Za-z0-9_\-]/';
 $name = preg_replace($invalid, '|', $page['name']);
 if(!$gvars['image_gallery_directory'] || !is_dir(USERBASE.'f/'.$gvars['image_gallery_directory'])){
-	mkdir(USERBASE.'f/image-galleries');
+	if (!is_dir(USERBASE.'f/image-galleries')) {
+		mkdir(USERBASE.'f/image-galleries');
+	}
 	$gvars['image_gallery_directory']='/image-galleries/page-'.$name;
 	mkdir(USERBASE.'f/'.$gvars['image_gallery_directory']);
 }
@@ -120,7 +122,6 @@ $c.='<table><tr><th>Image Directory</th>'
 	.'name="page_vars[image_gallery_directory]">'
 	.'<option value="'.htmlspecialchars($gvars['image_gallery_directory']).'">'
 	.htmlspecialchars($gvars['image_gallery_directory']).'</option>';
-echo '</select></td></tr>';
 foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 	$c.='<option value="'.htmlspecialchars($d).'"';
 	if($d==@$gvars['image_gallery_directory'])$c.=' selected="selected"';
