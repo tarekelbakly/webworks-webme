@@ -16,7 +16,6 @@ $('.image-gallery-delete-link').bind('click',function(){
 });
 $('.image-gallery-caption-link').click(function() {
 	var $this=$(this);
-	console.debug($this);
 	var id=$this[0].id.replace('image-gallery-caption-link-', '');
 	var caption=$this.attr('caption');
 	var title='';
@@ -61,7 +60,6 @@ function update_image(data) {
 	var caption = data.caption;
 	var id = data.id;
 	var captionLink = $('#image-gallery-caption-link-'+id);
-	console.debug(captionLink);
 	$(captionLink).attr('caption', caption);
 	if (caption==null || caption=='') {
 		$(captionLink).text('Add Caption');
