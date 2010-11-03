@@ -60,7 +60,7 @@ $c.='<iframe src="/ww.plugins/image-gallery/admin/uploader.php'
 	.'</iframe>'
 	.'<script>window.kfm={alert:function(){}};window.kfm_vars={};'
 	.'function x_kfm_loadFiles(){}function kfm_dir_openNode(){'
-	.'document.location=document.location;}'
+	.'document.location="/ww.admin/pages/form.php?id="+window.page_menu_currentpage;}'
 	.'</script>';
 if($n){
 	$c.='<div id="image-gallery-wrapper">';
