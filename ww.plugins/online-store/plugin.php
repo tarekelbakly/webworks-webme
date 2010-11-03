@@ -27,6 +27,9 @@ $plugin=array(
 		'template_functions' => array(
 			'ONLINESTORE_PAYMENT_TYPES' => array(
 				'function' => 'OnlineStore_payment_types'
+			),
+			'PRODUCTS_FULL_PRICE' => array(
+				'function' => 'OnlineStore_productPriceFull'
 			)
 		)
 	),
@@ -183,9 +186,28 @@ function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
 	* @return string
 	*/
 function OnlineStore_pagedata() {
-	$currency=$GLOBALS['DBVARS']['online_store_currency'];
-	$currency_symbols=array('EUR'=>'€','GBP'=>'£');
-	return ',"currency":"'.$currency_symbols[$currency].'"';
+	if (isset($_SESSION['currency'])) {
+		return ',"currency":"'.$_SESSION['currency']['symbol'].'"';
+	}
+	$currencies=dbOne(
+		'select value from site_vars where name="currencies" limit 1',
+		'value'
+	);
+	if ($currencies==false) {
+		$currency=$GLOBALS['DBVARS']['online_store_currency'];
+		$currency_symbols=array('EUR'=>'€','GBP'=>'£');
+		$_SESSION['currency']=array(
+			'name'   => $currency,
+			'symbol' => $currency_symbols[$currency],
+			'iso'    => $currency,
+			'value'  => 1
+		);
+	}
+	else {
+		$currencies=json_decode($currencies, true);
+		$_SESSION['currency']=$currencies[0];
+	}
+	return ',"currency":"'.$_SESSION['currency']['symbol'].'"';
 }
 
 /**
@@ -196,6 +218,55 @@ function OnlineStore_pagedata() {
 function OnlineStore_payment_types() {
 	require dirname(__FILE__).'/frontend/payment-types.php';
 	return $c;
+}
+
+/**
+	* Smarty function for returning a product's price, including currency symbol
+	*
+	* @return string
+	*/
+function OnlineStore_productPriceFull($params, &$smarty) {
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	if (!isset($product->vals['online-store'])) {
+		$product->vals['online-store']=array(
+			'_price'=>0,
+			'_trade_price'=>0,
+			'_sale_price'=>0,
+			'_bulk_price'=>0,
+			'_bulk_amount'=>0,
+			'_weight'=>0,
+			'_apply_vat'=>0,
+			'_custom_vat_amount'=>0
+		);
+	}
+	$p=$product->vals['online-store'];
+	foreach ($p as $k=>$v) {
+		$p[$k]=(float)$v;
+	}
+	if ($p['_sale_price']) {
+		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($p['_price'])
+			.'</strike> <strong class="os_price">'
+			.OnlineStore_numToPrice($p['_sale_price']).'</strong>';
+	}
+	else {
+		$tmp='<strong class="os_price">'
+			.OnlineStore_numToPrice($p['_price']).'</strong>';
+	}
+	if ($p['_bulk_price'] && $p['_bulk_amount']) {
+		$tmp.='<br />'.OnlineStore_numToPrice($p['_bulk_price']).' for '
+			.$p['_bulk_amount'].' or more';
+	}
+	$tmp='<span class="os_full_price">'.$tmp.'</span>';
+	return $tmp;
+}
+
+function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
+	$rate=$_SESSION['currency']['value'];
+	$sym=$_SESSION['currency']['symbol'];
+	return $rounded
+		?$sym.round($val*$rate)
+		:$sym.sprintf("%.2f",$val*$rate);
 }
 
 /**

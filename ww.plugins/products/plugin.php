@@ -81,8 +81,15 @@ function products_add_to_cart($PAGEDATA){
 	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
 	if(!$product)return;
+	if (isset($product->vals['online-store'])) {
+		$p=$product->vals['online-store'];
+		$price=(float)$p['_price'];
+	}
+	else {
+		$price=(float)$product->get('price');
+	}
 	OnlineStore_addToCart(
-		(float)$product->get('_price'),
+		$price,
 		1,
 		$product->get('name'),
 		'',

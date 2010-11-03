@@ -976,19 +976,6 @@ class ProductType{
 					// }
 			}
 		}
-		if ($this->is_for_sale==1) {
-			foreach ($product->vals['online-store'] as $name=>$value) {
-				if (!isset($value)||$value=='') {
-					$value=0;
-				}
-				if (strpos($name, 'price')===false) {
-						$smarty->assign($name, $value);
-				}
-				else {
-					$smarty->assign($name, $csym.$value);
-				}
-			}
-		}
 		$smarty->assign('_name',$product->vals['name']);
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
