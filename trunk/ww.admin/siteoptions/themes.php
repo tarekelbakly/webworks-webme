@@ -37,19 +37,90 @@ function Themes_recursiveCopy($src, $dst) {
 echo '<h2>'.__('Themes').'</h2>';
 // { handle actions
 if ($action=='set_theme') {
-	if (is_dir($DBVARS['theme_dir'].'/'.$_REQUEST['theme'])) {
-		$DBVARS['theme']=$_REQUEST['theme'];
-		$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
-		Themes_recursiveCopy(
-			$DBVARS['theme_dir'].'/'.$_REQUEST['theme'],
-			$DBVARS['theme_dir_personal'].'/'.$_REQUEST['theme']
-		);
-		config_rewrite();
-		cache_clear('pages');
+	if (isset($_REQUEST['personal'])) {
+		if (is_dir($DBVARS['theme_dir_personal'].'/'.$_REQUEST['theme'])) {
+			$DBVARS['theme']=$_REQUEST['theme'];
+			$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
+		}
 	}
+	else {
+		if (is_dir($DBVARS['theme_dir'].'/'.$_REQUEST['theme'])) {
+			$DBVARS['theme']=$_REQUEST['theme'];
+			$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
+			Themes_recursiveCopy(
+				$DBVARS['theme_dir'].'/'.$_REQUEST['theme'],
+				$DBVARS['theme_dir_personal'].'/'.$_REQUEST['theme']
+			);
+		}
+	}
+	config_rewrite();
+	cache_clear('pages');
 }
 // }
-// { samples
+echo '<div class="tabs">'
+	.'<ul>'
+	.'<li><a href="#private-repository">Private</a></li>'
+	.'<li><a href="#public-repository">Public</a></li>'
+	.'</ul>';
+// { private
+echo '<div id="private-repository"><p>This is a list of themes that you have used with your site before. It may include themes that you have edited yourself.</p>';
+$dir=new DirectoryIterator($DBVARS['theme_dir_personal']);
+$themes_found=0;
+foreach ($dir as $file) {
+	if ($file->isDot()
+		|| !file_exists($DBVARS['theme_dir_personal'].'/'.$file.'/screenshot.png')
+	) {
+		continue;
+	}
+	$themes_found++;
+	echo '<div style="width:250px;text-align:center;border:1px solid #000;'
+		.'margin:5px;height:250px;float:left;';
+	if ($file==$DBVARS['theme']) {
+		echo 'background:#ff0;';
+	}
+	echo '"><form method="post" action="siteoptions.php">'
+		.'<input type="hidden" name="personal" value="true" />'
+		.'<input type="hidden" name="page" value="themes" />'
+		.'<input type="hidden" name="action" value="set_theme" />'
+		.'<input type="hidden" name="theme" value="'
+		.htmlspecialchars($file).'" />';
+	$size=getimagesize('../ww.skins/'.$file.'/screenshot.png');
+	$w=$size[0]; $h=$size[1];
+	if ($w>240) {
+		$w=$w*(240/$w);
+		$h=$h*(240/$w);
+	}
+	if ($h>172) {
+		$w=$w*(172/$h);
+		$h=$h*(172/$h);
+	}
+	echo '<img src="/ww.skins/'.htmlspecialchars($file)
+		.'/screenshot.png" width="'.(floor($w)).'" height="'
+		.(floor($h)).'" /><br />'
+		.'<strong>',htmlspecialchars($file),'</strong><br />';
+	if (is_dir($DBVARS['theme_dir_personal'].'/'.$file.'/cs')) {
+		$dir2=new DirectoryIterator($DBVARS['theme_dir_personal'].'/'.$file.'/cs');
+		echo 'variant: <select name="theme_variant">';
+		foreach ($dir2 as $file2) {
+			if ($file2->isDot()) {
+				continue;
+			}
+			$file2=preg_replace('/\.css$/', '', $file2);
+			$sel=$file2==$DBVARS['theme_variant']?' selected="selected"':'';
+			echo '<option',$sel,'>',htmlspecialchars($file2),'</option>';
+		}
+		echo '</select>';
+	}
+	echo '<br /><input type="submit" value="set theme" /></form></div>';
+}
+if ($themes_found==0) {
+	echo '<em>No themes found. Download a theme and unzip it into the '
+		.'/ww.skins/ directory.</em>';
+}
+echo '<br style="clear:both" /></div>';
+// }
+// { public
+echo '<div id="public-repository"><p>Choosing a theme here will copy it into your private repository. If you already have a copy of the chosen theme there, then your copy will be over-written.</p>';
 if (!isset($DBVARS['theme_dir'])) {
 	$DBVARS['theme_dir']=SCRIPTBASE.'/ww.skins';
 }
@@ -64,9 +135,6 @@ foreach ($dir as $file) {
 	$themes_found++;
 	echo '<div style="width:250px;text-align:center;border:1px solid #000;'
 		.'margin:5px;height:250px;float:left;';
-	if ($file==$DBVARS['theme']) {
-		echo 'background:#ff0;';
-	}
 	echo '"><form method="post" action="siteoptions.php">'
 		.'<input type="hidden" name="page" value="themes" />'
 		.'<input type="hidden" name="action" value="set_theme" />'
@@ -105,4 +173,6 @@ if ($themes_found==0) {
 	echo '<em>No themes found. Download a theme and unzip it into the '
 		.'/ww.skins/ directory.</em>';
 }
+echo '<br style="clear:both" /></div>';
+WW_addInlineScript('$(function(){$(".tabs").tabs()})');
 // }
