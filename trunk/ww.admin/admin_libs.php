@@ -1,5 +1,6 @@
 <?php
 $scripts=array();
+$scripts_inline=array();
 function addMenuItem(&$arr,$file,$nav){
 	if(ereg('>',$nav)){
 		return;
@@ -130,6 +131,12 @@ function WW_addScript($url){
 	if(in_array($url,$scripts))return;
 	$scripts[]=$url;
 }
+function WW_addInlineScript($script){
+	global $scripts_inline;
+	$script=preg_replace('/\s+/',' ',str_replace(array("\n","\r"),' ',$script));
+	if(in_array($script,$scripts_inline))return;
+	$scripts_inline[]=$script;
+}
 function WW_getCSS(){
 	global $css_urls;
 	if (!is_array($css_urls)) {
@@ -140,9 +147,10 @@ function WW_getCSS(){
 	return '<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($url).'" />';
 }
 function WW_getScripts(){
-	global $scripts;
+	global $scripts,$scripts_inline;
 	if(!count($scripts))return '';
-	return '<script src="'.join('"></script><script src="',$scripts).'"></script>';
+	return '<script src="'.join('"></script><script src="',$scripts).'"></script>'
+		.'<script>'.join('',$scripts_inline).'</script>';
 }
 function drawMenu($menuArray){
 	$c='';

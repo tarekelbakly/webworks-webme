@@ -104,6 +104,9 @@ class kfmDirectory extends kfmObject{
 		$kfm->db->exec("delete from ".KFM_DB_PREFIX."directories where id=".$this->id);
 		return true;
 	}
+	function exists(){
+		return (file_exists($this->path()) && is_dir($this->path()));
+	}
 	function getCssSprites(){
 		$groupby=16;
 		$thumbsize=64;
