@@ -61,7 +61,7 @@ $c.='</div>';
 $c.='<div id="email-to-sender"><p>Email to send to the sender.</p>';
 if (!isset($vars['recommendthissite_emailtosender'])) {
 	$vars['recommendthissite_emailtosender']='<p>Dear {{$sender_name}}</p>'
-		.'<p>Thank you for recommending our siteto your friend. We really '
+		.'<p>Thank you for recommending our site to your friend. We really '
 		.'appreciate it!</p>'
 		.'<p>Kind Regards</p><p>{{$smarty.server.HTTP_HOST}}</p>';
 	$vars['recommendthissite_emailtosender_subject']=
