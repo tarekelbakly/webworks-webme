@@ -22,10 +22,14 @@ switch($_REQUEST['action']){
 		$id = $_REQUEST['id'];
 		$caption = $_REQUEST['caption'];
 		kfm_editCaption($id, $caption);
+	break; // }
 }
 
 function kfm_prune ($dir) {
 	global $root_id;
+	if (!$dir->exists()) {
+		return $dir->delete();
+	}
 	$files = $dir->getFiles();
 	$subDirs = $dir->getSubdirs();
 	if ($dir->hasSubdirs()) {

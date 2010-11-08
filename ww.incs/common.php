@@ -95,12 +95,15 @@ function smarty_setup(){
 	return $smarty;
 }
 // { user authentication
-if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
+if(isset($_REQUEST['action']) && $_REQUEST['action']=='login'){
 	// { variables
 	$email=$_REQUEST['email'];
 	$password=$_REQUEST['password'];
 	// }
-	$r=dbRow('select * from user_accounts where email="'.addslashes($email).'" and password=md5("'.$password.'")');
+	$r=dbRow(
+		'select * from user_accounts where email="'.addslashes($email)
+		.'" and password=md5("'.$password.'")'
+	);
 	if($r && count($r)){
 		// { update session variables
 		$r['password']=$password;
@@ -111,14 +114,18 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']==__('login')){
 		// }
 		// { redirect if applicable
 		$redirect_url='';
-		if(isset($_POST['login_referer']) && strpos($_POST['login_referer'],'/')===0){
+		if (isset($_POST['login_referer'])
+			&& strpos($_POST['login_referer'],'/')===0
+		){
 			$redirect_url=$_POST['login_referer'];
 		}
-		else if(isset($PAGEDATA) && $PAGEDATA->vars['userlogin_redirect_to']){
+		else if (isset($PAGEDATA) && $PAGEDATA->vars['userlogin_redirect_to']) {
 			$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
 			$redirect_url=$p->getRelativeUrl();
 		}
-		if($redirect_url!='')redirect($redirect_url);
+		if ($redirect_url!='') {
+			redirect($redirect_url);
+		}
 		// }
 	}
 }
