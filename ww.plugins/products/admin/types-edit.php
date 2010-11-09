@@ -12,6 +12,7 @@ $tabs=array(
 // }
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
+	cache_clear('products');
 	$errors=array();
 	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';

@@ -8,6 +8,7 @@ if(!isset($_REQUEST['name']) || $_REQUEST['name']=='')exit;
 include 'libs.php';
 
 dbQuery('update products_categories set name="'.addslashes($_REQUEST['name']).'",enabled="'.((int)$_REQUEST['enabled']).'" where id='.$_REQUEST['id']);
+cache_clear('products');
 
 $pageid	
 	= dbOne(
