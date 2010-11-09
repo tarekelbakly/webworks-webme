@@ -38,5 +38,4 @@ if (isset($pagedata->vars['privacy_password']) && $pagedata->vars['privacy_passw
 		$allowed=true;
 		return;
 	}
-
 }

@@ -14,7 +14,7 @@ if($n>$imagesPerPage){
 	for($l=1;$l<$vars['image_gallery_x']-1;++$l)$c.='<th></th>';
 	// { # next
 		$c.='<th class="next" style="text-align:right" id="image_gallery_next_wrapper">';
-		if($start+$imagesPerPage<=$n){
+		if($start+$imagesPerPage<$n){
 			$l=$start+$imagesPerPage;
 			$c.='<a href="'.$prespage.'?start='.$l.'">next --&gt;</a>';
 		}

@@ -104,16 +104,8 @@ function Form_send($page, $vars) {
 	else {
 		if ($vars['forms_send_as_email']) {
 			$form=Form_showForm($page, $vars, $err, true);
-			// { from
-			$from=preg_replace('/^FIELD{|}$/', '', $vars['forms_replyto']);
-			if ($vars['forms_replyto']!=$from) {
-				$from=$_REQUEST[preg_replace('/[^a-zA-Z]/', '', $from)];
-			}
-			// }
-			$to=preg_replace('/^FIELD{|}$/', '', $vars['forms_recipient']);
-			if ($vars['forms_recipient']!=$to) {
-				$to=$_REQUEST[preg_replace('/[^a-zA-Z]/', '', $to)];
-			}
+			$from=$_REQUEST[preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto'])];
+			$to=$vars['forms_recipient'];
 			$form=str_replace(
 				array(
 					'<input type="submit" value="Submit Form" />',

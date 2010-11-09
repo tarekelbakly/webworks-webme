@@ -16,7 +16,7 @@ function ig_updateGallery(at){
 		{ // next
 			var next=document.getElementById('image_gallery_next_wrapper');
 			next.innerHTML='';
-			if(at+ig.x*ig.y<=ig.images.length)next.appendChild(newLink('javascript:ig_updateGallery('+(at+ig.x*ig.y)+')','next -->','image_gallery_next','next'));
+			if(at+ig.x*ig.y<ig.images.length)next.appendChild(newLink('javascript:ig_updateGallery('+(at+ig.x*ig.y)+')','next -->','image_gallery_next','next'));
 		}
 	}
 	for(y=0;y<ig.y;++y){
