@@ -14,7 +14,6 @@
 WW_addScript('/ww.plugins/online-store/j/basket.js');
 $c='';
 global $DBVARS,$online_store_currencies;
-$csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
 $submitted=0;
 if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 	$errors=array();
@@ -108,14 +107,16 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 			$table.='<tr><td class="quantitycell">'.$item['amt']
 				.'</td><td class="descriptioncell"><a href="'.$item['url'].'">'
 				.preg_replace('/<[^>]*>/', '', $item['short_desc'])
-				.'</td><td class="unitamountcell">'.$csym.sprintf("%.2f", $item['cost'])
-				.'</td><td class="amountcell">'.$csym.sprintf("%.2f", $item['cost']*$item['amt'])
+				.'</td><td class="unitamountcell">'
+				.OnlineStore_numToPrice($item['cost'])
+				.'</td><td class="amountcell">'
+				.OnlineStore_numToPrice($item['cost']*$item['amt'])
 				.'</td></tr>';
 		}
 		$table.='<tr class="os_basket_totals">'
 			.'<td colspan="3" style="text-align:right">'
 			.'Subtotal</td><td class="totals amountcell">'
-			.$csym.sprintf("%.2f", $total)
+			.OnlineStore_numToPrice($total)
 			.'</td></tr>';
 		$table.='</table>';
 		$smarty->assign('_invoice_table', $table);
@@ -156,7 +157,7 @@ if (!$submitted) {
 		&&isset($_SESSION['online-store']['items'])
 		&&count($_SESSION['online-store']['items'])>0
 	) {
-		$c.='<table><tr>';
+		$c.='<table width="100%"><tr>';
 		$c.='<th>Item</th>';
 		$c.='<th>Price</th>';
 		$c.='<th>Amount</th>';
@@ -172,16 +173,17 @@ if (!$submitted) {
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='</a>';
 			}
-			$c.='</td><td>'.$csym.$item['cost'].'</td>';
+			$c.='</td><td>'.OnlineStore_numToPrice($item['cost']).'</td>';
 			$c.='<td class="amt"><span class="'.$md5.'-amt amt-num">'
 				.$item['amt']
 				.'</span></td>';
 			$totalItemCost=$item['cost']*$item['amt'];
 			$grandTotal+=$totalItemCost;
-			$c.='<td class="'.$md5.'-item-total">'.$totalItemCost.'</td></tr>';
+			$c.='<td class="'.$md5.'-item-total">'
+				.OnlineStore_numToPrice($totalItemCost).'</td></tr>';
 		}
-		$c.='<tr class="os_total"><th colspan="2">Total</th>';
-		$c.='<td colspan="2" class="total">'.$csym.$grandTotal.'</td></tr>';
+		$c.='<tr class="os_total"><th colspan="3">Total</th>';
+		$c.='<td class="total">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
 		$c.='</table>';
 		$c.='<form method="post">';
 		$c.=$PAGEDATA->render();

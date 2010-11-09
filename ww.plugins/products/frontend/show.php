@@ -201,7 +201,7 @@ function products_datatable ($params, &$smarty) {
 	return $c;
 }
 function Product_datatableMultiple (&$products, $direction) {
-	$headers=array('name'=>'Name');
+	$headers=array();
 	$data=array();
 	foreach ($products as $pid) {
 		$row=array();
@@ -219,7 +219,7 @@ function Product_datatableMultiple (&$products, $direction) {
 				case 'textarea' : // {
 					$row[$df->n] = $product->vals[$df->n];
 				break; // }
-				default :
+				default : // {
 					$row[$df->n] = htmlspecialchars($product->vals[$df->n]);
 				break; // }
 			}
@@ -236,9 +236,15 @@ function Product_datatableMultiple (&$products, $direction) {
 	}
 	switch ($direction){
 		case 'horizontal': // {
+			WW_addScript('/j/datatables-1.7.4/media/js/jquery.dataTables.js');
+			WW_addScript('/ww.plugins/products/frontend/show-horizontal.js');
+			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
 			$html='<table class="product-horizontal">';
-			$html.='<thead><tr><th>'.join('</th><th>',$headers).'</th></tr></thead>';
-			$html.='<tbody>';
+			$html.='<thead><tr>';
+			foreach($headers as $n=>$v) {
+				$html.='<th o="'.htmlspecialchars($n).'">'.htmlspecialchars($v).'</th>';
+			}
+			$html.='</tr></thead><tbody>';
 			foreach ($data as $row) {
 				$html.='<tr>';
 				foreach ($headers as $n=>$d) {
@@ -246,7 +252,12 @@ function Product_datatableMultiple (&$products, $direction) {
 				}
 				$html.='</tr>';
 			}
-			$html.='</tbody></table>';
+			$html.='</tbody>';
+			$html.= '<tfoot><tr>';
+			foreach ($headers as $name) {
+				$html.='<th><input type="text" name="search_'.$name.'" /></th>';
+			}
+			$html.='</tr></tfoot></table>';
 			return $html;
 		// }
 		case 'vertical': // {
@@ -614,12 +625,14 @@ class Product{
 		}
 		unset($r['online_store_fields']);
 		$this->vals=array();
-		foreach($r as $k=>$v)$this->vals[$k]=$v;
+		foreach ($r as $k=>$v) {
+			$this->vals[$k]=$v;
+		}
 		foreach($vals as $val) {
 			$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
 		}
 		if (isset($online_store_data)) {
-			foreach($online_store_data as $name=>$value) {
+			foreach ($online_store_data as $name=>$value) {
 				$this->vals['online-store'][$name]=$value;
 			}
 		}
@@ -686,8 +699,12 @@ class Product{
 		}
 		return false;
 	}
-	function search($search) {
+	function search($search, $field='') {
 		$search=strtolower($search);
+		if ($field) {
+			$v=strtolower($this->get($field));
+			return strpos($v, $search)!==false;
+		}
 		if (strpos(strtolower($this->name), $search)!==false) {
 			return true;
 		}
@@ -702,23 +719,58 @@ class Product{
 }
 class Products{
 	static $instances=array();
-	function __construct($vs, $id, $search='') {
-		if ($search!='') {
-			$arr=array();
-			foreach ($vs as $v) {
-				$p=Product::getInstance($v);
-				if (!$p) {
-					continue;
+	function __construct(
+		$vs, $md5, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
+	) {
+		$this->product_ids=cache_load('products', 'products_'.$md5);
+			if ($this->product_ids===false) {
+			if ($search!='') {
+				$arr=array();
+				foreach ($vs as $v) {
+					$p=Product::getInstance($v);
+					if (!$p) {
+						continue;
+					}
+					if ($p->search($search)) {
+						$arr[]=$v;
+					}
 				}
-				if (!$p->search($search)) {
-					continue;
-				}
-				$arr[]=$v;
+				$vs = $arr;
 			}
-			$vs=$arr;
+			if (count($search_arr)) {
+				$arr=array();
+				foreach ($vs as $v) {
+					$p=Product::getInstance($v);
+					$left=count($search_arr);
+					foreach ($search_arr as $k=>$s) {
+						if ($p->search($s, $k)) {
+							$left--;
+						}
+					}
+					if (!$left) {
+						$arr[]=$v;
+					}
+				}
+				$vs=$arr;
+			}
+			if ($sort_col) {
+				$vals=array();
+				$keys=array();
+				foreach ($vs as $v) {
+					$keys[]=$v;
+					$p=Product::getInstance($v);
+					$vals[]=$p->get($sort_col);
+				}
+				array_multisort($vals, $keys);
+				$vs=$keys;
+				if ($sort_dir != 'asc') {
+					$vs=array_reverse($vs);
+				}
+			}
+			$this->product_ids=$vs;
+			cache_save('products', 'products_'.$md5, $vs);
 		}
-		$this->product_ids=$vs;
-		self::$instances[$id]=& $this;
+		self::$instances[$md5]=& $this;
 		return $this;
 	}
 	function getAll($search='') {
@@ -733,28 +785,32 @@ class Products{
 		}
 		return self::$instances[$id];
 	}
-	function getByCategory($id, $search='') {
+	function getByCategory(
+		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
+	) {
 		if (!is_numeric($id)) {
 			return false;
 		}
-		$md5=md5($id.'|'.$search);
+		$md5=md5($id.'|'.$search.'|'.join(',',$search_arr));
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
-			if ($search=='') {
+			if ($search=='' && !count($search_arr)) {
 				$rs=dbAll(
 					'select id from products,products_categories_products'
 					.' where id=product_id and enabled and category_id='.$id
 				);
 			}
 			else {
-				$rs=dbAll(
-					'select id from products,products_categories_products'
-					.' where id=product_id and enabled and category_id='.$id
-					.' and (name like "%'.addslashes($search).'%" or data_fields like "%'.addslashes($search).'%")'
-				);
+				$sql='select id from products,products_categories_products'
+					.' where id=product_id and enabled and category_id='.$id;
+				if ($search!='') {
+					$sql.=' and (name like "%'.addslashes($search)
+						.'%" or data_fields like "%'.addslashes($search).'%")';
+				}
+				$rs=dbAll($sql);
 				$cats=dbAll('select id from products_categories where parent_id='.$id);
 				foreach ($cats as $cat) {
-					$ps=Products::getByCategory($cat['id'], $search);
+					$ps=Products::getByCategory($cat['id'], $search, $search_arr);
 					foreach ($ps->product_ids as $p) {
 						$rs[]=array('id'=>$p);
 					}
@@ -763,23 +819,27 @@ class Products{
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
 			}
-			new Products($product_ids, $md5, $search);
+			new Products($product_ids, $md5, $search, $search_arr);
 			self::$instances[$md5]->subCategories=dbAll('select id,name from products_categories where parent_id='.$id.' order by name');
 		}
 		return self::$instances[$md5];
 	}
-	function getByType($id, $search='') {
+	function getByType(
+		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
+	) {
 		if (!is_numeric($id)) {
 			return false;
 		}
-		$md5=md5($id.'|'.$search);
-		if (!array_key_exists($id, self::$instances)) {
+		$md5=md5(
+			$id.'|'.$search.'|'.join(',',$search_arr).'|'.$sort_col.'|'.$sort_dir
+		);
+		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
 			$rs=dbAll('select id from products where enabled and product_type_id='.$id);
 			foreach ($rs as $r) {
 				$product_ids[]=$r['id'];
 			}
-			new Products($product_ids, $md5, $search);
+			new Products($product_ids, $md5, $search, $search_arr, $sort_col, $sort_dir);
 		}
 		return self::$instances[$md5];
 	}
