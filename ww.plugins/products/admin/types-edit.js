@@ -9,16 +9,16 @@ function products_data_fields_setup(){
 }
 function products_data_fields_add_row(rdata,i){
 	// { internal name
-	var row='<tr><td><input class="product-type-fd-name" id="product_type_fd'+i+'_name" value="'+htmlspecialchars(rdata.n)+'" /></td>';
+	var row='<li><table width="100%"><tr><td width="20%"><input class="product-type-fd-name" id="product_type_fd'+i+'_name" value="'+htmlspecialchars(rdata.n)+'" /></td>';
 	// }
 	// { displayed name
 	if (!rdata.ti) {
 		rdata.ti=rdata.n
 	}
-	row+='<td><input class="product-type-fd-title" id="product_type_fd'+i+'_title" value="'+htmlspecialchars(rdata.ti)+'" /></td>';
+	row+='<td width="20%"><input class="product-type-fd-title" id="product_type_fd'+i+'_title" value="'+htmlspecialchars(rdata.ti)+'" /></td>';
 	// }
 	// { type
-	row+='<td><select id="product_type_fd'+i+'_type">';
+	row+='<td width="20%"><select id="product_type_fd'+i+'_type">';
 	var types=['inputbox','textarea','date','checkbox','selectbox'];
 	for(var j=0;j<types.length;++j){
 		row+='<option value="'+types[j]+'"';
@@ -28,34 +28,38 @@ function products_data_fields_add_row(rdata,i){
 	row+='</select></td>';
 	// }
 	// { searchable
-	row+='<td><input id="product_type_fd'+i+'_searchable" type="checkbox"';
+	row+='<td><input class="product-type-fd-searchable" type="checkbox"';
 	if(rdata.s)row+=' checked="checked"';
 	row+=' /></td>';
 	// }
 	// { required
-	row+='<td><input id="product_type_fd'+i+'_required" type="checkbox"';
+	row+='<td><input class="product-type-fd-required" type="checkbox"';
 	if(rdata.r)row+=' checked="checked"';
 	row+=' /></td>';
 	// }
 	// { extra
 	if(rdata.t=='selectbox'){
-		row+='<td><textarea id="product_type_fd'+i+'_extra" class="small">'+htmlspecialchars(rdata.e)+'</textarea></td>';
+		row+='<td width="20%"><textarea id="product_type_fd'+i+'_extra" class="small">'+htmlspecialchars(rdata.e)+'</textarea></td>';
 	}
-	row+='<td>&nbsp;</td>';
+	row+='<td width="20%">&nbsp;</td>';
 	// }
+	row+='</tr></table></li>';
 	return row;
 }
 function products_data_fields_redraw(){
 	var wrapper=$('#data_fields_rows');
 	wrapper.empty();
-	table='<table><tr><th>Internal Name</th><th>Displayed Name</th><th>Type</th><th>Searchable</th><th>Required</th><th>Extra</th></tr>';
+	table='<table width="100%"><tr><th width="20%">Internal Name</th><th width="20%">Displayed Name</th><th width="20%">Type</th><th>Searchable</th><th>Required</th><th width="20%">Extra</th></tr></table><ul id="product_type_rows">';
 	var rows=0;
 	$.each(window.data_fields,function(i,rdata){
 		table+=products_data_fields_add_row(rdata,rows++);
 	});
 	table+=products_data_fields_add_row({n:''},rows);
-	table=$(table+'</table>');
+	table=$(table+'</ul>');
 	table.appendTo(wrapper);
+	$('#product_type_rows').sortable({
+		"update":products_data_fields_reset_value
+	});
 	$('input.product-type-fd-name',table).change(function(){
 		products_data_fields_reset_value();
 		products_data_fields_redraw();
@@ -66,18 +70,19 @@ function products_data_fields_redraw(){
 }
 function products_data_fields_reset_value(){
 	var vals=[];
-	for(var i=0;document.getElementById('product_type_fd'+i+'_name');++i){
-		if($('#product_type_fd'+i+'_name').val()=='')continue;
-		var val={
-			'n':$('#product_type_fd'+i+'_name').val(),
-			'ti':$('#product_type_fd'+i+'_title').val(),
-			't':$('#product_type_fd'+i+'_type').val(),
-			's':$('#product_type_fd'+i+'_searchable')[0].checked?1:0,
-			'r':$('#product_type_fd'+i+'_required')[0].checked?1:0,
-			'e':$('#product_type_fd'+i+'_extra').val()
-		};
-		vals.push(val);
-	}
+	var rows=$("#product_type_rows tr");
+	rows.each(function(){
+		var $this=$(this),n=$this.find('.product-type-fd-name').val();
+		if(n=='')return;
+		vals.push({
+			"n":n,
+			"ti":$this.find('.product-type-fd-title').val(),
+			"t":$this.find('select').val(),
+			"s":$this.find('.product-type-fd-searchable')[0].checked?1:0,
+			"r":$this.find('.product-type-fd-required')[0].checked?1:0,
+			"e":$this.find('.product-type-fd-extra').val()
+		});
+	});
 	$('#data_fields').val(Json.toString(vals));
 	window.data_fields=vals;
 }
