@@ -647,6 +647,7 @@ class Product{
 		return self::$instances[$id];
 	}
 	function getRelativeURL () {
+		global $PAGEDATA;
 		if ($this->relativeUrl) {
 			return $this->relativeUrl;
 		}
@@ -675,13 +676,18 @@ class Product{
 			foreach ($productCats as $productCat) {
 				$pcats[]=$productCat['category_id'];
 			}
-			$pid
-			=dbOne(
+			$rs=dbAll(
 				'select page_id '
 				.'from page_vars where name="products_category_to_show" '
-				.'and value in ('.join(',',$pcats).') limit 1',
-				'page_id'
+				.'and value in ('.join(',',$pcats).')'
 			);
+			$pid=0;
+			foreach ($rs as $r) {
+				$pid=$r['page_id'];
+				if ($pid==$PAGEDATA->id) {
+					break;
+				}
+			}
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
