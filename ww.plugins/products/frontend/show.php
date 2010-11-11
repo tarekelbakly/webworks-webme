@@ -202,6 +202,7 @@ function products_datatable ($params, &$smarty) {
 }
 function Product_datatableMultiple (&$products, $direction) {
 	$headers=array();
+	$header_types=array();
 	$data=array();
 	foreach ($products as $pid) {
 		$row=array();
@@ -230,6 +231,7 @@ function Product_datatableMultiple (&$products, $direction) {
 				else {
 					$headers[$df->n]=ucwords($df->n);
 				}
+				$header_types[$df->n]=$df->t;
 			}
 		}
 		$data[] = $row;
@@ -254,8 +256,15 @@ function Product_datatableMultiple (&$products, $direction) {
 			}
 			$html.='</tbody>';
 			$html.= '<tfoot><tr>';
-			foreach ($headers as $name) {
-				$html.='<th><input type="text" name="search_'.$name.'" /></th>';
+			foreach ($headers as $key=>$name) {
+				if ($header_types[$key]=='checkbox') {
+					$html.='<th><select name="search_'.$name.'"><option></option>'
+						.'<option value="0">No</option><option value="1">Yes</option>'
+						.'</select></th>';
+				}
+				else {
+					$html.='<th><input type="text" name="search_'.$name.'" /></th>';
+				}
 			}
 			$html.='</tr></tfoot></table>';
 			return $html;
@@ -498,6 +507,17 @@ function products_show($PAGEDATA) {
 		?(int)$PAGEDATA->vars['products_order_direction']#
 		:0;
 	// }
+	// { export button
+	$export='';
+	if (isset($PAGEDATA->vars['products_add_export_button'])
+		&& $PAGEDATA->vars['products_add_export_button']
+	) {
+		$export='<form id="products-export" action="/ww.plugins/products/frontend/export.php">'
+			.'<input type="hidden" name="pid" value="'.$PAGEDATA->id.'" />'
+			.'<input type="submit" value="Export" />'
+			.'</form>';
+	}
+	// }
 	switch($PAGEDATA->vars['products_what_to_show']) {
 		case '1':
 			return $c
@@ -509,7 +529,8 @@ function products_show($PAGEDATA) {
 					$order_by,
 					$order_dir,
 					$search
-				);
+				)
+				.$export;
 		case '2':
 			return $c
 				.products_show_by_category(
@@ -520,9 +541,10 @@ function products_show($PAGEDATA) {
 					$order_by,
 					$order_dir,
 					$search
-				);
+				)
+				.$export;
 		case '3':
-			return $c.products_show_by_id($PAGEDATA);
+			return $c.products_show_by_id($PAGEDATA).$export;
 	}
 	return $c
 		.products_show_all(
@@ -532,7 +554,8 @@ function products_show($PAGEDATA) {
 			$order_by,
 			$order_dir,
 			$search
-		);
+		)
+		.$export;
 }
 function products_show_by_id($PAGEDATA,$id=0) {
 	if ($id==0) {
@@ -628,6 +651,7 @@ class Product{
 		foreach ($r as $k=>$v) {
 			$this->vals[$k]=$v;
 		}
+#		if(!is_array($vals))mail('kae@verens.com','broken '.$_SERVER['HTTP_HOST'],$r['id']);
 		foreach($vals as $val) {
 			$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
 		}
@@ -704,6 +728,33 @@ class Product{
 			return $this->vals[$name];
 		}
 		return false;
+	}
+	function getString($name) {
+		$type= ProductType::getInstance($this->vals['product_type_id']);
+		$datafields= $type->data_fields;
+		foreach ($datafields as $data) {
+			if ($data->n==$name) {
+				switch($data->t) {
+					case 'date': // {
+						return date_m2h($this->vals[$data->n]);
+					break; // }
+					case 'checkbox': // {
+						if (isset($this->vals[$data->n]) && $this->vals[$data->n]) {
+							return 'Yes';
+						}
+						else {
+							return 'No';
+						}
+					break; // }
+					default: // {
+						if (isset($this->vals[$data->n])) {
+							return $this->vals[$data->n];
+						}
+					// }
+				}
+			}
+		}
+		return '';
 	}
 	function search($search, $field='') {
 		$search=strtolower($search);

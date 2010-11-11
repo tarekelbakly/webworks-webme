@@ -30,11 +30,14 @@ jQuery.fn.dataTableExt.oApi.fnSetFilteringDelay = function ( oSettings, iDelay )
 }
  
 $(function(){
-	var cols=[];
+	var cols=[],cols_names=[];
 	var oTable=$('.product-horizontal');
+	$('.products-num-results').remove();
 	var numRows=oTable.find('tr').length-2;
 	oTable.find('thead th').each(function(){
-		cols.push({'sName':$(this).attr('o')});
+		var n=$(this).attr('o');
+		cols.push({'sName':n});
+		cols_names.push(n);
 	});
 	oTable.dataTable({
 		"sScrollY": oTable[0].offsetHeight*.6,
@@ -49,28 +52,42 @@ $(function(){
 		"iDisplayLength" : numRows,
 		"oLanguage": { "sSearch": "Search all columns:" }
 	}).fnSetFilteringDelay();
+	$('#products-export').append(
+		'<input type="hidden" name="sColumns" value="'+cols_names+'" />'
+	);
 
-	var oInput=$('table.product-horizontal tfoot input');
-	oInput.keyup( function () {
+	var oInput=$('table.product-horizontal tfoot input,table.product-horizontal tfoot select');
+	var onchange=function(){
 		clearTimeout(window.dt_filter);
 		var $this=this;
+		var $export=$('#products-export');
+		var n='sSearch_'+oInput.index($this);
+		var $export_inp=$export.find('input[name="'+n+'"]');
+		if (!$export_inp.length) {
+			$export_inp=$('<input type="hidden" name="'+n+'" />');
+			$export.append($export_inp);
+		}
+		$export_inp.val($this.value);
 		window.dt_filter=setTimeout(function(){
 			oTable.fnFilter( $this.value, oInput.index($this) );
 		}, 500);
-	} );
-	oInput.each( function (i) {
-		asInitVals[i] = this.value;
-	} );
-	oInput.focus( function () {
-		if ( this.className == "search_init" ) {
-			this.className = "";
-			this.value = "";
-		}
-	} );
-	oInput.blur( function (i) {
-		if ( this.value == "" ) {
-			this.className = "search_init";
-			this.value = asInitVals[$("tfoot input").index(this)];
-		}
-	} );
+	};
+	var asInitVals=[];
+	oInput.keyup( onchange )
+		.change( onchange)
+		.each( function (i) {
+			asInitVals[i] = this.value;
+		} )
+		.focus( function () {
+			if ( this.className == "search_init" ) {
+				this.className = "";
+				this.value = "";
+			}
+		} )
+		.blur( function (i) {
+			if ( this.value == "" ) {
+				this.className = "search_init";
+				this.value = asInitVals[$("tfoot input").index(this)];
+			}
+		} );
 });

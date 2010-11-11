@@ -9,8 +9,11 @@ $columns=explode(
 	',',
 	preg_replace('/[^a-z0-9\-_,]/','_',strtolower($_REQUEST['sColumns']))
 );
-$sort_col=$columns[(int)$_REQUEST['iSortCol_0']];
+$sort_col=(int)$columns[(int)$_REQUEST['iSortCol_0']];
 $sort_dir=$_REQUEST['sSortDir_0'];
+if ($sort_dir!='des') {
+	$sort_dir='asc';
+}
 
 $search=$_REQUEST['sSearch'];
 $search_arr=array();
@@ -47,7 +50,7 @@ for (; $i<$finish && $i<$total_records; ++$i) {
 	$arr=array();
 	$p=Product::getInstance($products->product_ids[$i]);
 	foreach ($columns as $name) {
-		$arr[]=$p->get($name);
+		$arr[]=$p->getString($name);
 	}
 	$returned_products[]=$arr;
 }

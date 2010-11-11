@@ -123,6 +123,12 @@ $i = isset($vars['products_per_page'])?(int)$vars['products_per_page']:0;
 if ($i<0)$i=0;
 $c.= $i.'" /></td></tr>';
 // }
+// { add export button
+$c.='<tr id="products_export"><th>Add an Export button</th><td><select name="page_vars[products_add_export_button]">';
+$c.='<option value="0">No</option><option value="1"';
+if(isset($vars['products_add_export_button']) && $vars['products_add_export_button']=='1')$c.=' selected="selected"';
+$c.='>Yes</option></select></td></tr>';
+// }
 $c.= '</table></div>';
 // }
 // { header
