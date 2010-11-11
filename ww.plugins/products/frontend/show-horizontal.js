@@ -32,11 +32,12 @@ jQuery.fn.dataTableExt.oApi.fnSetFilteringDelay = function ( oSettings, iDelay )
 $(function(){
 	var cols=[];
 	var oTable=$('.product-horizontal');
+	var numRows=oTable.find('tr').length-2;
 	oTable.find('thead th').each(function(){
 		cols.push({'sName':$(this).attr('o')});
 	});
 	oTable.dataTable({
-		"sScrollY": 200,
+		"sScrollY": oTable[0].offsetHeight*.6,
 		"sScrollX": "100%",
 		"bProcessing": true,
 		"bServerSide": true,
@@ -45,6 +46,7 @@ $(function(){
 		"aoColumns": cols,
 		"bScrollInfinite": true,
 		"bScrollCollapse": true,
+		"iDisplayLength" : numRows,
 		"oLanguage": { "sSearch": "Search all columns:" }
 	}).fnSetFilteringDelay();
 
