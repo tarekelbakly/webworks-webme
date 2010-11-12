@@ -29,9 +29,9 @@ if($version==0){
 }
 if($version=='0.1'){
 	dbQuery('insert into mailing_list_options values("","use_js","1")');
-	dbQuery('insert into mailing_list_options values("","inp_em","Join Our Mailing List")');
-	dbQuery('insert into mailing_list_options values("","inp_nm","Enter Your Name Here")');
-	dbQuery('insert into mailing_list_options values("","inp_sub","Join")');
+	dbQuery('insert into mailing_list_options values("","inp_em","your email")');
+	dbQuery('insert into mailing_list_options values("","inp_nm","your name")');
+	dbQuery('insert into mailing_list_options values("","inp_sub","Subscribe")');
 	$version='0.2';
 }
 if($version=='0.2'){
@@ -40,4 +40,3 @@ if($version=='0.2'){
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();
-?>

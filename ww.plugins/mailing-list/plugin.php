@@ -10,19 +10,23 @@ $plugin=array(
 	'admin' => array(
 		'menu' => array(
 			'Communication>Mailing List'=>'index'
+		),
+		'widget' => array(
+			'form_url' => '/ww.plugins/mailing-list/admin/widget-form.php'
 		)
 	),
-        'description' => 'Collect and manage emails in a mailing list. Also send emails to that list.',
+	'description' => 'Add a mailing list widget that readers can subscribe to.',
 	'frontend' => array(
 		'template_functions' => array(
 			'MAILING_LIST' => array(
-				'function' => 'showForm'
+				'function' => 'MailingList_showForm'
 			)
-		)
+		),
+		'widget' => 'MailingList_showForm'
 	),
 	'version' => '1'
 );
-function showForm(){
+function MailingList_showForm(){
 	include_once SCRIPTBASE . 'ww.plugins/mailing-list/frontend/mailing-list.php';
 	return show_form();
 }

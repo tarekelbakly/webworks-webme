@@ -71,4 +71,3 @@ function show_form(){
 	}
 	return $html;
 }
-?>
