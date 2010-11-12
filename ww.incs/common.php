@@ -216,7 +216,8 @@ function menu_show_fg($opts){
 		'parent'    => 0,  // top-level
 		'background'=> '', // sub-menu background colour
 		'columns'   => 1,  // for wide drop-down sub-menus
-		'opacity'   => 0   // opacity of the sub-menu
+		'opacity'   => 0,  // opacity of the sub-menu
+		'type'      => 0   // 0=drop-down, 1=accordion
 	);
 	foreach($opts as $k=>$v){
 		if(isset($options[$k]))$options[$k]=$v;
@@ -229,8 +230,7 @@ function menu_show_fg($opts){
 		if($options['direction']=='0')$options['direction']='horizontal';
 		else $options['direction']='vertical';
 	}
-	WW_addScript('/j/fg.menu/fg.menu.js');
-	WW_addCSS('/j/fg.menu/fg.menu.css');
+	$options['type']=(int)$options['type'];
 	$items=array();
 	$menuid=$GLOBALS['fg_menus']++;
 	$md5=md5($options['parent'].'|0|'.json_encode($options));
@@ -239,30 +239,27 @@ function menu_show_fg($opts){
 		$html=menu_build_fg($options['parent'],0,$options);
 		cache_save('pages','fgmenu-'.$md5,$html);
 	}
-	$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'.$menuid.'">'.$html.'</div>';
-	if($options['direction']=='vertical'){
-		$posopts="positionOpts: { posX: 'left', posY: 'top',
-			offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',
-			detectH: true, detectV: true, linkToFront: false },";
+
+
+	if ($options['type']) {
+		WW_addScript('/j/menu-accordion/menu.js');
+		WW_addCSS('/j/menu-accordion/menu.css');
+		$c.='<div class="menu-accordion">'.$html.'</div>';
 	}
 	else{
-		$posopts='';
+		WW_addScript('/j/fg.menu/fg.menu.js');
+		WW_addCSS('/j/fg.menu/fg.menu.css');
+		$c.='<div class="menu-fg menu-fg-'.$options['direction'].'" id="menu-fg-'.$menuid.'">'.$html.'</div>';
+		if($options['direction']=='vertical'){
+			$posopts="positionOpts: { posX: 'left', posY: 'top',
+				offsetX: 40, offsetY: 10, directionH: 'right', directionV: 'down',
+				detectH: true, detectV: true, linkToFront: false },";
+		}
+		else{
+			$posopts='';
+		}
+		WW_addInlineScript("$(function(){ $('#menu-fg-$menuid>ul>li>a').each(function(){ $(this).menu({ content:$(this).next().outerHTML(), choose:function(ev,ui){ document.location=ui.item[0].childNodes(0).href; }, $posopts flyOut:true }); }); $('.menu-fg>ul>li').addClass('fg-menu-top-level'); });");
 	}
-	WW_addInlineScript("$(function(){
-	$('#menu-fg-$menuid>ul>li>a').each(function(){
-		$(this).menu({
-			content:$(this).next().outerHTML(),
-			choose:function(ev,ui){
-				document.location=ui.item[0].childNodes(0).href;
-			},
-			$posopts
-			flyOut:true
-		});
-	});
-	$('.menu-fg>ul>li').addClass('fg-menu-top-level');
-});");
-	return $c;
-	cache_save('menus',$md5,$c);
 	return $c;
 }
 $fg_menus=0;
