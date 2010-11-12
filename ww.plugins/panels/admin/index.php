@@ -25,7 +25,13 @@ foreach($PLUGINS as $n=>$p){
 		WW_addCSS($p['admin']['widget']['css_include']);
 	}
 	if (isset($p['admin']['widget']['js_include'])) {
-		WW_addScript($p['admin']['widget']['js_include']);
+		if (!is_array($p['admin']['widget']['js_include'])) {
+			$p['admin']['widget']['js_include']=
+				array($p['admin']['widget']['js_include']);
+		}
+		foreach ($p['admin']['widget']['js_include'] as $j) {
+			WW_addScript($j);
+		}
 	}
 }
 echo join(',',$ws);

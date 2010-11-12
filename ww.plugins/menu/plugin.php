@@ -4,7 +4,10 @@ $plugin=array(
 	'admin' => array(
 		'widget' => array(
 			'form_url' => '/ww.plugins/menu/admin/widget-form.php',
-			'js_include' => '/ww.plugins/menu/j/farbtastic/farbtastic.js',
+			'js_include' => array(
+				'/ww.plugins/menu/j/farbtastic/farbtastic.js',
+				'/ww.plugins/menu/admin/widget-form.js'
+			),
 			'css_include' => '/ww.plugins/menu/j/farbtastic/farbtastic.css'
 		)
 	),
@@ -12,7 +15,7 @@ $plugin=array(
 	'frontend' => array(
 		'widget' => 'menu_showWidget'
 	),
-	'version'=>4
+	'version'=>5
 );
 
 require_once SCRIPTBASE.'common/menus.php';
