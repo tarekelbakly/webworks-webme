@@ -877,7 +877,7 @@ class Products{
 				$product_ids[]=$r['id'];
 			}
 			new Products($product_ids, $md5, $search, $search_arr);
-			self::$instances[$md5]->subCategories=dbAll('select id,name from products_categories where parent_id='.$id.' order by name');
+			self::$instances[$md5]->subCategories=dbAll('select id,name from products_categories where parent_id='.$id.' and enabled order by name');
 		}
 		return self::$instances[$md5];
 	}
