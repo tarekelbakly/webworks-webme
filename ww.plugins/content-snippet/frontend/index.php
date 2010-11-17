@@ -55,7 +55,7 @@ function show_content_snippet($vars){
 			$html.=$content['html'].'</li>';
 			++$i;
 		}
-		$html.='</ul><script>$(function(){$("#'.$id.'").hrzAccordion({handlePosition:"left",cycle:true,cycleInterval:2000});});</script>';
+		$html.='</ul><script>$(function(){$("#'.$id.'").hrzAccordion({handlePosition:"left",cycle:true,cycleInterval:4000});});</script>';
 		return $html;
 		return $data['accordion_direction'];
 		// }
