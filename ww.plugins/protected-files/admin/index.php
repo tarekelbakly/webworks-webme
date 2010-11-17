@@ -19,7 +19,7 @@ function get_subdirs($base,$dir){
 $id=(int)@$_REQUEST['id'];
 if(isset($_REQUEST['action'])){
 	if($_REQUEST['action']=='Save Protected Files'){
-		$q='directory="'.addslashes(@$_REQUEST['directory']).'",recipient_email="'.addslashes(@$_REQUEST['recipient_email']).'"';
+		$q='message="'.addslashes(@$_REQUEST['message']).'",template="'.addslashes(@$_REQUEST['template']).'",directory="'.addslashes(@$_REQUEST['directory']).'",recipient_email="'.addslashes(@$_REQUEST['recipient_email']).'"';
 		if($id)dbQuery("update protected_files set $q where id=$id");
 		else{
 			dbQuery("insert into protected_files set $q");
@@ -34,20 +34,58 @@ if(isset($_REQUEST['action'])){
 }
 
 $r=dbRow('select * from protected_files where id='.$id);
-echo '<form method="post" action="',$_url,'"><table style="width:90%">';
-if(!isset($r['directory']))$r['directory']='/';
-echo '<tr><th>Directory containing the files</th><td><select id="directory" name="directory"><option value="'.htmlspecialchars($r['directory']).'">'.htmlspecialchars($r['directory']).'</option>';
-echo '</select></td></tr>';
-echo '<tr><td>&nbsp;</td><td><a class="button" href="#page_vars[directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Files</a></td></tr>';
-echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td></tr>';
-echo '<tr><th colspan="2"><input type="hidden" name="id" value="',$id,'" />';
-echo '<input type="submit" name="action" value="Save Protected Files" />';
-if($id)echo '<a style="margin-left:20px;" href="/ww.admin/plugin.php?_plugin=protected_files&amp;id='.$id.'&amp;action=delete" onclick="return confirm(\'are you sure you want to remove this?\')" title="delete">[x]</a>';
-echo '</th></tr></table></form>';
+switch(@$_REQUEST['view']){
+	case 'log': // {
+		echo '<table><tr><th>Filename</th><th>Completed</th><th>Email</th><th>Date/Time</th></tr>';
+		$fs=dbAll('select file,success,email,last_access from protected_files_log where pf_id='.$id.' order by last_access desc');
+		foreach($fs as $f)echo '<tr><td>'.htmlspecialchars($f['file']).'</td><td>'.($f['success']?'yes':'no').'</td><td><a href="mailto:'.$f['email'].'">'.$f['email'].'</a></td><td>'.$f['last_access'].'</td></tr>';
+		echo '</table>';
+		break;
+	// }
+	default: // { show form
+		echo '<form method="post" action="',$_url,'"><table style="width:90%">';
+		if(!isset($r['directory']))$r['directory']='/';
+		echo '<tr><th>Directory containing the files</th><td><select id="directory" name="directory"><option value="'.htmlspecialchars($r['directory']).'">'.htmlspecialchars($r['directory']).'</option>';
+		echo '</select></td>';
+		// }
+		// { link to log
+		echo '<th>&nbsp;</th><td>';
+		if($id)echo '<a href="/ww.admin/plugin.php?_plugin=protected-files&amp;_page=index&amp;id='.$id.'&amp;view=log">view log</a>';
+		echo '</td></tr>';
+		// }
+		echo '<tr><td>&nbsp;</td><td><a class="button" href="#page_vars[directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Files</a></td></tr>';
+		echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td>';
+		// { page template
+		echo '<th>Page Template</th><td>';
+		$ex='ls '.THEME_DIR.'/'.THEME.'/h/*html';
+		$d=`$ex`;
+		$d=explode("\n",$d);array_pop($d);
+		if(count($d)>1){
+			echo '<select name="template">';
+			foreach($d as $f){
+				$f=preg_replace('/^\.\.\/|\n|\r|$/','',$f);
+				$name=preg_replace('/.*themes-personal\/[^\/]*\/h\/|\.html/','',$f);
+				echo '<option ';
+				if($name==$r['template'])echo ' selected="selected"';
+				echo '>'.$name.'</option>';
+			}
+			echo '</select>';
+		}else echo '<input type="hidden" name="template" value="'.htmlspecialchars(preg_replace('/.*themes-personal\/[^\/]*\/h\/|\.html/','',$d[0])).'" />';
+		echo '</td></tr>';
+		// }
+		echo '<tr><th>Message</th><td colspan="3">'.ckeditor('message',$r['message'],0,0,150).'</td></tr>';
+		echo '<tr><th colspan="2"><input type="hidden" name="id" value="',$id,'" />';
+		echo '<input type="submit" name="action" value="Save Protected Files" />';
+		if($id)echo '<a style="margin-left:20px;" href="/ww.admin/plugin.php?_plugin=protected_files&amp;id='.$id.'&amp;action=delete" onclick="return confirm(\'are you sure you want to remove this?\')" title="delete">[x]</a>';
+		echo '</th></tr></table></form>';
+	// }
+}
 ?>
 <script>
-	$('#directory').remoteselectoptions({
-		url:'/ww.plugins/protected-files/admin/get-directories.php',
-		always_retrieve:true
+	$(function(){
+		$('#directory').remoteselectoptions({
+			url:'/ww.plugins/protected-files/admin/get-directories.php',
+			always_retrieve:true
+		});
 	});
 </script>
