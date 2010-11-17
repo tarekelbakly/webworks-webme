@@ -50,7 +50,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$id=dbOne('select last_insert_id() as id','id');
 		}
 		if(isset($_FILES['image_not_found'])){
-			@mkdir(USERBASE.'f/products/types/'.$id);
+			@mkdir(USERBASE.'f/products/types/'.$id,0777,true);
 			$imgs=new DirectoryIterator(USERBASE.'f/products/types/'.$id);
 			foreach ($imgs as $img) {
 				if ($img->isDot()) {
