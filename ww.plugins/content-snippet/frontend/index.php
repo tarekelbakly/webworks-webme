@@ -13,7 +13,8 @@ function show_content_snippet($vars){
 
 		// { no sub-pages
 		if (!$data['accordion']) {
-			return $data['content'][0]['html'];
+			return '<div class="content-snippet">'
+				.$data['content'][0]['html'].'</div>';
 		}
 		// }
 		// { vertical accordion
