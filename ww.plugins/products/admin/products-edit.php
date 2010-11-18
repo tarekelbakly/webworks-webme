@@ -1,12 +1,18 @@
 <?php
 if(!is_admin())exit;
 // { set up initial variables
-if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id']))$id=(int)$_REQUEST['id'];
-else $id=0;
+if (isset($_REQUEST['id']) && is_numeric($_REQUEST['id'])) {
+	$id=(int)$_REQUEST['id'];
+}
+else {
+	$id=0;
+}
+$relations=dbAll(
+	'select * from products_relation_types order by name'
+);
 // }
 require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
 if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
-	cache_clear('products');
 	$errors=array();
 	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';
@@ -15,6 +21,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
+		cache_clear('products');
 		// { Recreate the directory because for some reason it was looking
 		//   in the old directory for the image files
 		if (!is_dir(USERBASE.'f'.$_REQUEST['images_directory'])) {    
@@ -86,6 +93,40 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			}
 		}
 		// }
+		// { save product relations
+		$rls=array();
+		foreach ($relations as $r) {
+			$rls[$r['id']]=$r;
+			if ($r['one_way']) {
+				dbQuery(
+					'delete from products_relations where from_id='.$id
+					.' and relation_id='.$r['id']
+				);
+			}
+			else {
+				dbQuery(
+					'delete from products_relations where (from_id='.$id
+					.' or to_id='.$id.') and relation_id='.$r['id']
+				);
+			}
+		}
+		foreach ($_REQUEST['product-relations-type'] as $k=>$v) {
+			if ($v && $_REQUEST['products-relations-product'][$k]) {
+				$rid=(int)$v;
+				$pid=(int)$_REQUEST['products-relations-product'][$k];
+				dbQuery(
+					'insert into products_relations set from_id='.$id
+					.',to_id='.$pid.',relation_id='.$rid
+				);
+				if (!$rls[$rid]['one_way']) {
+					dbQuery(
+						'insert into products_relations set from_id='.$pid
+						.',to_id='.$id.',relation_id='.$rid
+					);
+				}
+			}
+		}
+		// }
 		echo '<em>Product saved</em>';
 		if(isset($_REQUEST['frontend-admin'])){
 			echo '<script type="text/javascript">'
@@ -135,7 +176,6 @@ echo '<div id="tabs"><ul>'
 		echo '><a href="#online-store-fields">Online Store</a></li>';
 	}
 echo '<li><a href="#categories">Categories</a></li>';
-$relations=dbAll('select id,name from products_relation_types order by name');
 if(count($relations)){
 	echo '<li><a href="#relations">Related Items</a></li>';
 }
@@ -433,11 +473,49 @@ echo show_sub_cats(0);
 echo '</div>';
 // }
 // { related items
-if(count($relations)){
-	echo '<div id="relations">';
-	$rtypes=dbAll('select * from product_relation_types');
-	var_dump($rtypes);
-
+if (count($relations)) {
+	echo '<div id="relations">'
+		.'<table id="product-relations"><tr><th>Relation Type</th><th>Related Product</th></tr>';
+	foreach ($relations as $relation) {
+		$ps=dbAll(
+			'select * from products_relations where relation_id='.$relation['id']
+			.' and from_id='.$id
+		);
+		$options='<option value=""> -- please choose -- </option>';
+		foreach ($relations as $r){
+			$options.='<option value="'.$r['id'].'"';
+			if ($r['id']==$relation['id']) {
+				$options.=' selected="selected"';
+			}
+			$options.='>'
+				.htmlspecialchars($r['name'])
+				.'</option>';
+		}
+		foreach ($ps as $p) {
+			echo '<tr><td><select name="product-relations-type[]">'
+				.$options.'</select></td><td><select class="products-relations-product"'
+		    .' name="products-relations-product[]">'
+				.'<option value="'.$p['to_id'].'">';
+			echo htmlspecialchars(dbOne(
+				'select name from products where id='.$p['to_id'],
+				'name'
+			))
+				.'</option></select></td></tr>';
+		}
+	}
+	echo '<tr><td><select name="product-relations-type[]">'
+		.'<option value=""> -- please choose -- </option>';
+	foreach ($relations as $relation){
+		echo '<option value="'.$relation['id'].'">'
+			.htmlspecialchars($relation['name'])
+			.'</option>';
+	}
+	echo '</select></td>'
+		.'<td><select class="products-relations-product"'
+		.' name="products-relations-product[]">'
+		.'<option value=""> -- please choose -- </option>';
+	WW_addScript('/ww.plugins/products/admin/products-edit-related.js');
+	echo '</td></tr></table></div>';
 
 /*
 mysql> describe products_relations;
@@ -450,7 +528,6 @@ mysql> describe products_relations;
 +-------------+---------+------+-----+---------+-------+
 3 rows in set (0.07 sec)
 */
-	echo '</div>';
 }
 // }
 if(isset($_REQUEST['frontend-admin'])){
