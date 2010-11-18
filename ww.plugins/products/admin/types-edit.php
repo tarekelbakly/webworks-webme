@@ -3,12 +3,6 @@ if(!is_admin())exit;
 // { set up initial variables
 if(isset($_REQUEST['id']) && is_numeric($_REQUEST['id']))$id=(int)$_REQUEST['id'];
 else $id=0;
-$tabs=array(
-	array('show_product_variants','Product Variants'),
-	array('show_related_products','Related Products'),
-	array('show_contained_products','Contained Products'),
-	array('show_countries','Countries')
-);
 // }
 
 if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
@@ -36,9 +30,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			.'",data_fields="'.addslashes($data_fields)
 			.'",multiview_template="'.addslashes($multiview)
 			.'",singleview_template="'.addslashes($singleview).'"';
-		foreach($tabs as $tab){
-			$sql.=','.$tab[0].'='.(isset($_REQUEST[$tab[0]])?1:0);
-		}
 		if (isset($_POST['is_for_sale'])) {
 			$sql.=',is_for_sale=1';
 		}
@@ -110,15 +101,6 @@ echo '</tr>';
 // }
 // { management tabs, image not found
 echo '<tr>';
-// { management tabs
-echo '<th>Management tabs to use</th><td>';
-foreach($tabs as $tab){
-	echo '<input type="checkbox" name="'.$tab[0].'"';
-	if($tdata[$tab[0]])echo ' checked="checked"';
-	echo ' /> '.$tab[1].'<br />';
-}
-echo '</td>';
-// }
 // { image not found
 echo '<th>image-not-found</th><td><input type="file" name="image_not_found" />';
 if($id){

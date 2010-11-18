@@ -35,10 +35,15 @@ $dir=new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
 foreach($dir as $plugin){
 	if(strpos($plugin,'.')===0)continue;
 	$name=$plugin->getFilename();
-	if(!is_dir(SCRIPTBASE . 'ww.plugins/' . $name))continue;
-	if(isset($PLUGINS[$name]))continue;
+	if (!is_dir(SCRIPTBASE . 'ww.plugins/' . $name)
+		|| isset($PLUGINS[$name])
+	) {
+		continue;
+	}
 	require_once(SCRIPTBASE . 'ww.plugins/' . $name .'/plugin.php');
-	if(isset($plugin['hide_from_admin']) && $plugin['hide_from_admin'])continue;
+	if (isset($plugin['hide_from_admin']) && $plugin['hide_from_admin']) {
+		continue;
+	}
 	echo '<tr><th>',htmlspecialchars(@$plugin['name']),'</th>',
 		'<td>',(float)(@$plugin['version']),'</td>',
 		'<td>',htmlspecialchars(@$plugin['description']),'</td>',

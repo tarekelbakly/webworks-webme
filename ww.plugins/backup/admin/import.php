@@ -13,9 +13,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 	else {
 		$udir=USERBASE;
 
-		echo 'clearing local cache...<br />';
-		`rm $udir/ww.cache/* -fr`;
-
 		echo 'extracting files...<br />';
 		`cd $udir && unzip -o $tmpdir/site/files.zip`;
 
@@ -68,6 +65,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
 		echo 'cleaning up.<br />';
 		`rm -rf $tmpdir`;
+
+		echo 'clearing local cache...<br />';
+		`rm $udir/ww.cache/* -fr`;
 
 		echo 'done<img style="width:1px;height:1px" src="./" /><p>Import completed.</p>';
 		return;

@@ -434,7 +434,23 @@ echo '</div>';
 // }
 // { related items
 if(count($relations)){
-	echo '<div id="relations"></div>';
+	echo '<div id="relations">';
+	$rtypes=dbAll('select * from product_relation_types');
+	var_dump($rtypes);
+
+
+/*
+mysql> describe products_relations;
++-------------+---------+------+-----+---------+-------+
+| Field       | Type    | Null | Key | Default | Extra |
++-------------+---------+------+-----+---------+-------+
+| relation_id | int(11) | YES  |     | 0       |       |
+| from_id     | int(11) | YES  |     | 0       |       |
+| to_id       | int(11) | YES  |     | 0       |       |
++-------------+---------+------+-----+---------+-------+
+3 rows in set (0.07 sec)
+*/
+	echo '</div>';
 }
 // }
 if(isset($_REQUEST['frontend-admin'])){
