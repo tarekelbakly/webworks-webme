@@ -436,8 +436,7 @@ ul.fg-menu ul.ui-widget-content{
 	background:#000;
 }
 table.datatable{
-	width:90%;
-	clear:both;
+	width:90% !important;
 }
 #pages-wrapper i{
 	display:block;
@@ -479,4 +478,7 @@ div.help{
 	cursor:pointer;
 	float:left;
 	display:none;
+}
+.dataTables_wrapper{
+	width:100%;
 }

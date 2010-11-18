@@ -111,15 +111,29 @@ function menu_show($b){
 		$r=Page::getInstanceByName($vals['parent']);
 		if($r)$parent=$r->id;
 	}
+	if (isset($vals['spans'])) {
+		$vals['spans']=(int)$vals['spans'];
+	}
+	else {
+		$vals['spans']=1;
+	}
 	$search_options=0;
 	$ajaxmenu=@$vals['nodropdowns']?'':' ajaxmenu ';
 	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.$ajaxmenu.$classes.' parent'.$parent.'">';
 	$rs=menu_getChildren($parent,$PAGEDATA->id,0,$parent,$search_options);
 	$links=0;
+	if ($vals['spans']) {
+		$spanl='<span class="l"></span>';
+		$spanr='<span class="r"></span>';
+	}
+	else {
+		$spanl='';
+		$spanr='';
+	}
 	if(count($rs))foreach($rs as $r){
 		$page=Page::getInstance($r['id']);
 		if(!$links)$r['classes'].=' first';
-		$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'.$page->getRelativeURL().'"><span class="l"></span>'.htmlspecialchars($page->name).'<span class="r"></span></a>';
+		$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'.$page->getRelativeURL().'">'.$spanl.htmlspecialchars($page->name).$spanr.'</a>';
 		$links++;
 	}
 	$c.='<a class="menuItemTop nojs" href="'.$PAGEDATA->getRelativeURL().'&amp;webmespecial=sitemap">'.__('Site Map').'</a>';
@@ -131,7 +145,7 @@ function menu_show($b){
 		$c.='<div id="ajaxmenu'.$pid.'" class="menu tier-two">';
 		if(count($rs))foreach($rs as $r){
 			$page=Page::getInstance($r['id']);
-			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'.$page->getRelativeURL().'"><span class="l"></span>'.htmlspecialchars($page->name).'<span class="r"></span></a>';
+			$c.='<a id="ajaxmenu_link'.$r['id'].'" class="'.$r['classes'].'" href="'.$page->getRelativeURL().'">'.$spanl.htmlspecialchars($page->name).$spanr.'</a>';
 		}
 		else $c.='<a><span class="l"></span>&nbsp;<span class="r"></span></a>';
 		$c.='</div>';

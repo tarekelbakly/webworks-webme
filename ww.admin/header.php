@@ -16,7 +16,7 @@ $admin_vars=array();
 	foreach(array('show_items','start') as $v)$$v=getVar($v,0);
 	$id=(int)@$_REQUEST['id'];
 // }
-WW_addScript('/j/datatables/media/js/jquery.dataTables.js');
+WW_addScript('/j/datatables-1.7.4/media/js/jquery.dataTables.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
@@ -27,7 +27,7 @@ WW_addScript('/ww.admin/j/admin.js');
 		<?php echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'; ?>
 		<script src="/j/ckeditor/ckeditor.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
-		<link rel="stylesheet" type="text/css" href="/j/datatables/media/css/demo_table.css" />
+		<link rel="stylesheet" type="text/css" href="/j/datatables-1.7.4/media/css/demo_table.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
 		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" />
 <?php
