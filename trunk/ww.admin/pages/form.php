@@ -99,17 +99,25 @@ echo '</tr>';
 // { page type, parent, associated date
 // { type
 echo '<tr><th><div class="help type"></div>'.__('type').'</th><td><select name="type">';
+$found=0;
 if(preg_match('/^[0-9]*$/',$page['type']))foreach($pagetypes as $a){
 	if(has_access_permissions($a[2]) || !$a[2]){
-		if($a[0]==$page['type'])echo '<option value="',$a[0],'" selected="selected">',htmlspecialchars($a[1]),'</option>';
+		if ($a[0]==$page['type']) {
+			echo '<option value="',$a[0],'" selected="selected">',htmlspecialchars($a[1]),'</option>';
+			$found=1;
+		}
 	}
 }
 $plugin=false;
-if(!preg_match('/^[0-9]*$/',$page['type']))foreach($PLUGINS as $n=>$p){
-	if(isset($p['admin']['page_type']) && $page['type']==$n){
+if (!preg_match('/^[0-9]*$/',$page['type']))foreach($PLUGINS as $n=>$p) {
+	if (isset($p['admin']['page_type']) && $page['type']==$n) {
 		echo '<option value="',htmlspecialchars($n),'" selected="selected">',htmlspecialchars($n),'</option>';
+		$found=1;
 		$plugin=$p;
 	}
+}
+if (!$found) {
+	$page['type']=0;
 }
 echo '</select></td>';
 // }
