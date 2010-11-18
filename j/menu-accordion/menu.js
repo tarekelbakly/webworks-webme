@@ -3,6 +3,7 @@ $(function(){
 		var $this=$(this);
 		$this.css('display','none');
 		$this.prev()
+			.addClass('has-submenu')
 			.click(function(){
 				var $this=$(this);
 				$this.next().toggle();
