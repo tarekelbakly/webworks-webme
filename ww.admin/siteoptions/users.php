@@ -9,8 +9,18 @@ if(isset($_REQUEST['action'])){
 		dbQuery("delete from users_groups where user_accounts_id=$id");
 		unset($_REQUEST['id']);
 	}
-	if($action=='Save'){
+	if ($action=='Save') {
 		$sql='set email="'.addslashes($_REQUEST['email']).'",name="'.addslashes($_REQUEST['name']).'",phone="'.addslashes($_REQUEST['phone']).'",active="'.(int)$_REQUEST['active'].'",address="'.addslashes($_REQUEST['address']).'"';
+		if (isset($_REQUEST['extras'])) {
+			$extras=array();
+			foreach ($_REQUEST['extras'] as $k=>$v) {
+				if ($v=='') {
+					continue;
+				}
+				$extras[$v]=$_REQUEST['extras_vals'][$k];
+			}
+			$sql.=',extras="'.addslashes(json_encode($extras)).'"';
+		}
 		if(isset($_REQUEST['password']) && $_REQUEST['password']!=''){
 			if($_REQUEST['password']!==$_REQUEST['password2'])echo '<em>Password not updated. Must be entered the same twice.</em>';
 			else $sql.=',password=md5("'.addslashes($_REQUEST['password']).'")';
@@ -54,7 +64,8 @@ if(isset($_REQUEST['id'])){
 	}
 	echo '<form action="siteoptions.php?page=users&amp;id='.$id.'" method="post">';
 	echo '<input type="hidden" name="id" value="'.$id.'" />';
-	echo '<table><tr><th>Name</th><td><input name="name" value="'.htmlspecialchars($r['name']).'" /></td><th>Password</th><td><input name="password" type="password" /></td></tr>';
+	echo '<table><tr><th>Name</th><td><input name="name" value="'.htmlspecialchars($r['name']).'" /></td><th>Password</th><td><input name="password" type="password" /></td>'
+		.'<td rowspan="6" id="extras-wrapper"><input type="hidden" value="'.htmlspecialchars($r['extras'], ENT_QUOTES).'" /></td></tr>';
 	echo '<tr><th>Email</th><td><input name="email" value="'.htmlspecialchars($r['email']).'" /></td><th>(repeat)</th><td><input name="password2" type="password" /></td></tr>';
 	echo '<tr><th rowspan="3">Address</th><td rowspan="3"><textarea name="address" style="height:100px;width:200px">'.htmlspecialchars($r['address']).'</textarea></td><th>Phone</th><td><input name="phone" value="'.htmlspecialchars($r['phone']).'" /></td></tr>';
 	// { groups

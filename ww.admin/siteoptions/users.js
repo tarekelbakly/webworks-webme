@@ -37,4 +37,38 @@ $(function(){
 		$('#users-email-to-send')
 			.css('display','table-row');
 	});
+	var $holder=$('#extras-wrapper');
+	var extras=$holder.find('input').val();
+	$holder.empty();
+	if (extras.length<3) {
+		extras={};
+	}
+	else {
+		extras=$.parseJSON(extras);
+	}
+	var html='<b>Insert custom data here</b><table><tr><th>Name</th><th>Value</th></tr>';
+	var numextras=0;
+	for (i in extras) {
+		html+='<tr><th><input class="extras-name" name="extras['+numextras+']" value="'+htmlspecialchars(i)+'" /></th>'
+			+'<td><input name="extras_vals['+numextras+']" value="'+htmlspecialchars(extras[i])+'" /></td></tr>';
+		numextras++;
+	}
+	html+='<tr><th><input class="extras-name" name="extras['+numextras+']" /></th><td><input name="extras_vals['+numextras+']" /></td></tr></table>';
+	$holder.append(html);
+	$('#extras-wrapper input').live('change',function(){
+		setTimeout(function(){
+			numextras++;
+			$holder.find('table').append(
+				'<tr><th><input class="extras-name" name="extras['+numextras+']" /></th><td><input name="extras_vals['+numextras+']" /></td></tr></table>'
+			);
+		},1);
+		$holder.find('input.extras-name').each(function(){
+			if(this.value==''){
+				if($(this).closest('tr').find('input')[1].value!='') {
+					return alert("field names cannot be empty!\nplease correct the empty field name before you save the data.");
+				}
+				$(this).closest('tr').remove();
+			}
+		});
+	});
 });
