@@ -350,6 +350,21 @@ function products_link ($params, &$smarty) {
 	$id= $product->id;
 	return $product->getRelativeURL();
 }
+function Products_listCategoryContents ($params, &$smarty) {
+	if (!isset($params['category'])) {
+		$products=Products::getAll();
+	}
+	else {
+		$products=Products::getByCategoryName($params['category']);
+	}
+	$html='<ul class="products-list-category-contents">';
+	foreach ($products->product_ids as $pid) {
+		$product=Product::getInstance($pid);
+		$html.='<li><a href="'.$product->getRelativeURL().'">'.htmlspecialchars($product->name).'</a></li>';
+	}
+	$html.='</ul>';
+	return $html;
+}
 function products_reviews ($params, &$smarty) {
 	WW_addScript('/ww.plugins/products/frontend/delete.js');
 	WW_addScript('/ww.plugins/products/frontend/products-edit-review.js');
@@ -880,6 +895,23 @@ class Products{
 			self::$instances[$md5]->subCategories=dbAll('select id,name from products_categories where parent_id='.$id.' and enabled order by name');
 		}
 		return self::$instances[$md5];
+	}
+	function getByCategoryName($name) {
+		$arr=explode('/', $name);
+		if ($arr[0]=='') {
+			array_shift($arr);
+		}
+		$cid=0;
+		foreach ($arr as $name) {
+			$cid=dbOne('select id from products_categories where parent_id='.$cid.' and name="'.addslashes($name).'" limit 1','id');
+			if (!$cid) {
+				break;
+			}
+		}
+		if (!$cid) {
+			return Products::getAll();
+		}
+		return Products::getByCategory($cid);
 	}
 	function getByType(
 		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'

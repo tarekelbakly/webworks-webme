@@ -44,6 +44,9 @@ $plugin=array(
 			'PRODUCTS_LINK' => array (
 				'function' => 'products_link'
 			),
+			'PRODUCTS_LIST_CATEGORY_CONTENTS' => array(
+				'function' => 'Products_listCategoryContents'
+			),
 			'PRODUCTS_REVIEWS' => array (
 				'function' => 'products_reviews'
 			)
