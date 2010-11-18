@@ -20,9 +20,11 @@ $links=array();
 foreach($rs as $r){
 	$page=Page::getInstance($r['id']);
 	$body='';
-	if($vars->characters_shown){
-		$body=preg_replace('#<h1[^<]*</h1>#','',$page->render());
-		$body=preg_replace('/<[^>]*>/','',$body);
+	if ($vars->characters_shown) {
+		$body=preg_replace('#<h1[^<]*</h1>#', '', $page->render());
+		$body=str_replace(array("\n","\r"),' ',$body);
+		$body=preg_replace('/<script[^>]*>.*?<\/script>/', '', $body);
+		$body=preg_replace('/<[^>]*>/', '', $body);
 		$body='<br /><i>'.substr($body,0,$vars->characters_shown).'...</i>';
 	}
 	$links[]='<a href="'.$page->getRelativeURL().'"><strong>'.htmlspecialchars($page->name).'</strong><div class="date">'.date_m2h($page->associated_date).'</div>'.$body.'</a>';
