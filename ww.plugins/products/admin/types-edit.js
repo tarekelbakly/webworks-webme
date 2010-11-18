@@ -41,7 +41,9 @@ function products_data_fields_add_row(rdata,i){
 	if(rdata.t=='selectbox'){
 		row+='<td width="20%"><textarea id="product_type_fd'+i+'_extra" class="small">'+htmlspecialchars(rdata.e)+'</textarea></td>';
 	}
-	row+='<td width="20%">&nbsp;</td>';
+	else {
+		row+='<td width="20%">&nbsp;</td>';
+	}
 	// }
 	row+='</tr></table></li>';
 	return row;
@@ -80,7 +82,7 @@ function products_data_fields_reset_value(){
 			"t":$this.find('select').val(),
 			"s":$this.find('.product-type-fd-searchable')[0].checked?1:0,
 			"r":$this.find('.product-type-fd-required')[0].checked?1:0,
-			"e":$this.find('.product-type-fd-extra').val()
+			"e":$this.find('textarea.small').val()
 		});
 	});
 	$('#data_fields').val(Json.toString(vals));
