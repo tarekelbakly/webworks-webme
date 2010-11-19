@@ -23,9 +23,6 @@ if(allowedToEditPage($parent)){
 	$importance=(float)$_REQUEST['importance'];
 	if($importance<0)$importance=0;
 	if($importance>1)$importance=1;
-	$category1=$_REQUEST['category1'];
-	$category2=$_REQUEST['category2'];
-	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
 	if($_REQUEST['page_order']==0){
 		dbQuery("update pages set ord=ord+1 where parent=".$pid);
@@ -38,7 +35,11 @@ if(allowedToEditPage($parent)){
 	$body=$original_body;
 	$body=sanitise_html($body);
 	$q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
-		.'category="'.$category.'",keywords="'.$keywords.'",description="'.$description.'",cdate=now(),template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",original_body="'.addslashes($original_body).'",body="'.addslashes($body).'",type="'.$type.'",associated_date="'.addslashes($associated_date).'"';
+		.'keywords="'.$keywords.'",description="'.$description.'",cdate=now(),'
+		.'template="'.$template.'",edate=now(),name="'.$name.'",title="'.$title.'",'
+		.'original_body="'.addslashes($original_body).'",'
+		.'body="'.addslashes($body).'",type="'.$type.'",'
+		.'associated_date="'.addslashes($associated_date).'"';
 	$q.=',parent='.$pid;
 	if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
 	dbQuery($q);
