@@ -8,7 +8,8 @@ if($action=='Save'){
 		$tmpname=addslashes($_FILES['site_logo']['tmp_name']);
 		$newdir=USERBASE.'/f/skin_files';
 		mkdir(USERBASE.'/f/skin_files');
-		`rm -fr "$newdir"/logo-* ; convert "$tmpname" -geometry 320x320 "$newdir/logo.png"`;
+		`rm -fr "$newdir"/logo-*`;
+		move_uploaded_file($_FILES['site_logo']['tmp_name'], $newdir.'/logo.png');
 	}
 	$pageLengthLimit = $_REQUEST['site_page_length_limit'];
 	if (!empty($pageLengthLimit)&&is_numeric($pageLengthLimit)) {
