@@ -36,11 +36,8 @@ if(allowedToEditPage($id)){
 		$name=$name.$i;
 	}
 	// }
-	$category1=$_REQUEST['category1'];
-	$category2=$_REQUEST['category2'];
-	$category=$category2&&$category2!=__('add another')?$category2:$category1;
 	// }
-	$q='update pages set importance="'.$importance.'",category="'.$category.'"'
+	$q='update pages set importance="'.$importance.'"'
 		.',template="'.addslashes($template).'",edate=now()'
 		.',type="'.addslashes($_POST['type']).'"'
 		.',associated_date="'.addslashes($associated_date).'"'
