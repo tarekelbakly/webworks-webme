@@ -1057,7 +1057,7 @@ class Products{
 				$categories.='</ul>';
 			}
 		}
-		return $categories.$prevnext.$c.$prevnext;
+		return $categories.$prevnext.'<div class="products">'.$c.'</div>'.$prevnext;
 	}
 }
 class ProductType{
