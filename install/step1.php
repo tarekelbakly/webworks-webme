@@ -27,7 +27,7 @@ if(isset($_REQUEST['action'])){
 	}
 	else{
 		if(!mysql_select_db($_SESSION['db_vars']['db_name'])){
-			echo '<p>Please provide a database name.</p>';
+			echo '<p>Please provide an existing database name.</p>';
 		}
 		else{
 			$_SESSION['db_vars']['passed']=1;
