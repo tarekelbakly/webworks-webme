@@ -89,6 +89,7 @@ if(isset($_REQUEST['id'])){
 	echo '</table>';
 	echo '<input type="submit" name="action" value="Save" />';
 	echo '</form>';
+	WW_addScript('/ww.admin/siteoptions/users.js');
 }
 // }
 // { list all users
@@ -119,7 +120,4 @@ foreach($users as $user){
 }
 echo '<tr><td colspan="2"></td><td><a href="siteoptions.php?page=users&amp;id=-1">Create User</a></td></tr>';
 echo '</table>';
-// }
-// { javascript
-echo '<script src="/ww.admin/siteoptions/users.js"></script>';
 // }
