@@ -24,13 +24,7 @@ if(allowedToEditPage($parent)){
 	if($importance<0)$importance=0;
 	if($importance>1)$importance=1;
 	// }
-	if($_REQUEST['page_order']==0){
-		dbQuery("update pages set ord=ord+1 where parent=".$pid);
-		$ord=0;
-	}
-	else{
-		$ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;
-	}
+	$ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;
 	$original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 	$body=$original_body;
 	$body=sanitise_html($body);
