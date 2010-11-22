@@ -1,4 +1,5 @@
 <?php
+$count = 0;
 $plugin=array(
 	'name'=>'protected files',
 	'description'=>'Protect files by requiring either a login or an email address',
@@ -32,9 +33,11 @@ function protectedFiles_check($vars){
 	foreach($protected_files as $pr){
 		if(strpos($fname,$pr['directory'].'/')===0){
 			$email='';
-			if(isset($_SESSION['protected_files_email']) && $_SESSION['protected_files_email'])$email=$_SESSION['protected_files_email'];
+			if(isset($_SESSION['protected_files_email']) && $_SESSION['protected_files_email'])
+				$email=$_SESSION['protected_files_email'];
 			else if(isset($_SESSION['userdata']['email']) && $_SESSION['userdata']['email'])$email=$_SESSION['userdata']['email'];
 			else if(isset($_REQUEST['email']) && filter_var($_REQUEST['email'],FILTER_VALIDATE_EMAIL))$email=$_REQUEST['email'];
+			//unset($email);
 			if($email){
 				require_once SCRIPTBASE.'ww.incs/common.php';
 				$_SESSION['protected_files_email']=$email;
@@ -45,20 +48,36 @@ function protectedFiles_check($vars){
 #					$template=template_load($PAGEDATA);
 #					ob_start();
 #					show_page($template,'<p>Your download should begin in two seconds. If it doesn\'t, please <a href="'.htmlspecialchars($_SERVER['REQUEST_URI']).'">click here</a></p><script>setTimeout(function(){document.location="'.$_SERVER['REQUEST_URI'].'";},2000);</script><p><a href="'.$_SESSION['referer'].'">Click here</a> to return to the referring page.</p>',$PAGEDATA);
-					echo '<p>Your download should begin in two seconds. If it doesn\'t, please <a href="'.htmlspecialchars($_SERVER['REQUEST_URI']).'">click here</a></p><script>setTimeout(function(){document.location="'.$_SERVER['REQUEST_URI'].'";},2000);</script><p><a href="'.$_SESSION['referer'].'">Click here</a> to return to the referring page.</p>';
+					echo '<p>Your download should begin in two seconds. '
+						.'If it doesn\'t, please <a href="'
+						.urlencode($_SERVER['REQUEST_URI'])
+						.'">click here</a></p>'
+						.'<script>setTimeout(function(){document.location="'
+						.htmlspecialchars($_SERVER['REQUEST_URI'])
+						.'";},2000);</script><p>'
+						.'<a href="'.$_SESSION['referer']
+						.'">Click here</a> to return to the referring page.</p>';
 #					ob_show_and_log('page');
-					exit;
+					//exit;
 				}
 				else{
-					webmeMail($pr['recipient_email'], $pr['recipient_email'], '['.$_SERVER['HTTP_HOST'].'] protected file downloaded', 'protected file "'.addslashes($fname).'" was downloaded by "'.addslashes($email).'"'); 
+					webmeMail(
+						$pr['recipient_email'], 
+						$pr['recipient_email'], 
+						'['.$_SERVER['HTTP_HOST'].'] protected file downloaded',
+						'protected file "'.addslashes($fname)
+						.'" was downloaded by "'.addslashes($email).'"'
+					); 
 					protectedFiles_log($fname,1,$email,$pr['id']);
 					unset($_SESSION['referer']);
-					exit;
+					//exit;
 				}
 			}
 			else{
 				unset($_SESSION['protected_files_stage2']);
-				if(!isset($_SESSION['referer']))$_SESSION['referer']=$_SERVER['HTTP_REFERER'];
+				if(!isset($_SESSION['referer'])) {
+					$_SESSION['referer']=$_SERVER['HTTP_REFERER'];
+				}
 				protectedFiles_log($fname,0,'',$pr['id']);
 				$PAGEDATA=Page::getInstance(0);
 				$PAGEDATA->title='File Download';
@@ -66,7 +85,9 @@ function protectedFiles_check($vars){
 #				$template=template_load($PAGEDATA);
 #				ob_start();
 #				show_page($template,$pr['message'].'<form method="post" action="/f'.htmlspecialchars($fname).'"><input name="email" /><input type="submit" /></form>',$PAGEDATA);
-				echo $pr['message'].'<form method="post" action="/f'.htmlspecialchars($fname).'"><input name="email" /><input type="submit" /></form>';
+				echo $pr['message'].'<form method="post" action="/f'
+					.htmlspecialchars($fname).'">'
+					.'<input name="email" /><input type="submit" /></form>';
 #				ob_show_and_log('page');
 				exit;
 			}
