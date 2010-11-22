@@ -290,6 +290,14 @@ function products_get_add_to_cart_button($params,&$smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
+function Products_getAddManyToCartButton($params,&$smarty) {
+	return '<form method="POST" class="products-addmanytocart">'
+		.'<input type="hidden" name="products_action" value="add_to_cart" />'
+		.'<input name="products-howmany" value="1" class="small" />'
+		.'<input type="submit" value="Add to Cart" />'
+		.'<input type="hidden" name="product_id" value="'
+		. $smarty->_tpl_vars['product']->id .'" /></form>';
+}
 function products_image($params,&$smarty) {
 	$params=array_merge(array(
 		'width'=>128,

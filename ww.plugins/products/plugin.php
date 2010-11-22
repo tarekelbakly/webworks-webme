@@ -29,6 +29,9 @@ $plugin=array(
 			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
 				'function' => 'products_get_add_to_cart_button'
 			),
+			'PRODUCTS_BUTTON_ADD_MANY_TO_CART' => array(
+				'function' => 'Products_getAddManyToCartButton'
+			),
 			'PRODUCTS_CATEGORIES' => array (
 				'function' => 'products_categories'
 			),
