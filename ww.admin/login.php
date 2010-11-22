@@ -27,6 +27,8 @@ if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password
 	<head>
 		<title><?php echo __('Login'); ?></title>
 		<link rel="stylesheet" type="text/css" href="/ww.admin/theme/login.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="/js/"></script>
 		<script>
 			$(function() {
