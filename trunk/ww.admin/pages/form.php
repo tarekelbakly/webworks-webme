@@ -21,6 +21,9 @@ $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // }
 // { display header and link in scripts
 echo '<html><head>'
+	.'<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>'
+	.'<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>'
+	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
 	.'<script src="/js/1280482416"></script>'
 	.'<script src="/j/ckeditor/ckeditor.js"></script>'
 	.'<script src="/ww.admin/j/admin.js"></script>'

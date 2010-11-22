@@ -204,7 +204,7 @@ else {
 if (isset($PLUGINS['comments'])) {
 	$c.= plugin_trigger('page-content-created');
 }
-$pagecontent=$c;
+$pagecontent=$c.'<span class="end-of-page-content"></span>';
 // }
 // { load page template
 if (file_exists(THEME_DIR.'/'.THEME.'/h/'.$PAGEDATA->template.'.html')) {
@@ -302,7 +302,9 @@ $c.='<style type="text/css">.loggedin{display:'
 	.'} .loggedinCell{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
-$c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
+$c.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>'
+	.'<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>'
+	.'<script src="WW_SCRIPTS_GO_HERE"></script>';
 if(is_admin()){
 	WW_addScript('/ww.admin/j/common.js');
 }
