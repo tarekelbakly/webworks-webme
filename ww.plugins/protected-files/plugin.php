@@ -76,7 +76,7 @@ function protectedFiles_check($vars){
 					protectedFiles_log($fname,1,$email,$pr['id']);
 					unset($_SESSION['referer']);
 				}
-				//exit;
+				exit;
 			}
 			else{
 				unset($_SESSION['protected_files_stage2']);
