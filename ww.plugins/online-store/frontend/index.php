@@ -159,6 +159,45 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		$submitted=1;
 	}
 }
+
+function OnlineStore_getPostageAndPackaging($total,$country,$weight){
+	$pandps=OnlineStore_getPostageAndPackagingData();
+	$pid=$_SESSION['os_pandp'];
+	if(!isset($pandps[$pid]) || $pandps[$pid]->name=='')$pid=0;
+	$pandp=$pandps[$pid];
+	return array('name'=>$pandp->name,'total'=>OnlineStore_getPostageAndPackagingSubtotal($pandp->constraints,$total,$country,$weight));
+}
+function OnlineStore_getPostageAndPackagingData(){
+	global $PAGEDATA;
+	$r=$PAGEDATA->vars['online_stores_postage'];
+	if($r=='')$r='[{"name":"no postage and packaging set","constraints":[{"type":"set_value","value":"0"}]}]';
+	return json_decode($r);
+}   
+function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weight){
+	foreach($cstrs as $cstr){
+		if ($cstr->type=='total_weight_less_than_or_equal_to' && $weight<=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='total_weight_more_than_or_equal_to' && $weight>=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='total_less_than_or_equal_to' && $total<=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='total_more_than_or_equal_to' && $total>=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+	}
+	$val=str_replace('weight',$weight,$cstr->value);
+	$val=str_replace('total',$total,$val);
+	$val=str_replace('num_items',OnlineStore_getNumItems(),$val);
+	$val=preg_replace('#[^a-z0-9*/\-+.\(\)]#','',$val);
+	if (preg_match('/[^0-9.]/',str_replace('ceil','',$val))) {
+		eval('$val=('.$val.');');
+	}
+	return (float)$val;
+}
+
 if (!$submitted) {
 	if (
 		isset($_SESSION['online-store'])
@@ -172,6 +211,8 @@ if (!$submitted) {
 		$c.='<th>Total</th>';
 		$c.='</tr>';
 		$grandTotal = 0;
+		$vattable=0;
+		$has_vatfree=false;
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 			$c.='<tr product="'.$md5.'" class="os_item_numbers '.$md5.'"><td>';
 			if (isset($item['url'])&&!empty($item['url'])) {
@@ -181,18 +222,45 @@ if (!$submitted) {
 			if (isset($item['url'])&&!empty($item['url'])) {
 				$c.='</a>';
 			}
+			if (!$item['vat']) {
+				$c.='<sup>1</sup>';
+				$has_vatfree=true;
+			}
 			$c.='</td><td>'.OnlineStore_numToPrice($item['cost']).'</td>';
 			$c.='<td class="amt"><span class="'.$md5.'-amt amt-num">'
 				.$item['amt']
 				.'</span></td>';
 			$totalItemCost=$item['cost']*$item['amt'];
 			$grandTotal+=$totalItemCost;
-			$c.='<td class="'.$md5.'-item-total">'
+			if ($item['vat']) {
+				$vattable+=$totalItemCost;
+			}
+			$c.='<td class="'.$md5.'-item-total totals">'
 				.OnlineStore_numToPrice($totalItemCost).'</td></tr>';
 		}
-		$c.='<tr class="os_total"><th colspan="3">Total</th>';
-		$c.='<td class="total">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
+		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Subtotal</td>'
+			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
+		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		if ($postage['total']) {
+			$grandTotal+=$postage['total'];
+			$c.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
+				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
+				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
+			$vattable+=$postage['total'];
+		}
+		if ($vattable) {
+			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT (21% on '
+				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
+			$vat=$vattable*.21;
+			$c.=OnlineStore_numToPrice($vat).'</td></tr>';
+			$grandTotal+=$vat;
+		}
+		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Total Due</td>'
+			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
 		$c.='</table>';
+		if ($has_vatfree) {
+			$c.='<div><sup>1</sup>VAT-free item</div>';
+		}
 		$c.='<form method="post">';
 		$c.=$PAGEDATA->render();
 		$c.='<input type="submit" name="action" value="Proceed to Payment" />'

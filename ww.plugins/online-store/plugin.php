@@ -63,7 +63,7 @@ $online_store_currencies=array(
 	*/
 function OnlineStore_addToCart(
 	$cost=0, $amt=0, $short_desc='',
-	$long_desc='', $md5='', $url=''
+	$long_desc='', $md5='', $url='', $vat=true
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -77,6 +77,7 @@ function OnlineStore_addToCart(
 	$item['amt']+=$amt;
 	$item['short_desc']=$short_desc;
 	$item['url']=$url;
+	$item['vat']=$vat;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';

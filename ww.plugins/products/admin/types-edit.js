@@ -37,6 +37,11 @@ function products_data_fields_add_row(rdata,i){
 	if(rdata.r)row+=' checked="checked"';
 	row+=' /></td>';
 	// }
+	// { user-entered
+	row+='<td><input class="product-type-fd-user-entered" type="checkbox"';
+	if(rdata.u)row+=' checked="checked"';
+	row+=' /></td>';
+	// }
 	// { extra
 	if(rdata.t=='selectbox'){
 		row+='<td width="20%"><textarea id="product_type_fd'+i+'_extra" class="small">'+htmlspecialchars(rdata.e)+'</textarea></td>';
@@ -51,7 +56,10 @@ function products_data_fields_add_row(rdata,i){
 function products_data_fields_redraw(){
 	var wrapper=$('#data_fields_rows');
 	wrapper.empty();
-	table='<table width="100%"><tr><th width="20%">Internal Name</th><th width="20%">Displayed Name</th><th width="20%">Type</th><th>Searchable</th><th>Required</th><th width="20%">Extra</th></tr></table><ul id="product_type_rows">';
+	table='<table width="100%"><tr><th width="20%">Internal Name</th>'
+		+'<th width="20%">Displayed Name</th><th width="20%">Type</th>'
+		+'<th>Searchable</th><th>Required</th><th>User-entered</th>'
+		+'<th width="20%">Extra</th></tr></table><ul id="product_type_rows">';
 	var rows=0;
 	$.each(window.data_fields,function(i,rdata){
 		table+=products_data_fields_add_row(rdata,rows++);
@@ -82,6 +90,7 @@ function products_data_fields_reset_value(){
 			"t":$this.find('select').val(),
 			"s":$this.find('.product-type-fd-searchable')[0].checked?1:0,
 			"r":$this.find('.product-type-fd-required')[0].checked?1:0,
+			"u":$this.find('.product-type-fd-user-entered')[0].checked?1:0,
 			"e":$this.find('textarea.small').val()
 		});
 	});
