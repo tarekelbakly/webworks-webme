@@ -99,7 +99,6 @@ function protectedFiles_check($vars){
 					.'<input name="email" /><input type="submit" /></form>'
 				);
 				$smarty->display($pr['template'].'.html');
-				var_dump($pr);
 				exit;
 #				ob_show_and_log('page');
 			}
