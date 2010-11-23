@@ -37,7 +37,6 @@ function protectedFiles_check($vars){
 				$email=$_SESSION['protected_files_email'];
 			else if(isset($_SESSION['userdata']['email']) && $_SESSION['userdata']['email'])$email=$_SESSION['userdata']['email'];
 			else if(isset($_REQUEST['email']) && filter_var($_REQUEST['email'],FILTER_VALIDATE_EMAIL))$email=$_REQUEST['email'];
-			//unset($email);
 			if($email){
 				require_once SCRIPTBASE.'ww.incs/common.php';
 				$_SESSION['protected_files_email']=$email;
@@ -48,7 +47,11 @@ function protectedFiles_check($vars){
 #					$template=template_load($PAGEDATA);
 #					ob_start();
 #					show_page($template,'<p>Your download should begin in two seconds. If it doesn\'t, please <a href="'.htmlspecialchars($_SERVER['REQUEST_URI']).'">click here</a></p><script>setTimeout(function(){document.location="'.$_SERVER['REQUEST_URI'].'";},2000);</script><p><a href="'.$_SESSION['referer'].'">Click here</a> to return to the referring page.</p>',$PAGEDATA);
-					echo '<p>Your download should begin in two seconds. '
+					$smarty = protectedFiles_getTemplate($pr['template']);
+					$smarty->assign('METADATA', '<title>File Download</title>');
+					$smarty->assign(
+						'PAGECONTENT',
+						'<p>Your download should begin in two seconds. '
 						.'If it doesn\'t, please <a href="'
 						.urlencode($_SERVER['REQUEST_URI'])
 						.'">click here</a></p>'
@@ -56,9 +59,9 @@ function protectedFiles_check($vars){
 						.htmlspecialchars($_SERVER['REQUEST_URI'])
 						.'";},2000);</script><p>'
 						.'<a href="'.$_SESSION['referer']
-						.'">Click here</a> to return to the referring page.</p>';
+						.'">Click here</a> to return to the referring page.</p>'
+					);
 #					ob_show_and_log('page');
-					//exit;
 				}
 				else{
 					webmeMail(
@@ -70,7 +73,6 @@ function protectedFiles_check($vars){
 					); 
 					protectedFiles_log($fname,1,$email,$pr['id']);
 					unset($_SESSION['referer']);
-					//exit;
 				}
 			}
 			else{
@@ -85,12 +87,49 @@ function protectedFiles_check($vars){
 #				$template=template_load($PAGEDATA);
 #				ob_start();
 #				show_page($template,$pr['message'].'<form method="post" action="/f'.htmlspecialchars($fname).'"><input name="email" /><input type="submit" /></form>',$PAGEDATA);
-				echo $pr['message'].'<form method="post" action="/f'
+				$smarty = protectedFiles_getTemplate($pr['template']);
+				$smarty->assign('METADATA', '<title>File Download</title>');
+				$smarty->assign(
+					'PAGECONTENT',
+					$pr['message'].'<form method="post" action="/f'
 					.htmlspecialchars($fname).'">'
-					.'<input name="email" /><input type="submit" /></form>';
+					.'<input name="email" /><input type="submit" /></form>'
+				);
+				$smarty->display($pr['template'].'.html');
 #				ob_show_and_log('page');
 				exit;
 			}
 		}
 	}
+}
+function protectedFiles_getTemplate($templateString) {
+	if (file_exists(THEME_DIR.'/'.THEME.'/h/'.$templateString.'.html')) {
+		$template=THEME_DIR.'/'.THEME.'/h/'.$templateString.'.html';
+	}
+	else if (file_exists(THEME_DIR.'/'.THEME.'/h/_default.html')) {
+		$template=THEME_DIR.'/'.THEME.'/h/_default.html';
+	}
+	else {
+		$d=array();
+		$dir=new DirectoryIterator(THEME_DIR.'/'.THEME.'/h/');
+		foreach ($dir as $f) {
+			if ($f->isDot()) {
+				continue;
+			}
+			$n=$f->getFilename();
+			if (preg_match('/\.html$/', $n)) {
+				$d[]=preg_replace('/\.html$/', '', $n);
+			}
+		}
+		asort($d);
+		$template=$d[0];
+	}
+	if ($template=='') {
+		die('no template created. please create a template first');
+	}
+	require_once SCRIPTBASE.'ww.incs/common.php';
+	$smarty = smarty_setup();
+	$smarty -> compile_dir = USERBASE.'/ww.cache/pages';
+	$smarty -> template_dir = THEME_DIR.'/'.THEME.'/h/';
+	return $smarty;
 }
