@@ -21,7 +21,7 @@ function showWidgetForm(w){
 	if(ww.widgetForms[p.type]){
 		$('<button style="float:right">Save</button>')
 			.click(function(){
-				w.find('input,select').each(function(i,el){
+				w.find('input,select,textarea').each(function(i,el){
 					p[el.name]=$(el).val();
 				});
 				w.data('widget',p);
