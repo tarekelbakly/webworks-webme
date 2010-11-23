@@ -37,7 +37,8 @@ $plugin=array(
 		)
 	),
 	'triggers' => array(
-		'displaying-pagedata' => 'OnlineStore_pagedata'
+		'displaying-pagedata'      => 'OnlineStore_pagedata',
+		'initialisation-completed' => 'OnlineStore_startup'
 	),
 	'version' => '6'
 );
@@ -294,6 +295,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 		$t=$vars->template;
 		$t=str_replace('{{ONLINESTORE_NUM_ITEMS}}', OnlineStore_getNumItems(), $t);
 		$t=str_replace('{{ONLINESTORE_FINAL_TOTAL}}', OnlineStore_getFinalTotal(), $t);
+		$t=str_replace('{{ONLINESTORE_CHECKOUTURL}}', '/?pageid='.$_SESSION['onlinestore_checkout_page'], $t);
 		$html.=$t;
 	}
 	else {
@@ -329,7 +331,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 				.'<td class="total">'
 				.OnlineStore_numToPrice($_SESSION['online-store']['total']).'</td></tr>';
 			$html.='</table>';
-			$html.='<a href="/_r?type=online-store">'
+			$html.='<a href="/?pageid='.$_SESSION['onlinestore_checkout_page'].'">'
 				.'Proceed to Checkout</a>';
 		}
 		else {
@@ -341,8 +343,66 @@ function OnlineStore_showBasketWidget($vars=null) {
 	return $html;
 }
 
+
+function OnlineStore_getPostageAndPackaging($total,$country,$weight){
+	$pandps=OnlineStore_getPostageAndPackagingData();
+	$pid=$_SESSION['os_pandp'];
+	if(!isset($pandps[$pid]) || $pandps[$pid]->name=='')$pid=0;
+	$pandp=$pandps[$pid];
+	return array('name'=>$pandp->name,'total'=>OnlineStore_getPostageAndPackagingSubtotal($pandp->constraints,$total,$country,$weight));
+}
+function OnlineStore_getPostageAndPackagingData(){
+	$p=Page::getInstance($_SESSION['onlinestore_checkout_page']);
+	$p->initValues();
+	$r=$p->vars['online_stores_postage'];
+	if($r=='')$r='[{"name":"no postage and packaging set","constraints":[{"type":"set_value","value":"0"}]}]';
+	return json_decode($r);
+}   
+function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weight){
+	foreach($cstrs as $cstr){
+		if ($cstr->type=='total_weight_less_than_or_equal_to' && $weight<=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='total_weight_more_than_or_equal_to' && $weight>=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='total_less_than_or_equal_to' && $total<=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+		if ($cstr->type=='total_more_than_or_equal_to' && $total>=$cstr->value) {
+			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
+		}
+	}
+	$val=str_replace('weight',$weight,$cstr->value);
+	$val=str_replace('total',$total,$val);
+	$val=str_replace('num_items',OnlineStore_getNumItems(),$val);
+	$val=preg_replace('#[^a-z0-9*/\-+.\(\)]#','',$val);
+	if (preg_match('/[^0-9.]/',str_replace('ceil','',$val))) {
+		eval('$val=('.$val.');');
+	}
+	return (float)$val;
+}
 function OnlineStore_getFinalTotal() {
-	return OnlineStore_numToPrice($_SESSION['online-store']['total']);
+	$grandTotal = 0;
+	$vattable=0;
+	$has_vatfree=false;
+	foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
+		$totalItemCost=$item['cost']*$item['amt'];
+		$grandTotal+=$totalItemCost;
+		if ($item['vat']) {
+			$vattable+=$totalItemCost;
+		}
+	}
+	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+	if ($postage['total']) {
+		$grandTotal+=$postage['total'];
+		$vattable+=$postage['total'];
+	}
+	if ($vattable) {
+		$vat=$vattable*.21;
+		$grandTotal+=$vat;
+	}
+	return OnlineStore_numToPrice($grandTotal);
 }
 
 /**
@@ -357,4 +417,12 @@ function OnlineStore_getNumItems(){
 		$num+=$item['amt'];
 	}
 	return $num;
+}
+function OnlineStore_startup(){
+	if (!isset($_SESSION['onlinestore_checkout_page'])) {
+		$p=Page::getInstanceByType('online-store');
+		if ($p) {
+			$_SESSION['onlinestore_checkout_page']=$p->id;
+		}
+	}
 }

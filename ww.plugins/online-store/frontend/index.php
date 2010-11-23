@@ -160,44 +160,6 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 	}
 }
 
-function OnlineStore_getPostageAndPackaging($total,$country,$weight){
-	$pandps=OnlineStore_getPostageAndPackagingData();
-	$pid=$_SESSION['os_pandp'];
-	if(!isset($pandps[$pid]) || $pandps[$pid]->name=='')$pid=0;
-	$pandp=$pandps[$pid];
-	return array('name'=>$pandp->name,'total'=>OnlineStore_getPostageAndPackagingSubtotal($pandp->constraints,$total,$country,$weight));
-}
-function OnlineStore_getPostageAndPackagingData(){
-	global $PAGEDATA;
-	$r=$PAGEDATA->vars['online_stores_postage'];
-	if($r=='')$r='[{"name":"no postage and packaging set","constraints":[{"type":"set_value","value":"0"}]}]';
-	return json_decode($r);
-}   
-function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weight){
-	foreach($cstrs as $cstr){
-		if ($cstr->type=='total_weight_less_than_or_equal_to' && $weight<=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
-		}
-		if ($cstr->type=='total_weight_more_than_or_equal_to' && $weight>=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
-		}
-		if ($cstr->type=='total_less_than_or_equal_to' && $total<=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
-		}
-		if ($cstr->type=='total_more_than_or_equal_to' && $total>=$cstr->value) {
-			return OnlineStore_getPostageAndPackagingSubtotal($cstr->constraints,$total,$country,$weight);
-		}
-	}
-	$val=str_replace('weight',$weight,$cstr->value);
-	$val=str_replace('total',$total,$val);
-	$val=str_replace('num_items',OnlineStore_getNumItems(),$val);
-	$val=preg_replace('#[^a-z0-9*/\-+.\(\)]#','',$val);
-	if (preg_match('/[^0-9.]/',str_replace('ceil','',$val))) {
-		eval('$val=('.$val.');');
-	}
-	return (float)$val;
-}
-
 if (!$submitted) {
 	if (
 		isset($_SESSION['online-store'])

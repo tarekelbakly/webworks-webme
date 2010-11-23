@@ -85,7 +85,9 @@ function products_frontend($PAGEDATA){
 	return $PAGEDATA->render().products_show($PAGEDATA).$PAGEDATA->vars['footer'];
 }
 function products_add_to_cart($PAGEDATA){
-	if(!isset($_REQUEST['products_action']))return;
+	if (!isset($_REQUEST['products_action'])) {
+		return;
+	}
 	$id=(int)$_REQUEST['product_id'];
 	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
