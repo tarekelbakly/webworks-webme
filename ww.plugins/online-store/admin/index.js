@@ -1,32 +1,4 @@
 window.os_statuses=['Unpaid','Paid','Paid and Delivered'];
-$('.online-store-delivery-option').change(function() {
-	var $this = $(this);
-	var val = $this.val();
-	if (val=='set_postage') {
-		$this.next('input').attr('name', 'page_vars[set_postage]');
-		return;
-	}
-	if (($this).hasClass('last')) {
-		$this.removeClass('last');
-		var html='<span><input name="page_vars['+val+']" class="small"/>'
-			+'<br />';
-		html+= '<select class="online-store-delivery-option last">';
-		html+= '<option value="set_postage">else set postage to</option>';
-		html+= '<option value="if_total_greater_or_equal">else if total greater than or equal to'
-			+'</option>';
-		html+= '<option value="if_total_less_or_equal">else if total less than or equal to'
-			+'</option>';
-		html+= '<option value="if_weight_greater_or_equal">else if weight greater than or equal to'
-			+'</option>';
-		html+= '<option value="if_weight_less_or_equal">else if weight less than or equal to'
-			+'</option>';
-		html+= '</select></span>';
-		$(html).insertAfter($this);
-	}
-	else {
-		$this.next('input').attr('name', 'page_vars['+val+'_set_postage]')
-	}
-});
 function os_invoice(id){
 	var w=$(window);
 	var wh=w.height(),ww=w.width();
@@ -137,15 +109,6 @@ function os_status_change(ev){
 	});
 }
 $(function(){
-	var html = '<span><select class="online-store-delivery-option last">';
-	html+= '<option value="set_postage">set postage to</option>';
-	html+= '<option value="if_total_greater_or_equal">if total greater than or equal to</option>';
-	html+= '<option value="if_total_less_or_equal">if total less than or equal to</option>';
-	html+= '<option value="if_weight_greater_or_equal">if weight greater than or equal to</option>';
-	html+= '<option value="if_weight_less_or_equal">if weight less than or equal to</option>';
-	html+= '</select>';
-	html+= '<input name="page_vars[set_postage]" class="small" /></span>';
-	$('#online-store-delivery').append(html);
 	$('.tabs').tabs();
 	$('#online-store-status').change(function(ev){
 		document.location='/ww.admin/pages/form.php?id='
@@ -158,33 +121,166 @@ $(function(){
 	$("#online_store_redirect_to").remoteselectoptions({
 		url:"/ww.admin/pages/get_parents.php"
 	});
-	$('.online-store-delivery-option').bind('change', function() {
-		var $this = $(this);
-		var val = $this.val();
-		if (val=='set_postage') {
-			$this.next('input').attr('name', 'page_vars[set_postage]');
-			return;
-		}
-		if (($this).hasClass('last')) {
-			$this.removeClass('last');
-			var html='<span><input name="page_vars['+val+']" class="small"/>'
-				+'<br />';
-			html+= '<select class="online-store-delivery-option last">';
-			html+= '<option value="set_postage">else set postage to</option>';
-			html+= '<option value="if_total_greater_or_equal">else if total greater than or equal to'
-				+'</option>';
-			html+= '<option value="if_total_less_or_equal">else if total less than or equal to'
-				+'</option>';
-			html+= '<option value="if_weight_greater_or_equal">else if weight greater than or equal to'
-				+'</option>';
-			html+= '<option value="if_weight_less_or_equal">else if weight less than or equal to'
-				+'</option>';
-			html+= '</select></span>';
-			$(html).insertAfter($this);
-		}
-		else {
-			$this.next('input').attr('name', 'page_vars['+val+'_set_postage]')
-		}
-	});
 });
 $('#online_stores_fields_table input').live('click',os_update_fields_value);
+
+
+pandp=[];
+pandp_open=[];
+function pandp_add_top(i,data){
+	var text='hide';
+	var name=$('<input id="pandp_name_'+i+'" />')
+		.val(data.name || '')
+	var constraint=$('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'"></div>');
+	if(!pandp_open[i]){
+		text='show';
+		constraint.css('display','none');
+	}
+	var users_only=$('<input type="checkbox" id="pandp_users_only_'+i+'"'+(data.users_only?' checked="checked"':'')+' title="tick if this postage method is only available to logged-in users" />');
+	var opener=$('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+text+'</a>');
+//	$('<div><a href="javascript:pand_countries_select('+i+')" id="pandp_countries_'+i+'" class="pandp_countries">Countries: '
+//		+(data.countries && data.countries.length?join(', ',data.countries):'all')
+//		+'</a></div>').appendTo(constraint);
+	var row=$('<div class="pandp_row">Postage Name: </div>')
+		.append(name)
+		.append(users_only)
+		.append(opener)
+		.append(constraint);
+	$('#postage_wrapper').append(row);
+	pandp_show_constraints(i, data.constraints || []);
+}
+function pandp_showhide(i,v){
+	pandp_open[i]=v;
+	$('#pandp_constraint_wrapper_'+i).css('display',v?'block':'none');
+	$('#pandp_opener_'+i)
+		.replaceWith('<a id="pandp_opener_'+i+'" href="javascript:pandp_showhide('+i+','+(pandp_open[i]?0:1)+')">'+(pandp_open[i]?'hide':'show')+'</a>');
+}
+function pand_countries_select(i){
+	if(!window.pandp_countries)$.getJSON('/ww.admin/products/postage_countries.php',function(ret){
+		window.pandp_countries=ret;
+		pandp_countries_select_show(i); 
+	});
+	else pandp_countries_select_show(i);
+}
+function pandp_countries_select_show(i){
+	if(!window.pandp_countries_dialog){
+		var h='<form style="max-height:300px;height:300px;overflow:auto;">';
+		var c,i;
+		for(i=0;i<window.pandp_countries.length;++i){
+			c=window.pandp_countries[i];
+			h+='<div><input id="pandp_countries_opt_'+c.iso+'" value="'+c.iso+'" type="checkbox" />'+c.name+'</div>';
+		}
+		h+='</form>';
+		window.pandp_countries_dialog=$(h);
+		window.pandp_countries_dialog.dialog({
+			autoOpen:false,
+			modal:true,
+			buttons:{
+				'Choose':function(){
+				}
+			}
+		});
+	}
+	window.pandp_countries_dialog.dialog('open');
+}
+function pandp_rebuild_constraints(prefix){
+	var cstrs=[],el;
+	for(var i=0;el=document.getElementById('pandp_constraint_'+prefix+i);++i){
+		var cstr={};
+		cstr.type=el.value;
+		switch(cstr.type){
+			case 'set_value': case 'total_less_than_or_equal_to': case 'total_more_than_or_equal_to':
+			case 'total_weight_less_than_or_equal_to': case 'total_weight_more_than_or_equal_to': // {
+				cstr.value=document.getElementById('pandp_constraint_value_'+prefix+i).value;
+				break;
+			// }
+		}
+		if(cstr.type!='set_value')cstr.constraints=pandp_rebuild_constraints(prefix+i+'_');
+		cstrs.push(cstr);
+	}
+	return cstrs;
+}
+function pandp_rebuild_value_from_top(){
+	pandp=[];
+	for(var i=0;el=document.getElementById('pandp_constraint_wrapper_'+i);++i){
+		var cstr={};
+		cstr.name=document.getElementById('pandp_name_'+i).value;
+		if(!cstr.name)continue;
+		cstr.constraints=pandp_rebuild_constraints(i+'_');
+		cstr.users_only=$('#pandp_users_only_'+i).is(':checked');
+		pandp.push(cstr);
+	}
+	$('#postage').val(Json.toString(pandp));
+	pandp_rebuild_widget();
+}
+function pandp_rebuild_widget(){
+	$('#postage_wrapper').empty();
+	var has_blank=0;
+	for(var i=0;i<pandp.length;++i){
+		pandp_add_top(i,pandp[i]);
+		if(pandp[i].name=='')has_blank=1;
+	
+	}
+	if(!has_blank)pandp_add_top(i,{});
+	pandp_showhide(i,'show');
+}
+function pandp_show_constraints(i, cstrs_old){
+	if(cstrs_old.length==0 || cstrs_old[cstrs_old.length-1].type!='set_value')cstrs_old.push({
+		type:'set_value',
+		value:'0'
+	});
+	var cstrs=[];
+	for(var j=0;j<cstrs_old.length;j++){
+		cstrs.push(cstrs_old[j]);
+		if(cstrs_old[j].type=='set_value')j=cstrs_old.length;
+	}
+	var options=[
+		['set_value','set postage to'],
+		['total_less_than_or_equal_to','if total <='],
+		['total_more_than_or_equal_to','if total >='],
+		['total_weight_less_than_or_equal_to','if weight <='],
+		['total_weight_more_than_or_equal_to','if weight >=']
+	];
+	var wrapper=$('#pandp_constraint_wrapper_'+i);
+	for(var j=0;j<cstrs.length;++j){
+		var prefix=j?'else ' : '';
+		var cstr=cstrs[j];
+		var opts=[],tmp;
+		for(k=0;k<options.length;++k){
+			tmp='<option value="'+options[k][0]+'"';
+			if(options[k][0]==cstr.type)tmp+=' selected="selected"';
+			tmp+='>'+prefix+options[k][1]+'</option>';
+			opts.push(tmp);
+		}
+		var selectbox=$('<select id="pandp_constraint_'+i+'_'+j+'">'+opts.join('')+'</select>')
+			.change(pandp_rebuild_value_from_top);
+		wrapper.append(selectbox);
+		switch(cstr.type){
+			case 'set_value': // {
+				if(!cstr.value)cstr.value=0;
+				$('<input id="pandp_constraint_value_'+i+'_'+j+'">')
+					.val(cstr.value)
+					.appendTo(wrapper);
+				break;
+			// }
+			case 'total_less_than_or_equal_to': case 'total_more_than_or_equal_to':
+			case 'total_weight_less_than_or_equal_to': case 'total_weight_more_than_or_equal_to': // {
+				if(!cstr.value)cstr.value=0;
+				$('<input id="pandp_constraint_value_'+i+'_'+j+'" class="small">')
+					.val(cstr.value)
+					.appendTo(wrapper);
+				break;
+			// }
+		}
+		wrapper.append('<div class="pand-constraint" id="pandp_constraint_wrapper_'+i+'_'+j+'"></div>');
+		if(cstr.type!='set_value')pandp_show_constraints(i+'_'+j, cstr.constraints || []);
+	}
+}
+$(function(){
+	var p=document.getElementById('postage').value;
+	if(p)pandp=eval('{'+p+'}');
+	else $('#postage').val('[]');
+	pandp_rebuild_widget();
+	$('#postage_wrapper').live('change',pandp_rebuild_value_from_top);
+	$('#action').mousedown(pandp_rebuild_value_from_top);
+});

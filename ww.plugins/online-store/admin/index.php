@@ -87,8 +87,13 @@ else {
 $c.='</div>';
 // }
 // { postage and packaging
-$c.='<div id="online-store-delivery">';
-$c.='</select>';
+if (!isset($vars['postage'])) {
+	$vars['postage']='[]';
+}
+$c.='<div id="online-store-delivery">'
+	.'<div id="postage_wrapper"></div>'
+	.'<input type="hidden" name="page_vars[online_stores_postage]" id="postage" value="'
+	.htmlspecialchars($vars['online_stores_postage']).'" />';
 $c.='</div>';
 // }
 // { form
@@ -136,7 +141,11 @@ $c.='<tr><th style="width:20%">Admin email address</th><td>'
 if (isset($vars['online_stores_admin_email'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_admin_email']).'"';
 }
-$c.=' /></td></tr>';
+$c.=' /></td>';
+$c.='<th width="20%">Users must log in</th><td><input type="checkbox"'
+	.' name="page_vars[online_stores_requires_login]"'
+	.($vars['online_stores_requires_login']?' checked="checked"':'')
+	.' /></td></tr>';
 // }
 // { currency
 $c.='<tr><th>Currency</th><td><select name="online_store_currency">';
@@ -150,7 +159,7 @@ foreach ($online_store_currencies as $key=>$val) {
 $c.= '</select></td></tr>';
 // }
 // { payment types
-$c.='<tr><th>Payment Types</th><td><div class="tabs">';
+$c.='<tr><th>Payment Types</th><td colspan="3"><div class="tabs">';
 $c.='<ul>';
 $c.='<li><a href="#online-store-payments-paypal">PayPal</a></li>';
 $c.='<li><a href="#online-store-payments-realex">Realex</a></li>';
@@ -246,3 +255,4 @@ file_put_contents(
 	USERBASE.'ww.cache/online-store/'.$page['id'],
 	$vars['online_stores_invoice']
 );
+$c.='<style>@import "/ww.plugins/online-store/admin/styles.css";</style>';
