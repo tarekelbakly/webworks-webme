@@ -40,6 +40,7 @@ function protectedFiles_check($vars){
 			if($email){
 				require_once SCRIPTBASE.'ww.incs/common.php';
 				$_SESSION['protected_files_email']=$email;
+				unset($_SESSION['protected_files_stage2']);
 				if(!isset($_SESSION['protected_files_stage2'])){
 					$_SESSION['protected_files_stage2']=1;
 					$PAGEDATA=Page::getInstance(0);
@@ -61,6 +62,7 @@ function protectedFiles_check($vars){
 						.'<a href="'.$_SESSION['referer']
 						.'">Click here</a> to return to the referring page.</p>'
 					);
+					$smarty->display($pr['template'].'.html');
 #					ob_show_and_log('page');
 				}
 				else{
@@ -74,6 +76,7 @@ function protectedFiles_check($vars){
 					protectedFiles_log($fname,1,$email,$pr['id']);
 					unset($_SESSION['referer']);
 				}
+				//exit;
 			}
 			else{
 				unset($_SESSION['protected_files_stage2']);
@@ -96,8 +99,9 @@ function protectedFiles_check($vars){
 					.'<input name="email" /><input type="submit" /></form>'
 				);
 				$smarty->display($pr['template'].'.html');
-#				ob_show_and_log('page');
+				var_dump($pr);
 				exit;
+#				ob_show_and_log('page');
 			}
 		}
 	}
