@@ -11,6 +11,14 @@
 	* @link     None
 	*/
 
+if (isset($PAGEDATA->vars['online_stores_requires_login'])
+	&& $PAGEDATA->vars['online_stores_requires_login']
+	&& !isset($_SESSION['userdata'])
+) {
+	$c='<h2>Login Required</h2>'
+		.'<p>You must be logged-in in order to use this online store. Please <a href="/_r?type=privacy">login / register</a> to access the checkout.</p>';
+	return;
+}
 WW_addScript('/ww.plugins/online-store/j/basket.js');
 $c='';
 global $DBVARS,$online_store_currencies;

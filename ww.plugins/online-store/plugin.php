@@ -18,6 +18,9 @@ $plugin=array(
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
 			'Site Options>Online Store' => 'site-options',
+		),
+		'widget' => array(
+			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
 		)
 	),
 	'description' => 'Add online-shopping capabilities to a number of other plugins.',
@@ -261,6 +264,12 @@ function OnlineStore_productPriceFull($params, &$smarty) {
 	return $tmp;
 }
 
+
+/**
+	* when given a number, it returns that number formatted to a currency
+	*
+	* @return string
+	*/
 function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 	$rate=$_SESSION['currency']['value'];
 	$sym=$_SESSION['currency']['symbol'];
@@ -274,52 +283,77 @@ function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 	*
 	* @return string
 	*/
-function OnlineStore_showBasketWidget() {
-	global $DBVARS,$online_store_currencies;
-	$csym=$online_store_currencies[$DBVARS['online_store_currency']][0];
+function OnlineStore_showBasketWidget($vars=null) {
+	global $DBVARS;
 	$html='<div class="online-store-basket-widget">';
 	if (!isset($_SESSION['online-store'])) {
 		$_SESSION['online-store']=array('items'=>array(),'total'=>0);
 	}
-	if (count($_SESSION['online-store']['items'])) {
-		$html.='<table>';
-		$html.='<tr><th>&nbsp;</th><th>Price</th><th>Amount</th>'
-			.'<th>Total</th></tr>';
-		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
-			// { name
-			$html.='<tr class="os_item_name" product="'.$md5.'">'
-				.'<td colspan="4">';
-			if ($item['url']) {
-				$html.='<a href="'.$item['url'].'">';
-			}
-			$html.=$item['short_desc'];
-			if ($item['url']) {
-				$html.='</a>';
-			}
-			$html.='</td></tr>';
-			// }
-			$html.='<tr class="os_item_numbers '.$md5.'" product="'.$md5.'">'
-				.'<td>&nbsp;</td><td>'
-				.$csym.$item['cost'].'</td>';
-			// { amount
-			$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt']
-				.'</span></td>';
-			// }
-			$html.='<td class="'.$md5.'-item-total">'
-				.$csym.($item['cost']*$item['amt'])
-				.'</td></tr>';
-		}
-		$html.='<tr class="os_total"><th colspan="3">Total</th>'
-			.'<td class="total">'
-			.$csym.$_SESSION['online-store']['total'].'</td></tr>';
-		$html.='</table>';
-		$html.='<a href="/_r?type=online-store">'
-			.'Proceed to Checkout</a>';
+	if (isset($vars->template) && $vars->template) {
+		$t=$vars->template;
+		$t=str_replace('{{ONLINESTORE_NUM_ITEMS}}', OnlineStore_getNumItems(), $t);
+		$t=str_replace('{{ONLINESTORE_FINAL_TOTAL}}', OnlineStore_getFinalTotal(), $t);
+		$html.=$t;
 	}
 	else {
-		$html.='<em>empty</em>';
+		if (count($_SESSION['online-store']['items'])) {
+			$html.='<table>';
+			$html.='<tr><th>&nbsp;</th><th>Price</th><th>Amount</th>'
+				.'<th>Total</th></tr>';
+			foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
+				// { name
+				$html.='<tr class="os_item_name" product="'.$md5.'">'
+					.'<td colspan="4">';
+				if ($item['url']) {
+					$html.='<a href="'.$item['url'].'">';
+				}
+				$html.=$item['short_desc'];
+				if ($item['url']) {
+					$html.='</a>';
+				}
+				$html.='</td></tr>';
+				// }
+				$html.='<tr class="os_item_numbers '.$md5.'" product="'.$md5.'">'
+					.'<td>&nbsp;</td><td>'
+					.OnlineStore_numToPrice($item['cost']).'</td>';
+				// { amount
+				$html.='<td class="amt"><span class="'.$md5.'-amt">'.$item['amt']
+					.'</span></td>';
+				// }
+				$html.='<td class="'.$md5.'-item-total">'
+					.OnlineStore_numToPrice($item['cost']*$item['amt'])
+					.'</td></tr>';
+			}
+			$html.='<tr class="os_total"><th colspan="3">Total</th>'
+				.'<td class="total">'
+				.OnlineStore_numToPrice($_SESSION['online-store']['total']).'</td></tr>';
+			$html.='</table>';
+			$html.='<a href="/_r?type=online-store">'
+				.'Proceed to Checkout</a>';
+		}
+		else {
+			$html.='<em>empty</em>';
+		}
 	}
 	$html.='</div>';
 	WW_addScript('/ww.plugins/online-store/j/basket.js');
 	return $html;
+}
+
+function OnlineStore_getFinalTotal() {
+	return OnlineStore_numToPrice($_SESSION['online-store']['total']);
+}
+
+/**
+	* returns the number of items in the cart
+	*
+	* @return int
+	*/
+function OnlineStore_getNumItems(){
+	$num=0;
+	$cart=&$_SESSION['online-store']['items'];
+	foreach ($cart as $item) {
+		$num+=$item['amt'];
+	}
+	return $num;
 }
