@@ -50,6 +50,9 @@ $plugin=array(
 			'PRODUCTS_LIST_CATEGORY_CONTENTS' => array(
 				'function' => 'Products_listCategoryContents'
 			),
+			'PRODUCTS_PLUS_VAT' => array (
+				'function' => 'Products_plusVat'
+			),
 			'PRODUCTS_REVIEWS' => array (
 				'function' => 'products_reviews'
 			)
@@ -87,16 +90,22 @@ function products_add_to_cart($PAGEDATA){
 	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
 	if(!$product)return;
+	$amount=1;
+	if (isset($_REQUEST['products-howmany'])) {
+		$amount=(int)$_REQUEST['products-howmany'];
+	}
 	if (isset($product->vals['online-store'])) {
 		$p=$product->vals['online-store'];
 		$price=(float)$p['_price'];
+		if(isset($p['_sale_price']) && $p['_sale_price']>0)$price=$p['_sale_price'];
+	  if(isset($p['_bulk_price']) && $p['_bulk_price']>0 && $p['_bulk_price']<$price && $amount>=$p['_bulk_amount'])$price=$p['_bulk_price'];
 	}
 	else {
 		$price=(float)$product->get('price');
 	}
 	OnlineStore_addToCart(
 		$price,
-		1,
+		$amount,
 		$product->get('name'),
 		'',
 		'products_'.$id,

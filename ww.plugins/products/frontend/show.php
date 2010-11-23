@@ -293,7 +293,7 @@ function products_get_add_to_cart_button($params,&$smarty) {
 function Products_getAddManyToCartButton($params,&$smarty) {
 	return '<form method="POST" class="products-addmanytocart">'
 		.'<input type="hidden" name="products_action" value="add_to_cart" />'
-		.'<input name="products-howmany" value="1" class="small" />'
+		.'<input name="products-howmany" value="1" class="add_multiple_widget_amount" style="width:50px" />'
 		.'<input type="submit" value="Add to Cart" />'
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
@@ -372,6 +372,14 @@ function Products_listCategoryContents ($params, &$smarty) {
 	}
 	$html.='</ul>';
 	return $html;
+}
+function Products_plusVat ($params, &$smarty) {
+	$product= $smarty->_tpl_vars['product'];
+	if (!isset($product->vals['online-store']['_apply_vat'])
+		|| $product->vals['online-store']['_apply_vat'] == '1'
+	) {
+		return '+ VAT';
+	}
 }
 function products_reviews ($params, &$smarty) {
 	WW_addScript('/ww.plugins/products/frontend/delete.js');
@@ -1039,11 +1047,11 @@ class Products{
 			default: // { use template
 				foreach ($prods as $pid) {
 					$product=Product::getInstance($pid);
-					if ($product) {
+					if ($product && $product->id) {
 						$typeID = $product->get('product_type_id');
 						$type=ProductType::getInstance($typeID);
 						if (!$type) {
-							$c.='Missing product type: '.$product->get('product_type_id');
+							$c.='Missing product type: '.$typeID;
 						}
 						else if (isset($_REQUEST['product_id'])) {
 							$c.= $type->render($product, 'singleview');
