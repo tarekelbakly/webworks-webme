@@ -90,7 +90,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 	else {
 		$formvals=addslashes(json_encode($_REQUEST));
 		$items=addslashes(json_encode($_SESSION['online-store']['items']));
-		$total=$_SESSION['online-store']['total'];
+		$total=OnlineStore_getFinalTotal();
 		// { save data
 		dbQuery(
 			'insert into online_store_orders (form_vals,total,items,date_created)'
@@ -111,21 +111,49 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 			.'<th class="descriptionheader">Description</th>'
 			.'<th class="unitamountheader">'
 			.'Unit Price</th><th class="amountheader">Amount</th></tr>';
+		$grandTotal=0;
+		$vattable=0;
+		$has_vatfree=false;
 		foreach ($_SESSION['online-store']['items'] as $key=>$item) {
+			$totalItemCost=$item['cost']*$item['amt'];
 			$table.='<tr><td class="quantitycell">'.$item['amt']
 				.'</td><td class="descriptioncell"><a href="'.$item['url'].'">'
 				.preg_replace('/<[^>]*>/', '', $item['short_desc'])
 				.'</td><td class="unitamountcell">'
 				.OnlineStore_numToPrice($item['cost'])
 				.'</td><td class="amountcell">'
-				.OnlineStore_numToPrice($item['cost']*$item['amt'])
+				.OnlineStore_numToPrice($totalItemCost)
 				.'</td></tr>';
+			if ($item['long_desc']) {
+				$table.='<tr><td colspan="3">'.$item['long_desc'].'</td><td></td></tr>';
+			}
+			$grandTotal+=$totalItemCost;
+			if ($item['vat']) {
+				$vattable+=$totalItemCost;
+			}
 		}
 		$table.='<tr class="os_basket_totals">'
 			.'<td colspan="3" style="text-align:right">'
 			.'Subtotal</td><td class="totals amountcell">'
 			.OnlineStore_numToPrice($total)
 			.'</td></tr>';
+		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		if ($postage['total']) {
+			$grandTotal+=$postage['total'];
+			$table.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
+				.'Postage and Packaging (P&amp;P)</td><td class="amountcell">'
+				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
+			$vattable+=$postage['total'];
+		}
+		if ($vattable) {
+			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT (21% on '
+				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
+			$vat=$vattable*.21;
+			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
+			$grandTotal+=$vat;
+		}
+		$table.='<tr class="os_basket_amountcell"><td style="text-align: right;" colspan="3">Total Due</td>'
+			.'<td class="amountcell">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
 		$table.='</table>';
 		$smarty->assign('_invoice_table', $table);
 		$smarty->assign('_invoicenumber', $id);

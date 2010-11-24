@@ -294,7 +294,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 	if (isset($vars->template) && $vars->template) {
 		$t=$vars->template;
 		$t=str_replace('{{ONLINESTORE_NUM_ITEMS}}', OnlineStore_getNumItems(), $t);
-		$t=str_replace('{{ONLINESTORE_FINAL_TOTAL}}', OnlineStore_getFinalTotal(), $t);
+		$t=str_replace('{{ONLINESTORE_FINAL_TOTAL}}', OnlineStore_numToPrice(OnlineStore_getFinalTotal()), $t);
 		$t=str_replace('{{ONLINESTORE_CHECKOUTURL}}', '/?pageid='.$_SESSION['onlinestore_checkout_page'], $t);
 		$html.=$t;
 	}
@@ -402,7 +402,7 @@ function OnlineStore_getFinalTotal() {
 		$vat=$vattable*.21;
 		$grandTotal+=$vat;
 	}
-	return OnlineStore_numToPrice($grandTotal);
+	return $grandTotal;
 }
 
 /**
