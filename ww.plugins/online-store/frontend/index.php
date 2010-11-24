@@ -199,6 +199,9 @@ if (!$submitted) {
 			}
 			$c.='<td class="'.$md5.'-item-total totals">'
 				.OnlineStore_numToPrice($totalItemCost).'</td></tr>';
+			if ($item['long_desc']) {
+				$c.='<tr><td colspan="3">'.$item['long_desc'].'</td><td></td></tr>';
+			}
 		}
 		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Subtotal</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';

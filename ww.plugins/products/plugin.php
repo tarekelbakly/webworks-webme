@@ -89,6 +89,7 @@ function products_add_to_cart($PAGEDATA){
 		return;
 	}
 	$id=(int)$_REQUEST['product_id'];
+	unset($_REQUEST['product_id']);
 	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
 	if(!$product)return;
@@ -107,12 +108,27 @@ function products_add_to_cart($PAGEDATA){
 		$price=(float)$product->get('price');
 		$vat=true;
 	}
+	// { find "custom" values
+	$vals=array();
+	$long_desc='';
+	$md5='';
+	foreach ($_REQUEST as $k=>$v){
+		if (strpos($k, 'products_values_')===0) {
+			$vals[]=str_replace('products_values_', '', $k)
+				.': '.$v;
+		}
+	}
+	if (count($vals)) {
+		$long_desc=join("\n", $vals);
+		$md5=','.md5($long_desc.'products_'.$id);
+	}
+	// }
 	OnlineStore_addToCart(
 		$price,
 		$amount,
 		$product->get('name'),
-		'',
-		'products_'.$id,
+		$long_desc,
+		'products_'.$id.$md5,
 		$_SERVER['HTTP_REFERER'],
 		$vat
 	);

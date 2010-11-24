@@ -45,4 +45,24 @@ $(function(){
 				$this.closest('form').submit();
 			},500);
 		});
+	$('div.products-product form input[type=submit]').live('mousedown',function(){
+		var inps=[];
+		var $form=$(this).closest('form');
+		$form.find('input').each(function(){
+			if (/products_values_/.test(this.name)) {
+				$(this).remove();
+			}
+		});
+		$(this).closest('div.products-product').find('select').each(function(){
+			if (!/products_values_/.test(this.name)) {
+				return;
+			}
+			inps.push([this.name, $(this).val()]);
+		});
+		for (var i=0;i<inps.length;++i) {
+			$('<input type="hidden" name="'+inps[i][0]+'" />')
+				.val(inps[i][1])
+				.appendTo($form);
+		}
+	});
 });

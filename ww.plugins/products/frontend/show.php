@@ -503,7 +503,7 @@ function products_show($PAGEDATA) {
 		$PAGEDATA->vars['products_what_to_show']='0';
 	}
 	WW_addScript('/ww.plugins/products/j/jquery.lightbox-0.5.min.js');
-	WW_addScript('/ww.plugins/products/frontend/js.min.js');
+	WW_addScript('/ww.plugins/products/frontend/js.js');
 	WW_addCSS('/ww.plugins/products/c/jquery.lightbox-0.5.css');
 	$c='';
 	// { search
@@ -1130,12 +1130,23 @@ class ProductType{
 			switch($f->t) {
 				case 'checkbox': // {
 					$smarty->assign($f->n, $val?'Yes':'No');
-				break;
-				// }
+				break; // }
 				case 'date': // {
 					$smarty->assign($f->n, date_m2h($val));
-				break;
-				// }
+				break; // }
+				case 'selectbox': // {
+					$h='<select name="products_values_'.$f->n.'">';
+					$es=explode("\n", $f->e);
+					foreach ($es as $e) {
+						$e=trim($e);
+						if ($e=='') {
+							continue;
+						}
+						$h.='<option>'.htmlspecialchars($e).'</option>';
+					}
+					$h.='</select>';
+					$smarty->assign($f->n, $h);
+				break; // }
 				default: // { everything else
 					$smarty->assign($f->n, $val);
 					// }

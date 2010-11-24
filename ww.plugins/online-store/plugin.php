@@ -420,9 +420,9 @@ function OnlineStore_getNumItems(){
 }
 function OnlineStore_startup(){
 	if (!isset($_SESSION['onlinestore_checkout_page'])) {
-		$p=Page::getInstanceByType('online-store');
+		$p=dbOne('select id from pages where type="online-store"','id');
 		if ($p) {
-			$_SESSION['onlinestore_checkout_page']=$p->id;
+			$_SESSION['onlinestore_checkout_page']=$p;
 		}
 	}
 }
