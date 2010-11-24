@@ -19,6 +19,9 @@ function os_set_amt(md5,amt,tr){
 	$.getJSON(
 		'/ww.plugins/online-store/j/set_amt.php?md5='+md5+'&amt='+amt,
 		function(ret){
+			if ($('#onlinestore-checkout').length) {
+				document.location=document.location.toString();
+			}
 			amt=ret.amt;
 			tr.data('amt',amt);
 			$('.'+ret.md5+'-amt').text(amt);

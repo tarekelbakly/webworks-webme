@@ -107,7 +107,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 			$smarty->assign($key, $val);
 		}
 		// { table of items
-		$table='<table width="100%"><tr><th class="quantityheader">Quantity</th>'
+		$table='<table id="onlinestore-invoice" width="100%"><tr><th class="quantityheader">Quantity</th>'
 			.'<th class="descriptionheader">Description</th>'
 			.'<th class="unitamountheader">'
 			.'Unit Price</th><th class="amountheader">Amount</th></tr>';
@@ -194,7 +194,7 @@ if (!$submitted) {
 		&&isset($_SESSION['online-store']['items'])
 		&&count($_SESSION['online-store']['items'])>0
 	) {
-		$c.='<table width="100%"><tr>';
+		$c.='<table id="onlinestore-checkout" width="100%"><tr>';
 		$c.='<th>Item</th>';
 		$c.='<th>Price</th>';
 		$c.='<th>Amount</th>';
