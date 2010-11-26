@@ -21,9 +21,13 @@ class User{
 	function getGroups(){
 		if(isset($this->groups))return $this->groups;
 		$arr=array();
-		$gs=dbAll('select usergroups_id from usergroups_users where users_id='.$this->id);
+		$gs
+			=dbAll(
+				'select groups_id from users_groups '
+				.'where user_accounts_id='.$this->id
+			);
 		foreach($gs as $g){
-			$arr[]=$g['usergroups_id'];
+			$arr[]=$g['groups_id'];
 		}
 		$this->groups=$arr;
 		return $this->groups;
