@@ -90,7 +90,7 @@ else { // add user to the subscribers list
 dbQuery(
 	'insert into forums_posts values(0,'.$thread_id.','
 	.$_SESSION['userdata']['id'].',now(),"'
-	.addslashes($body).'")'
+	.addslashes($body).'", 0)'
 );
 $post_id=dbLastInsertId();
 

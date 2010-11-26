@@ -62,6 +62,14 @@ if ($version==1) { // subscribers
 	}
 	$version=2;
 }
+if ($version==2) { // moderation of posts
+	dbQuery('alter table forums_posts add moderated smallint default 0');
+	$version=3;
+}
+if ($version==3) { // moderator groups
+	dbQuery('alter table forums add moderator_groups text');
+	$version=4;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

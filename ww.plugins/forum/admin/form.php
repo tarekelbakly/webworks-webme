@@ -12,7 +12,9 @@
   * @link       www.webworks.ie
  */
 
-WW_addScript('/ww.plugins/forums/admin/form.js');
+WW_addScript('/ww.plugins/forum/admin/form.js');
+$c='<link rel="stylesheet" type="text/css" '
+	.'href="/ww.plugins/forum/admin/forum-admin.css"></link>';
 // { tabs nav
 $c.= '<div class="tabs">'
 	.'<ul>'
@@ -23,11 +25,66 @@ $c.= '<div class="tabs">'
 	.'</ul>';
 // }
 // { dashboard
-$c.= '<div id="t-dashboard">please wait - loading</div>';
+$c.='<div id="t-dashboard">';
+$sql='select users.name as user, threads.name as thread, posts.body as body, '
+	.'posts.moderated as moderated, posts.id as id, posts.created_date as date'
+	.' ,forums.name as forum';
+$sql.=' from user_accounts as users, forums_threads as threads, forums_posts '
+	.'as posts, forums ';
+$sql.='where users.id=posts.author_id and threads.id=posts.thread_id '
+	.'and threads.forum_id = forums.id and posts.moderated=0 '
+	.'and forums.page_id = '.$page['id'];
+$posts = dbAll($sql);
+$c.='<strong>Posts Requiring Moderation</strong>';
+$c.='<table id="forum-datatable-requires-moderation" class="forum-page-table">'
+	.'<thead>';
+$c.='<tr><th>Date</th>';
+$c.='<th>Author</th>';
+$c.='<th>Forum</th>';
+$c.='<th>Thread</th>';
+$c.='<th>Posts</th>';
+$c.='<th>Moderation</th>';
+$c.='</tr></thead><tbody>';
+foreach ($posts as $post) {
+	$c.='<tr id="post-for-moderation-'.$post['id'].'">';
+	$c.='<td>'.date_m2h($post['date']).'</td>';
+	$c.='<td>'.htmlspecialchars($post['user']).'</td>';
+	$c.='<td>'.htmlspecialchars($post['forum']).'</td>';
+	$c.='<td>'.htmlspecialchars($post['thread']).'</td>';
+	$c.='<td>'.htmlspecialchars($post['body']).'</td>';
+	$c.='<td>';
+	$c.='<a class="approve" id="approve_'.$post['id'].'" '
+		.'href="javascript:;">Approve</a><br />';
+	$c.='<a class="delete" id="delete_'.$post['id'].'" '
+		.'href="javascript:;">Delete</a></td></tr>';
+}
+$c.='</tbody></table></div>';
 // }
 // { forums
 $c.= '<div id="t-forums">';
-$c.= '</div>';
+$forums=dbAll('select name, id from forums where page_id = '.$page['id']);
+$groups=dbAll('select name, id from groups');
+$c.='<table id="forum-moderators-table" class="forum-page-table">';
+$c.='<thead><tr><th>Forum</th>';
+$c.='<th>Moderators</th></tr></thead><tbody>';
+foreach ($forums as $forum) {
+	$c.= '<tr><td>'.htmlspecialchars($forum['name']).'</td><td>';
+	foreach ($groups as $group) {
+		$c.=htmlspecialchars($group['name'])
+			.' <input type="checkbox" name="moderators-'.$forum['id'].'[]"'
+			.' value='.$group['id'].' class="moderators"';
+		$sql='select moderator_groups from forums where id = '.$forum['id'];
+		$mods = explode(',', dbOne($sql, 'moderator_groups'));
+		if (in_array($group['id'], $mods, false)) {
+			$c.=' checked="checked" ';
+		}
+		$c.=' /><br />';
+	}
+	$c.= '<a href="javascript:;" class="add-group" '
+		.'id="add-group-link-for-forum-'.$forum['id'].'">[+]</a>';
+	$c.='</td></tr>';
+}
+$c.= '</tbody></table><br style="clear:both" /></div>';
 // }
 // { header
 $c.='<div id="t-header"><p>Text to be shown above the form</p>'
@@ -39,8 +96,7 @@ $c.='<div id="t-footer"><p>Text to appear below the form.</p>';
 $c.=ckeditor(
 	'page_vars[footer]',
 	(isset($vars['footer'])?$vars['footer']:''),
-	0,
-	$cssurl
+	0
 );
 $c.='</div>';
 // }

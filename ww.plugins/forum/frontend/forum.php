@@ -52,7 +52,10 @@ function Forum_show(&$PAGEDATA) {
 			'select * from forums where parent_id=0 and page_id='.$PAGEDATA->id
 		);
 		if (!$forums) {
-			dbQuery('insert into forums values(0,'.$PAGEDATA->id.',0,"default")');
+			dbQuery(
+				'insert into forums '.
+				'values(0,'.$PAGEDATA->id.',0,"default", "1")'
+			);
 			$view=1;
 			$forum_id=dbLastInsertId();
 		}
@@ -182,7 +185,7 @@ function Forum_showThread(&$PAGEDATA, &$id) {
 	$c.='<table id="forum-posts"><tr><th>Author</th><th>Post</th></tr>';
 	$posts=dbAll(
 		'select * from forums_posts where thread_id='
-		.$id.' order by created_date'
+		.$id.'  and moderated = 1 order by created_date'
 	);
 	foreach ($posts as $post) {
 		$user=User::getInstance($post['author_id']);
