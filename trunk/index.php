@@ -254,7 +254,7 @@ function logoDisplay($vars) {
 		$to=addslashes($image_file);
 		`convert $from -geometry $geometry $to`;
 	}
-	return '<img src="/f/skin_files/logo-'.$geometry.'.png" />';
+	return '<img id="logo" src="/f/skin_files/logo-'.$geometry.'.png" />';
 }
 
 /**
