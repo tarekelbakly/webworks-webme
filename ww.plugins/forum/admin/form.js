@@ -122,3 +122,31 @@ function update_groups(data) {
 		$(html).insertBefore($this);
 	});
 }
+$('.delete-forum-link').click(function() {
+	if (confirm('Are you sure you want to delete this forum')) {
+		var id = $(this).attr('id').replace('delete-forum-', '');
+		$.post(
+			'/ww.plugins/forum/admin/delete-forum.php',
+			{
+				'id':id
+			},
+			update_page,
+			'json'
+		);
+	}
+});
+function update_page(data) {
+	if (!data.status) {
+		return alert(data.message);
+	}
+	$('#forum-'+data.id).remove();
+	var postsTable = window.postsForModeration;
+	var posts = data.posts;
+	for (i=0; i<posts.length; ++i) {
+		var row = $('#post-for-moderation-'+posts[i]);
+		var pos = postsTable.fnGetPosition(($(row)[0]));
+		if (pos!==null) {
+			postsTable.fnDeleteRow(pos);
+		}
+	}
+}

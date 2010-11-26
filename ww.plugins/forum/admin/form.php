@@ -64,11 +64,13 @@ $c.='</tbody></table></div>';
 $c.= '<div id="t-forums">';
 $forums=dbAll('select name, id from forums where page_id = '.$page['id']);
 $groups=dbAll('select name, id from groups');
-$c.='<table id="forum-moderators-table" class="forum-page-table">';
+$c.='<table id="forum-moderators-table">';
 $c.='<thead><tr><th>Forum</th>';
-$c.='<th>Moderators</th></tr></thead><tbody>';
+$c.='<th>Moderators</th>';
+$c.= '<th>&nbsp;</th></tr></thead><tbody>';
 foreach ($forums as $forum) {
-	$c.= '<tr><td>'.htmlspecialchars($forum['name']).'</td><td>';
+	$c.= '<tr id="forum-'.$forum['id'].'"><td>'.htmlspecialchars($forum['name'])
+		.'</td><td>';
 	foreach ($groups as $group) {
 		$c.=htmlspecialchars($group['name'])
 			.' <input type="checkbox" name="moderators-'.$forum['id'].'[]"'
@@ -82,7 +84,9 @@ foreach ($forums as $forum) {
 	}
 	$c.= '<a href="javascript:;" class="add-group" '
 		.'id="add-group-link-for-forum-'.$forum['id'].'">[+]</a>';
-	$c.='</td></tr>';
+	$c.='</td><td>'
+		.'<a href="javascript:;" id="delete-forum-'.$forum['id'].'" '
+		.'class="delete-forum-link">[x]</a></td></tr>';
 }
 $c.= '</tbody></table><br style="clear:both" /></div>';
 // }
