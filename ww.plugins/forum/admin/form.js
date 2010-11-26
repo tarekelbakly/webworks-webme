@@ -1,7 +1,6 @@
 $(function() {
 	window.postsForModeration = $('#forum-datatable-requires-moderation')
 	.dataTable();
-	window.forumsTable = $('#forum-moderators-table').dataTable();
 });
 $('.approve').click(function() {
 	var id = $(this).attr('id').replace('approve_', '');
