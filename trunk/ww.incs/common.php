@@ -4,6 +4,11 @@ require_once SCRIPTBASE . 'ww.incs/Smarty-2.6.26/libs/Smarty.class.php';
 function date_m2h($d, $type = 'date') {
 	$date = preg_replace('/[- :]/', ' ', $d);
 	$date = explode(' ', $date);
+	if (count($date)<4) {
+		$date[3]='00';
+		$date[4]='00';
+		$date[5]='00';
+	}
 	$utime=mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
 	if ($type == 'date') {
 		return date('l jS F, Y', $utime);
