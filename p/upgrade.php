@@ -210,6 +210,11 @@ if($version==29){ // add original_body to page data
 	dbQuery('update pages set original_body=body');
 	$version=30;
 }
+if ($version==30) { // add metadata to groups table
+	dbQuery('alter table groups add meta text');
+	dbQuery('update groups set meta="{}"');
+	$version=31;
+}
 
 $DBVARS['version']=$version;
 config_rewrite();
