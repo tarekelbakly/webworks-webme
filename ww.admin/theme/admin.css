@@ -247,7 +247,6 @@ strong.clickable,a.clickable{ background: url("/ww.admin/i/note_edit.gif") 100% 
 .pageForm { margin: 0; padding: 0; width: auto; }
 .pageForm table { width: 98%; margin: 0;border-spacing: 0; } 
 .pageForm td, .pageForm th { padding: 7px 0; font-weight: normal; color: #333; font-size: 13px; border-spacing: 0; }
-.pageForm td input { width: 90%;  margin: 2px; }
 .pageForm td a, .pageForm td a:visited { color: #36f; text-decoration: none; border: 0; }
 .pageForm td a:hover { color: #f63; border-bottom: 1px solid #f63; }
 .pageForm th { text-transform: capitalize;font-weight:bold;padding-right:5px}
