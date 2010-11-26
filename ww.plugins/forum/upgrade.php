@@ -70,6 +70,10 @@ if ($version==3) { // moderator groups
 	dbQuery('alter table forums add moderator_groups text');
 	$version=4;
 }
+if ($version==4) { // fix older threads
+	dbQuery('update forums_posts set moderated=1');
+	$version=5;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

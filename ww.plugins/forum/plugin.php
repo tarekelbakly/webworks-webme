@@ -21,7 +21,7 @@ $plugin=array(
 	'frontend' => array(
 		'page_type' => 'Forum_frontend'
 	),
-	'version' => 4
+	'version' => 5
 );
 
 /**

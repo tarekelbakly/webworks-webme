@@ -47,7 +47,7 @@ else { //remove a group
 		$sql = 'select id from forums_posts where thread_id in '
 			.'(select id from forums_threads where forum_id = '.$forum.')';
 		$results = dbAll($sql);
-		$response['posts'] = array()
+		$response['posts'] = array();
 		foreach ($results as $result) {
 			$response['posts'][] = $result['id'];
 		}
