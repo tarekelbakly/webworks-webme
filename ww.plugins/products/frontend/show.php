@@ -375,8 +375,8 @@ function Products_listCategoryContents ($params, &$smarty) {
 }
 function Products_plusVat ($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
-	if (!isset($product->vals['online-store']['_apply_vat'])
-		|| $product->vals['online-store']['_apply_vat'] == '1'
+	if (!isset($product->vals['online-store']['_vatfree'])
+		|| $product->vals['online-store']['_vatfree'] == '0'
 	) {
 		return '+ VAT';
 	}

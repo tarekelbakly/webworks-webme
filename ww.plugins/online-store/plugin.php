@@ -40,7 +40,7 @@ $plugin=array(
 		'displaying-pagedata'      => 'OnlineStore_pagedata',
 		'initialisation-completed' => 'OnlineStore_startup'
 	),
-	'version' => '6'
+	'version' => '7'
 );
 // }
 // { currency symbols
@@ -241,7 +241,7 @@ function OnlineStore_productPriceFull($params, &$smarty) {
 			'_bulk_price'=>0,
 			'_bulk_amount'=>0,
 			'_weight'=>0,
-			'_apply_vat'=>0,
+			'_vatfree'=>0,
 			'_custom_vat_amount'=>0
 		);
 	}

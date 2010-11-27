@@ -102,7 +102,7 @@ function products_add_to_cart($PAGEDATA){
 		$price=(float)$p['_price'];
 		if(isset($p['_sale_price']) && $p['_sale_price']>0)$price=$p['_sale_price'];
 	  if(isset($p['_bulk_price']) && $p['_bulk_price']>0 && $p['_bulk_price']<$price && $amount>=$p['_bulk_amount'])$price=$p['_bulk_price'];
-		$vat=(!isset($p['_apply_vat']) || $p['_apply_vat']=='1')?true:false;
+		$vat=(isset($p['_vatfree']) && $p['_vatfree']=='1')?false:true;
 	}
 	else {
 		$price=(float)$product->get('price');

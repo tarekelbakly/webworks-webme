@@ -390,13 +390,13 @@ if (isset($PLUGINS['online-store'])) {
 			'_bulk_price' => 'Bulk Price',
 			'_bulk_amount' => 'Bulk Amount',
 			'_weight(kg)' => 'Weight (kg)',
-			'_apply_vat'  
+			'_vatfree'  
 				=> array (
-					'Apply VAT', 
+					'VAT-free', 
 					'Options' 
 						=>array(
-							'Yes',
-							'No'
+							'No',
+							'Yes'
 						)
 				),
 			'_custom_vat_amount' => 'Custom VAT Amount'

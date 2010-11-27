@@ -48,6 +48,26 @@ if ($version==5) { // clear caches
 	cache_clear('products');
 	$version=6;
 }
+if ($version==6) { // change _apply_vat to _vatfree
+	$rs=dbAll('select id,online_store_fields from products');
+	foreach ($rs as $r) {
+		$f=str_replace(
+			'"_apply_vat":"0"',
+			'"_vatfree":"1"',
+			$r['online_store_fields']
+		);
+		$f=str_replace(
+			'"_apply_vat":"1"',
+			'"_vatfree":"0"',
+			$f
+		);
+		dbQuery(
+			'update products set online_store_fields="'
+			.addslashes($f).'" where id='.$r['id']
+		);
+	}
+	$version=7;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();
