@@ -37,7 +37,7 @@ if(isset($vars->scrolling) && $vars->scrolling){
 		WW_addCSS('/ww.plugins/news/c/scroller.css');
 		$html.='<script>$(function(){
 			$("#news-wrapper-'.$vars->id.'").vTicker({
-				speed: 4000,
+				speed: 15000,
 				pause: 5000,
 				showItems: '.$n_items.',
 				animation: "",
