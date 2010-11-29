@@ -9,11 +9,11 @@ $('.approve').click(function() {
 		{
 			'id':id
 		},
-		remove_row,
+		forums_admin_remove_post,
 		'json'
 	);
 });
-function remove_row(data) {
+function forums_admin_remove_post(data) {
 	if (!data.status) {
 		return alert('There was an error in serving your request');
 	}
@@ -32,7 +32,7 @@ $('.delete').click(function() {
 			{
 				"id":id
 			},
-			remove_row,
+			forums_admin_remove_post,
 			'json'
 		);
 	}
@@ -66,11 +66,11 @@ $('.moderators').live('change', function() {
 				"group":group,
 				"autoApprove":autoApprove
 			},
-			show_message,
+			forums_admin_update_posts,
 			'json'
 	);
 });
-function show_message(data) {
+function forums_admin_update_posts(data) {
 	alert('The moderater groups for this forum have been updated');
 	if (data.posts) {
 		var posts = data.posts;
@@ -98,19 +98,19 @@ $('.add-group').live('click', function() {
 		}
 		var forumID = $this.attr('id')
 			.replace('new-moderator-group-for-forum-', '');
-		$this.remove();
 		$.post(
 			'/ww.plugins/forum/admin/new-group.php',
 			{
 				name: groupName,
 				forum: forumID
 			},
-			update_groups,
+			forums_admin_update_groups,
 			'json'
 		);
+		$this.remove();
 	});
 });
-function update_groups(data) {
+function forums_admin_update_groups(data) {
 	$('.add-group').each(function() {
 		var $this = $(this);
 		var forum = $this.attr('id')
@@ -133,12 +133,12 @@ $('.delete-forum-link').live('click', function() {
 			{
 				'id':id
 			},
-			update_page,
+			forums_admin_update_page,
 			'json'
 		);
 	}
 });
-function update_page(data) {
+function forums_admin_update_page(data) {
 	if (!data.status) {
 		return alert(data.message);
 	}
@@ -155,7 +155,7 @@ function update_page(data) {
 }
 $('.add-forum').click(function() {
 	html='<span><input class="new-forum" id="new-forum" /></span>';
-	$(html).insertBefore($(this));
+	$(html).insertBefore(this);
 	var page = $(this).attr('page');
 	$('.new-forum').blur(function() {
 		var $this = $(this);
@@ -170,12 +170,12 @@ $('.add-forum').click(function() {
 				'name':name,
 				'page':page
 			},
-			update_forums_table,
+			forums_admin_update_forums_table,
 			'json'
 		);
 	});
 });
-function update_forums_table(data) {
+function forums_admin_update_forums_table(data) {
 	if (!data.status) {
 		return alert(data.message);
 	}
