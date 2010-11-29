@@ -88,7 +88,9 @@ foreach ($forums as $forum) {
 		.'<a href="javascript:;" id="delete-forum-'.$forum['id'].'" '
 		.'class="delete-forum-link">[x]</a></td></tr>';
 }
-$c.= '</tbody></table><br style="clear:both" /></div>';
+$c.= '</tbody></table>';
+$c.='<a href="javascript:;" class="add-forum" page="'.$page['id'].'">[+]</a>'
+	.'</div>';
 // }
 // { header
 $c.='<div id="t-header"><p>Text to be shown above the form</p>'

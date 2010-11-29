@@ -37,7 +37,7 @@ $('.delete').click(function() {
 		);
 	}
 });
-$('.moderators').change(function() {
+$('.moderators').live('change', function() {
 	var $this = $(this);
 	var checked = $this.attr('checked');
 	var forum = $this.attr('name').replace('moderators-', '');
@@ -82,7 +82,7 @@ function show_message(data) {
 		}
 	}
 }
-$('.add-group').click(function() {
+$('.add-group').live('click', function() {
 	var $this = $(this);
 	var id = $this.attr('id').replace('add-group-link-for-forum-', '');
 	var html='<div>'
@@ -92,9 +92,12 @@ $('.add-group').click(function() {
 	$(html).insertBefore($this);
 	$('.new-group').blur(function() {
 		var $this = $(this);
+		var groupName = $this.val();
+		if (!groupName) {
+			return alert('No name entered');
+		}
 		var forumID = $this.attr('id')
 			.replace('new-moderator-group-for-forum-', '');
-		var groupName = $this.val();
 		$this.remove();
 		$.post(
 			'/ww.plugins/forum/admin/new-group.php',
@@ -122,7 +125,7 @@ function update_groups(data) {
 		$(html).insertBefore($this);
 	});
 }
-$('.delete-forum-link').click(function() {
+$('.delete-forum-link').live('click', function() {
 	if (confirm('Are you sure you want to delete this forum')) {
 		var id = $(this).attr('id').replace('delete-forum-', '');
 		$.post(
@@ -149,4 +152,48 @@ function update_page(data) {
 			postsTable.fnDeleteRow(pos);
 		}
 	}
+}
+$('.add-forum').click(function() {
+	html='<span><input class="new-forum" id="new-forum" /></span>';
+	$(html).insertBefore($(this));
+	var page = $(this).attr('page');
+	$('.new-forum').blur(function() {
+		var $this = $(this);
+		var name = $this.val();
+		if (!name) {
+			return alert('No name entered');
+		}
+		$this.remove();
+		$.post(
+			'/ww.plugins/forum/admin/add-forum.php',
+			{
+				'name':name,
+				'page':page
+			},
+			update_forums_table,
+			'json'
+		);
+	});
+});
+function update_forums_table(data) {
+	if (!data.status) {
+		return alert(data.message);
+	}
+	var html = '<tr id="forum-'+data.id+'"><td>'+data.name+'</td><td>';
+	var groups = data.groups;
+	for (var i=0; i<groups.length; ++i) {
+		html+= groups[i].name;
+		html+= '<input type="checkbox" class="moderators" name="moderators-'
+			+data.id+'[]"';
+		if (groups[i].id==1) {
+			html+= ' checked="checked"';
+		}
+		html+= '  value="'+groups[i].id+'" /><br />';
+	}
+	html+= '<a href="javascript:;" class="add-group" '
+		+'id="add-group-link-for-forum-'+data.id+'">[+]</a>';
+	html+= '<td><a href="javascript:;" class="delete-forum-link" '
+		+ 'id="delete-forum-'+data.id+'">[x]</a>';
+	html+= '</td></tr>';
+	$('#forum-moderators-table').append(html);
 }
