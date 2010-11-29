@@ -1,7 +1,7 @@
 <?php
 require '../../ww.incs/common.php';
-if(!is_admin())exit;
 require '../admin_libs.php';
+if(!is_admin())exit;
 // { take care of actions
 $id=isset($_REQUEST['id'])
 	?(int)$_REQUEST['id']
