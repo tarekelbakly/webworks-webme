@@ -135,15 +135,15 @@ foreach ($PLUGINS as $p) {
 // }
 if (!$allowed) {
 	$c.='<h2>Permission Denied</h2><p>This is a protected document.</p>';
-	$c.='<p>If you have been supplied with a password for the page, please enter it here and submit the form:</p>'
-		.'<form method="post"><input type="password" name="privacy_password" /><input type="submit" /></form>';
 	if (isset($_SESSION['userdata'])) {
 		$c.='<p>You are not in a user-group which has access to this page. '
 			.'If you think you should be, please contact the site administrator.</p>';
 	}
 	else {
-		$c.='<p>or click <a href="/_r?type=loginpage">here</a> to log in.</p>';
+		$c.='<p><strong>If you have a user account, please <a href="/_r?type=loginpage">click here</a> to log in.</strong></p>';
 	}
+	$c.='<p>If you do not have a user account, but have been supplied with a password for the page, please enter it here and submit the form:</p>'
+		.'<form method="post"><input type="password" name="privacy_password" /><input type="submit" /></form>';
 }
 else if (getVar('webmespecial')=='sitemap') {
 	$c.=sitemap('');
