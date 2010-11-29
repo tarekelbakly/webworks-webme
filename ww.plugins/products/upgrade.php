@@ -123,5 +123,9 @@ if ($version==13) { // Online store column for products
 	dbQuery('alter table products add online_store_fields text');
 	$version=14;
 }
+if ($version==14) { // prices_based_on_usergroup
+	dbQuery('alter table products_types add prices_based_on_usergroup tinyint default 0');
+	$version=15;
+}
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

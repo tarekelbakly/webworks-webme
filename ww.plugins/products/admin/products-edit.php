@@ -110,19 +110,21 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 				);
 			}
 		}
-		foreach ($_REQUEST['product-relations-type'] as $k=>$v) {
-			if ($v && $_REQUEST['products-relations-product'][$k]) {
-				$rid=(int)$v;
-				$pid=(int)$_REQUEST['products-relations-product'][$k];
-				dbQuery(
-					'insert into products_relations set from_id='.$id
-					.',to_id='.$pid.',relation_id='.$rid
-				);
-				if (!$rls[$rid]['one_way']) {
+		if (isset($_REQUEST['product-relations-type'])) {
+			foreach ($_REQUEST['product-relations-type'] as $k=>$v) {
+				if ($v && $_REQUEST['products-relations-product'][$k]) {
+					$rid=(int)$v;
+					$pid=(int)$_REQUEST['products-relations-product'][$k];
 					dbQuery(
-						'insert into products_relations set from_id='.$pid
-						.',to_id='.$id.',relation_id='.$rid
+						'insert into products_relations set from_id='.$id
+						.',to_id='.$pid.',relation_id='.$rid
 					);
+					if (!$rls[$rid]['one_way']) {
+						dbQuery(
+							'insert into products_relations set from_id='.$pid
+							.',to_id='.$id.',relation_id='.$rid
+						);
+					}
 				}
 			}
 		}

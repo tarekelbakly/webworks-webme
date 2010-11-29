@@ -53,6 +53,9 @@ $plugin=array(
 			'PRODUCTS_PLUS_VAT' => array (
 				'function' => 'Products_plusVat'
 			),
+			'PRODUCTS_RELATED' => array (
+				'function' => 'Products_showRelatedProducts'
+			),
 			'PRODUCTS_REVIEWS' => array (
 				'function' => 'products_reviews'
 			)
@@ -61,7 +64,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'products_add_to_cart'
 	),
-	'version' => '14'
+	'version' => '15'
 );
 // }
 

@@ -26,6 +26,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$multiview = '{{PRODUCTS_DATATABLE align=horizontal}}';
 			$multiview.= '<a href="{{PRODUCTS_LINK}}">more</a>';
 		}
+		$singleview=str_replace('&quot;', '"', $singleview);
+		$multiview=str_replace('&quot;', '"', $singleview);
 		$sql='set name="'.addslashes($_REQUEST['name'])
 			.'",data_fields="'.addslashes($data_fields)
 			.'",multiview_template="'.addslashes($multiview)

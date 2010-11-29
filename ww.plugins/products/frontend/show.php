@@ -498,6 +498,16 @@ function products_reviews ($params, &$smarty) {
 	}
 	return $c;
 }
+function products_setup_smarty() {
+	$smarty=smarty_setup();
+	$smarty->compile_dir=USERBASE.'/ww.cache/products/templates_c';
+	$smarty->template_dir='/ww.cache/products/templates';
+	$smarty->assign('PAGEDATA',$GLOBALS['PAGEDATA']);
+	if (isset($_SESSION['userdata'])) {
+		$smarty->assign('USERDATA',$_SESSION['userdata']);
+	}
+	return $smarty;
+}
 function products_show($PAGEDATA) {
 	if (!isset($PAGEDATA->vars['products_what_to_show'])) {
 		$PAGEDATA->vars['products_what_to_show']='0';
@@ -625,15 +635,8 @@ function products_show_all($PAGEDATA, $start=0, $limit=0, $order_by='', $order_d
 	}
 	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
-function products_setup_smarty() {
-	$smarty=smarty_setup();
-	$smarty->compile_dir=USERBASE.'/ww.cache/products/templates_c';
-	$smarty->template_dir='/ww.cache/products/templates';
-	$smarty->assign('PAGEDATA',$GLOBALS['PAGEDATA']);
-	if (isset($_SESSION['userdata'])) {
-		$smarty->assign('USERDATA',$_SESSION['userdata']);
-	}
-	return $smarty;
+function Products_showRelatedProducts() {
+	return 'none yet';
 }
 function products_submit_review_form ($productid, $userid) {
 	$formAction = '"http://webworks-webme';
