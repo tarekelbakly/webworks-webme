@@ -43,13 +43,22 @@ function config_rewrite(){
 	$config="<?php\n\$DBVARS=array(\n	".join(",\n	",$tmparr2)."\n);";
 	file_put_contents(CONFIG_FILE,$config);
 }
-function dbAll($query,$key='') {
+function dbAll($query, $key='') {
 	$q = dbQuery($query);
+	if ($q === false) {
+		return false;
+	}
 	$results=array();
-	while($r=$q->fetch(PDO::FETCH_ASSOC))$results[]=$r;
-	if(!$key)return $results;
+	while ($r=$q->fetch(PDO::FETCH_ASSOC)) {
+		$results[]=$r;
+	}
+	if (!$key) {
+		return $results;
+	}
 	$arr=array();
-	foreach($results as $r)$arr[$r[$key]]=$r;
+	foreach ($results as $r) {
+		$arr[$r[$key]]=$r;
+	}
 	return $arr;
 }
 function dbInit(){
@@ -66,16 +75,25 @@ function dbLastInsertId(){
 }
 function dbOne($query, $field='') {
 	$r = dbRow($query);
+	if ($r === false) {
+		return false;
+	}
 	return $r[$field];
 }
 function dbQuery($query){
 	$db=dbInit();
 	$q=$db->query($query);
+	if ($q === false) { // failed
+		return false;
+	}
 	$db->num_queries++;
 	return $q;
 }
 function dbRow($query) {
 	$q = dbQuery($query);
+	if ($q === false) {
+		return false;
+	}
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
 function ob_show_and_log($type,$header=''){
