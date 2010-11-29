@@ -256,6 +256,27 @@ function sanitise_html($original_html) {
 		$has_changed=$html!=$original_html;
 		$original_html=$html;
 	}while($has_changed);
+	// { old-style tabs
+	if (strpos($html, '%TABPAGE%')) {
+		$rand=md5(mt_rand());
+		$test=preg_replace('/<p>[^<]*(%TAB[^%]*%)[^<]*<\/p>/', '\1', $html);
+		$test=str_replace('%TABEND%', '</div></div><script>$(function(){$("#'.$rand.'").tabs();});</script>', $test);
+		$parts=preg_split('/%TAB[^%]*%/', $test);
+		$headings=array();
+		for ($i=1; $i<count($parts); ++$i) {
+			$headings[]=preg_replace('/<[^>]*>/', '', preg_replace('/^[^<]*<h2[^>]*>(.*?)<\/h2>.*/', '\1', $parts[$i]));
+
+			$replacement=($i>1?'</div>':'').'<div id="'.$rand.'-'.strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $headings[$i-1])).'">';
+			$parts[$i]=preg_replace('/^[^<]*<h2[^>]*>(.*?)<\/h2>/', $replacement, $parts[$i]);
+		}
+		$menu='<div id="'.$rand.'" class="tabs"><ul>';
+		foreach ($headings as $h) {
+			$menu.='<li><a href="#'.$rand.'-'.strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $h)).'">'.htmlspecialchars($h).'</a></li>';
+		}
+		$parts[0].=$menu.'</ul>';
+		$html=join('', $parts);
+	}
+	// }
 	$html = str_replace('{{CARRIAGERETURN}}', "\n", $html);
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
