@@ -37,7 +37,7 @@ if(isset($_REQUEST['action'])){
 		if(isset($_REQUEST['new_groups'])){
 			foreach($_REQUEST['new_groups'] as $ng){
 				$n=addslashes($ng);
-				dbQuery("insert into groups values(0,'$n',0)");
+				dbQuery("insert into groups set name='$n',parent=0");
 				$_REQUEST['groups'][dbOne('select last_insert_id() as id','id')]=true;
 			}
 		}
