@@ -246,20 +246,23 @@ function OnlineStore_productPriceFull($params, &$smarty) {
 		);
 	}
 	$p=$product->vals['online-store'];
+	$vat=isset($params['vat']) && $params['vat']
+		?1.21
+		:1;
 	foreach ($p as $k=>$v) {
 		$p[$k]=(float)$v;
 	}
 	if ($p['_sale_price']) {
-		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($p['_price'])
+		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($p['_price']*$vat)
 			.'</strike> <strong class="os_price">'
-			.OnlineStore_numToPrice($p['_sale_price']).'</strong>';
+			.OnlineStore_numToPrice($p['_sale_price']*$vat).'</strong>';
 	}
 	else {
 		$tmp='<strong class="os_price">'
-			.OnlineStore_numToPrice($p['_price']).'</strong>';
+			.OnlineStore_numToPrice($p['_price']*$vat).'</strong>';
 	}
 	if ($p['_bulk_price'] && $p['_bulk_amount']) {
-		$tmp.='<br />'.OnlineStore_numToPrice($p['_bulk_price']).' for '
+		$tmp.='<br />'.OnlineStore_numToPrice($p['_bulk_price']*$vat).' for '
 			.$p['_bulk_amount'].' or more';
 	}
 	$tmp='<span class="os_full_price">'.$tmp.'</span>';
