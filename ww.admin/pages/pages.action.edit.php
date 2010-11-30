@@ -21,13 +21,13 @@ if(allowedToEditPage($id)){
 	$associated_date=$_REQUEST['associated_date'];
 	$title=$_REQUEST['title'];
 	$importance=(float)$_REQUEST['importance'];
-	$name=$_REQUEST['name'];
-	if($importance<0)$importance=0;
+	if($importance<0.1)$importance=0.5;
 	if($importance>1)$importance=1;
 	$template=$_REQUEST['template'];
 	$original_body=(isset($_REQUEST['body']))?$_REQUEST['body']:'';
 	$body=$original_body;
 	$body=sanitise_html($body);
+	$name=$_REQUEST['name'];
 	// { check that name is not duplicate of existing page
 	if(dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id')){
 		$i=2;

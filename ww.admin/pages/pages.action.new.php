@@ -21,7 +21,7 @@ if(allowedToEditPage($parent)){
 	$associated_date=$_REQUEST['associated_date'];
 	$description=$_REQUEST['description'];
 	$importance=(float)$_REQUEST['importance'];
-	if($importance<0)$importance=0;
+	if($importance<0.1)$importance=0.5;
 	if($importance>1)$importance=1;
 	// }
 	$ord=dbOne('select ord from pages where parent='.$pid.' order by ord desc limit 1','ord')+1;

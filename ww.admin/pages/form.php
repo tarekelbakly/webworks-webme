@@ -197,7 +197,12 @@ echo '<td>';
 echo '<h4>'.__('MetaData').'</h4><table>';
 echo '<tr><th>'.__('keywords').'</th><td>'.wInput('keywords','',htmlspecialchars($page['keywords'])).'</td></tr>';
 echo '<tr><th>'.__('description').'</th><td>'.wInput('description','',htmlspecialchars($page['description'])).'</td></tr>';
-echo '<tr title="'.__('used by Google. importance of page relative to other pages on site. values 0.0 to 1.0').'"><th>importance</th><td>'.wInput('importance','',htmlspecialchars($page['importance'])).'</td></tr>';
+$importance=(float)$page['importance'];
+if ($importance<.1) {
+	$importance=.5;
+}
+echo '<tr title="used by Google. importance of page relative to other pages on site. values 0.1 to 1.0">'
+	.'<th>importance</th><td><input name="importance" value="'.$importance.'" /></td></tr>';
 echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars(@$page_vars['google-site-verification']).'" /></td></tr>';
 echo '<tr>';
 // { template
