@@ -348,6 +348,9 @@ function OnlineStore_showBasketWidget($vars=null) {
 
 
 function OnlineStore_getPostageAndPackaging($total,$country,$weight){
+	if (!OnlineStore_getNumItems()) {
+		return array('name'=>'none', 'total'=>0);
+	}
 	$pandps=OnlineStore_getPostageAndPackagingData();
 	$pid=$_SESSION['os_pandp'];
 	if(!isset($pandps[$pid]) || $pandps[$pid]->name=='')$pid=0;
