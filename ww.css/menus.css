@@ -12,3 +12,5 @@
 .fg-menu-container a.ui-state-hover{
 	background:transparent;
 }
+.ui-tabs-nav { height:2.5em; }
+

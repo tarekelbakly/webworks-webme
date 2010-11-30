@@ -22,8 +22,12 @@ function ajaxmenu_initialise(p){
 		if(!e)return;
 		e.innerHTML='';
 		e.style.display='none';
-		if(e.className.indexOf('accordion')!=-1)_am.accordion=1;
-		else if(e.className.indexOf('two-tier')!=-1)_am.two_tier=1;
+		if (e.className.indexOf('accordion')!=-1) {
+			_am.accordion=1;
+		}
+		else if (e.className.indexOf('two-tier')!=-1) {
+			_am.two_tier=1;
+		}
 		if(e.className.indexOf('click_required')!=-1){
 			_am.click_required=1;
 			$(e).removeClass('click_required');
@@ -58,16 +62,21 @@ function ajaxmenu_initialise(p){
 				});
 			}
 			if(_am.accordion){
-				$(document).unbind('click',ajaxmenu_queueClearMenus);
-				$(document).click(ajaxmenu_queueClearMenus);
+				$(document)
+					.unbind('click',ajaxmenu_queueClearMenus)
+					.click(ajaxmenu_queueClearMenus);
 			}
-			else if(!_am.two_tier)$.event.add(l,'mouseout',ajaxmenu_queueClearMenus);
-			if((+(a[i].numchildren)) || (a[i].type==8 && _am.search_options&1) )setTimeout('ajaxmenu_initialise(_am.menus["'+p+'"]['+i+'].id)',1);
+			else if (!_am.two_tier) {
+				$.event.add(l,'mouseout',ajaxmenu_queueClearMenus);
+			}
+			if ((+(a[i].numchildren)) || (a[i].type==8 && _am.search_options&1) ) {
+				setTimeout('ajaxmenu_initialise(_am.menus["'+p+'"]['+i+'].id)',1);
+			}
 		}
-		if(_am.accordion && e.id!='ajaxmenu'+_am.topMenu){
+		if (_am.accordion && e.id!='ajaxmenu'+_am.topMenu) {
 			$(e).slideDown(300);
 		}
-		else{
+		else {
 			e.style.display='block';
 			var w=e.width,h=e.offsetHeight,y=e.offsetTop,wh=$(window).height();
 			var scrolly = typeof window.pageYOffset != 'undefined' ? window.pageYOffset : (document.documentElement.scrollTop?document.documentElement.scrollTop:document.body.scrollTop);
@@ -200,8 +209,12 @@ function ajaxmenu_queueClearMenus(){
 	_am.align=m.className.indexOf('menuBarLeft')==-1?'horizontal':'vertical';
 	_am.activeMenu=_am.topMenu;
 	_am.activeSetTimeout=0;
-	if(m.className.indexOf('preopen_menu')!=-1)_am.preopen_menu= +(document.location.toString().replace(/.*#am_open=([0-9]*)$/,'$1'));
-	if(window.currentTop==undefined)currentTop=0;
+	if (m.className.indexOf('preopen_menu')!=-1) {
+		_am.preopen_menu= +(document.location.toString().replace(/.*#am_open=([0-9]*)$/,'$1'));
+	}
+	if (window.currentTop==undefined) {
+		currentTop=0;
+	}
 	_am.openMenus=[_am.topMenu,''+currentTop];
 // }
 _am.onload=function(){
