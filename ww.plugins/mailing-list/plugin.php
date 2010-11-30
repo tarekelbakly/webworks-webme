@@ -24,7 +24,7 @@ $plugin=array(
 		),
 		'widget' => 'MailingList_showForm'
 	),
-	'version' => '1'
+	'version' => '4'
 );
 function MailingList_showForm(){
 	include_once SCRIPTBASE . 'ww.plugins/mailing-list/frontend/mailing-list.php';

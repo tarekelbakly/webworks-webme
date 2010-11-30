@@ -9,14 +9,20 @@ function falert($text){
 	return '<script>fAlert(\''.$text.'\');</script>';
 }
 function check_details($email,$name){
-	if($name=='') return false;
-	elseif(!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,20})$",$email)) return false;
-	else return true;
+	if ($name=='') {
+		return false;
+	}
+	return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
-function add_database($email,$name){
+function add_database ($email, $name, $mobile) {
 	if($name=='__empty__')$name='not collected';
+	if($mobile=='__empty__')$mobile='not collected';
 	$hash=mt_rand().mt_rand().mt_rand();
-	dbQuery('insert into mailing_list values("","'.addslashes($email).'","'.$name.'","Pending","'.$hash.'")');
+	dbQuery(
+		'insert into mailing_list set email="'.addslashes($email).'", name="'
+		.addslashes($name).'", status="Pending", hash="'.$hash.'", mobile="'
+		.addslashes($mobile).'"'
+	);
 	return $hash;
 }
 function send_confirmation($email,$hash){
@@ -39,6 +45,7 @@ function create_form(){
 		$f='<form id="mailing_list" method="post">'.
 					'<input onfocus="if(this.value==\''.$FIELD['inp_em'].'\')this.value=\'\'" onblur="if(this.value==\'\')this.value=\''.$FIELD['inp_em'].'\'" value="'.$FIELD['inp_em'].'" id="email" type="text" name="mailing_email"/>';
 		if($FIELD['col_name']==1)$f.='<input type="text" name="name" value="'.$FIELD['inp_nm'].'" id="mailing_name" onfocus="if(this.value==\''.$FIELD['inp_nm'].'\')this.value=\'\'" onblur="if(this.value==\'\')this.value=\''.$FIELD['inp_nm'].'\'"/>';
+		if($FIELD['col_mobile']==1)$f.='<input type="text" name="mobile" value="'.$FIELD['inp_mb'].'" id="mailing_mobile" onfocus="if(this.value==\''.$FIELD['inp_mb'].'\')this.value=\'\'" onblur="if(this.value==\'\')this.value=\''.$FIELD['inp_mb'].'\'"/>';
 		if($FIELD['dis_sub']==1)$f.='<input type="submit" name="submit" value="'.$FIELD['inp_sub'].'" id="mailing_submit"/>';
 		$f.='</form>';
 		return $f;
@@ -61,10 +68,12 @@ function show_form(){
 		$email.=$_POST['mailing_email'];
 		if(isset($_POST['name']))$name=$_POST['name'];
 		else $name='__empty__';
+		if(isset($_POST['mobile']))$mobile=$_POST['mobile'];
+		else $mobile='__empty__';
 		$valid=check_details($email,$name);
 		if($valid==true){
-			$hash=add_database($email,$name);
-			send_confirmation($email,$hash);
+			$hash=add_database($email, $name, $mobile);
+			send_confirmation($email, $hash);
 			$html.=falert('Thank You! A confirmation email has been sent to '.$email);
 		}
 		else $html.=falert('Error. Invalid details.');

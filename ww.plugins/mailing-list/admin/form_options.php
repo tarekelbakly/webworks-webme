@@ -16,7 +16,7 @@ foreach($options as $option){
 if($FIELD['use_js']==1)
 echo '
 <script type="text/javascript">
-$(document).ready(form_valid);
+$(form_valid);
 function form_valid(){
 	$("#form").submit(function{confirm("test")});
 } 
@@ -41,6 +41,7 @@ echo '<div id="mailing-list-form-options-tabs" class="mailing-list-tabs">';
 
 $sub_val = ($OPT['dis_sub']==1)?'checked':'';
 $name_val = ($OPT['col_name']==1)?'checked':'';
+$mobile_val = ($OPT['col_mobile']==1)?'checked':'';
 
 echo '
 <ul>
@@ -56,6 +57,8 @@ echo '
 			<tr><td>Email input:</td><td><input type="text" value="'.$OPT['inp_em'].'" name="inp_em"/></td></tr>
 			<tr><td>Collect name:</td><td><input type="checkbox" value="1" name="col_name"'.$name_val.'/></td></tr>
 			<tr><td>Name input:</td><td><input type="text" value="'.$OPT['inp_nm'].'" name="inp_nm"/></td></tr>
+			<tr><td>Collect phone number:</td><td><input type="checkbox" value="1" name="col_mobile"'.$mobile_val.'/></td></tr>
+			<tr><td>Phone input:</td><td><input type="text" value="'.$OPT['inp_mb'].'" name="inp_mb"/></td></tr>
 			<tr><td colspan="2"><input type="submit" name="front_sub" value="Save"/></td></tr>
 		</table>
 	</form>
