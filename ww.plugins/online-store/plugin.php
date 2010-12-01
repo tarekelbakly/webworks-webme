@@ -192,27 +192,6 @@ function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
 	* @return string
 	*/
 function OnlineStore_pagedata() {
-	if (isset($_SESSION['currency'])) {
-		return ',"currency":"'.$_SESSION['currency']['symbol'].'"';
-	}
-	$currencies=dbOne(
-		'select value from site_vars where name="currencies" limit 1',
-		'value'
-	);
-	if ($currencies==false) {
-		$currency=$GLOBALS['DBVARS']['online_store_currency'];
-		$currency_symbols=array('EUR'=>'€','GBP'=>'£');
-		$_SESSION['currency']=array(
-			'name'   => $currency,
-			'symbol' => $currency_symbols[$currency],
-			'iso'    => $currency,
-			'value'  => 1
-		);
-	}
-	else {
-		$currencies=json_decode($currencies, true);
-		$_SESSION['currency']=$currencies[0];
-	}
 	return ',"currency":"'.$_SESSION['currency']['symbol'].'"';
 }
 
@@ -430,6 +409,26 @@ function OnlineStore_startup(){
 		$p=dbOne('select id from pages where type="online-store"','id');
 		if ($p) {
 			$_SESSION['onlinestore_checkout_page']=$p;
+		}
+	}
+	if (!isset($_SESSION['currency'])) {
+		$currencies=dbOne(
+			'select value from site_vars where name="currencies" limit 1',
+			'value'
+		);
+		if ($currencies==false) {
+			$currency=$GLOBALS['DBVARS']['online_store_currency'];
+			$currency_symbols=array('EUR'=>'€','GBP'=>'£');
+			$_SESSION['currency']=array(
+				'name'   => $currency,
+				'symbol' => $currency_symbols[$currency],
+				'iso'    => $currency,
+				'value'  => 1
+			);
+		}
+		else {
+			$currencies=json_decode($currencies, true);
+			$_SESSION['currency']=$currencies[0];
 		}
 	}
 }
