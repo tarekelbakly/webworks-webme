@@ -1138,16 +1138,21 @@ class ProductType{
 					$smarty->assign($f->n, date_m2h($val));
 				break; // }
 				case 'selectbox': // {
-					$h='<select name="products_values_'.$f->n.'">';
-					$es=explode("\n", $f->e);
-					foreach ($es as $e) {
-						$e=trim($e);
-						if ($e=='') {
-							continue;
+					if (isset($f->u) && $f->u) {
+						$h='<select name="products_values_'.$f->n.'">';
+						$es=explode("\n", $f->e);
+						foreach ($es as $e) {
+							$e=trim($e);
+							if ($e=='') {
+								continue;
+							}
+							$h.='<option>'.htmlspecialchars($e).'</option>';
 						}
-						$h.='<option>'.htmlspecialchars($e).'</option>';
+						$h.='</select>';
 					}
-					$h.='</select>';
+					else {
+						$h=$val;
+					}
 					$smarty->assign($f->n, $h);
 				break; // }
 				default: // { everything else
