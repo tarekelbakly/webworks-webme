@@ -122,6 +122,7 @@ function OnlineStore_frontend($PAGEDATA) {
 	*/
 function OnlineStore_generatePaypalButton($PAGEDATA, $id, $total, $return='') {
 	global $DBVARS;
+	$total=sprintf("%.2f",$total);
 	return '<form id="online-store-paypal" method="post" action="https://www.paypal.com'
 		.'/cgi-bin/webscr"><input type="hidden" value="_xclick" name="cmd"/>'
 		.'<input type="hidden" value="'.$PAGEDATA->vars['online_stores_paypal_address']
