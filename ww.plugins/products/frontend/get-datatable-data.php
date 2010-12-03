@@ -18,7 +18,7 @@ if ($sort_dir!='des') {
 $search=$_REQUEST['sSearch'];
 $search_arr=array();
 for ($i=0; $i<count($columns); ++$i) {
-	if (!$_REQUEST['sSearch_'.$i]) {
+	if (!isset($_REQUEST['sSearch_'.$i]) || $_REQUEST['sSearch_'.$i]==='') {
 		continue;
 	}
 	$search_arr[$columns[$i]]=$_REQUEST['sSearch_'.$i];
