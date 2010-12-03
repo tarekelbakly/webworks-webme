@@ -635,7 +635,24 @@ function products_show_all($PAGEDATA, $start=0, $limit=0, $order_by='', $order_d
 	}
 	return $products->render($PAGEDATA,$start,$limit,$order_by,$order_dir);
 }
-function Products_showRelatedProducts() {
+function Products_showRelatedProducts($params, &$smarty) {
+	$product = $smarty->_tpl_vars['product'];
+	$productID = $product->id;
+	$type='';
+	if (isset($params['type'])) {
+		$tid=dbOne('select id from products_relation_types where name="'.addslashes($params['type']).'"', 'id');
+		if($tid) {
+			$type=' and relation_id='.$tid;
+		}
+	}
+	$rs=dbAll('select to_id from products_relations where from_id='.$productID.$type);
+	if (count($rs)) {
+		$h='';
+		foreach ($rs as $r) {
+			$p=Product::getInstance($r['to_id']);
+		}
+		return $h;
+	}
 	return 'none yet';
 }
 function products_submit_review_form ($productid, $userid) {
@@ -939,7 +956,7 @@ class Products{
 			return false;
 		}
 		$md5=md5(
-			$id.'|'.$search.'|'.join(',',$search_arr).'|'.$sort_col.'|'.$sort_dir
+			$id.'|'.$search.'|'.print_r($search_arr, true).'|'.$sort_col.'|'.$sort_dir
 		);
 		if (!array_key_exists($md5, self::$instances)) {
 			$product_ids=array();
