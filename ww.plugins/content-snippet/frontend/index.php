@@ -47,7 +47,7 @@ function show_content_snippet($vars){
 			$html.='<li><div class="handle">';
 			if(count($imgs) && isset($imgs[$i])) {
 				$size=getimagesize(USERBASE.$imgs[$i]);
-				$html.='<img src="'.htmlspecialchars($imgs[$i]).'" style="width:'.$size[0].'px" />';
+				$html.='<img src="'.htmlspecialchars($imgs[$i]).'" style="width:'.$size[0].'px;height:'.$size[1].'px" />';
 			}
 			else {
 				$html.=htmlspecialchars($content['title']);
