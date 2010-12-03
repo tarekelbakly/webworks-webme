@@ -11,7 +11,7 @@ $plugin=array(
 	'frontend'=>array(
 		'file_hook'=>'protectedFiles_check'
 	),
-	'version'=>5
+	'version'=>6
 );
 function protectedFiles_log($fname,$success,$email='',$pf_id){
 	$i=$_SERVER['REMOTE_ADDR'];
@@ -32,75 +32,97 @@ function protectedFiles_check($vars){
 	}
 	foreach($protected_files as $pr){
 		if(strpos($fname,$pr['directory'].'/')===0){
-			$email='';
-			if(isset($_SESSION['protected_files_email']) && $_SESSION['protected_files_email'])
-				$email=$_SESSION['protected_files_email'];
-			else if(isset($_SESSION['userdata']['email']) && $_SESSION['userdata']['email'])$email=$_SESSION['userdata']['email'];
-			else if(isset($_REQUEST['email']) && filter_var($_REQUEST['email'],FILTER_VALIDATE_EMAIL))$email=$_REQUEST['email'];
-			if($email){
-				require_once SCRIPTBASE.'ww.incs/common.php';
-				$_SESSION['protected_files_email']=$email;
-				unset($_SESSION['protected_files_stage2']);
-				if(!isset($_SESSION['protected_files_stage2'])){
-					$_SESSION['protected_files_stage2']=1;
+			if (!isset($pr['details'])) {
+				$details=array('type'=>1);
+			}
+			else {
+				$details=json_decode($pr['details'], true);
+			}
+			switch ((int)$details['type']) {
+				case 1: // { email
+					$email='';
+					if (isset($_SESSION['protected_files_email']) && $_SESSION['protected_files_email']) {
+						$email=$_SESSION['protected_files_email'];
+					}
+					else if(isset($_SESSION['userdata']['email']) && $_SESSION['userdata']['email'])$email=$_SESSION['userdata']['email'];
+					else if(isset($_REQUEST['email']) && filter_var($_REQUEST['email'],FILTER_VALIDATE_EMAIL))$email=$_REQUEST['email'];
+					if($email){
+						require_once SCRIPTBASE.'ww.incs/common.php';
+						$_SESSION['protected_files_email']=$email;
+						unset($_SESSION['protected_files_stage2']);
+						if(!isset($_SESSION['protected_files_stage2'])){
+							$_SESSION['protected_files_stage2']=1;
+							$PAGEDATA=Page::getInstance(0);
+							$PAGEDATA->title='File Download';
+							$smarty = protectedFiles_getTemplate($pr['template']);
+							$smarty->assign('METADATA', '<title>File Download</title>');
+							$smarty->assign(
+								'PAGECONTENT',
+								'<p>Your download should begin in two seconds. '
+								.'If it doesn\'t, please <a href="'
+								.urlencode($_SERVER['REQUEST_URI'])
+								.'">click here</a></p>'
+								.'<script>setTimeout(function(){document.location="'
+								.htmlspecialchars($_SERVER['REQUEST_URI'])
+								.'";},2000);</script><p>'
+								.'<a href="'.$_SESSION['referer']
+								.'">Click here</a> to return to the referring page.</p>'
+							);
+							$smarty->display($pr['template'].'.html');
+						}
+						else{
+							webmeMail(
+								$pr['recipient_email'], 
+								$pr['recipient_email'], 
+								'['.$_SERVER['HTTP_HOST'].'] protected file downloaded',
+								'protected file "'.addslashes($fname)
+								.'" was downloaded by "'.addslashes($email).'"'
+							); 
+							protectedFiles_log($fname,1,$email,$pr['id']);
+							unset($_SESSION['referer']);
+						}
+						exit;
+					}
+					else{
+						unset($_SESSION['protected_files_stage2']);
+						if(!isset($_SESSION['referer'])) {
+							$_SESSION['referer']=$_SERVER['HTTP_REFERER'];
+						}
+						protectedFiles_log($fname,0,'',$pr['id']);
+						$PAGEDATA=Page::getInstance(0);
+						$PAGEDATA->title='File Download';
+						$smarty = protectedFiles_getTemplate($pr['template']);
+						$smarty->assign('METADATA', '<title>File Download</title>');
+						$smarty->assign(
+							'PAGECONTENT',
+							$pr['message'].'<form method="post" action="/f'
+							.htmlspecialchars($fname).'">'
+							.'<input name="email" /><input type="submit" /></form>'
+						);
+						$smarty->display($pr['template'].'.html');
+						exit;
+					}
+				break; // }
+				case 2: // { groups
+					if (isset($_SESSION['userdata']['groups'])) {
+						$valid=explode(',', $details['groups']);
+						foreach ($valid as $g) {
+							if ($g!='' && isset($_SESSION['userdata']['groups'][$g])) {
+								return; // ok - this user is a member of a valid group
+							}
+						}
+					}
 					$PAGEDATA=Page::getInstance(0);
 					$PAGEDATA->title='File Download';
-#					$template=template_load($PAGEDATA);
-#					ob_start();
-#					show_page($template,'<p>Your download should begin in two seconds. If it doesn\'t, please <a href="'.htmlspecialchars($_SERVER['REQUEST_URI']).'">click here</a></p><script>setTimeout(function(){document.location="'.$_SERVER['REQUEST_URI'].'";},2000);</script><p><a href="'.$_SESSION['referer'].'">Click here</a> to return to the referring page.</p>',$PAGEDATA);
 					$smarty = protectedFiles_getTemplate($pr['template']);
 					$smarty->assign('METADATA', '<title>File Download</title>');
 					$smarty->assign(
 						'PAGECONTENT',
-						'<p>Your download should begin in two seconds. '
-						.'If it doesn\'t, please <a href="'
-						.urlencode($_SERVER['REQUEST_URI'])
-						.'">click here</a></p>'
-						.'<script>setTimeout(function(){document.location="'
-						.htmlspecialchars($_SERVER['REQUEST_URI'])
-						.'";},2000);</script><p>'
-						.'<a href="'.$_SESSION['referer']
-						.'">Click here</a> to return to the referring page.</p>'
+						$pr['message'].'<p>Please <a href="/_r?type=privacy">login</a> to view this page</p>'
 					);
 					$smarty->display($pr['template'].'.html');
-#					ob_show_and_log('page');
-				}
-				else{
-					webmeMail(
-						$pr['recipient_email'], 
-						$pr['recipient_email'], 
-						'['.$_SERVER['HTTP_HOST'].'] protected file downloaded',
-						'protected file "'.addslashes($fname)
-						.'" was downloaded by "'.addslashes($email).'"'
-					); 
-					protectedFiles_log($fname,1,$email,$pr['id']);
-					unset($_SESSION['referer']);
-				}
-				exit;
-			}
-			else{
-				unset($_SESSION['protected_files_stage2']);
-				if(!isset($_SESSION['referer'])) {
-					$_SESSION['referer']=$_SERVER['HTTP_REFERER'];
-				}
-				protectedFiles_log($fname,0,'',$pr['id']);
-				$PAGEDATA=Page::getInstance(0);
-				$PAGEDATA->title='File Download';
-#				require SCRIPTBASE . 'common/templates.php';
-#				$template=template_load($PAGEDATA);
-#				ob_start();
-#				show_page($template,$pr['message'].'<form method="post" action="/f'.htmlspecialchars($fname).'"><input name="email" /><input type="submit" /></form>',$PAGEDATA);
-				$smarty = protectedFiles_getTemplate($pr['template']);
-				$smarty->assign('METADATA', '<title>File Download</title>');
-				$smarty->assign(
-					'PAGECONTENT',
-					$pr['message'].'<form method="post" action="/f'
-					.htmlspecialchars($fname).'">'
-					.'<input name="email" /><input type="submit" /></form>'
-				);
-				$smarty->display($pr['template'].'.html');
-				exit;
-#				ob_show_and_log('page');
+					exit;
+				// }
 			}
 		}
 	}

@@ -19,14 +19,23 @@ function get_subdirs($base,$dir){
 $id=(int)@$_REQUEST['id'];
 if(isset($_REQUEST['action'])){
 	if($_REQUEST['action']=='Save Protected Files'){
-		$q='message="'.addslashes(@$_REQUEST['message']).'",template="'.addslashes(@$_REQUEST['template']).'",directory="'.addslashes(@$_REQUEST['directory']).'",recipient_email="'.addslashes(@$_REQUEST['recipient_email']).'"';
-		if($id)dbQuery("update protected_files set $q where id=$id");
-		else{
+		$details=array(
+			'type'=>1
+		);
+		$q='message="'.addslashes(@$_REQUEST['message']).'",'
+			.'template="'.addslashes(@$_REQUEST['template']).'",'
+			.'directory="'.addslashes(@$_REQUEST['directory']).'",'
+			.'recipient_email="'.addslashes(@$_REQUEST['recipient_email']).'",'
+			.'details="'.addslashes(json_encode($details)).'"';
+		if ($id) {
+			dbQuery("update protected_files set $q where id=$id");
+		}
+		else {
 			dbQuery("insert into protected_files set $q");
 			$id=dbOne("select last_insert_id() as id",'id');
 		}
 	}
-	else if($_REQUEST['action']=='delete'){
+	else if ($_REQUEST['action']=='delete') {
 		dbQuery("delete from protected_files where id=$id");
 		$id=0;
 	}
@@ -34,6 +43,7 @@ if(isset($_REQUEST['action'])){
 }
 
 $r=dbRow('select * from protected_files where id='.$id);
+$details=json_decode($r['details'], true);
 switch(@$_REQUEST['view']){
 	case 'log': // {
 		echo '<table><tr><th>Filename</th><th>Completed</th><th>Email</th><th>Date/Time</th></tr>';
@@ -46,15 +56,19 @@ switch(@$_REQUEST['view']){
 		echo '<form method="post" action="',$_url,'"><table style="width:90%">';
 		if(!isset($r['directory']))$r['directory']='/';
 		echo '<tr><th>Directory containing the files</th><td><select id="directory" name="directory"><option value="'.htmlspecialchars($r['directory']).'">'.htmlspecialchars($r['directory']).'</option>';
-		echo '</select></td>';
-		// }
+		echo '</select><a class="button" href="#page_vars[directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Files</a></td>';
 		// { link to log
 		echo '<th>&nbsp;</th><td>';
 		if($id)echo '<a href="/ww.admin/plugin.php?_plugin=protected-files&amp;_page=index&amp;id='.$id.'&amp;view=log">view log</a>';
 		echo '</td></tr>';
 		// }
-		echo '<tr><td>&nbsp;</td><td><a class="button" href="#page_vars[directory]" onclick="javascript:window.open(\'/j/kfm/?startup_folder=\'+$(\'#directory\').attr(\'value\'),\'kfm\',\'modal,width=800,height=600\');">Manage Files</a></td></tr>';
-		echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td>';
+		// { protection type
+		echo '<tr><th>protection type</th><td><select name="type"><option value="1">Require an email address</option><option value="2"';
+		if ($details['type'] == 2) {
+			echo ' selected="selected"';
+		}
+		echo '>Must be a group member</option></select></td>';
+		// }
 		// { page template
 		echo '<th>Page Template</th><td>';
 		$ex='ls '.THEME_DIR.'/'.THEME.'/h/*html';
@@ -70,14 +84,27 @@ switch(@$_REQUEST['view']){
 				echo '>'.$name.'</option>';
 			}
 			echo '</select>';
-		}else echo '<input type="hidden" name="template" value="'.htmlspecialchars(preg_replace('/.*themes-personal\/[^\/]*\/h\/|\.html/','',$d[0])).'" />';
+		}
+		else {
+			$name=htmlspecialchars(preg_replace('/.*themes-personal\/[^\/]*\/h\/|\.html/','',$d[0]));
+			echo '<input type="hidden" name="template" value="'.$name.'" />'.$name;
+		}
 		echo '</td></tr>';
 		// }
+		// { email to send alerts to
+		echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td></tr>';
+		// }
+		// { message
 		echo '<tr><th>Message</th><td colspan="3">'.ckeditor('message',$r['message'],0,0,150).'</td></tr>';
+		// }
+		// { save
 		echo '<tr><th colspan="2"><input type="hidden" name="id" value="',$id,'" />';
 		echo '<input type="submit" name="action" value="Save Protected Files" />';
-		if($id)echo '<a style="margin-left:20px;" href="/ww.admin/plugin.php?_plugin=protected_files&amp;id='.$id.'&amp;action=delete" onclick="return confirm(\'are you sure you want to remove this?\')" title="delete">[x]</a>';
+		if ($id) {
+			echo '<a style="margin-left:20px;" href="/ww.admin/plugin.php?_plugin=protected_files&amp;id='.$id.'&amp;action=delete" onclick="return confirm(\'are you sure you want to remove this?\')" title="delete">[x]</a>';
+		}
 		echo '</th></tr></table></form>';
+		// }
 	// }
 }
 ?>
