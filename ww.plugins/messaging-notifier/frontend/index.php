@@ -1,14 +1,15 @@
 <?php
-function show_messaging_notifier($vars){
-	if(!is_array($vars) && isset($vars->id) && $vars->id){
+function show_messaging_notifier($vars) {
+	if (!is_array($vars) && isset($vars->id) && $vars->id) {
 		$data=cache_load('messaging_notifier', 'id'.$vars->id);
 		if ($data===false) {
 			$data=dbOne('select data from messaging_notifier where id='.$vars->id,'data');
 			cache_save('messaging_notifier', 'id'.$vars->id, $data);
-			if($data)return parse_messaging_notifier(json_decode($data),$vars);
+		}
+		if ($data) {
+			return parse_messaging_notifier(json_decode($data),$vars);
 		}
 	}
-	return '<!-- this Messaging Notifier is not yet defined. -->';
 }
 function parse_messaging_notifier($data,$vars){
 	$altogether=array();

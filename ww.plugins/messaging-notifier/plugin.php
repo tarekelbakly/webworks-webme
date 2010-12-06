@@ -1,6 +1,6 @@
 <?php
 $plugin=array(
-	'name' => 'Messaging Notifier',
+	'name' => 'Feed Reader',
 	'admin' => array(
 		'widget' => array(
 			'form_url' => '/ww.plugins/messaging-notifier/admin/widget-form.php'
