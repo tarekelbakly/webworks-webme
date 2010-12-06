@@ -19,6 +19,16 @@ if (isset($_POST['import'])) {
 	if (isset($_FILES['file'])) {
 		$file = $_FILES['file'];
 		if ($file['type']=='text/csv') { // If it has the right extension
+			// { build a translator - public to internal names
+			$dfs=dbAll('select data_fields from products_types');
+			$dfs_translate=array();
+			foreach ($dfs as $df) {
+				$df=json_decode($df['data_fields']);
+				foreach ($df as $f) {
+					$dfs_translate[$f->ti]=$f->n;
+				}
+			}
+			// }
 			if (isset($_POST['clear_database'])) {
 				dbQuery('delete from products');
 				dbQuery('delete from products_categories_products');
@@ -54,6 +64,9 @@ if (isset($_POST['import'])) {
 			foreach ($tmp as $col) {
 				// { Assume that leading underscores in the name should be removed
 				$col = preg_replace('/^_/', '', $col);
+				if (isset($dfs_translate[$col])) {
+					$col=$dfs_translate[$col];
+				}
 				$colNames[] = $col;
 				// }
 				${$col}= array();
@@ -86,6 +99,9 @@ if (isset($_POST['import'])) {
 					if ($col=='') { // ignore blank column headers
 						continue;
 					}
+					if (isset($dfs_translate[$col])) {
+						$col=$dfs_translate[$col];
+					}
 					for ($i; $i<count($row); $i++) {
 						$data = $row[$i];
 						break;
@@ -97,6 +113,12 @@ if (isset($_POST['import'])) {
 						else {
 							if (!is_array($data_fields[$numRows-1])) {
 								$data_fields[$numRows-1] = array();
+							}
+							if ($data=='TRUE') {
+								$data=1;
+							}
+							else if ($data=='FALSE') {
+								$data=0;
 							}
 							$data_fields[$numRows-1][] = array(
 								'n'=>$col,
@@ -121,6 +143,7 @@ if (isset($_POST['import'])) {
 			}
 			// { Put the data into the products database
 			$products_imported=0;
+			$ptid=dbOne('select id from products_types');
 			for ($i=0; $i<$numRows; $i++) {
 				if (!isset($name[$i]) || $name[$i]=='') {
 					$name[$i]='NO NAME SUPPLIED';
@@ -133,11 +156,11 @@ if (isset($_POST['import'])) {
 								name = 
 									\''.addslashes($name[$i]).'\',
 								product_type_id = 
-									'.(int)$product_type_id[$i].',
+									'.(isset($product_type_id[$i])?(int)$product_type_id[$i]:$ptid).',
 								image_default = 
 									\''.addslashes($image_default[$i]).'\',
 								enabled = 
-									'.(int)$enabled[$i].', 
+									'.(isset($enabled[$i])?(int)$enabled[$i]:1).', 
 								date_created = 
 									\''.addslashes($date_created[$i]).'\',
 								data_fields = 
