@@ -15,6 +15,9 @@ if(allowedToEditPage($parent)){
 	}
 	// { variables
 	$template=$_REQUEST['template'];
+	if ($template=='' && $pid) {
+		$template=dbOne('select template from pages where id='.$pid,'template');
+	}
 	$type=$_REQUEST['type'];
 	$title=isset($_REQUEST['title'])?addslashes($_REQUEST['title']):'';
 	$keywords=$_REQUEST['keywords'];
