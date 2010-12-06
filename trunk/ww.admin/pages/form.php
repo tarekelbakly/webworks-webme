@@ -206,7 +206,7 @@ echo '<tr title="used by Google. importance of page relative to other pages on s
 echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars(@$page_vars['google-site-verification']).'" /></td></tr>';
 echo '<tr>';
 // { template
-echo '<th>'.__('template').'</th><td>';
+echo '<th>template</th><td>';
 $d=array();
 if(!file_exists(THEME_DIR.'/'.THEME.'/h/')){
 	echo 'SELECTED THEME DOES NOT EXIST<br />Please <a href="/ww.admin/siteoptions.php?page=themes">select a theme</a>';
@@ -228,7 +228,7 @@ else{
 		}
 		echo '</select>';
 	}
-	else echo 'no options available';
+	else echo 'no options available<input type="hidden" name="template" value="'.htmlspecialchars($d[0]).'" />';
 }
 echo '</td>';
 // }
