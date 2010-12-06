@@ -345,6 +345,11 @@ if (isset($PAGEDATA->vars['google-site-verification'])) {
 		.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
 }
 // }
+// { favicon
+if (file_exists(USERBASE.'/f/skin_files/favicon.ico')) {
+	$c.='<link rel="shortcut icon" href="/f/skin_files/favicon.ico" />';
+}
+// }
 // }
 $smarty->assign('METADATA', $c);
 // { display the document
