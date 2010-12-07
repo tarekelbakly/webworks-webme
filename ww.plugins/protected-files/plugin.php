@@ -49,18 +49,17 @@ function protectedFiles_check($vars){
 					if($email){
 						require_once SCRIPTBASE.'ww.incs/common.php';
 						$_SESSION['protected_files_email']=$email;
-						unset($_SESSION['protected_files_stage2']);
 						if(!isset($_SESSION['protected_files_stage2'])){
 							$_SESSION['protected_files_stage2']=1;
 							$PAGEDATA=Page::getInstance(0);
 							$PAGEDATA->title='File Download';
-							$smarty = protectedFiles_getTemplate($pr['template']);
+							list($smarty, $template) = protectedFiles_getTemplate($pr['template']);
 							$smarty->assign('METADATA', '<title>File Download</title>');
 							$smarty->assign(
 								'PAGECONTENT',
 								'<p>Your download should begin in two seconds. '
 								.'If it doesn\'t, please <a href="'
-								.urlencode($_SERVER['REQUEST_URI'])
+								.$_SERVER['REQUEST_URI']
 								.'">click here</a></p>'
 								.'<script>setTimeout(function(){document.location="'
 								.htmlspecialchars($_SERVER['REQUEST_URI'])
@@ -68,7 +67,8 @@ function protectedFiles_check($vars){
 								.'<a href="'.$_SESSION['referer']
 								.'">Click here</a> to return to the referring page.</p>'
 							);
-							$smarty->display($pr['template'].'.html');
+							$smarty->display($template.'.html');
+							exit;
 						}
 						else{
 							webmeMail(
@@ -81,7 +81,6 @@ function protectedFiles_check($vars){
 							protectedFiles_log($fname,1,$email,$pr['id']);
 							unset($_SESSION['referer']);
 						}
-						exit;
 					}
 					else{
 						unset($_SESSION['protected_files_stage2']);
@@ -91,15 +90,15 @@ function protectedFiles_check($vars){
 						protectedFiles_log($fname,0,'',$pr['id']);
 						$PAGEDATA=Page::getInstance(0);
 						$PAGEDATA->title='File Download';
-						$smarty = protectedFiles_getTemplate($pr['template']);
+						list($smarty, $template) = protectedFiles_getTemplate($pr['template']);
 						$smarty->assign('METADATA', '<title>File Download</title>');
 						$smarty->assign(
 							'PAGECONTENT',
 							$pr['message'].'<form method="post" action="/f'
 							.htmlspecialchars($fname).'">'
-							.'<input name="email" /><input type="submit" /></form>'
+							.'<input name="email" /><input type="submit" value="Please enter your email address" /></form>'
 						);
-						$smarty->display($pr['template'].'.html');
+						$smarty->display($template.'.html');
 						exit;
 					}
 				break; // }
@@ -114,13 +113,13 @@ function protectedFiles_check($vars){
 					}
 					$PAGEDATA=Page::getInstance(0);
 					$PAGEDATA->title='File Download';
-					$smarty = protectedFiles_getTemplate($pr['template']);
+					list($smarty, $template) = protectedFiles_getTemplate($pr['template']);
 					$smarty->assign('METADATA', '<title>File Download</title>');
 					$smarty->assign(
 						'PAGECONTENT',
 						$pr['message'].'<p>Please <a href="/_r?type=privacy">login</a> to view this page</p>'
 					);
-					$smarty->display($pr['template'].'.html');
+					$smarty->display($template.'.html');
 					exit;
 				// }
 			}
@@ -156,5 +155,5 @@ function protectedFiles_getTemplate($templateString) {
 	$smarty = smarty_setup();
 	$smarty -> compile_dir = USERBASE.'/ww.cache/pages';
 	$smarty -> template_dir = THEME_DIR.'/'.THEME.'/h/';
-	return $smarty;
+	return array($smarty, $template);
 }
