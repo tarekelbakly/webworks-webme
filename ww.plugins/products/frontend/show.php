@@ -358,7 +358,7 @@ function products_link ($params, &$smarty) {
 	$id= $product->id;
 	return $product->getRelativeURL();
 }
-function Products_listCategoryContents ($params, &$smarty) {
+function _Products_listCategoryContents ($params, &$smarty) {
 	if (!isset($params['category'])) {
 		$products=Products::getAll();
 	}

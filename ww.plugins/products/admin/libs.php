@@ -15,8 +15,10 @@ function products_categories_get_data($id){
 	);
 	if (isset($pageid)) {
 		$page= Page::getInstance($pageid);
-		$url= $page->getRelativeUrl();
-		$data['page']= $url;
+		if ($page) {
+			$url= $page->getRelativeUrl();
+			$data['page']= $url;
+		}
 	}
 	return $data;
 }

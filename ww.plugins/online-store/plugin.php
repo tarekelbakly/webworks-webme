@@ -283,13 +283,13 @@ function OnlineStore_showBasketWidget($vars=null) {
 	}
 	else {
 		if (count($_SESSION['online-store']['items'])) {
-			$html.='<table>';
-			$html.='<tr><th>&nbsp;</th><th>Price</th><th>Amount</th>'
+			$html.='<table class="os_basket">';
+			$html.='<tr class="os_basket_titles"><th>&nbsp;</th><th>Price</th><th>Amount</th>'
 				.'<th>Total</th></tr>';
 			foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 				// { name
-				$html.='<tr class="os_item_name" product="'.$md5.'">'
-					.'<td colspan="4">';
+				$html.='<tr class="os_basket_itemTitle" product="'.$md5.'">'
+					.'<th colspan="4">';
 				if ($item['url']) {
 					$html.='<a href="'.$item['url'].'">';
 				}
@@ -297,9 +297,9 @@ function OnlineStore_showBasketWidget($vars=null) {
 				if ($item['url']) {
 					$html.='</a>';
 				}
-				$html.='</td></tr>';
+				$html.='</th></tr>';
 				// }
-				$html.='<tr class="os_item_numbers '.$md5.'" product="'.$md5.'">'
+				$html.='<tr class="os_basket_itemDetails '.$md5.'" product="'.$md5.'">'
 					.'<td>&nbsp;</td><td>'
 					.OnlineStore_numToPrice($item['cost']).'</td>';
 				// { amount
@@ -310,7 +310,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 					.OnlineStore_numToPrice($item['cost']*$item['amt'])
 					.'</td></tr>';
 			}
-			$html.='<tr class="os_total"><th colspan="3">Total</th>'
+			$html.='<tr class="os_basket_totals"><th colspan="3">Total</th>'
 				.'<td class="total">'
 				.OnlineStore_numToPrice($_SESSION['online-store']['total']).'</td></tr>';
 			$html.='</table>';

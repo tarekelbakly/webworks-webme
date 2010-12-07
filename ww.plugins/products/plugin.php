@@ -71,7 +71,7 @@ $plugin=array(
 function products_admin_page_form($page,$vars){
 	$id=$page['id'];
 	$c='';
-	require dirname(__FILE__).'/admin/page-form.php';
+	require_once dirname(__FILE__).'/admin/page-form.php';
 	return $c;
 }
 function products_frontend($PAGEDATA){
@@ -135,4 +135,8 @@ function products_add_to_cart($PAGEDATA){
 		$_SERVER['HTTP_REFERER'],
 		$vat
 	);
+}
+function Products_listCategoryContents($params, &$smarty){
+	require_once dirname(__FILE__).'/frontend/show.php';
+	return _Products_listCategoryContents($params, &$smarty);
 }
