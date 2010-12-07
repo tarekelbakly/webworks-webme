@@ -650,8 +650,34 @@ function Products_showRelatedProducts($params, &$smarty) {
 		$h='';
 		foreach ($rs as $r) {
 			$p=Product::getInstance($r['to_id']);
+			$h.='<a class="product_related" href="'.$p->getRelativeUrl().'">';
+			$vals=$p->vals;
+			if (!$vals['images_directory']) {
+				$h.=htmlspecialchars($p->name).'</a>';
+				continue;
+			}
+			$iid=0;
+			if ($vals['image_default']) {
+				$iid=$vals['image_default'];
+				$image=kfmImage::getInstance($iid);
+				if (!$image->exists())$iid=0;
+			}
+			if (!$iid) {
+				$directory = $vals['images_directory'];
+				$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
+				if ($dir_id) {
+					$images=kfm_loadFiles($dir_id);
+					if (count($images['files']))$iid=$images['files'][0]['id'];
+				}
+			}
+			if (!$iid) {
+				$h.=htmlspecialchars($p->name).'</a>';
+				continue;
+			}
+			$h.='<img src="/kfmget/'.$iid.'&amp;width=150&amp;height=150" /><br />'
+				.htmlspecialchars($p->name).'</a>';
 		}
-		return $h;
+		return '<div class="product_list products_'.htmlspecialchars($params['type']).'">'.$h.'</div>';
 	}
 	return 'none yet';
 }
@@ -758,6 +784,10 @@ class Product{
 			);
 			$pid=0;
 			foreach ($rs as $r) {
+				$page=Page::getInstance($r['page_id']);
+				if ($page->type!='products') {
+					continue;
+				}
 				$pid=$r['page_id'];
 				if ($pid==$PAGEDATA->id) {
 					break;
@@ -766,7 +796,7 @@ class Product{
 			if ($pid) {
 				$page = Page::getInstance($pid);
 				$this->relativeUrl=$page->getRelativeUrl()
-					.'?product_id='.$this->id;
+					.'?&product_id='.$this->id;
 				return $this->relativeUrl;
 			}
 		}
