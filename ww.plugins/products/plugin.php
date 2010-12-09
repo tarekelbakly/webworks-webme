@@ -92,7 +92,6 @@ function products_add_to_cart($PAGEDATA){
 		return;
 	}
 	$id=(int)$_REQUEST['product_id'];
-	unset($_REQUEST['product_id']);
 	require_once dirname(__FILE__).'/frontend/show.php';
 	$product=Product::getInstance($id);
 	if(!$product)return;
