@@ -14,5 +14,8 @@ $(function(){
 	});
 	var pid=pagedata.id;
 	var $menu=$('.menu-pid-'+pid).closest('ul');
-	$menu.prev().trigger('click');
+	do{
+		$menu.prev().trigger('click');
+		$menu=$menu.prev().closest('ul');
+	}while ($menu.length);
 });
