@@ -1,7 +1,9 @@
 <?php
 
 if(isset($_REQUEST['action']) && ($_REQUEST['action']=='save')){
-	file_put_contents(THEME_DIR.'/'.THEME.'/h/'.$name.'.html',$_REQUEST['theme-body']);
+	if (file_put_contents(THEME_DIR.'/'.THEME.'/h/'.$name.'.html',$_REQUEST['theme-body'])===false) {
+		echo '<em>failed to write to '.THEME_DIR.'/'.THEME.'/h/'.$name.'.html. Please check the permissions on the file.</em>';
+	}
 }
 $f=file_get_contents(THEME_DIR.'/'.THEME.'/h/'.$name.'.html');
 
