@@ -36,13 +36,7 @@ else{
 		// do not delete the HTML comment in the next line - it's there for datatables magic. without it, sorting will not work.
 		echo '<tr><td class="edit-link"><!-- '.htmlspecialchars($r['name']).' --><a href="plugin.php?_plugin=products&amp;_page=products-edit&amp;id='.$r['id'].'">'.htmlspecialchars($r['name']).'</td>';
 		echo '<td>'.($r['enabled']=='1'?'Yes':'No').'</td>';
-		echo '<td><a class="delete_link" id="delete_link_'.$r['id'].'" href="'.$_url.'&delete='.$r['id'].'&delete-images=1" onclick="return confirm(\'are you sure you want to delete this product?\\n'.htmlspecialchars($r['name']).'\n\nNote that if the checkbox next to this link is clicked, associated images will also be deleted.\')" title="delete">[x]</a>';
-		echo '<input type="checkbox" 
-			id="delete_link_'.$r['id'].'"
-			onChange="change_href('.$r['id'].');"
-			class="delete_checkbox"
-			title="remove associated images"
-			checked="checked" />';
+		echo '<td><a class="delete_link" id="delete_link_'.$r['id'].'" href="'.$_url.'&delete='.$r['id'].'&delete-images=1" onclick="return confirm(\'are you sure you want to delete this product?\\n'.htmlspecialchars($r['name']).')" title="delete">[x]</a>';
 		echo '</td>';
 		echo '</tr>';
 	}
