@@ -1073,6 +1073,7 @@ class Products{
 					.'">next --&gt;</a>';
 			}
 		}
+		$prevnext='<div class="products-pagination">'.$prevnext.'</div>';
 		// }
 		// { see if there are search results
 		if (isset($PAGEDATA->vars['products_add_a_search_box'])
