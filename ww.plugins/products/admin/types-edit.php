@@ -64,18 +64,25 @@ if($id){
 	if(!$tdata)die('<em>No product type with that ID exists.</em>');
 }
 else{
-	$tdata=array(
-		'id'=>0,
-		'name'=>'',
-		'show_product_variants'=>0,
-		'show_related_products'=>0,
-		'show_contained_products'=>0,
-		'show_countries'=>0,
-		'data_fields'=>'',
-		'is_for_sale'=>0,
-		'multiview_template'=>'',
-		'singleview_template'=>''
-	);
+	if (isset($_REQUEST['from'])) {
+		$tdata=dbRow("select * from products_types where id=".(int)$_REQUEST['from']);
+		$tdata['id']=0;
+		$tdata['name']='';
+	}
+	else {
+		$tdata=array(
+			'id'=>0,
+			'name'=>'',
+			'show_product_variants'=>0,
+			'show_related_products'=>0,
+			'show_contained_products'=>0,
+			'show_countries'=>0,
+			'data_fields'=>'',
+			'is_for_sale'=>0,
+			'multiview_template'=>'',
+			'singleview_template'=>''
+		);
+	}
 }
 echo '<form action="'.$_url.'&amp;id='.$id.'" method="POST" '
 	.'enctype="multipart/form-data">';
