@@ -1204,7 +1204,15 @@ class ProductType{
 					$smarty->assign($f->n, $h);
 				break; // }
 				default: // { everything else
-					$smarty->assign($f->n, $val);
+					if (isset($f->u) && $f->u) {
+						$smarty->assign(
+							$f->n,
+							'<input name="products_values_'.$f->n.'" />'
+						);
+					}
+					else {
+						$smarty->assign($f->n, $val);
+					}
 					// }
 			}
 		}
