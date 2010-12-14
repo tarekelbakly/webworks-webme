@@ -79,7 +79,7 @@ if ($kfm->setting('allow_file_upload')) {
 			// }
 		}
 		if ($cwd==$kfm->setting('root_folder_id') && !$kfm->setting('allow_files_in_root')) $errors[] = 'Cannot upload files to the root directory';
-		if (!$replace && file_exists($to)) $errors[] = 'File already exists'; // TODO new string
+//		if (!$replace && file_exists($to)) $errors[] = 'File already exists'; // TODO new string
 		if (!count($errors)) {
 			move_uploaded_file($tmpname, $to);
 			if (!file_exists($to)) $errors[] = kfm_lang('failedToSaveTmpFile', $tmpname, $to);
