@@ -47,6 +47,9 @@ $plugin=array(
 			'PRODUCTS_LINK' => array (
 				'function' => 'products_link'
 			),
+			'PRODUCTS_LIST_CATEGORIES' => array(
+				'function' => 'Products_listCategories'
+			),
 			'PRODUCTS_LIST_CATEGORY_CONTENTS' => array(
 				'function' => 'Products_listCategoryContents'
 			),
@@ -135,7 +138,11 @@ function products_add_to_cart($PAGEDATA){
 		$vat
 	);
 }
+function Products_listCategories($params, &$smarty){
+	require_once dirname(__FILE__).'/frontend/show.php';
+	return _Products_listCategories($params, $smarty);
+}
 function Products_listCategoryContents($params, &$smarty){
 	require_once dirname(__FILE__).'/frontend/show.php';
-	return _Products_listCategoryContents($params, &$smarty);
+	return _Products_listCategoryContents($params, $smarty);
 }

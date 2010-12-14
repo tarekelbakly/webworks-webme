@@ -57,11 +57,17 @@ $(function(){
 	);
 
 	var oInput=$('table.product-horizontal tfoot input,table.product-horizontal tfoot select');
+	var tSearch=$('.dataTables_filter input');
 	var onchange=function(){
 		clearTimeout(window.dt_filter);
 		var $this=this;
 		var $export=$('#products-export');
-		var n='sSearch_'+oInput.index($this);
+		if ($this.name=='') {
+			var n='sSearch';
+		}
+		else {
+			var n='sSearch_'+oInput.index($this);
+		}
 		var $export_inp=$export.find('input[name="'+n+'"]');
 		if (!$export_inp.length) {
 			$export_inp=$('<input type="hidden" name="'+n+'" />');
@@ -74,7 +80,22 @@ $(function(){
 	};
 	var asInitVals=[];
 	oInput.keyup( onchange )
-		.change( onchange)
+		.each( function (i) {
+			asInitVals[i] = this.value;
+		} )
+		.focus( function () {
+			if ( this.className == "search_init" ) {
+				this.className = "";
+				this.value = "";
+			}
+		} )
+		.blur( function (i) {
+			if ( this.value == "" ) {
+				this.className = "search_init";
+				this.value = asInitVals[$("tfoot input").index(this)];
+			}
+		} );
+	tSearch.keyup( onchange )
 		.each( function (i) {
 			asInitVals[i] = this.value;
 		} )

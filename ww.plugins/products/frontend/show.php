@@ -358,6 +358,18 @@ function products_link ($params, &$smarty) {
 	$id= $product->id;
 	return $product->getRelativeURL();
 }
+function _Products_listCategories($params, &$smarty) {
+	if (!isset($params['parent'])) {
+		$parent=0;
+	}
+	$cats=dbAll('select * from products_categories where parent_id='.((int)$parent).' and enabled order by name');
+	$html='<ul class="products-list-categories sc_subcatnames">';
+	foreach ($cats as $cat) {
+		$html.='<li><a href="">'.htmlspecialchars($cat['name']).'</a></li>';
+	}
+	$html.='</ul>';
+	return $html;
+}
 function _Products_listCategoryContents ($params, &$smarty) {
 	if (!isset($params['category'])) {
 		$products=Products::getAll();

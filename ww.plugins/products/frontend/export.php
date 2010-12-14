@@ -5,6 +5,7 @@ $i=0;
 
 header('Content-type: text/csv');
 header('Content-Disposition: attachment; filename="nfgws-export.csv"');
+mail('kae@verens.com','test',print_r($_REQUEST,true));
 
 function sputcsv($row, $delimiter = ',', $enclosure = '"', $eol = "\n") {
     static $fp = false;
