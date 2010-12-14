@@ -155,5 +155,5 @@ function protectedFiles_getTemplate($templateString) {
 	$smarty = smarty_setup();
 	$smarty -> compile_dir = USERBASE.'/ww.cache/pages';
 	$smarty -> template_dir = THEME_DIR.'/'.THEME.'/h/';
-	return array($smarty, $template);
+	return array($smarty, str_replace('.html','',$template));
 }
