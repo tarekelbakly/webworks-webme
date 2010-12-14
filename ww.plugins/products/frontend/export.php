@@ -3,7 +3,7 @@ require 'datatable-libs.php';
 
 $i=0;
 
-header('Content-type: text/csv');
+header('Content-type: text/csv; Charset=utf-8');
 header('Content-Disposition: attachment; filename="nfgws-export.csv"');
 
 function sputcsv($row, $delimiter = ',', $enclosure = '"', $eol = "\n") {
