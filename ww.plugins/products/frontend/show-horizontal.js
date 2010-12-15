@@ -80,6 +80,7 @@ $(function(){
 	};
 	var asInitVals=[];
 	oInput.keyup( onchange )
+		.change( onchange )
 		.each( function (i) {
 			asInitVals[i] = this.value;
 		} )
