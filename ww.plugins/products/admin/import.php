@@ -15,10 +15,11 @@
   * @link       www.webworks.ie
  */
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';
+$name=array();
 if (isset($_POST['import'])) {
 	if (isset($_FILES['file'])) {
 		$file = $_FILES['file'];
-		if ($file['type']=='text/csv') { // If it has the right extension
+		if (preg_match('/\.csv/', $file['name'])) { // If it has the right extension
 			// { build a translator - public to internal names
 			$dfs=dbAll('select data_fields from products_types');
 			$dfs_translate=array();
@@ -143,7 +144,7 @@ if (isset($_POST['import'])) {
 			}
 			// { Put the data into the products database
 			$products_imported=0;
-			$ptid=dbOne('select id from products_types');
+			$ptid=dbOne('select id from products_types','id');
 			for ($i=0; $i<$numRows; $i++) {
 				if (!isset($name[$i]) || $name[$i]=='') {
 					$name[$i]='NO NAME SUPPLIED';
@@ -155,12 +156,10 @@ if (isset($_POST['import'])) {
 							set 
 								name = 
 									\''.addslashes($name[$i]).'\',
-								product_type_id = 
-									'.(isset($product_type_id[$i])?(int)$product_type_id[$i]:$ptid).',
+								product_type_id = '.(isset($product_type_id[$i])?(int)$product_type_id[$i]:$ptid).',
 								image_default = 
 									\''.addslashes($image_default[$i]).'\',
-								enabled = 
-									'.(isset($enabled[$i])?(int)$enabled[$i]:1).', 
+								enabled = 1, 
 								date_created = 
 									\''.addslashes($date_created[$i]).'\',
 								data_fields = 
@@ -177,8 +176,8 @@ if (isset($_POST['import'])) {
 							(
 								\''.(int)$id[$i].'\',
 								\''.addslashes($name[$i]).'\',
-								\''.(int)$product_type_id[$i].'\',
-								\''.(int)$enabled[$i].'\',
+								\''.$ptid.'\',
+								\'1\',
 								\''.addslashes($image_default[$i]).'\',
 								\''.addslashes($date_created[$i]).'\',
 								\''.addslashes($data_fields[$i]).'\',
@@ -201,9 +200,9 @@ if (isset($_POST['import'])) {
 							values
 							(
 								'.addslashes($name[$i]).', 
-								\''.(int)$product_type_id[$i].'\',
+								\''.$ptid.'\',
 								\''.addslashes($image_default[$i]).'\',
-								\''.(int)$enabled[$i].'\',
+								\'1\',
 								\''.addslashes($date_created[$i]).'\',
 								\''.addslashes($data_fields[$i]).'\',
 								\''.addslashes($images_directory[$i]).'\'
@@ -217,12 +216,10 @@ if (isset($_POST['import'])) {
 						set 
 						name = 
 							\''.addslashes($name[$i]).'\',
-						product_type_id = 
-							'.(int)$product_type_id[$i].',
+						product_type_id = '.$ptid.',
 						image_default = 
 							\''.addslashes($image_default[$i]).'\',
-						enabled = 
-							'.(int)$enabled[$i].', 
+						enabled = 1, 
 						date_created = 
 							\''.addslashes($date_created[$i]).'\',
 						data_fields = 
@@ -277,6 +274,7 @@ if (isset($_POST['import'])) {
 			echo '<em>Only csv files are permitted</em>';
 		}
 	}
+	cache_clear('products');
 }
 // { The Form
 echo '<form method="post" enctype="multipart/form-data">';
