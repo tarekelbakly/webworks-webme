@@ -20,8 +20,10 @@ $id=(int)@$_REQUEST['id'];
 if(isset($_REQUEST['action'])){
 	if($_REQUEST['action']=='Save Protected Files'){
 		$details=array(
-			'type'=>1
 		);
+		foreach ($_REQUEST['details'] as $k=>$n) {
+			$details[$k]=$n;
+		}
 		$q='message="'.addslashes(@$_REQUEST['message']).'",'
 			.'template="'.addslashes(@$_REQUEST['template']).'",'
 			.'directory="'.addslashes(@$_REQUEST['directory']).'",'
@@ -63,11 +65,18 @@ switch(@$_REQUEST['view']){
 		echo '</td></tr>';
 		// }
 		// { protection type
-		echo '<tr><th>protection type</th><td><select name="type"><option value="1">Require an email address</option><option value="2"';
+		echo '<tr><th>protection type</th><td><select name="details[type]"><option value="1">Require an email address</option><option value="2"';
 		if ($details['type'] == 2) {
 			echo ' selected="selected"';
 		}
 		echo '>Must be a group member</option></select></td>';
+		// }
+		if ($details['type'] == 2) {
+			echo '<th>valid groups</th><td><input style="width:100%" name="details[groups]" value="'.htmlspecialchars($details['groups']).'" /></td>';
+		}
+		echo '</tr>';
+		// { email to send alerts to
+		echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td>';
 		// }
 		// { page template
 		echo '<th>Page Template</th><td>';
@@ -91,9 +100,6 @@ switch(@$_REQUEST['view']){
 		}
 		echo '</td></tr>';
 		// }
-		// { email to send alerts to
-		echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td></tr>';
-		// }
 		// { message
 		echo '<tr><th>Message</th><td colspan="3">'.ckeditor('message',$r['message'],0,0,150).'</td></tr>';
 		// }
@@ -107,6 +113,9 @@ switch(@$_REQUEST['view']){
 		// }
 	// }
 }
+/*
+|  2 | /DFT      |                 | default  |         | {"type":2,"groups":"familymembers,administrators"} | 
+*/
 ?>
 <script>
 	$(function(){
