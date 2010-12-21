@@ -183,7 +183,8 @@ function OnlineStore_generateRealexButton($PAGEDATA, $id, $total, $return='') {
 		.'<input type="hidden" value="1" name="AUTO_SETTLE_FLAG" />'
 		.'<input type="hidden" value="Purchase made from '.$_SERVER['HTTP_HOST']
 		.'" name="COMMENT1"/>'
-		.'<input type="submit" value="Proceed to Payment" /></form>';
+		.'<input type="submit" value="Proceed to Payment" /></form>'
+		.'<script>$("#online-store-realex").submit()</script>';
 }
 
 /**
