@@ -156,7 +156,15 @@ foreach ($online_store_currencies as $key=>$val) {
 	}
 	$c.= '>'.$val[0].': '.htmlspecialchars($val[1]).'</option>';
 }
-$c.= '</select></td></tr>';
+$c.= '</select></td>';
+// }
+// { VAT
+$vat=$vars['online_stores_vat_percent'];
+if ($vat=='') {
+	$vat=21;
+}
+$c.='<th>VAT</th><td><input name="page_vars[online_stores_vat_percent]"'
+	.' value="'.((float)$vat).'" /></td></tr>';
 // }
 // { payment types
 $c.='<tr><th>Payment Types</th><td colspan="3"><div class="tabs">';

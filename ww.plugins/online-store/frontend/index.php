@@ -146,9 +146,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 			$vattable+=$postage['total'];
 		}
 		if ($vattable) {
-			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT (21% on '
+			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
-			$vat=$vattable*.21;
+			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
@@ -242,9 +242,9 @@ if (!$submitted) {
 			$vattable+=$postage['total'];
 		}
 		if ($vattable) {
-			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT (21% on '
+			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
 				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
-			$vat=$vattable*.21;
+			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$c.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}
