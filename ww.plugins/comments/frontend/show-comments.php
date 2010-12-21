@@ -9,6 +9,7 @@
   * @package    WebworksWebme
   * @subpackage CommentsPlugin
   * @author     Belinda Hamilton <bhamilton@webworks.ie>
+  * @author     Kae Verens <kae@kvsites.ie>
   * @license    GPL Version 2
   * @link       www.webworks.ie
 **/
@@ -22,24 +23,20 @@ require_once SCRIPTBASE.'ww.incs/recaptcha.php';
   * @return $html The comments and an add comment form
 **/
 function Comments_displayComments($page) {
-	$location = 'http://ajax.microsoft.com/ajax/jquery.validate/1.5.5';
-	$location.= '/jquery.validate.min.js';
-	$html = '<div id="start-comments"><br />';
-	$html.= '<script src="'.$location.'"></script>';
 	WW_addScript('/ww.plugins/comments/frontend/comments-frontend.js');
 	WW_addCSS('/ww.plugins/comments/frontend/comments.css');
-	$hideComments 
-		= dbOne(
-			'select value from page_vars 
-			where name = "hide_comments" and page_id = '.$page->id,
-			'value'
-		);
-	$allowComments 
-		= dbOne(
-			'select value from page_vars 
-			where name = "allow_comments" and page_id = '.$page->id,
-			'value'
-		);
+	// { order of display
+	$commentboxfirst=dbOne(
+		'select value from page_vars where name="comments_show_box_at_top" and page_id = '.$page->id,
+		'value'
+	);
+	// }
+	// { get list of existing comments
+	$hideComments=dbOne(
+		'select value from page_vars '
+		.'where name = "hide_comments" and page_id = '.$page->id,
+		'value'
+	);
 	if ($hideComments) {
 		$query = 'select * from comments where objectid = '.$page->id;
 		$query.= ' and id in (';
@@ -72,42 +69,50 @@ function Comments_displayComments($page) {
 		}
 	}
 	if (!empty($query)) {
-		$comments = dbAll($query.' order by cdate asc');
+		$comments = dbAll($query.' order by cdate '.($commentboxfirst?'desc':'asc'));
 	}
+	$clist='';
 	if (count($comments)) {
-		$html.= '<strong>Comments</strong><br /><br />';
+		$clist = '<div id="start-comments"><strong>Comments</strong>';
+		foreach ($comments as $comment) {
+			$id = $comment['id'];
+			$datetime = $comment['cdate'];
+			$allowedToEdit 
+				= is_admin()||in_array($id, $_SESSION['comment_ids'], false);
+			if ($allowedToEdit) {
+				$clist.= '<div class="comments" id="comment-wrapper-'.$id.'" cdate="'.$datetime.'"
+					comment="'.htmlspecialchars($comment['comment']).'">';
+			}
+			$clist.=  '<div id="comment-info-'.$id.'">Posted by ';
+			if (!empty($comment['site'])) {
+				$clist.= '<a href="'.$comment['site'].'" target=_blank>'
+					.htmlspecialchars($comment['name']).'</a>';
+			}
+			else {
+				$clist.= htmlspecialchars($comment['name']);
+			}
+			$clist.= ' on '.date_m2h($datetime).'</div>';
+			$clist.= '<div id="comment-'.$id.'">';
+			$clist.= htmlspecialchars($comment['comment']);
+			$clist.= '</div>';
+			if ($allowedToEdit) {
+				$clist.= '</div>';
+			}
+		}
+		$clist.= '</div>';
 	}
-	$html.= '</div>';
-	foreach ($comments as $comment) {
-		$id = $comment['id'];
-		$datetime = $comment['cdate'];
-		$allowedToEdit 
-			= is_admin()||in_array($id, $_SESSION['comment_ids'], false);
-		if ($allowedToEdit) {
-			$html.= '<div class="comments" id="comment-wrapper-'.$id.'" cdate="'.$datetime.'"
-				comment="'.htmlspecialchars($comment['comment']).'">';
-		}
-		$html.=  '<div id="comment-info-'.$id.'">Posted by ';
-		if (!empty($comment['site'])) {
-			$html.= '<a href="'.$comment['site'].'" target=_blank>'
-				.htmlspecialchars($comment['name']).'</a>';
-		}
-		else {
-			$html.= htmlspecialchars($comment['name']);
-		}
-		$html.= ' on '.date_m2h($datetime).'</div>';
-		$html.= '<div id="comment-'.$id.'">';
-		$html.= htmlspecialchars($comment['comment']);
-		$html.= '</div>';
-		$html.= '<br /><br />';
-		if ($allowedToEdit) {
-			$html.= '</div>';
-		}
-	}
-	if ($allowComments=='on') {
-		$html.= Comments_showCommentForm($page->id);
-	}
-	return $html;
+	// }
+	// { get comment box HTML
+	$allowComments = dbOne(
+		'select value from page_vars 
+		where name = "allow_comments" and page_id = '.$page->id,
+		'value'
+	);
+	$cbhtml=$allowComments=='on'?Comments_showCommentForm($page->id):'';
+	// }
+	return '<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.5.5/'
+		.'jquery.validate.min.js"></script>'
+		.($commentboxfirst?$cbhtml.$clist:$clist.$cbhtml);
 }
 
 /**
@@ -127,7 +132,7 @@ function Comments_showCommentForm($pageID) {
 				where id = '.$userID
 			);
 	}
-	$display = '<strong>Add Comment</strong><br />';
+	$display = '<strong>Add Comment</strong>';
 	$display.= '<form id="comment-form" method="post" 
 		action="javascript:comments_check_captcha();">';
 	$display.= '<input type="hidden" name="page" id="page" 
@@ -149,7 +154,8 @@ function Comments_showCommentForm($pageID) {
 	$display.= '<tr><th>Comment</th>';
 	$display.= '<td><textarea id="comment" name="comment"></textarea></td></tr>';
 	$display.= '<tr><td colspan="2"><div id="captcha">';
-	$display.= recaptcha_get_html(RECAPTCHA_PUBLIC);
+#	$display.= recaptcha_get_html(RECAPTCHA_PUBLIC);
+	$display.=Recaptcha_getHTML();
 	$display.= '</div></td></tr>';
 	$display.= '<tr><th>&nbsp;</th><td><input type="submit" id="submit" value="Submit Comment"  /></td></tr>';
 	$display.= '</table></form>';
