@@ -410,16 +410,16 @@ function OnlineStore_startup(){
 		$p=dbOne('select id from pages where type="online-store"','id');
 		if ($p) {
 			$_SESSION['onlinestore_checkout_page']=$p;
+			$page=Page::getInstance($p);
+			if ($page) {
+				$page->initValues();
+				$vat=$page->vars['online_stores_vat_percent'];
+				if ($vat=='') {
+					$vat=21;
+				}
+				$_SESSION['onlinestore_vat_percent']=(float)$vat;
+			}
 		}
-	}
-	if (!isset($_SESSION['onlinestore_vat_percent'])) {
-		$page=Page::getInstance($_SESSION['onlinestore_checkout_page']);
-		$page->initValues();
-		$vat=$page->vars['online_stores_vat_percent'];
-		if ($vat=='') {
-			$vat=21;
-		}
-		$_SESSION['onlinestore_vat_percent']=(float)$vat;
 	}
 	if (!isset($_SESSION['currency'])) {
 		$currencies=dbOne(
