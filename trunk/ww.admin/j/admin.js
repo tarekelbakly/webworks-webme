@@ -29,7 +29,15 @@ function webme_keepSessionAlive(){
 	$.get('/ww.admin/keepalive.php');
 }
 $(function(){
-	$('.datatable').dataTable();
+	$('.datatable').each(function(){
+		var $this=$(this);
+		if ($this.hasClass('desc')) {
+			$this.dataTable({"aaSorting": [[0,'desc']]});
+		}
+		else {
+			$this.dataTable();
+		}
+	});
 	$('input.date-human').each(convert_date_to_human_readable);
 	$('#menu-top>ul>li>a').each(function(){
 		if(!(/#/.test(this.href.toString())))return; // only apply menu to links with '#' in them
