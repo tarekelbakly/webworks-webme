@@ -58,7 +58,7 @@ $rs=dbAll(
 );
 if (is_array($rs) && count($rs)) {
 	$c.='<div style="margin:0 20%">'
-		.'<table width="100%" class="datatable"><thead><tr>'
+		.'<table width="100%" class="datatable desc"><thead><tr>'
 		.'<th>Date</th>'
 		.'<th>Amount</th>'
 		.'<th>Invoice</th>'
@@ -67,9 +67,10 @@ if (is_array($rs) && count($rs)) {
 		.'</tr></thead><tbody>';
 	foreach ($rs as $r) {
 		$c.='<tr><td><span style="display:none">'.$r['date_created'].'</span>'
-			.date_m2h($r['date_created']).'</td><td>'.$csym.$r['total']
-			.'</td><td>'
-			.'<a href="javascript:os_invoice('.$r['id'].')">Invoice</a></td>'
+			.date_m2h($r['date_created']).'</td><td>'.$csym.sprintf('%.2f',$r['total'])
+			.'</td>'
+			.'<td><a href="javascript:os_invoice('.$r['id'].')">Invoice</a>'
+			.' (<a href="javascript:os_invoice('.$r['id'].',true)">print</a>)</td>'
 			.'<td>'
 			.'<a href="javascript:os_form_vals('.$r['id'].')">Checkout Form</a>'
 			.'</td>'

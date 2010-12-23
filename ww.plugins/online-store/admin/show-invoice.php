@@ -21,4 +21,11 @@ if (!isset($_REQUEST['id'])) {
 }
 $id=(int)$_REQUEST['id'];
 
-echo dbOne('select invoice from online_store_orders where id='.$id, 'invoice');
+$inv=dbOne('select invoice from online_store_orders where id='.$id, 'invoice');
+if (strpos($inv, '<body')===false) {
+	$inv='<body>'.$inv.'</body>';
+}
+if (isset($_REQUEST['print'])) {
+	$inv=str_replace('<body', '<body onload="window.print()"', $inv);
+}
+echo $inv;

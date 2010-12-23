@@ -1,8 +1,9 @@
 window.os_statuses=['Unpaid','Paid','Paid and Delivered'];
-function os_invoice(id){
+function os_invoice(id, print){
 	var w=$(window);
 	var wh=w.height(),ww=w.width();
-	$('<iframe id="externalSite" class="externalSite" src="/ww.plugins/online-store/admin/show-invoice.php?id='+id+'" />').dialog({
+	var p=print?'&print=1':'';
+	$('<iframe id="externalSite" class="externalSite" src="/ww.plugins/online-store/admin/show-invoice.php?id='+id+p+'" />').dialog({
 		autoOpen: true,
 		width: ww-100,
 		height: wh-100,
