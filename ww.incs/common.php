@@ -48,6 +48,7 @@ function webmeMail($from, $to, $subject, $message, $files = false) {
 $is_admin = 0;
 $sitedomain=str_replace('www.','',$_SERVER['HTTP_HOST']);
 if(strpos($_SERVER['REQUEST_URI'],'ww.admin/')!==false){
+	$kfm_do_not_save_session=true;
 	require_once SCRIPTBASE . 'j/kfm/api/api.php';
 	require_once SCRIPTBASE . 'j/kfm/initialise.php';
 }
