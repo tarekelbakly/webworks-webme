@@ -12,6 +12,7 @@
  * @license  docs/license.txt for licensing
  * @link     http://kfm.verens.com/
  */
+$kfm_do_not_save_session=true;
 require_once 'initialise.php';
 if (isset($_SERVER['REDIRECT_QUERY_STRING'])&&$_SERVER['REDIRECT_QUERY_STRING']) {
     $arr = explode(',', $_SERVER['REDIRECT_QUERY_STRING']);
