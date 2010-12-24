@@ -10,5 +10,9 @@
 					kae@verens.com
 */
 
-$html.='<p><a href="javascript:;" onclick="window.parent.pages_new('.$GLOBALS['page']['id'].');">New News Item</a></p>'
-	.'<p>To create a new news item simply click on the link above, create a new page with this news page as parent. It will then appear in the frontend as a news item.</p>';
+$html.='<p>Click <a href="javascript:;" onclick="window.parent.pages_new('.$page->id.');">here</a> to create a new news item.</p>'
+	.'<p>This page should be displayed in <select name="page_vars[news_type]"><option value="0">headline</option><option value="1"';
+if ($vars['news_type']=='1') {
+	$html.=' selected="selected"';
+}
+$html.='>calendar</option></select> mode.</p>.';

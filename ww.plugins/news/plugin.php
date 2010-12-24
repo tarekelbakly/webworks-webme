@@ -22,17 +22,17 @@ $plugin=array(
 	'version'=>1
 );
 
-function news_admin(){
+function news_admin($page, $vars) {
 	require SCRIPTBASE.'ww.plugins/news/admin/display.php';
 	return $html;
 }
 
-function news_front(){
+function news_front($PAGEDATA) {
 	require SCRIPTBASE.'ww.plugins/news/frontend/display.php';
 	return $html;
 }
 
-function news_showWidget($vars){
+function news_showWidget($vars) {
 	require SCRIPTBASE.'ww.plugins/news/frontend/widget.php';
 	return $html;
 }
