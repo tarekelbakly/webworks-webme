@@ -413,7 +413,9 @@ function OnlineStore_startup(){
 			$page=Page::getInstance($p);
 			if ($page) {
 				$page->initValues();
-				$vat=$page->vars['online_stores_vat_percent'];
+				$vat=isset($page->vars['online_stores_vat_percent'])
+					?$page->vars['online_stores_vat_percent']
+					:21;
 				if ($vat=='') {
 					$vat=21;
 				}

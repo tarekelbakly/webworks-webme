@@ -78,7 +78,7 @@ function Comments_displayComments($page) {
 			$id = $comment['id'];
 			$datetime = $comment['cdate'];
 			$allowedToEdit 
-				= is_admin()||in_array($id, $_SESSION['comment_ids'], false);
+				= is_admin() || (is_array($_SESSION['comment_ids']) && in_array($id, $_SESSION['comment_ids'], false));
 			if ($allowedToEdit) {
 				$clist.= '<div class="comments" id="comment-wrapper-'.$id.'" cdate="'.$datetime.'"
 					comment="'.htmlspecialchars($comment['comment']).'">';
