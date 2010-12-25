@@ -57,6 +57,9 @@ function News_displayHeadlines() {
 	return $html;
 }
 
+if (!isset($PAGEDATA->vars['news_type'])) {
+	$PAGEDATA->vars['news_type']=0;
+}
 switch($PAGEDATA->vars['news_type']) {
 	case '1': // { calendar
 		$html=News_displayCalendar($PAGEDATA);
