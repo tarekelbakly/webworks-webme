@@ -1,6 +1,5 @@
 <?php
-$SCRIPTBASE=$_SERVER['DOCUMENT_ROOT'];
-include_once($SCRIPTBASE.'/ww.incs/common.php');
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 $r=preg_replace('/^\//','',$_SERVER['REQUEST_URI']);
 if(preg_match('#^f/.*\.[A-Z]{3}\.([^.]*)$#',$r)){
 	echo 'missing image';exit;
@@ -14,10 +13,11 @@ if(strlen($r)>1 && strlen($r)-1==strrpos($r,'/')){ // tried to access a page as 
 $d=Page::getInstanceByName($r);
 if($d && isset($d->id) && $d->id){
 	$id=$d->id;
-	header('Status: 301 typo maybe');
-	header('Redirect: '.$d->getRelativeURL());
+	header('Location: '.$d->getRelativeURL());
 }
 else{
-	header('Status: 301 no chickens here');
-	header('Redirect: /');
+	header('HTTP/1.0 404 Not Found');
+	echo '<h1>File not found</h1><p>The requested file '
+		.'<code>'.htmlspecialchars($_SERVER['REQUEST_URI']).'</code>'
+		.' does not exist on this server.</p>';
 }
