@@ -12,7 +12,7 @@
 	*/
 
 require_once '../ww.incs/basics.php';
-require_once '../common/menus.php';
+require_once '../ww.incs/menus.php';
 require_once '../ww.incs/kaejax.php';
 
 /**
