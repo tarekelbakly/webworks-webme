@@ -155,7 +155,7 @@ else {
 		break;
 		// }
 		case '4': // { sub-page summaries
-			require_once 'common/page.summaries.php';
+			require_once 'ww.incs/page.summaries.php';
 			$c.=displayPageSummaries($PAGEDATA->id);
 		break; // }
 		case '5': // { search results
