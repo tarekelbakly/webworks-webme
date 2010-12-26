@@ -1,5 +1,5 @@
 <?php
-require_once SCRIPTBASE . 'common/menus.php';
+require_once SCRIPTBASE . 'ww.incs/menus.php';
 function ww_showSitemap($c=''){
 	global $PAGEDATA;
 	$rs=menu_getChildren(0,$PAGEDATA->id);

@@ -42,7 +42,7 @@ function redirect($addr){
 	exit;
 }
 function webmeMail($from, $to, $subject, $message, $files = false) {
-	inc_common('mail.php');
+	require_once dirname(__FILE__).'/mail.php';
 	send_mail($from, $to, $subject, $message, $files);
 }
 $is_admin = 0;
@@ -65,7 +65,7 @@ function imageDisplay($a=0){
 	return func_image_display($a);
 }
 function menuDisplay($a=0){
-	require_once SCRIPTBASE . 'common/menus.php';
+	require_once SCRIPTBASE . 'ww.incs/menus.php';
 	return menu_show($a);
 }
 function show404($a=0){

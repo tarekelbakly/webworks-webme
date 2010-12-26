@@ -1,7 +1,7 @@
 <?php
 require '../../ww.incs/common.php';
 require SCRIPTBASE.'ww.admin/admin_libs.php';
-require SCRIPTBASE.'common/menus.php';
+require SCRIPTBASE.'ww.incs/menus.php';
 require SCRIPTBASE.'ww.incs/kaejax.php';
 function AjaxMenu_getChildren($parentid,$currentpage=0){
 	global $USERDATA,$PLUGINS;
