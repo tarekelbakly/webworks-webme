@@ -18,7 +18,7 @@ $plugin=array(
 	'version'=>5
 );
 
-require_once SCRIPTBASE.'common/menus.php';
+require_once SCRIPTBASE.'ww.incs/menus.php';
 function menu_showWidget($vars=null){
 	if($vars && $vars->id){
 		$vars=dbRow('select * from menus where id='.$vars->id);

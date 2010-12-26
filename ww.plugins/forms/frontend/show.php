@@ -91,9 +91,15 @@ function Form_send($page, $vars) {
 		}
 	}
 	if ($vars['forms_captcha_required']) {
-		if (!isset($_SESSION['security_code'])
-			||getVar('captcha')!=$_SESSION['security_code']
-		) {
+		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
+		$result 
+			= recaptcha_check_answer(
+				RECAPTCHA_PRIVATE,
+				$_SERVER['REMOTE_ADDR'],
+				$_REQUEST['recaptcha_challenge_field'],
+				$_REQUEST['recaptcha_response_field']
+			);
+		if (!$result->is_valid) {
 			$err.='<em>You must fill in the captcha (image text).</em>';
 		}
 	}
@@ -332,9 +338,8 @@ function Form_showForm(
 		$cnt++;
 	}
 	if ($vars['forms_captcha_required'] && !$only_show_contents) {
-		$row='<tr><td><script type="text/javascript">document.write("<img"+" '
-			.'src=\"/p/cap"+"tcha.php\" />");</script></td><td>Please type the '
-			.'word you see on the left.<br /><input name="captcha" /></td></tr>';
+		require_once SCRIPTBASE.'ww.incs/recaptcha.php';
+		$row='<tr><td colspan="2">'.Recaptcha_getHTML().'</td></tr>';
 		if ($vars['forms_template']) {
 			$vars['forms_template'].='<table>'.$row.'</table>';
 		}
@@ -367,7 +372,7 @@ function Form_showForm(
 	if (!$only_show_contents && $show_submit) {
 		$c.='</form>';
 	}
-	$c.='<script>$(document).ready(function(){'
+	$c.='<script>$(function(){'
 		.'$("input.date").datepicker({'
 		.'"dateFormat":"yy-mm-dd"'
 		.'});'

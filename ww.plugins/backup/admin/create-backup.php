@@ -23,7 +23,8 @@ $tdir=USERBASE.'themes-personal';
 
 `cd $ubase  && zip -r $dir/files.zip f`;
 
-`cd $ubase  && zip -r $dir/theme.zip themes-personal`;
+$theme=$DBVARS['theme'];
+`cd $ubase  && zip -r $dir/theme.zip themes-personal/$theme`;
 
 $data=array();
 $tables=dbAll('show tables');

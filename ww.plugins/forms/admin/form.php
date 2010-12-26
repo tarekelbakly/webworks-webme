@@ -33,7 +33,7 @@ $c.='<div id="f-header"><p>Text to be shown above the form</p>'
 // }
 // { footer
 $c.='<div id="footer"><p>Text to appear below the form.</p>';
-$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''),0,$cssurl);
+$c.=ckeditor('page_vars[footer]',(isset($vars['footer'])?$vars['footer']:''));
 $c.='</div>';
 // }
 // { main details
