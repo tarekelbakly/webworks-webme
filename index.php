@@ -84,7 +84,7 @@ if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
 // { get current page id
 if (!$id) {
 	if ($page) {
-		if (ereg('&', $page)) {
+		if (strpos($page, '&')!==false) {
 			$page=preg_replace('/&.*/', '', $page);
 		}
 		$r=Page::getInstanceByName($page);

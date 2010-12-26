@@ -97,7 +97,7 @@ function dbRow($query) {
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
 function ob_show_and_log($type,$header=''){
-	$log = &Log::singleton('file',USERBASE.'/log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
+	$log = Log::singleton('file',USERBASE.'/log.txt',$type,array('locking'=>true,'timeFormat'=>'%Y-%m-%d %H:%M:%S'));
 	$length=ob_get_length();
 	$num_queries=isset($GLOBALS['db'])?$GLOBALS['db']->num_queries:0;
 	switch($type){
