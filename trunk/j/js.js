@@ -2,46 +2,6 @@ $j=jQuery;
 jQuery.fn.outerHTML = function() {
 	return $('<div>').append( this.eq(0).clone() ).html();
 };
-function $type(obj){
-	if (obj==undefined) return false;
-	if (obj.htmlElement) return 'element';
-	var type = typeof obj;
-	if (type == 'object' && obj.nodeName){
-		switch(obj.nodeType){
-			case 1: return 'element';
-			case 3: return (/\S/).test(obj.nodeValue) ? 'textnode' : 'whitespace';
-		}
-	}
-	if (type == 'object' || type == 'function'){
-		switch(obj.constructor){
-			case Array: return 'array';
-			case RegExp: return 'regexp';
-		}
-		if (typeof obj.length == 'number'){
-			if (obj.item) return 'collection';
-			if (obj.callee) return 'arguments';
-		}
-	}
-	return type;
-};
-function addEls(p,c){
-	if(!p)return;
-	if($type(p)=='string')p=document.getElementById(p);
-	if($.isArray(c))for(var i=0;i<c.length;++i)addEls(p,c[i]);
-	else if(c)p.appendChild($type(c)=='string'||(+c)===c?newText(c):c);
-	return p;
-}
-function Browser(){
-	var ua=navigator.userAgent;
-	this.isFirefox=ua.indexOf('Firefox')>=0;
-	this.isOpera=ua.indexOf('Opera')>=0;
-	this.isIE=ua.indexOf('MSIE')>=0&&!this.isOpera;
-	this.isSafari=ua.indexOf('Safari')>=0;
-	this.isKonqueror=ua.indexOf('KHTML')>=0&&!this.isSafari;
-	this.versionMinor=parseFloat(navigator.appVersion);
-	if(this.isIE)this.versionMinor=parseFloat(ua.substring(ua.indexOf('MSIE')+5));
-	this.versionMajor=parseInt(this.versionMinor);
-}
 function date_m2h(d,type){
 	if(d=='' || d=='0000-00-00')return '-';
 	if(!type)type='date';
@@ -54,10 +14,7 @@ function date_m2h(d,type){
 	return time+', '+date;
 }
 function htmlspecialchars(str) {
-	var div=document.createElement('div');
-	var text=document.createTextNode(str);
-	div.appendChild(text);
-	return div.innerHTML;
+	return $('<i>').text(str).html();
 }
 // { kaejax
 function kaejax_create_functions(url,f){
@@ -111,26 +68,12 @@ function loadScript(url){
 	$.getScript(url);
 	return 1;
 }
-function newEl(t,id,cn,els){
-	var el=document.createElement(t);
-	if(id)$.extend(el,{id:id,name:id});
-	if(els){
-		if($type(els)=='string')el.innerHTML=els;
-		else addEls(el,els);
-	}
-	if(cn)el.className=cn;
-	return el;
-}
-function newText(a){
-	return document.createTextNode(a);
-}
 window.ww={
 	CKEDITOR:'ckeditor'
 };
 // { variables
-var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var function_urls=[];
-var kaejax_timeouts=[],ms_select_defaults=[],ms_show_toplinks=true;
+var loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var kaejax_timeouts=[];
 // }
 var Json = {
 	toString: function(arr) {

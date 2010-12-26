@@ -115,15 +115,6 @@ function ajaxmenu_initialise(p){
 			if (h+y>wh+scrolly) {
 				e.style.top=(wh+scrolly-h)+'px';
 			}
-			if (browser.isIE) { // there is always something...
-				for (var i=0;i<a.length;++i) {
-					var el=document.getElementById('ajaxmenu_link'+a[i].id);
-					el.style.position='relative';
-					if (w&&w!='undefined') {
-						el.style.width=''+parseInt(w)+'px';
-					}
-				}
-			}
 		}
 	}
 	else{

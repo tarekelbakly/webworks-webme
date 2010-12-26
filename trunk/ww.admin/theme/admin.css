@@ -76,10 +76,6 @@ table.user_input_table th { background: none; }
 
 tr.zebrarow1 td{  background:#f7f7f7;}  
 
-table.draggable_active { border: 1px solid #416ba7; /*width: 60% !important; */ }
-table.draggable_active th, table.draggable_active td { padding: 5px 2px; color: #416ba7; font-size: 10px !important; }
-table.draggable_active:hover { cursor: pointer; cursor: hand; }
-
 table.headed th{background:#416ba7;color:#fff;border-right:1px solid #fff}
 
 
