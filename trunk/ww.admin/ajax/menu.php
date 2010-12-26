@@ -3,7 +3,7 @@ require '../../ww.incs/common.php';
 require SCRIPTBASE.'ww.admin/admin_libs.php';
 require SCRIPTBASE.'common/menus.php';
 require SCRIPTBASE.'common/kaejax.php';
-function ajaxmenu_getChildren($parentid,$currentpage=0){
+function AjaxMenu_getChildren($parentid,$currentpage=0){
 	global $USERDATA,$PLUGINS;
 	$r=array();
 	switch(substr($parentid,0,3)){
@@ -46,8 +46,8 @@ function ajaxmenu_getChildren($parentid,$currentpage=0){
 	}
 	return array($parentid,$r);
 }
-kaejax_export('ajaxmenu_getChildren');
+kaejax_export('AjaxMenu_getChildren');
 kaejax_handle_client_request();
 kaejax_show_javascript();
-echo 'var menu_cache=['.json_encode(ajaxmenu_getChildren('am_top')).'];';
+echo 'var menu_cache=['.json_encode(AjaxMenu_getChildren('am_top')).'];';
 echo file_get_contents('../../ajax/menu.js');

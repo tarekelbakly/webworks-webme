@@ -73,11 +73,11 @@ function show404($a=0){
 	return ww_show404($a);
 }
 function showSearchResults($a=0){
-	include_once SCRIPTBASE . 'common/funcs.search.php';
+	require_once SCRIPTBASE . 'ww.incs/search.php';
 	return ww_showSearchResults($a);
 }
 function sitemap($a=0){
-	include_once SCRIPTBASE . 'common/sitemap.php';
+	include_once SCRIPTBASE . 'ww.incs/sitemap-funcs.php';
 	return ww_showSitemap($a);
 }
 function smarty_setup(){
