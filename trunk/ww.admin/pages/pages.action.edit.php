@@ -68,7 +68,7 @@ if(allowedToEditPage($id)){
 			else $do=0;
 		}
 		if($do)dbQuery('insert into page_summaries set page_id="'.$_POST['id'].'",parent_id="'.$_POST['page_summary_parent'].'",rss=""');
-		include_once(SCRIPTBASE.'/common/page.summaries.php');
+		include_once(SCRIPTBASE.'/ww.incs/page.summaries.php');
 		displayPageSummaries($_POST['id']);
 	}
 	$msgs.='<em>'.__('An item\'s details have been updated.').'</em>';

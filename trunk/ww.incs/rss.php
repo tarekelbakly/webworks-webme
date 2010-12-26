@@ -7,7 +7,7 @@ if($page){
 	$r2=dbRow("select rss from page_summaries where page_id='".$page->id."'");
 	if(count($r2)){
 		if($r2['rss']==''){
-			include_once(SCRIPTBASE.'common/page.summaries.php');
+			include_once(SCRIPTBASE.'/ww.incs/page.summaries.php');
 			displayBlogExcerpts($page->id);
 			$r2=dbRow("select rss from page_summaries where page_id='".$page->id."'");
 		}
