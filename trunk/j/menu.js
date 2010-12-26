@@ -80,7 +80,7 @@ function ajaxmenu_initialise(p){
 					var i=p.id.replace('ajaxmenu_link','');
 					ajaxmenu_setActiveMenu(i);
 				});
-				if (a[i].numchildren || (a[i].type==8 && _am.search_options&1) ) {
+				if (a[i].numchildren) {
 					$(l).click(function(e){
 						var p=event_target(e);
 						var i=p.id.replace('ajaxmenu_link',''),g=p.parentId!=_am.topMenu;
@@ -101,7 +101,7 @@ function ajaxmenu_initialise(p){
 			else if (!_am.two_tier) {
 				$.event.add(l,'mouseout',ajaxmenu_queueClearMenus);
 			}
-			if ((+(a[i].numchildren)) || (a[i].type==8 && _am.search_options&1) ) {
+			if (+(a[i].numchildren)) {
 				setTimeout('ajaxmenu_initialise(_am.menus["'+p+'"]['+i+'].id)',1);
 			}
 		}

@@ -49,4 +49,4 @@ echo '};';
 // }
 ?>
 </script><script src="/ww.plugins/panels/j/admin.js"></script>
-<script src="/ww.plugins/panels/j/jquery.inlinemultiselect.js"></script>
+<script src="/j/jquery.inlinemultiselect.js"></script>

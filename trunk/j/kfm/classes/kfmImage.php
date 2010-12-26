@@ -94,7 +94,7 @@ class kfmImage extends kfmFile{
 		$this->caption=$row['caption'];
 		return $row['id'];
 	}
-	function getInstance($id=0){
+	static function getInstance($id=0){
 		if(is_object($id)){
 			if($id->isImage())$id=$id->id;
 			else return false;

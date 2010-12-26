@@ -14,15 +14,15 @@ if(allowedToEditPage($parent)){
 		$name.=$i;
 	}
 	// { variables
-	$template=$_REQUEST['template'];
+	$template=isset($_REQUEST['template'])?$_REQUEST['template']:'';
 	if ($template=='' && $pid) {
-		$template=dbOne('select template from pages where id='.$pid,'template');
+		$template=dbOne('select template from pages where id='.$pid, 'template');
 	}
 	$type=$_REQUEST['type'];
 	$title=isset($_REQUEST['title'])?addslashes($_REQUEST['title']):'';
-	$keywords=$_REQUEST['keywords'];
+	$keywords=isset($_REQUEST['keywords'])?$_REQUEST['keywords']:'';
 	$associated_date=$_REQUEST['associated_date'];
-	$description=$_REQUEST['description'];
+	$description=isset($_REQUEST['description'])?$_REQUEST['description']:'';
 	$importance=(float)$_REQUEST['importance'];
 	if($importance<0.1)$importance=0.5;
 	if($importance>1)$importance=1;

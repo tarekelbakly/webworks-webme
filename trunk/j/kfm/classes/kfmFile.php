@@ -148,7 +148,7 @@ class kfmFile extends kfmObject{
 	 * @param int $file_id
 	 * @return Object file or image
 	 */
-	function getInstance($id=0){
+	static function getInstance($id=0){
 		if(is_object($id))$id=$id->id;
 		$id=(int)$id;
 		if($id<1)return;
@@ -215,7 +215,7 @@ class kfmFile extends kfmObject{
 	function rename($newName){
 		global $kfm;
 		if(!$kfm->setting('allow_file_edit'))return $this->error(kfm_lang('permissionDeniedEditFile'));
-		if(!$this->checkName($newName))return $this->error(kfm_lang('cannotRenameFromTo',$this->name,$newName));
+		if(!kfmFile::checkName($newName))return $this->error(kfm_lang('cannotRenameFromTo',$this->name,$newName));
 		$newFileAddress=$this->directory.$newName;
 		if(file_exists($newFileAddress))return $this->error(kfm_lang('fileAlreadyExists'));
 		rename($this->path,$newFileAddress);
@@ -278,9 +278,9 @@ class kfmFile extends kfmObject{
 	 * Check if the filename is authorized by the system according to the configuration
 	 * @return bool $authorized true when authorized, false if not
 	 */
-	function checkName($filename=false){
+	static function checkName($filename=false){
 		global $kfm;
-		if($filename===false)$filename=$this->name;
+		if ($filename===false) $filename=$this->name;
 		$filename=trim($filename);
 
 		if(

@@ -8,16 +8,10 @@ function ig_updateGallery(at){
 	if(at<0)at=0;
 	ig.imgAt=at;
 	if(ig.images.length>ig.x*ig.y){
-		{ // prev
-			var prev=document.getElementById('image_gallery_prev_wrapper');
-			prev.innerHTML='';
-			if(at)prev.appendChild(newLink('javascript:ig_updateGallery('+(at-ig.x*ig.y)+')','<-- prev','image_gallery_prev','prev'));
-		}
-		{ // next
-			var next=document.getElementById('image_gallery_next_wrapper');
-			next.innerHTML='';
-			if(at+ig.x*ig.y<ig.images.length)next.appendChild(newLink('javascript:ig_updateGallery('+(at+ig.x*ig.y)+')','next -->','image_gallery_next','next'));
-		}
+		var prev=at?'<a href="javascript:ig_updateGallery('+(at-ig.x*ig.y)+')" id="image_gallery_prev" class="prev">&lt;-- prev</a>':'';
+		$('#image_gallery_prev_wrapper').html(prev);
+		var next=(at+ig.x*ig.y<ig.images.length)?'<a href="javascript:ig_updateGallery('+(at+ig.x*ig.y)+')" id="image_gallery_next" class="next">next --&gt;</a>':'';
+		$('#image_gallery_next_wrapper').html(next);
 	}
 	for(y=0;y<ig.y;++y){
 		for(x=0;x<ig.x;++x){
@@ -28,26 +22,11 @@ function ig_updateGallery(at){
 				'src':'/kfmget/'+ig.images[imgNum].id+',width='+ig.thumbsize+',height='+ig.thumbsize,
 				'caption':ig.images[imgNum].caption
 			};
-			var div=newEl('div',0,'gallery_image');
-			div.style.textAlign='center';
-			a=newLink('javascript:;');
-			a.id="image_gallery_thumb_"+imgNum;
-			var $a=$(a);
-			$(a).click((function(at){
-				return function(){
-					Lightbox.show(at);
-				};
-			})(imgNum))
-				.append('<img src="'+img.src+'" title="'+img.caption+'" />');
+			var $a=$('<a href="javascript:Lightbox.show('+imgNum+')" id="image_gallery_thumb_'+imgNum+'"><img src="'+img.src+'" title="'+img.caption+'" /><br style="clear:both" /><span class="caption">'+img.caption.replace(/\\\\n/g,'<br />')+'</span></a>');
 			if(ig.hoverphoto)$a.bind('mouseover',function(){
 				ig_update_static_photo(this.id.replace(/image_gallery_thumb_/,''));
 			});
-			var br=newEl('br');
-			br.style.clear='both';
-			a.appendChild(br);
-			$('<span class="caption">'+img.caption.replace(/\\\\n/g,'<br />')+'</span>').appendTo(a);
-			div.appendChild(a);
-			document.getElementById('igCell_'+y+'_'+x).appendChild(div);
+			$('<div class="gallery_image" style="text=align:center"></div>').append($a).appendTo('#igCell_'+y+'_'+x);
 		}
 	}
 	if(!ig.first_call && document.getElementById('image_gallery_picture')){
@@ -130,64 +109,12 @@ var Lightbox={
 				'z-index':20
 			})
 			.appendTo(wrapper);
-		this.controls=newEl('div','lightbox_controls');
-		$(this.controls).css({
-			'position':'absolute',
-			'left':9,
-			'bottom':9,
-			'right':9,
-			'border':'1px solid #000',
-			'background':'#eee',
-			'text-align':'center'
-		});
-		var prev=newLink('javascript:Lightbox.show(Lightbox.at-1);','','lightbox_prev');
-		$(prev).css({
-			'float':'left',
-			'width':64,
-			'height':64,
-			'background':'url(/i/arrow_left.png) no-repeat'
-		});
-		this.controls.appendChild(prev);
-		var next=newLink('javascript:Lightbox.show(Lightbox.at+1);','','lightbox_next');
-		$(next).css({
-			'float':'right',
-			'width':64,
-			'height':64,
-			'background':'url(/i/arrow_right.png) no-repeat'
-		});
-		this.controls.appendChild(next);
-		var caption=newEl('div','lightbox_caption');
-		$(caption).css({
-			'margin':'0 70px',
-			'height':64,
-			'text-align':'center',
-			'font-style':'italic'
-		});
-		this.controls.appendChild(caption);
-		var close=newLink('javascript:Lightbox.hideFrame();','close','image_gallery_close_lightbox');
-		$(close).css({
-			'position':'absolute',
-			'z-index':2,
-			'bottom':5,
-			'left':100,
-			'right':100
-		});
-		this.controls.appendChild(close);
-		this.frame[0].appendChild(this.controls);
+		$('<div id="lightbox_controls" style="position:absolute;left:9px;bottom:9px;right:9px;border:1px solid #000;background:#eee;text-align:center"><a href="javascript:Lightbox.show(Lightbox.at-1)" id="lightbox_prev" style="float:left;width:64px;height:64px;background:url(/i/arrow_left.png) no-repeat"></a><a href="javascript:Lightbox.show(Lightbox.at+1)" id="lightbox_next" style="float:right;width:64px;height:64px;background:url(/i/arrow_right.png) no-repeat"></a><div id="lightbox_caption" style="margin:0 70px;height:64px;text-align:center;font-style:italic"></div><a href="javascript:Lightbox.hideFrame()" id="image_gallery_close_lightbox" style="position:absolute;z-index:2;bottom:5px;left:100px;right:100px">close</a></div>')
+			.appendTo(this.frame[0]);
 		this.imageMaxWidth=this.frameMaxWidth-20;
 		this.imageMaxHeight=this.frameMaxHeight-100;
-		this.imageWrapper=newEl('div','lightbox_imageWrapper');
-		$(this.imageWrapper).css({
-			'position':'absolute',
-			'left':9,
-			'top':9,
-			'right':9,
-			'bottom':89,
-			'text-align':'center',
-			'border':'1px solid #000',
-			'background':'#fff no-repeat center center'
-		});
-		this.frame[0].appendChild(this.imageWrapper);
+		$('<div id="lightbox_imageWrapper" style="position:absolute;left:9px;top:9px;right:9px;bottom:89px;text-align:center;border:1px solid #000;background:#fff no-repeat center center"></div>')
+			.appendTo(this.frame[0]);
 		Lightbox.frameVisible=1;
 	},
 	showImage:function(){
