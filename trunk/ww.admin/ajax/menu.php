@@ -50,4 +50,4 @@ kaejax_export('AjaxMenu_getChildren');
 kaejax_handle_client_request();
 kaejax_show_javascript();
 echo 'var menu_cache=['.json_encode(AjaxMenu_getChildren('am_top')).'];';
-echo file_get_contents('../../ajax/menu.js');
+echo file_get_contents('../../j/menu.js');

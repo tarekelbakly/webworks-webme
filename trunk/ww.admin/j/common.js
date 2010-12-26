@@ -48,7 +48,7 @@ $(function(){
 		}
 	}
 	if(classes['addressbook'])loadScript('/ww.admin/j/addressbook.php');
-	if(classes['adminmenu'])loadScript('/ww.admin/ajax/menu.php');
+	if(classes['adminmenu'])loadScript('/ww.admin/j/menu.php');
 	if(classes['sc_supplements'])loadScript('/ww.admin/j/sc_supplements.php');
 	if(classes['draggable'])loadScript('/ww.admin/ajax/ajax_sortabletable.php');
 	if(classes['accordion']){ // accordion
