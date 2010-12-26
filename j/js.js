@@ -173,5 +173,5 @@ $(function(){
 	if(!el)return;
 	var id=el.id.replace(/ajaxmenu/,'');
 	if(id && id=='am_top')return;
-	loadScript('/ajax/menu.php?pageid='+pagedata.id);
+	loadScript('/j/menu.php?pageid='+pagedata.id);
 });
