@@ -60,7 +60,7 @@ if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 	exit;
 }
 if (!isset($DBVARS['version']) || $DBVARS['version']<31) {
-	redirect('/p/upgrade.php');
+	redirect('/ww.incs/upgrade.php');
 }
 $id=getVar('pageid', 0);
 $page=getVar('page');

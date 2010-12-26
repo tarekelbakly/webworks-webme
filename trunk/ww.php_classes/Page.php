@@ -80,12 +80,12 @@ class Page{
 		// }
 #echo "finish Page constructor ".(microtime(true)-START_TIME).'<br />';
 	}
-	function getInstance($id=0,$fromRow=false,$pvq=false){
+	static function getInstance($id=0,$fromRow=false,$pvq=false){
 		if (!is_numeric($id)) return false;
 		if (!@array_key_exists($id,self::$instances)) self::$instances[$id]=new Page($id,0,$fromRow,$pvq);
 		return self::$instances[$id];
 	}
-	function getInstanceByName($name=''){
+	static function getInstanceByName($name=''){
 		if(preg_match('/[^,a-zA-Z0-9 \-_\/]/',$name))return false;
 		$name=strtolower($name);
 		$nameIndex=preg_replace('#[^,a-z0-9/]#','-',$name);
@@ -103,12 +103,12 @@ class Page{
 		else self::$instancesByName[$nameIndex]=new Page($name,1);
 		return self::$instancesByName[$nameIndex];
 	}
-	function getInstanceBySpecial($sp=0){
+	static function getInstanceBySpecial($sp=0){
 		if (!is_numeric($sp)) return false;
 		if (!@array_key_exists($sp,$instancesBySpecial)) $instancesBySpecial[$sp]=new Page($sp,3);
 		return $instancesBySpecial[$sp];
 	}
-	function getInstanceByType($type=0){
+	static function getInstanceByType($type=0){
 		if (!@array_key_exists($type,self::$instancesByType)) new Page($type,2);
 		if(!isset(self::$instancesByType[$type])){
 			echo 'page of type '.$type.' does not exist';
@@ -116,7 +116,7 @@ class Page{
 		}
 		return self::$instancesByType[$type];
 	}
-	function getInstanceByNameAndParent($name,$parent){
+	static function getInstanceByNameAndParent($name,$parent){
 		if(preg_match('/[^,a-zA-Z0-9 \-_]/',$name))return false;
 		$name=str_replace('-','_',$name);
 	  if(!@array_key_exists($name.'/'.$parent,self::$instancesByNAndP)){

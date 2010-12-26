@@ -3,7 +3,7 @@ class kfmSession extends kfmObject{
 	static $instances=array();
 	var $vars;
 	var $id;
-	function kfmSession($key=''){
+	function __construct($key=''){
 		global $kfm;
 		parent::__construct();
 		$create=1;
@@ -54,9 +54,6 @@ class kfmSession extends kfmObject{
 		$this->key=$key;
 		$this->vars=array();
 		setcookie('kfm_cookie',$key,0,'/');
-	}
-	function __construct($key=''){
-		$this->kfmSession($key);
 	}
 	function getInstance($id=0){
 		$id=(int)$id;
