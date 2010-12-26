@@ -17,4 +17,3 @@ function delete_old_md5s($folder) {
 		if (strlen($filename)==32 && filemtime($folder.$filename) && filemtime($folder.$filename)<$olddate) unlink($folder.$filename);
 	}
 }
-

@@ -1,6 +1,6 @@
 <?php
-require('../../ww.incs/common.php');
-require('../../common/kaejax.php');
+require '../../ww.incs/common.php';
+require '../../ww.incs/kaejax.php';
 function ajax_sortabletable_reorder($parent,$order){
 	$x='';
 	if(is_array($order))foreach($order as $k=>$v){

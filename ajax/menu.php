@@ -13,7 +13,7 @@
 
 require_once '../ww.incs/basics.php';
 require_once '../common/menus.php';
-require_once '../common/kaejax.php';
+require_once '../ww.incs/kaejax.php';
 
 /**
 	* retrieve a list of pages
