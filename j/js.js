@@ -27,7 +27,7 @@ function $type(obj){
 function addEls(p,c){
 	if(!p)return;
 	if($type(p)=='string')p=document.getElementById(p);
-	if(isArray(c))for(var i=0;i<c.length;++i)addEls(p,c[i]);
+	if($.isArray(c))for(var i=0;i<c.length;++i)addEls(p,c[i]);
 	else if(c)p.appendChild($type(c)=='string'||(+c)===c?newText(c):c);
 	return p;
 }
@@ -58,9 +58,6 @@ function htmlspecialchars(str) {
 	var text=document.createTextNode(str);
 	div.appendChild(text);
 	return div.innerHTML;
-}
-function isArray(o){
-	return o instanceof Array||typeof o=='array';
 }
 // { kaejax
 function kaejax_create_functions(url,f){
@@ -107,25 +104,12 @@ function kaejax_sendRequests(uri){
 	x.send(post_data);
 }
 // }
-function loadAjaxMenu(){
-}
-function loadArray(k,v){
-	var a=[],i;
-	k.each(function(val,key){
-		a[val]=c[key];
-	});
-	return a;
-}
 function loadScript(url){
-	for(var i=0;i<loadedScripts.length;++i)if(loadedScripts[i]==url)return 0;
+	if($.inArray(url,loadedScripts)>-1)return 0;
 	loadedScripts.push(url);
 	if(kaejax_is_loaded&&/\.php/.test(url))url+=(/\?/.test(url)?'&':'?')+'kaejax_is_loaded';
-	var el=newScript(url);
-	document.getElementsByTagName('head')[0].appendChild(el);
+	$.getScript(url);
 	return 1;
-}
-function loadUrl(url){
-	document.location=url;
 }
 function newEl(t,id,cn,els){
 	var el=document.createElement(t);
@@ -135,18 +119,6 @@ function newEl(t,id,cn,els){
 		else addEls(el,els);
 	}
 	if(cn)el.className=cn;
-	return el;
-}
-function newLink(h,t,id,c){
-	return $.extend(newEl('a',id,c,t),{href:h});
-}
-function newScript(url){
-	var el;
-	if(document.ie)el=document.createElement('<script type="text/javascript" src="'+url+'"></script>');
-	else{
-		el=newEl('script');
-		$.extend(el,{type:"text/javascript",src:url});
-	}
 	return el;
 }
 function newText(a){
@@ -159,9 +131,6 @@ window.ww={
 var browser=new Browser(),loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var function_urls=[];
 var kaejax_timeouts=[],ms_select_defaults=[],ms_show_toplinks=true;
-// }
-// { browser-specific REMOVE ME IF THERE ARE NO COMPLAINTS
-// if(window.ie)window.XMLHttpRequest=function(){var l=(ScriptEngineMajorVersion()>=5)?"Msxml2":"Microsoft";return new ActiveXObject(l+".XMLHTTP")};function DOMParser(){};DOMParser.prototype={toString:function(){return"[object DOMParser]"},parseFromString:function(s,c){var x=new ActiveXObject("Microsoft.XMLDOM");x.loadXML(s);return x},parseFromStream:new Function,baseURI:""};function XMLSerializer(){};XMLSerializer.prototype={toString:function(){return"[object XMLSerializer]"},serializeToString:function(r){return r.xml||r.outerHTML},serializeToStream:new Function};
 // }
 var Json = {
 	toString: function(arr) {
