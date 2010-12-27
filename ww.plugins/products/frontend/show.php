@@ -1,4 +1,7 @@
 <?php
+$kfm_do_not_save_session=true;
+require_once KFM_BASE_PATH.'/api/api.php';
+require_once KFM_BASE_PATH.'/initialise.php';
 if (!file_exists(USERBASE.'/ww.cache/products')) {
 	mkdir(USERBASE.'/ww.cache/products');
 	mkdir(USERBASE.'/ww.cache/products/templates');
@@ -511,8 +514,7 @@ function products_reviews ($params, &$smarty) {
 	return $c;
 }
 function products_setup_smarty() {
-	$smarty=smarty_setup();
-	$smarty->compile_dir=USERBASE.'/ww.cache/products/templates_c';
+	$smarty=smarty_setup(USERBASE.'/ww.cache/products/templates_c');
 	$smarty->template_dir='/ww.cache/products/templates';
 	$smarty->assign('PAGEDATA',$GLOBALS['PAGEDATA']);
 	if (isset($_SESSION['userdata'])) {
@@ -1110,7 +1112,7 @@ class Products{
 			default: // { use template
 				foreach ($prods as $pid) {
 					$product=Product::getInstance($pid);
-					if ($product && $product->id) {
+					if ($product && isset($product->id) && $product->id) {
 						$typeID = $product->get('product_type_id');
 						$type=ProductType::getInstance($typeID);
 						if (!$type) {

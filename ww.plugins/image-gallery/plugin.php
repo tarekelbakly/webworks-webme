@@ -1,7 +1,4 @@
 <?php
-$kfm_do_not_save_session=true;
-require_once KFM_BASE_PATH.'/api/api.php';
-require_once KFM_BASE_PATH.'/initialise.php';
 $plugin=array(
 	'name' => 'Image Gallery',
 	'admin' => array(
@@ -13,10 +10,10 @@ $plugin=array(
 	)
 );
 function image_gallery_admin_page_form($page,$vars){
-	require dirname(__FILE__).'/admin/index.php';
+	require_once dirname(__FILE__).'/admin/index.php';
 	return $c;
 }
 function image_gallery_frontend($PAGEDATA){
-	require dirname(__FILE__).'/frontend/show.php';
+	require_once dirname(__FILE__).'/frontend/show.php';
 	return image_gallery_show($PAGEDATA);
 }

@@ -1,4 +1,3 @@
 <?php
 $p = new kfmPlugin('rename');
-$kfm->addPlugin($p);
-?>
+$GLOBALS['kfm']->addPlugin($p);

@@ -1,4 +1,3 @@
 <?php
 $p=new kfmPlugin('codepress');
-$kfm->addPlugin($p);
-?>
+$GLOBALS['kfm']->addPlugin($p);

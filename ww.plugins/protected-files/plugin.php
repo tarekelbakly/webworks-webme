@@ -152,8 +152,7 @@ function protectedFiles_getTemplate($templateString) {
 		die('no template created. please create a template first');
 	}
 	require_once SCRIPTBASE.'ww.incs/common.php';
-	$smarty = smarty_setup();
-	$smarty -> compile_dir = USERBASE.'/ww.cache/pages';
-	$smarty -> template_dir = THEME_DIR.'/'.THEME.'/h/';
+	$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
+	$smarty->template_dir = THEME_DIR.'/'.THEME.'/h/';
 	return array($smarty, str_replace('.html','',$template));
 }

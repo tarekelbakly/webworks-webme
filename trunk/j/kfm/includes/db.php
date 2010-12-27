@@ -32,21 +32,18 @@ class DB{
 	}
 }
 function db_fetch_all($query){
-	global $kfm_db_type,$kfmdb;
-	if($kfm_db_type=='sqlitepdo'){
-		return $kfmdb->fetchAll($query);
+	if($GLOBALS['kfm_db_type']=='sqlitepdo'){
+		return $GLOBALS['kfmdb']->fetchAll($query);
 	}
-	$q=$kfmdb->query($query);
+	$q=$GLOBALS['kfmdb']->query($query);
 	if(PEAR::isError($q))die('alert("'.$q->getMessage().'\n'.$query.'")');
 	return $q->fetchAll();
 }
 function db_fetch_row($query){
-	global $kfm_db_type,$kfmdb;
-	if($kfm_db_type=='sqlitepdo'){
-		return $kfmdb->fetchRow($query);
+	if($GLOBALS['kfm_db_type']=='sqlitepdo'){
+		return $GLOBALS['kfmdb']->fetchRow($query);
 	}
-	$q=$kfmdb->query($query);
+	$q=$GLOBALS['kfmdb']->query($query);
 	if(PEAR::isError($q))die('alert("'.$q->getMessage().'\n'.$query.'")');
 	return $q->fetchRow();
 }
-?>

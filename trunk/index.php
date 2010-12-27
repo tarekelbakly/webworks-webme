@@ -56,8 +56,7 @@ function WW_getInlineScripts(){
 require_once 'ww.incs/common.php';
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
 	$server=str_replace('www.', '', $_SERVER['HTTP_HOST']);
-	header('Location: https://www.'.$server.'/');
-	exit;
+	redirect('https://www.'.$server.'/');
 }
 if (!isset($DBVARS['version']) || $DBVARS['version']<31) {
 	redirect('/ww.incs/upgrade.php');
@@ -65,19 +64,10 @@ if (!isset($DBVARS['version']) || $DBVARS['version']<31) {
 $id=getVar('pageid', 0);
 $page=getVar('page');
 // }
-// { specials
+// { is this a search?
 if ($page=='' && isset($_GET['search']) || isset($_GET['s'])) {
-	if (isset($_GET['s'])) {
-		$_GET['search']=$_GET['s'];
-	}
-	$p=Page::getInstanceByType(5);
-	if (!$p || !isset($p->id)) {
-		dbQuery(
-			'insert into pages set cdate=now(),edate=now(),name="__search",'
-			.'body="",type=5,special=2,ord=5000'
-		);
-		$p=Page::getInstanceByType(5);
-	}
+	require_once 'ww.incs/search.php';
+	$p=Search_getPage();
 	$id=$p->id;
 }
 // }
@@ -126,7 +116,7 @@ $c=plugin_trigger('page-object-loaded');
 $allowed=1;
 foreach ($PLUGINS as $p) {
 	if (!$allowed) {
-		continue;
+		break;
 	}
 	if (isset($p['frontend']['page_display_test'])) {
 		$allowed=$p['frontend']['page_display_test']($PAGEDATA);
@@ -159,25 +149,12 @@ else {
 			$c.=displayPageSummaries($PAGEDATA->id);
 		break; // }
 		case '5': // { search results
-			$c.=$PAGEDATA->render().showSearchResults();
+			require_once 'ww.incs/search.php';
+			$c.=$PAGEDATA->render().Search_showResults();
 		break; // }
 		case '9': // { table of contents
-			$kids=Pages::getInstancesByParent($PAGEDATA->id);
-			$c.=$PAGEDATA->render();
-			if (!count($kids->pages)) {
-				$c.='<em>no sub-pages</em>';
-			}
-			else{
-				$c.='<ul class="subpages">';
-				foreach ($kids->pages as $kid) {
-					$c.='<li><a href="'.$kid->getRelativeURL().'">'
-						.htmlspecialchars($kid->name).'</a></li>';
-				}
-				$c.='</ul>';
-			}
-			if (isset($PAGEDATA->vars['footer'])) {
-				$c.=$PAGEDATA->vars['footer'];
-			}
+			require 'ww.incs/tableofcontents.php';
+			$c.=TableOfContents_getContent($PAGEDATA);
 		break; // }
 		default: // { plugins, and unknown
 			$not_found=true;
@@ -198,6 +175,7 @@ else {
 			// }
 	}
 	if ($c=='' && !$id) {
+		// delete this if it's never called by March 2011
 		$c=show404(str_replace('/', ' ', $_SERVER['REQUEST_URI']));
 	}
 }
@@ -232,59 +210,14 @@ if ($template=='') {
 	die('no template created. please create a template first');
 }
 // }
-
-/**
-	* return a logo HTML string if the admin uploaded one
-	*
-	* @param array $vars array of logo parameters (width, height)
-	*
-	* @return string
-	*/
-function logoDisplay($vars) {
-	$vars=array_merge(array('width'=>64, 'height'=>64), $vars);
-	if (!file_exists(USERBASE.'/f/skin_files/logo.png')) {
-		return '';
-	}
-	$x=(int)$vars['width'];
-	$y=(int)$vars['height'];
-	$geometry=$x.'x'.$y;
-	$image_file=USERBASE.'/f/skin_files/logo-'.$geometry.'.png';
-	if (!file_exists($image_file)) {
-		$from=addslashes(USERBASE.'/f/skin_files/logo.png');
-		$to=addslashes($image_file);
-		`convert $from -geometry $geometry $to`;
-	}
-	return '<img id="logo" src="/f/skin_files/logo-'.$geometry.'.png" />';
-}
-
-/**
-	*  return a HTML string with "breadcrumb" links to the current page
-	*
-	* @param int $id ID of the root page to draw breadcrumbs from
-	*
-	* @return string
-	*/
-function WW_getPageBreadcrumbs($id=0) {
-	if ($id) {
-		$page=Page::getInstance($id);
-	}
-	else {
-		$page=$GLOBALS['PAGEDATA'];
-	}
-	$c=$page->parent ? WW_getPageBreadcrumbs($page->parent) . ' &raquo; ' : '';
-	return $c . '<a href="' . $page->getRelativeURL() . '" title="' 
-		. htmlspecialchars($page->title) . '">' 
-		. htmlspecialchars($page->name) . '</a>';
-}
-
-$smarty=smarty_setup();
-$smarty->compile_dir=USERBASE . '/ww.cache/pages';
+// { set up smarty
+$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
 $smarty->template_dir=THEME_DIR.'/'.THEME.'/h/';
-// { some straight replaces
 $smarty->assign(
 	'PAGECONTENT', '<div id="ww-pagecontent">'.$pagecontent.'</div>'
 );
 $smarty->assign('PAGEDATA', $PAGEDATA);
+// }
 // { build metadata
 // { page title
 $title=($PAGEDATA->title!='')
@@ -335,10 +268,12 @@ if (is_admin()) {
 // { meta tags
 $c.='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 if ($PAGEDATA->keywords) {
-	$c.='<meta http-equiv="keywords" content="'.$PAGEDATA->keywords.'" />';
+	$c.='<meta http-equiv="keywords" content="'
+		.htmlspecialchars($PAGEDATA->keywords).'" />';
 }
 if ($PAGEDATA->description) {
-	$c.='<meta http-equiv="description" content="'.$PAGEDATA->description.'"/>';
+	$c.='<meta http-equiv="description" content="'
+		.htmlspecialchars($PAGEDATA->description).'"/>';
 }
 if (isset($PAGEDATA->vars['google-site-verification'])) {
 	$c.='<meta name="google-site-verification" content="'
@@ -350,8 +285,8 @@ if (file_exists(USERBASE.'/f/skin_files/favicon.ico')) {
 	$c.='<link rel="shortcut icon" href="/f/skin_files/favicon.ico" />';
 }
 // }
-// }
 $smarty->assign('METADATA', $c);
+// }
 // { display the document
 ob_start();
 if (strpos($template, '/')===false) {
@@ -359,8 +294,8 @@ if (strpos($template, '/')===false) {
 }
 $t=$smarty->fetch($template);
 echo str_replace(
-	array('WW_SCRIPTS_GO_HERE','WW_CSS_GOES_HERE','</body>'),
-	array(WW_getScripts(),WW_getCSS(),WW_getInlineScripts().'</body>'),
+	array('WW_SCRIPTS_GO_HERE', 'WW_CSS_GOES_HERE', '</body>'),
+	array(WW_getScripts(), WW_getCSS(), WW_getInlineScripts().'</body>'),
 	$t
 );
 

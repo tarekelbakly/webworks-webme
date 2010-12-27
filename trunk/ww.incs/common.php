@@ -69,26 +69,23 @@ function menuDisplay($a=0){
 	return menu_show($a);
 }
 function show404($a=0){
-	include_once SCRIPTBASE . 'common/404.php';
+	mail('kae@kvsites.ie', 'show404 called', 'remove the trace from /index.php and /ww.incs/common.php');
+	include_once SCRIPTBASE . 'ww.incs/404.php';
 	return ww_show404($a);
-}
-function showSearchResults($a=0){
-	require_once SCRIPTBASE . 'ww.incs/search.php';
-	return ww_showSearchResults($a);
 }
 function sitemap($a=0){
 	include_once SCRIPTBASE . 'ww.incs/sitemap-funcs.php';
 	return ww_showSitemap($a);
 }
-function smarty_setup(){
+function smarty_setup($compile_dir){
 	global $DBVARS,$PLUGINS;
 	$smarty = new Smarty;
 	$smarty->left_delimiter = '{{';
 	$smarty->right_delimiter = '}}';
 	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
 	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
-	$smarty->register_function('BREADCRUMBS','WW_getPageBreadcrumbs');
-	$smarty->register_function('LOGO', 'logoDisplay');
+	$smarty->register_function('BREADCRUMBS','Template_breadcrumbs');
+	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');
 	$smarty->register_function('nuMENU', 'menu_show_fg');
 	foreach($PLUGINS as $pname=>$plugin){
@@ -98,7 +95,52 @@ function smarty_setup(){
 			}
 		}
 	}
+	$smarty->compile_dir=$compile_dir;
 	return $smarty;
+}
+
+/**
+	*  return a HTML string with "breadcrumb" links to the current page
+	*
+	* @param int $id ID of the root page to draw breadcrumbs from
+	*
+	* @return string
+	*/
+function Template_breadcrumbs($id=0) {
+	if ($id) {
+		$page=Page::getInstance($id);
+	}
+	else {
+		$page=$GLOBALS['PAGEDATA'];
+	}
+	$c=$page->parent ? Template_breadcrumbs($page->parent) . ' &raquo; ' : '';
+	return $c . '<a href="' . $page->getRelativeURL() . '" title="' 
+		. htmlspecialchars($page->title) . '">' 
+		. htmlspecialchars($page->name) . '</a>';
+}
+
+/**
+	* return a logo HTML string if the admin uploaded one
+	*
+	* @param array $vars array of logo parameters (width, height)
+	*
+	* @return string
+	*/
+function Template_logoDisplay($vars) {
+	$vars=array_merge(array('width'=>64, 'height'=>64), $vars);
+	if (!file_exists(USERBASE.'/f/skin_files/logo.png')) {
+		return '';
+	}
+	$x=(int)$vars['width'];
+	$y=(int)$vars['height'];
+	$geometry=$x.'x'.$y;
+	$image_file=USERBASE.'/f/skin_files/logo-'.$geometry.'.png';
+	if (!file_exists($image_file)) {
+		$from=addslashes(USERBASE.'/f/skin_files/logo.png');
+		$to=addslashes($image_file);
+		`convert $from -geometry $geometry $to`;
+	}
+	return '<img id="logo" src="/f/skin_files/logo-'.$geometry.'.png" />';
 }
 // { user authentication
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='login'){

@@ -1,5 +1,5 @@
 <?php
-function ww_showSearchResults(){
+function Search_showResults(){
 	// { variables
 		global $PAGEDATA;
 		$start=getVar('start',0);
@@ -35,4 +35,18 @@ function ww_showSearchResults(){
 		$c.='<em id="searchResultsTitle">no results found</em>';
 	}
 	return $c;
+}
+function Search_getPage(){
+	if (isset($_GET['s'])) {
+		$_GET['search']=$_GET['s'];
+	}
+	$p=Page::getInstanceByType(5);
+	if (!$p || !isset($p->id)) {
+		dbQuery(
+			'insert into pages set cdate=now(),edate=now(),name="__search",'
+			.'body="",type=5,special=2,ord=5000'
+		);
+		$p=Page::getInstanceByType(5);
+	}
+	return $p;
 }

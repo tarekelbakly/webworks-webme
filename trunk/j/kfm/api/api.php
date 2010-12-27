@@ -8,7 +8,6 @@ function kfm_api_createDirectory($parent,$name){
 }
 function kfm_api_getDirectoryId($address){
 	if(!is_dir(USERBASE.'f/'.$address))return 0;
-	global $kfmdb;
 	$arr=explode('/',$address);
 	$curdir=1;
 	if($arr[count($arr)-1]==''&&count($arr)>1)array_pop($arr);
@@ -28,4 +27,4 @@ function kfm_api_removeFile($id){
 	$f->delete();
 	return kfm_loadFiles($p);
 }
-$kfm_api_auth_override=1;
+$GLOBALS['kfm_api_auth_override']=1;

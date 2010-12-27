@@ -1,7 +1,6 @@
 <?php
 function _copyFiles($files,$dir_id){
-	global $kfm;
-	if($dir_id==$kfm->setting('root_folder_id') && !$kfm->setting('allow_files_in_root'))return kfm_error(kfm_lang('files are not allowed to be create, moved or copied into root'));
+	if($dir_id==$GLOBALS['kfm']->setting('root_folder_id') && !$GLOBALS['kfm']->setting('allow_files_in_root'))return kfm_error(kfm_lang('files are not allowed to be create, moved or copied into root'));
 	$copied=0;
 	$dir=kfmDirectory::getInstance($dir_id);
 	foreach($files as $fid){
@@ -12,23 +11,21 @@ function _copyFiles($files,$dir_id){
 	kfm_addMessage(kfm_lang('filesCopied',$copied));
 }
 function _createEmptyFile($cwd,$filename){
-	global $kfm;
 	if($cwd==0)$cwd=1;
-	if($cwd==$kfm->setting('root_folder_id') && !$kfm->setting('allow_files_in_root'))return kfm_error(kfm_lang('files are not allowed to be create, moved or copied into root'));
+	if($cwd==$GLOBALS['kfm']->setting('root_folder_id') && !$GLOBALS['kfm']->setting('allow_files_in_root'))return kfm_error(kfm_lang('files are not allowed to be create, moved or copied into root'));
 	$dir=kfmDirectory::getInstance($cwd);
 	$path=$dir->path();
 	if(!kfmFile::checkName($filename))return kfm_error(kfm_lang('illegalFileName',$filename));
-	if(in_array(kfmFile::getExtension($filename),$kfm->setting('banned_upload_extensions')))return kfm_error(kfm_lang('illegalFileName',$filename));
+	if(in_array(kfmFile::getExtension($filename),$GLOBALS['kfm']->setting('banned_upload_extensions')))return kfm_error(kfm_lang('illegalFileName',$filename));
 	$success=touch($path.$filename);
 	if($success){
-		chmod($path.$filename, octdec('0'.$kfm->setting('default_upload_permission')));
+		chmod($path.$filename, octdec('0'.$GLOBALS['kfm']->setting('default_upload_permission')));
 		return kfm_loadFiles($cwd);
 	}
 	return kfm_error(kfm_lang('couldNotCreateFile',$filename));
 }
 function _downloadFileFromUrl($url,$filename){
-	global $kfm_session, $kfm;
-	$cwd_id=$kfm_session->get('cwd_id');
+	$cwd_id=$GLOBALS['kfm_session']->get('cwd_id');
 	$dir=kfmDirectory::getInstance($cwd_id);
 	$cwd=$dir->path();
 	if(!kfmFile::checkName($filename))return kfm_error(kfm_lang('error: filename not allowed'));
@@ -36,13 +33,12 @@ function _downloadFileFromUrl($url,$filename){
 	$file=file_get_contents(str_replace(' ','%20',$url));
 	if(!$file)return kfm_lang('failedDownloadFromUrl');
 	if(!file_put_contents($cwd.'/'.$filename,$file))return kfm_lang('failedWriteToFile',$filename);
-	chmod($cwd.'/'.$filename, octdec('0'.$kfm->setting('default_upload_permission')));
+	chmod($cwd.'/'.$filename, octdec('0'.$GLOBALS['kfm']->setting('default_upload_permission')));
 	return kfm_loadFiles($cwd_id);
 }
 function _extractZippedFile($id){
-	global $kfm_session,$kfm;
-	$cwd_id=$kfm_session->get('cwd_id');
-	if(!$kfm->setting('allow_file_create'))return kfm_error(kfm_lang('permissionDeniedCreateFile'));
+	$cwd_id=$GLOBALS['kfm_session']->get('cwd_id');
+	if(!$GLOBALS['kfm']->setting('allow_file_create'))return kfm_error(kfm_lang('permissionDeniedCreateFile'));
 	$file=kfmFile::getInstance($id);
 	$dir=$file->directory.'/';
 	{ # try native system unzip command
@@ -80,7 +76,6 @@ function _getFileAsArray($filename){
 	return explode("\n",rtrim(file_get_contents($filename)));
 }
 function _getFileDetails($fid){
-	global $kfm;
 	$file=kfmFile::getInstance($fid);
 	if(!is_object($file))return kfm_lang('failedGetFileObject');
 	$fpath=$file->path;
@@ -102,7 +97,7 @@ function _getFileDetails($fid){
 		'icon_url'=>'get.php?id='.$file->id.'&width=64&height=64&hash='.$file->ctime.GET_PARAMS
 	);
 	if($file->isImage()){
-		if($kfm->isPlugin('captions'))$details['caption']=$file->caption;
+		if($GLOBALS['kfm']->isPlugin('captions'))$details['caption']=$file->caption;
 		$details['width']=$file->width;
 		$details['height']=$file->height;
 		$details['thumb_url']=$file->thumb_url;
@@ -119,7 +114,6 @@ function _getFileUrls($fArr){
 	return $rArr;
 }
 function _getTagName($id){
-	global $kfmdb;
 	$r=db_fetch_row("select name from ".KFM_DB_PREFIX."tags where id=".$id);
 	if(count($r))return array($id,$r['name']);
 	return array($id,kfm_lang('UNKNOWN TAG',$id));
@@ -129,7 +123,6 @@ function _getTextFile($fid){
 	return array('content'=>$file->getContent(),'name'=>$file->name,'id'=>$file->id);
 }
 function _loadFiles($rootid=1,$setParent=false){
-	global $kfm_session,$kfm;
 	if(!$rootid)$rootid=1;
 	$dir=kfmDirectory::getInstance($rootid);
 	$oFiles=$dir->getFiles();
@@ -137,14 +130,13 @@ function _loadFiles($rootid=1,$setParent=false){
 	$files=array();
 	foreach($oFiles as $file)$files[]=_getFileDetails($file);
   $root = '/'.$dir->relativePath(true);
-	$kfm_session->set('cwd_id',$rootid);
-	$ret=array('reqdir'=>$root,'files'=>$files,'uploads_allowed'=>$kfm->setting('allow_file_upload'),'sprites'=>kfm_getCssSprites($rootid)); 
+	$GLOBALS['kfm_session']->set('cwd_id',$rootid);
+	$ret=array('reqdir'=>$root,'files'=>$files,'uploads_allowed'=>$GLOBALS['kfm']->setting('allow_file_upload'),'sprites'=>kfm_getCssSprites($rootid)); 
 	if($setParent)$ret['parent']=$rootid;
 	return $ret;
 }
 function _moveFiles($files,$dir_id){
-	global $kfmdb,$kfm_session;
-	$cwd_id=$kfm_session->get('cwd_id');
+	$cwd_id=$GLOBALS['kfm_session']->get('cwd_id');
 	foreach($files as $fid){
 		$file=kfmFile::getInstance($fid);
 		if(!$file)continue;
@@ -153,15 +145,13 @@ function _moveFiles($files,$dir_id){
 	return kfm_loadFiles($cwd_id);
 }
 function _renameFile($fid,$newfilename,$refreshFiles=true){
-	global $kfm_session;
 	$file=kfmFile::getInstance($fid);
 	$file->rename($newfilename);
-	if($refreshFiles)return kfm_loadFiles($kfm_session->get('cwd_id'));
+	if($refreshFiles)return kfm_loadFiles($GLOBALS['kfm_session']->get('cwd_id'));
 }
 function _renameFiles($files,$template){
-	global $kfm_session,$kfm;
-	$cwd_id=$kfm_session->get('cwd_id');
-	if(!$kfm->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
+	$cwd_id=$GLOBALS['kfm_session']->get('cwd_id');
+	if(!$GLOBALS['kfm']->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
 	$prefix=preg_replace('/\*.*/','',$template);
 	$postfix=preg_replace('/.*\*/','',$template);
 	$precision=strlen(preg_replace('/[^*]/','',$template));
@@ -198,14 +188,12 @@ function _rm($id){
 	return $id;
 }
 function _saveTextFile($fid,$text){
-	global $kfm;
-	if(!$kfm->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
+	if(!$GLOBALS['kfm']->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
 	$f=kfmFile::getInstance($fid);
 	if(!$f->checkName())return kfm_error(kfm_lang('permissionDeniedEditFile'));
 	if($f->setContent($text))kfm_addMessage(kfm_lang('file saved'));
 }
 function _search($keywords,$tags){
-	global $kfmdb;
 	$files=array();
 	$valid_files=array();
 	if($tags){
@@ -241,8 +229,7 @@ function _search($keywords,$tags){
 	return array('reqdir'=>kfm_lang('searchResults'),'files'=>$files,'uploads_allowed'=>0);
 }
 function _tagAdd($recipients,$tagList){
-	global $kfmdb, $kfm;
-	if(!$kfm->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
+	if(!$GLOBALS['kfm']->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
 	if(!is_array($recipients))$recipients=array($recipients);
 	$arr=explode(',',$tagList);
 	$tagList=array();
@@ -254,19 +241,18 @@ function _tagAdd($recipients,$tagList){
 		$r=db_fetch_row("select id from ".KFM_DB_PREFIX."tags where name='".sql_escape($tag)."'");
 		if(count($r)){
 			$tag_id=$r['id'];
-			$kfmdb->query("delete from ".KFM_DB_PREFIX."tagged_files where tag_id=".$tag_id." and (file_id=".join(' or file_id=',$recipients).")");
+			$GLOBALS['kfmdb']->query("delete from ".KFM_DB_PREFIX."tagged_files where tag_id=".$tag_id." and (file_id=".join(' or file_id=',$recipients).")");
 		}
 		else{
-			$q=$kfmdb->query("insert into ".KFM_DB_PREFIX."tags (name) values('".sql_escape($tag)."')");
-			$tag_id=$kfmdb->lastInsertId(KFM_DB_PREFIX.'tags','id');
+			$q=$GLOBALS['kfmdb']->query("insert into ".KFM_DB_PREFIX."tags (name) values('".sql_escape($tag)."')");
+			$tag_id=$GLOBALS['kfmdb']->lastInsertId(KFM_DB_PREFIX.'tags','id');
 		}
-		foreach($recipients as $file_id)$kfmdb->query("insert into ".KFM_DB_PREFIX."tagged_files (tag_id,file_id) values(".$tag_id.",".$file_id.")");
+		foreach($recipients as $file_id)$GLOBALS['kfmdb']->query("insert into ".KFM_DB_PREFIX."tagged_files (tag_id,file_id) values(".$tag_id.",".$file_id.")");
 	}
 	return _getFileDetails($recipients[0]);
 }
 function _tagRemove($recipients,$tagList){
-	global $kfmdb, $kfm;
-	if(!$kfm->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
+	if(!$GLOBALS['kfm']->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
 	if(!is_array($recipients))$recipients=array($recipients);
 	$arr=explode(',',$tagList);
 	$tagList=array();
@@ -277,16 +263,14 @@ function _tagRemove($recipients,$tagList){
 			if(count($r))$tagList[]=$r['id'];
 		}
 	}
-	if(count($tagList))$kfmdb->exec("delete from ".KFM_DB_PREFIX."tagged_files where (file_id=".join(' or file_id=',$recipients).") and (tag_id=".join(' or tag_id="',$tagList).")");
+	if(count($tagList))$GLOBALS['kfmdb']->exec("delete from ".KFM_DB_PREFIX."tagged_files where (file_id=".join(' or file_id=',$recipients).") and (tag_id=".join(' or tag_id="',$tagList).")");
 	return _getFileDetails($recipients[0]);
 }
 function _zip($filename,$files){
-	global $kfm_session;
-	$cwd_id=$kfm_session->get('cwd_id');
+	$cwd_id=$GLOBALS['kfm_session']->get('cwd_id');
 	$dir=kfmDirectory::getInstance($cwd_id);
 	$cwd=$dir->path();
-	if(!$kfm->setting('allow_file_create'))return kfm_error(kfm_lang('permissionDeniedCreateFile'));
-	global $rootdir;
+	if(!$GLOBALS['kfm']->setting('allow_file_create'))return kfm_error(kfm_lang('permissionDeniedCreateFile'));
 	if(!kfmFile::checkName($filename))return kfm_error(kfm_lang('illegalFileName',$filename));
 	$arr=array();
 	foreach($files as $f){

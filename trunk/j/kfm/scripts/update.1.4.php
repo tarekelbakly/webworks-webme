@@ -1,9 +1,9 @@
 <?php
-$version=$kfm_parameters['version'];
+$version=$GLOBALS['kfm_parameters']['version'];
 if($version==''||$version=='7.0'||$version<'1.4')require KFM_BASE_PATH.'scripts/update.1.3.php';
-$kfm_parameters['version']='1.4';
-$kfmdb->query('update '.KFM_DB_PREFIX.'parameters set value="'.$kfm_parameters['version'].'" where name="version"');
-switch($kfm_db_type){
+$GLOBALS['kfm_parameters']['version']='1.4';
+$GLOBALS['kfmdb']->query('update '.KFM_DB_PREFIX.'parameters set value="'.$GLOBALS['kfm_parameters']['version'].'" where name="version"');
+switch($GLOBALS['kfm_db_type']){
 	case 'mysql':{
 		require 'scripts/db.mysql.update.1.4.php';
 		break;

@@ -4,10 +4,6 @@
 	report bugs to Kae (kae@webworks.ie)
 */
 
-$kfm_do_not_save_session=true;
-require_once KFM_BASE_PATH.'/api/api.php';
-require_once KFM_BASE_PATH.'/initialise.php';
-
 // { plugin declaration
 $plugin=array(
 	'name' => 'Products',
