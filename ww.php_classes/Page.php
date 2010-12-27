@@ -167,8 +167,7 @@ class Page{
 		return $this;
 	}
 	function render(){
-		$smarty=smarty_setup();
-		$smarty->compile_dir=USERBASE . '/ww.cache/pages';
+		$smarty=smarty_setup(USERBASE.'/ww.cache/pages');
 		if(!file_exists(USERBASE.'/ww.cache/pages/template_'.$this->id)){
 			file_put_contents(USERBASE.'/ww.cache/pages/template_'.$this->id,$this->body);
 		}

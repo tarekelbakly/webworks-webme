@@ -12,7 +12,7 @@
  *  kae@verens.com
  */
 
-$kfm_langStrings=array(
+$GLOBALS['kfm_langStrings']=array(
 	"alreadyExists"                => "\"%1\" already exists",
 	"errorInvalidID"               => "error: invalid ID",
 	"errorFileIDNotFound"          => "error: file id #%1 not found in database",
@@ -70,4 +70,3 @@ $kfm_langStrings=array(
 	"UNKNOWN TAG"                    => "UNKNOWN TAG \"%1\"",
 	"error: unzip failed"            => "error: unzip failed"
 );
-?>

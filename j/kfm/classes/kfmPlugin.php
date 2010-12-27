@@ -11,12 +11,11 @@ class kfmPlugin extends kfmObject{
 	public $javascript_files=array();
 	public $admin_tabs=array();
 	function __construct($name){
-		global $kfm;
 		$this->name=$name;
 		$this->title=$this->name;
 		$bt=debug_backtrace();
 		$this->path=dirname($bt[0]['file']).'/';
-		//$this->url=$kfm->setting('kfm_url').'plugins/'.$name.'/';
+		//$this->url=$GLOBALS['kfm']->setting('kfm_url').'plugins/'.$name.'/';
 	}
 	
 	/**
@@ -27,8 +26,7 @@ class kfmPlugin extends kfmObject{
 	}
 
   function url(){
-    global $kfm;
-    return $kfm->setting('kfm_url').'plugins/'.$this->name.'/';
+    return $GLOBALS['kfm']->setting('kfm_url').'plugins/'.$this->name.'/';
   }
 
 	function getJavascript(){

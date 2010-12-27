@@ -1,4 +1,3 @@
 <?php
 $p=new kfmPlugin('cropper');
-$kfm->addPlugin($p);
-?>
+$GLOBALS['kfm']->addPlugin($p);

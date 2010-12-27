@@ -2,13 +2,11 @@
 class kfmObject{
 	var $error_array = array();
 	function __construct(){
-		//global $kfmdb,$kfm_db_type;
-		//$this->db=&$kfmdb;
+		//$this->db=&$GLOBALS['kfmdb'];
 		//$this->db_prefix=KFM_DB_PREFIX;
-		//$this->db_type=&$kfm_db_type;
+		//$this->db_type=&$GLOBALS['kfm_db_type'];
 	}
 	function error($message, $level=3){
-		global $kfm_errors;
 		$info=array('function'=>'','class'=>'','file'=>'');
 		$trace=debug_backtrace();
 		$previous_level=array_shift($trace);
@@ -27,7 +25,7 @@ class kfmObject{
 			'class'=>$info['class'],
 			'file'=>$info['file']);
 		$this->error_array[] = $message;
-		$kfm_errors[]=$error;
+		$GLOBALS['kfm_errors'][]=$error;
 		return false;
 	}
 	function hasErrors(){

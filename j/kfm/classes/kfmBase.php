@@ -242,8 +242,8 @@ class kfmBase extends kfmObject{
 
 	/* Add an association to kfm. This associates a plugin with an extension.
 	 * It should be something like:
-   * $kfm->addAssociation('lightbox','jpg,png,jpeg,gif');
-   * $kfm->addAssociation('rename', 'all');
+   * $GLOBALS['kfm']->addAssociation('lightbox','jpg,png,jpeg,gif');
+   * $GLOBALS['kfm']->addAssociation('rename', 'all');
 	 */
 	function addAssociation($plugin, $extensions){
 		$this->addAssociations(array('plugin'=>$plugin, 'extension'=>$extensions));

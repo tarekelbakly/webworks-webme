@@ -1,8 +1,8 @@
 <?php
 { # variables
-	$kfm_kaejax_js_has_been_shown=0;
-	$kfm_kaejax_export_list=array();
-	$kfm_kaejax_is_loaded=1;#strstr($_SERVER['REQUEST_URI'],'kfm_kaejax_is_loaded');
+	$GLOBALS['kfm_kaejax_js_has_been_shown']=0;
+	$GLOBALS['kfm_kaejax_export_list']=array();
+	$GLOBALS['kfm_kaejax_is_loaded']=1;#strstr($_SERVER['REQUEST_URI'],'kfm_kaejax_is_loaded');
 }	
 function kfm_kaejax_handle_client_request(){
 	if(!isset($_POST['kaejax']))return;
@@ -25,9 +25,8 @@ function kfm_kaejax_get_one_stub($func_name){
 	return $a;
 }
 function kfm_kaejax_export(){
-	global $kfm_kaejax_export_list;
 	$n=func_num_args();
-	for($i=0;$i<$n;$i++)$kfm_kaejax_export_list[]=func_get_arg($i);
+	for($i=0;$i<$n;$i++)$GLOBALS['kfm_kaejax_export_list'][]=func_get_arg($i);
 }
 function kfm_kaejax_get_javascript(){
 	$html='';

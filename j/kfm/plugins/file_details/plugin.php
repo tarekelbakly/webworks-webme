@@ -1,4 +1,3 @@
 <?php
 $p=new kfmPlugin('file_details');
-$kfm->addPlugin($p);
-?>
+$GLOBALS['kfm']->addPlugin($p);

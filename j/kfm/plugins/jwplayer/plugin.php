@@ -1,3 +1,3 @@
 <?php
 $p=new kfmPlugin('jwplayer');
-$kfm->addPlugin($p);
+$GLOBALS['kfm']->addPlugin($p);
