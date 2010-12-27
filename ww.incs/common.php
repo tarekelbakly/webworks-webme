@@ -155,8 +155,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='login'){
 	if($r && count($r)){
 		// { update session variables
 		$r['password']=$password;
-		$_SESSION['userdata']=$r;
-		$r['password'] = $_SESSION['userdata']['password'];
 		$_SESSION['userdata'] = $r;
 		dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
 		// }

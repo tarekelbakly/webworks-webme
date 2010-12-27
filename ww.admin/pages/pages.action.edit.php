@@ -71,7 +71,7 @@ if(allowedToEditPage($id)){
 		include_once(SCRIPTBASE.'/ww.incs/page.summaries.php');
 		displayPageSummaries($_POST['id']);
 	}
-	$msgs.='<em>'.__('An item\'s details have been updated.').'</em>';
+	$msgs.='<em>The page has been updated.:</em>';
 	dbQuery('update page_summaries set rss=""');
 	cache_clear('menus');
 	cache_clear('pages');
