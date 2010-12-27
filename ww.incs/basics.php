@@ -10,10 +10,9 @@ function __() {
 	}
 	return $str;  
 }
-if(!function_exists('__autoload')){
-	function __autoload($name) {
-		require $name . '.php';
-	}
+spl_autoload_register('WebME_autoload');
+function WebME_autoload($name) {
+	require $name . '.php';
 }
 function cache_clear($type){
 	if(!is_dir(USERBASE.'/ww.cache/'.$type))return;

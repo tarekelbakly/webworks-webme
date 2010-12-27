@@ -51,7 +51,7 @@ function kaejax_sendRequests(uri){
 		for(var i=0;i<t.c.length;++i){
 			var f=callbacks[i],p=[];
 			p=[];
-			if($type(f)=='array'){
+			if($.isArray(f)){
 				p=f;
 				f=f[0];
 			}
@@ -72,7 +72,7 @@ window.ww={
 	CKEDITOR:'ckeditor'
 };
 // { variables
-var loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var function_urls=[],loadedScripts=[],kaejax_is_loaded=0,months=['--','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var kaejax_timeouts=[];
 // }
 var Json = {
