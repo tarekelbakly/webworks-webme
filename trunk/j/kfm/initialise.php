@@ -13,10 +13,9 @@ if(!defined('KFM_BASE_PATH'))define('KFM_BASE_PATH', dirname(__FILE__).'/');
 if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))@date_default_timezone_set(date_default_timezone_get());
 
 // { load classes and helper functions
-if(!function_exists('__autoload')){
-	function __autoload($class_name) {
-		require_once KFM_BASE_PATH . 'classes/' . $class_name . '.php';
-	}
+spl_autoload_register('KFM_autoload');
+function KFM_autoload($name) {
+	require_once KFM_BASE_PATH . 'classes/' . $name . '.php';
 }
 require KFM_BASE_PATH.'includes/lang.php';
 require KFM_BASE_PATH.'includes/db.php';
