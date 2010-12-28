@@ -1,13 +1,29 @@
 <?php
-include('../ww.incs/basics.php');
+/**
+	* generate a sitemap, as defined here: http://sitemaps.org/
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@webworks.ie>
+	* @license  GPL 2.0
+	* @link     http://webworks.ie/
+	*/
+
+require_once 'basics.php';
 header('Content-type: text/xml; charset=utf-8');
 echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-echo '<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">';
-$rs=dbAll("select id,cdate,importance,name from pages where importance>0 order by importance desc");
-foreach($rs as $r){
+echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+$rs=dbAll(
+	'select id,edate,importance,name from pages where importance>0 order by '
+	.'importance desc'
+);
+foreach ($rs as $r) {
 	$page=Page::getInstance($r['id']);
-	echo '<url><loc>http://'.$_SERVER['HTTP_HOST'].$page->getRelativeUrl().'</loc>'
-		.'<lastmod>'.preg_replace('/ .*/','',$r['cdate']).'</lastmod>'
+	echo '<url><loc>http://'.$_SERVER['HTTP_HOST'].$page->getRelativeUrl()
+		.'</loc>'
+		.'<lastmod>'.preg_replace('/ .*/', '', $r['edate']).'</lastmod>'
 		.'<priority>'.$r['importance'].'</priority>'
 		.'</url>';
 }

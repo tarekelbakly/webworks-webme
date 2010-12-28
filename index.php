@@ -2,7 +2,7 @@
 /**
 	* front controller for WebME files
 	*
-	* PHP version 5
+	* PHP version 5.2
 	*
 	* @category None
 	* @package  None
@@ -194,7 +194,8 @@ if (!$allowed) {
 		.'<input type="submit" /></form>';
 }
 else if (getVar('webmespecial')=='sitemap') {
-	$c.=sitemap('');
+	require_once 'ww.incs/sitemap-funcs.php';
+	$c.=Sitemap_get();
 }
 else {
 	switch($PAGEDATA->type) {
@@ -204,7 +205,7 @@ else {
 		// }
 		case '4': // { sub-page summaries
 			require_once 'ww.incs/page.summaries.php';
-			$c.=displayPageSummaries($PAGEDATA->id);
+			$c.=PageSummaries_getHtml($PAGEDATA->id);
 		break; // }
 		case '5': // { search results
 			require_once 'ww.incs/search.php';

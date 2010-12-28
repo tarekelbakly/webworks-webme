@@ -31,7 +31,7 @@ function AjaxMenu_getChildren(
 	$topParent=0,
 	$search_options=0
 ) {
-	return array($parentid, menu_getChildren(
+	return array($parentid, Menu_getChildren(
 		$parentid,
 		$currentpage,
 		0,
