@@ -1,4 +1,16 @@
 <?php
+/**
+	* given a short url, retrieves the longer version and redirects the browser
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@webworks.ie>
+	* @license  GPL 2.0
+	* @link     http://webworks.ie/
+	*/
+
 require 'basics.php';
 
 if (!isset($_GET['s'])) {

@@ -1,17 +1,50 @@
 <?php
+/**
+	* functions for displaying a HTML sitemap
+	*
+	* PHP version 5.2
+	*
+	* @category None
+	* @package  None
+	* @author   Kae Verens <kae@webworks.ie>
+	* @license  GPL 2.0
+	* @link     http://webworks.ie/
+	*/
+
 require_once SCRIPTBASE . 'ww.incs/menus.php';
-function ww_showSitemap($c=''){
+
+/**
+  * build a HTML sitemap of the site
+  *
+  * @return string HTML sitemap
+  */
+function Sitemap_get() {
 	global $PAGEDATA;
-	$rs=menu_getChildren(0,$PAGEDATA->id);
-	$c='<ul>'.ww_showSitemapLinks($rs).'</ul>';
-	return $c;
+	$rs=Menu_getChildren(0, $PAGEDATA->id);
+	return '<ul>'.Sitemap_getLinks($rs).'</ul>';
 }
-function ww_showSitemapLinks($rs){
+
+/**
+  * check child pages for their own sub-pages
+  *
+	* @param array $rs list of child-pages
+	*
+  * @return string HTML sitemap
+  */
+function Sitemap_getLinks($rs) {
 	global $PAGEDATA;
 	$c='';
-	foreach($rs as $r){
-		$d=(ereg('hasChildren',$r['classes']))?'<ul>'.ww_showSitemapLinks(menu_getChildren($r['id'],$PAGEDATA->id)).'</ul>':'';
-		$c.='<li><a href="'.$r['link'].'" class="'.$r['classes'].'">'.htmlspecialchars($r['name']).'</a>'.$d.'</li>';
+	foreach ($rs as $r) {
+		$d=(ereg('hasChildren', $r['classes']))
+			?'<ul>'.Sitemap_getLinks(
+				Menu_getChildren(
+					$r['id'],
+					$PAGEDATA->id
+				)
+			).'</ul>'
+			:'';
+		$c.='<li><a href="'.$r['link'].'" class="'.$r['classes'].'">'
+			.htmlspecialchars($r['name']).'</a>'.$d.'</li>';
 	}
 	return $c;
 }

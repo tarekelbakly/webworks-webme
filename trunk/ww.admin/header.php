@@ -25,7 +25,7 @@ WW_addScript('/ww.admin/j/admin.js');
 <html>
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>
 		<?php echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'; ?>
 		<script src="/j/ckeditor/ckeditor.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />

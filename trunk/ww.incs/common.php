@@ -66,16 +66,12 @@ function imageDisplay($a=0){
 }
 function menuDisplay($a=0){
 	require_once SCRIPTBASE . 'ww.incs/menus.php';
-	return menu_show($a);
+	return Menu_show($a);
 }
 function show404($a=0){
 	mail('kae@kvsites.ie', 'show404 called', 'remove the trace from /index.php and /ww.incs/common.php');
 	include_once SCRIPTBASE . 'ww.incs/404.php';
 	return ww_show404($a);
-}
-function sitemap($a=0){
-	include_once SCRIPTBASE . 'ww.incs/sitemap-funcs.php';
-	return ww_showSitemap($a);
 }
 function smarty_setup($compile_dir){
 	global $DBVARS,$PLUGINS;
