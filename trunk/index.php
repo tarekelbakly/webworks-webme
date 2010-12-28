@@ -16,42 +16,97 @@ $ww_startup = microtime(true);
 $scripts=array();
 $css_urls=array();
 $scripts_inline=array();
-function WW_addCSS($url){
+
+/**
+  * add a CSS file to be shown in the page
+  *
+  * @param string $url URL of the sheet
+  *
+  * @return null
+  */
+function WW_addCSS($url) {
 	global $css_urls;
-	if(in_array($url,$css_urls))return;
+	if (in_array($url, $css_urls)) {
+		return;
+	}
 	$css_urls[]=$url;
 }
-function WW_getCSS(){
-	global $css_urls;
-	$url='/css/';
-	foreach($css_urls as $s)$url.='|'.$s;
-	return '<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($url).'" />';
-}
-function WW_addScript($url){
-	global $scripts;
-	if(in_array($url,$scripts))return;
-	$scripts[]=$url;
-}
-function WW_addInlineScript($script){
+
+/**
+  * add a JS script to be shown inline at the bottom of the page
+  *
+	* @param string $script the JS script
+  *
+  * @return null
+  */
+function WW_addInlineScript($script) {
 	global $scripts_inline;
-	$script=preg_replace('/\s+/',' ',str_replace(array("\n","\r"),' ',$script));
-	if(in_array($script,$scripts_inline))return;
+	$script=preg_replace(
+		'/\s+/',
+		' ',
+		str_replace(array("\n","\r"), ' ', $script)
+	);
+	if (in_array($script, $scripts_inline)) {
+		return;
+	}
 	$scripts_inline[]=$script;
 }
-function WW_getScripts(){
+
+/**
+  * add a JS script to be externally linked and shrunk
+  *
+	* @param string $url the URL of the external JS script
+  *
+  * @return null
+  */
+function WW_addScript($url) {
+	global $scripts;
+	if (in_array($url, $scripts)) {
+		return;
+	}
+	$scripts[]=$url;
+}
+
+/**
+  * retrieve a URL linking all added CSS sheets
+  *
+  * @return string HTML element with generated URL
+  */
+function WW_getCSS() {
+	global $css_urls;
+	$url='/css/';
+	foreach ($css_urls as $s) {
+		$url.='|'.$s;
+	}
+	return '<link rel="stylesheet" type="text/css" href="'
+		.htmlspecialchars($url).'" />';
+}
+
+/**
+  * retrieve all inline JS scripts in a HTML element
+  *
+  * @return string HTML <script> element with inline JS scripts
+  */
+function WW_getInlineScripts() {
+	global $scripts_inline;
+	if (!count($scripts_inline)) {
+		return '';
+	}
+	return '<script>'.join('', $scripts_inline).'</script>';
+}
+
+/**
+  * retrieve a URL linking all added external JS scripts
+  *
+  * @return string generated URL
+  */
+function WW_getScripts() {
 	global $scripts;
 	$url='/js/'.filemtime(SCRIPTBASE.'j/js.js');
 	foreach ($scripts as $s) {
 		$url.='|'.$s;
 	}
 	return $url;
-}
-function WW_getInlineScripts(){
-	global $scripts_inline;
-	if (!count($scripts_inline)) {
-		return '';
-	}
-	return '<script>'.join('',$scripts_inline).'</script>';
 }
 require_once 'ww.incs/common.php';
 if (isset($https_required) && $https_required && !$_SERVER['HTTPS']) {
@@ -130,16 +185,19 @@ if (!$allowed) {
 			.'If you think you should be, please contact the site administrator.</p>';
 	}
 	else {
-		$c.='<p><strong>If you have a user account, please <a href="/_r?type=loginpage">click here</a> to log in.</strong></p>';
+		$c.='<p><strong>If you have a user account, please <a href="'
+			.'/_r?type=loginpage">click here</a> to log in.</strong></p>';
 	}
-	$c.='<p>If you do not have a user account, but have been supplied with a password for the page, please enter it here and submit the form:</p>'
-		.'<form method="post"><input type="password" name="privacy_password" /><input type="submit" /></form>';
+	$c.='<p>If you do not have a user account, but have been supplied with a '
+		.'password for the page, please enter it here and submit the form:</p>'
+		.'<form method="post"><input type="password" name="privacy_password" />'
+		.'<input type="submit" /></form>';
 }
 else if (getVar('webmespecial')=='sitemap') {
 	$c.=sitemap('');
 }
 else {
-	switch($PAGEDATA->type){
+	switch($PAGEDATA->type) {
 		case '0': // { normal page
 			$c.=$PAGEDATA->render();
 		break;
@@ -235,10 +293,12 @@ $c.='<style type="text/css">.loggedin{display:'
 	.'} .loggedinCell{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
-$c.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>'
-	.'<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>'
+$c.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/'
+	.'1.4.4/jquery.min.js"></script>'
+	.'<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/'
+	.'1.8.7/jquery-ui.min.js"></script>'
 	.'<script src="WW_SCRIPTS_GO_HERE"></script>';
-if(is_admin()){
+if (is_admin()) {
 	WW_addScript('/ww.admin/j/common.js');
 }
 $tmp='var pagedata={id:'.$PAGEDATA->id.''
@@ -252,7 +312,7 @@ if (isset($_SESSION['userdata'])
 }
 $tmp.='};document.write("<"+"style>'
 	.'a.nojs{display:none !important}<"+"/style>");';
-array_unshift($scripts_inline,$tmp);
+array_unshift($scripts_inline, $tmp);
 if (is_admin()) {
 	WW_addScript('/ww.admin/j/admin-frontend.js');
 	WW_addScript('/j/ckeditor/ckeditor.js');
