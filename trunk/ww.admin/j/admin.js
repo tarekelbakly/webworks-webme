@@ -4,11 +4,13 @@ function convert_date_to_human_readable(){
 	var dparts=$this.val().split(/-/);
 	$this
 		.datepicker({
-			dateFormat:'yy-mm-dd',
-			modal:true,
-			altField:'#'+id,
-			altFormat:'DD, d MM, yy',
-			onSelect:function(dateText,inst){
+			dateFormat:  'yy-mm-dd',
+			modal:       true,
+			altField:    '#'+id,
+			altFormat:   'DD, d MM, yy',
+			changeMonth: true,
+			changeYear:  true,
+			onSelect:    function(dateText,inst){
 				this.value=dateText;
 			}
 		});

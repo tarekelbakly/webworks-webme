@@ -349,7 +349,7 @@ ul.accordion div{margin-left:10px;}
 ul.accordion0 div{display:none;}
 a.accordion-header{color: #000 !important;border-bottom:1px solid #000 !important}
 .selected{font-style:italic}
-#ui-datepicker-div{z-index:2000}
+#ui-datepicker-div{z-index:2000;display:none;}
 #header{
 	position:absolute;
 	left:0;
