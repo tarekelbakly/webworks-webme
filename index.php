@@ -78,8 +78,8 @@ function WW_getCSS() {
 	foreach ($css_urls as $s) {
 		$url.='|'.$s;
 	}
-	return '<link rel="stylesheet" type="text/css" href="'
-		.htmlspecialchars($url).'" />';
+	return '<style>@import "'
+		.htmlspecialchars($url).'";</style>';
 }
 
 /**
@@ -166,6 +166,14 @@ else{
 }
 $c=plugin_trigger('page-object-loaded');
 // }
+// { if URL includes a plugin override, run that instead of displaying the page
+if (isset($_REQUEST['_p'])
+	&& isset($PLUGINS[$_REQUEST['_p']]['page-override'])
+) {
+	$PLUGINS[$_REQUEST['_p']]['page-override']($PAGEDATA);
+	exit;
+}
+// }
 // { main content
 // { check if page is protected
 $allowed=1;
@@ -239,7 +247,7 @@ else {
 	}
 }
 if (isset($PLUGINS['comments'])) {
-	$c.= plugin_trigger('page-content-created');
+	$c.=plugin_trigger('page-content-created');
 }
 $pagecontent=$c.'<span class="end-of-page-content"></span>';
 // }
@@ -289,14 +297,14 @@ $c.='WW_CSS_GOES_HERE';
 if (isset($DBVARS['theme_variant']) && $DBVARS['theme_variant']) {
 	WW_addCSS('/ww.skins/'.$DBVARS['theme'].'/cs/'.$DBVARS['theme_variant'].'.css');
 }
-$c.='<style type="text/css">.loggedin{display:'
+$c.='<style>.loggedin{display:'
 	.(is_logged_in()?'block':'none')
 	.'} .loggedinCell{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
 $c.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/'
 	.'1.4.4/jquery.min.js"></script>'
-	.'<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/'
+	.'<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/'
 	.'1.8.7/jquery-ui.min.js"></script>'
 	.'<script src="WW_SCRIPTS_GO_HERE"></script>';
 if (is_admin()) {
@@ -336,7 +344,9 @@ if ($PAGEDATA->description) {
 	$c.='<meta http-equiv="description" content="'
 		.htmlspecialchars($PAGEDATA->description).'"/>';
 }
-if (isset($PAGEDATA->vars['google-site-verification'])) {
+if (isset($PAGEDATA->vars['google-site-verification'])
+	&& $PAGEDATA->vars['google-site-verification']
+) {
 	$c.='<meta name="google-site-verification" content="'
 		.htmlspecialchars($PAGEDATA->vars['google-site-verification']).'" />';
 }
@@ -346,6 +356,7 @@ if (file_exists(USERBASE.'/f/skin_files/favicon.ico')) {
 	$c.='<link rel="shortcut icon" href="/f/skin_files/favicon.ico" />';
 }
 // }
+$c.=plugin_trigger('building-metadata');
 $smarty->assign('METADATA', $c);
 // }
 // { display the document
