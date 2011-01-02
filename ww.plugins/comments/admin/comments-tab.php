@@ -17,10 +17,10 @@
 $id = $page['id'];
 // { are comments allowed on this page?
 $commentsAllowed = dbOne(
-		'select value from page_vars '
-		.'where name = "allow_comments" and page_id = '.$id,
-		'value'
-	);
+	'select value from page_vars '
+	.'where name = "allow_comments" and page_id = '.$id,
+	'value'
+);
 $html= 'Allow comments on this page? ';
 $html.= '<input type="checkbox" name="page_vars[allow_comments]"';
 if ($commentsAllowed=='on') {
@@ -46,10 +46,10 @@ $html.= ' />';
 $html.= '<br />Show comment box at top? ';
 $html.= '<input type="checkbox" name="page_vars[comments_show_box_at_top]"';
 $v = dbOne(
-		'select value from page_vars 
-		where name="comments_show_box_at_top" and page_id = '.$id,
-		'value'
-	);
+	'select value from page_vars where name="comments_show_box_at_top"'
+	.' and page_id = '.$id,
+	'value'
+);
 if ($v=='on') {
 	$html.= ' checked="checked"';
 }

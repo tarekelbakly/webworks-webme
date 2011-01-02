@@ -15,6 +15,7 @@
 **/
 
 require_once SCRIPTBASE.'ww.incs/recaptcha.php';
+
 /**
   * The main display function
   *
@@ -26,17 +27,12 @@ function Comments_displayComments($page) {
 	WW_addScript('/ww.plugins/comments/frontend/comments-frontend.js');
 	WW_addCSS('/ww.plugins/comments/frontend/comments.css');
 	// { order of display
-	$commentboxfirst=dbOne(
-		'select value from page_vars where name="comments_show_box_at_top" and page_id = '.$page->id,
-		'value'
-	);
+	$commentboxfirst=isset($page->vars['comments_show_box_at_top'])
+		&& $page->vars['comments_show_box_at_top'];
 	// }
 	// { get list of existing comments
-	$hideComments=dbOne(
-		'select value from page_vars '
-		.'where name = "hide_comments" and page_id = '.$page->id,
-		'value'
-	);
+	$hideComments=isset($page->vars['hide_comments'])
+		&& $page->vars['hide_comments'];
 	if ($hideComments) {
 		$query = 'select * from comments where objectid = '.$page->id;
 		$query.= ' and id in (';
@@ -73,17 +69,22 @@ function Comments_displayComments($page) {
 	}
 	$clist='';
 	if (count($comments)) {
-		$clist = '<div id="start-comments"><strong>Comments</strong>';
+		$clist = '<div id="start-comments"><a name="comments"></a>'
+			.'<strong>Comments</strong>';
 		foreach ($comments as $comment) {
 			$id = $comment['id'];
 			$datetime = $comment['cdate'];
-			$allowedToEdit 
-				= is_admin() || (is_array($_SESSION['comment_ids']) && in_array($id, $_SESSION['comment_ids'], false));
+			$allowedToEdit=is_admin() || (
+				is_array($_SESSION['comment_ids']) 
+				&& in_array($id, $_SESSION['comment_ids'], false)
+			);
 			if ($allowedToEdit) {
-				$clist.= '<div class="comments" id="comment-wrapper-'.$id.'" cdate="'.$datetime.'"
-					comment="'.htmlspecialchars($comment['comment']).'">';
+				$clist.= '<div class="comments" id="comment-wrapper-'.$id.'" '
+					.'cdate="'.$datetime.'" comment="'
+					.htmlspecialchars($comment['comment']).'">';
 			}
-			$clist.=  '<div id="comment-info-'.$id.'">Posted by ';
+			$clist.='<a name="comments-'.$id.'"></a>'
+				.'<div id="comment-info-'.$id.'">Posted by ';
 			if (!empty($comment['site'])) {
 				$clist.= '<a href="'.$comment['site'].'" target=_blank>'
 					.htmlspecialchars($comment['name']).'</a>';
@@ -91,10 +92,9 @@ function Comments_displayComments($page) {
 			else {
 				$clist.= htmlspecialchars($comment['name']);
 			}
-			$clist.= ' on '.date_m2h($datetime).'</div>';
-			$clist.= '<div id="comment-'.$id.'">';
-			$clist.= htmlspecialchars($comment['comment']);
-			$clist.= '</div>';
+			$clist.= ' on '.date_m2h($datetime).'</div>'
+				.'<div id="comment-'.$id.'">'.htmlspecialchars($comment['comment'])
+				.'</div>';
 			if ($allowedToEdit) {
 				$clist.= '</div>';
 			}
@@ -148,16 +148,16 @@ function Comments_showCommentForm($pageID) {
 	if (isset($user)) {
 		$display.= ' value="'.htmlspecialchars($user['email']).'"';
 	}
-	$display.= ' /></td></tr>';
-	$display.= '<tr><th>Website</th>';
-	$display.= '<td><input id="site" name="site" /></td></tr>';
-	$display.= '<tr><th>Comment</th>';
-	$display.= '<td><textarea id="comment" name="comment"></textarea></td></tr>';
-	$display.= '<tr><td colspan="2"><div id="captcha">';
-#	$display.= recaptcha_get_html(RECAPTCHA_PUBLIC);
-	$display.=Recaptcha_getHTML();
-	$display.= '</div></td></tr>';
-	$display.= '<tr><th>&nbsp;</th><td><input type="submit" id="submit" value="Submit Comment"  /></td></tr>';
-	$display.= '</table></form>';
+	$display.= ' /></td></tr>'
+		.'<tr><th>Website</th>'
+		.'<td><input id="site" name="site" /></td></tr>'
+		.'<tr><th>Comment</th>'
+		.'<td><textarea id="comment" name="comment"></textarea></td></tr>'
+		.'<tr><td colspan="2"><div id="captcha">'
+		.Recaptcha_getHTML()
+		.'</div></td></tr>'
+		.'<tr><th>&nbsp;</th><td><input type="submit" id="submit" '
+		.'value="Submit Comment"  /></td></tr>'
+		.'</table></form>';
 	return $display;
 }

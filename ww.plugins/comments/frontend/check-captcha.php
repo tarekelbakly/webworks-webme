@@ -3,6 +3,8 @@
 /**
   * Checks if the captcha is correct
   *
+  * PHP Version 5.3
+  *
   * @category   CommentsPlugin
   * @package    WebworksWebme
   * @subpackage CommentsPlugin
