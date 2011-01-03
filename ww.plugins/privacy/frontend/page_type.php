@@ -132,7 +132,7 @@ function userregistration_form($error='',$alert=''){
 		$cnt=0;
 		foreach($rs as $r){
 			if(!$r->name)continue;
-			if($r->type=='hidden' && !$only_show_contents)continue;
+			if($r->type=='hidden')continue;
 			$name=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
 			$class='';
 			if($r->is_required){
@@ -172,59 +172,49 @@ function userregistration_form($error='',$alert=''){
 			if(!isset($_REQUEST[$name]))$_REQUEST[$name]='';
 			switch($r->type){
 				case 'checkbox': {
-					if($only_show_contents)$d=$_REQUEST[$name];
-					else{
-						$d='<input type="checkbox" id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'"';
-						if($_REQUEST[$name])$d.=' checked="'.$_REQUEST[$name].'"';
-						$d.=' class="'.$class.' checkbox" />';
-					}
+					$d='<input type="checkbox" id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'"';
+					if($_REQUEST[$name])$d.=' checked="'.$_REQUEST[$name].'"';
+					$d.=' class="'.$class.' checkbox" />';
 					break;
 				}
 				case 'ccdate': {
 					if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m');
-					$d=$only_show_contents?
-						preg_replace('#.* ([a-zA-Z]*, [0-9]+)#',"$1",date_m2h($_REQUEST[$name])):
-						'<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="ccdate" />';
+					$d='<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="ccdate" />';
 					break;
 				}
 				case 'date': {
 					if($_REQUEST[$name]=='')$_REQUEST[$name]=date('Y-m-d');
-					$d=$only_show_contents?
-						date_m2h($_REQUEST[$name]):
-						'<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="date" />';
+					$d='<input name="privacy_extras_'.$name.'" value="'.$_REQUEST[$name].'" class="date" />';
 					break;
 				}
 				case 'email':{
-					$d=$only_show_contents?$_REQUEST[$name]:'<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="email'.$class.' text" />';
+					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="email'.$class.' text" />';
 					break;
 				}
 				case 'file': {
-					$d=$only_show_contents?'<i>files attached</i>':'<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" type="file" />';
+					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" type="file" />';
 					break;
 				}
 				case 'hidden': {
-					$d=$only_show_contents?htmlspecialchars($r->extra):'<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.' hidden">'.htmlspecialchars($r->extra).'</textarea>';
+					$d='<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.' hidden">'.htmlspecialchars($r->extra).'</textarea>';
 					break;
 				}
 				case 'selectbox': {
-					if($only_show_contents)$d=$_REQUEST[$name];
-					else{
-						$d='<select id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'">';
-						$arr=explode("\n",htmlspecialchars($r->extra));
-						foreach($arr as $li){
-							if($_REQUEST[$name]==$li)$d.='<option selected="selected">'.rtrim($li).'</option>';
-							else $d.='<option>'.rtrim($li).'</option>';
-						}
-						$d.='</select>';
+					$d='<select id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'">';
+					$arr=explode("\n",htmlspecialchars($r->extra));
+					foreach($arr as $li){
+						if($_REQUEST[$name]==$li)$d.='<option selected="selected">'.rtrim($li).'</option>';
+						else $d.='<option>'.rtrim($li).'</option>';
 					}
+					$d.='</select>';
 					break;
 				}
 				case 'textarea': {
-					$d=$only_show_contents?$_REQUEST[$name]:'<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.'">'.$_REQUEST[$name].'</textarea>';
+					$d='<textarea id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" class="'.$class.'">'.$_REQUEST[$name].'</textarea>';
 					break;
 				}
 				default:{ # input boxes, and anything which was not handled already
-					$d=$only_show_contents?$_REQUEST[$name]:'<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="'.$class.' text" />';
+					$d='<input id="privacy_extras_'.$name.'" name="privacy_extras_'.$name.'" value="'.$val.'" class="'.$class.' text" />';
 					break;
 				}
 			}
