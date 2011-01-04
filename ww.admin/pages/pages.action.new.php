@@ -23,7 +23,7 @@ if(allowedToEditPage($parent)){
 	$keywords=isset($_REQUEST['keywords'])?$_REQUEST['keywords']:'';
 	$associated_date=$_REQUEST['associated_date'];
 	$description=isset($_REQUEST['description'])?$_REQUEST['description']:'';
-	$importance=(float)$_REQUEST['importance'];
+	$importance=isset($_REQUEST['importance'])?(float)$_REQUEST['importance']:.5;
 	if($importance<0.1)$importance=0.5;
 	if($importance>1)$importance=1;
 	// }

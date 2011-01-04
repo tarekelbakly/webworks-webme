@@ -21,7 +21,8 @@ $rs=dbAll(
 );
 foreach ($rs as $r) {
 	$page=Page::getInstance($r['id']);
-	echo '<url><loc>http://'.$_SERVER['HTTP_HOST'].$page->getRelativeUrl()
+	$https=isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on'?'https':'http';
+	echo '<url><loc>'.$https.'://'.$_SERVER['HTTP_HOST'].$page->getRelativeUrl()
 		.'</loc>'
 		.'<lastmod>'.preg_replace('/ .*/', '', $r['edate']).'</lastmod>'
 		.'<priority>'.$r['importance'].'</priority>'
