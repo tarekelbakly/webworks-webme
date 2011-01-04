@@ -14,11 +14,11 @@
 **/
 
 echo 'Don\'t moderate comments for this site? ';
-$noModeration 
-	= dbOne(
-		'select value from site_vars where name = "comments_no_moderation"',
-		'value'
-	);
+$noModeration = 0;
+$sql = 'select value from site_vars where name = "comments_no_moderation"';
+if (dbOne($sql, 'value')) {
+	$noModeration = dbOne($sql, 'value');
+}
 echo '<script>';
 echo 'noModeration = '.$noModeration;
 echo '</script>';
@@ -43,7 +43,7 @@ echo '<th>Delete</th>';
 echo '</tr></thead><tbody>';
 foreach ($comments as $comment) {
 	$id = $comment['id'];
-	echo '<tr id="'.$id.'">';
+	echo '<tr id="comment-'.$id.'">';
 	echo '<td>'.$comment['cdate'].'</td>';
 	echo '<td>'.$comment['name'].'</td>';
 	echo '<td>'.$comment['email'].'</td>';

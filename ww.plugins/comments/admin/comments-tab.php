@@ -66,7 +66,7 @@ $html.= '<tbody>';
 $comments = dbAll('select * from comments where objectid = '.$id);
 foreach ($comments as $comment) {
 	$id = $comment['id'];
-	$html.= '<tr id="'.$id.'">';
+	$html.= '<tr id="comment-'.$id.'">';
 	$html.= '<td>'.$comment['cdate'].'</td>';
 	$html.= '<td>'.$comment['name'].'</td>';
 	$html.= '<td>'.$comment['email'].'</td>';

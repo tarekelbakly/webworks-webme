@@ -45,11 +45,11 @@ function remove_row (data) {
 	if (!data.status) {
 		return alert('Could not delete this comment');
 	}
-	var pos = my_table.fnGetPosition($('#'+data.id)[0]);
+	var pos = my_table.fnGetPosition($('#comment-'+data.id)[0]);
 	my_table.fnDeleteRow(pos);
 }
 function update_comment (data) {
-	var pos = my_table.fnGetPosition(($('#'+data.id)[0]));
+	var pos = my_table.fnGetPosition(($('#comment-'+data.id))[0]);
 	my_table.fnUpdate(data.comment, pos, 4);
 	my_table.fnUpdate(
 		'<a href="javascript:;" onclick='
@@ -99,7 +99,7 @@ function update_moderation(data) {
 	if (!data.status) {
 		return alert(data.message);
 	}
-	var pos = my_table.fnGetPosition($('#'+data.id)[0]);
+	var pos = my_table.fnGetPosition($('#comment-'+data.id)[0]);
 	var val = 0;
 	var approveString = '';
 	switch (data.value) {
