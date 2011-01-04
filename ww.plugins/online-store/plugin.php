@@ -383,7 +383,6 @@ function OnlineStore_getFinalTotal() {
 	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
 	if ($postage['total']) {
 		$grandTotal+=$postage['total'];
-		$vattable+=$postage['total'];
 	}
 	if ($vattable) {
 		$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);

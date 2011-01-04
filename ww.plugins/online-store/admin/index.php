@@ -88,8 +88,8 @@ else {
 $c.='</div>';
 // }
 // { postage and packaging
-if (!isset($vars['postage'])) {
-	$vars['postage']='[]';
+if (!isset($vars['online_stores_postage'])) {
+	$vars['online_stores_postage']='[]';
 }
 $c.='<div id="online-store-delivery">'
 	.'<div id="postage_wrapper"></div>'
@@ -143,6 +143,9 @@ if (isset($vars['online_stores_admin_email'])) {
 	$c.=' value="'.htmlspecialchars($vars['online_stores_admin_email']).'"';
 }
 $c.=' /></td>';
+if (!isset($vars['online_stores_requires_login'])) {
+	$vars['online_stores_requires_login']=0;
+}
 $c.='<th width="20%">Users must log in</th><td><input type="checkbox"'
 	.' name="page_vars[online_stores_requires_login]"'
 	.($vars['online_stores_requires_login']?' checked="checked"':'')
@@ -160,7 +163,7 @@ foreach ($online_store_currencies as $key=>$val) {
 $c.= '</select></td>';
 // }
 // { VAT
-$vat=$vars['online_stores_vat_percent'];
+$vat=isset($vars['online_stores_vat_percent'])?$vars['online_stores_vat_percent']:'';
 if ($vat=='') {
 	$vat=21;
 }

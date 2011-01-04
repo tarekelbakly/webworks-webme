@@ -13,6 +13,8 @@ $relations=dbAll(
 // }
 require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
 if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
+	cache_clear('products');
+	cache_clear('pages');
 	$errors=array();
 	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';
@@ -21,7 +23,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
-		cache_clear('products');
 		// { Recreate the directory because for some reason it was looking
 		//   in the old directory for the image files
 		if (!is_dir(USERBASE.'f'.$_REQUEST['images_directory'])) {    

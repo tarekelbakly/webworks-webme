@@ -388,7 +388,7 @@ function _Products_listCategoryContents ($params, &$smarty) {
 	$html.='</ul>';
 	return $html;
 }
-function Products_plusVat ($params, &$smarty) {
+function Products_plusVat($params, &$smarty) {
 	$product= $smarty->_tpl_vars['product'];
 	if (!isset($product->vals['online-store']['_vatfree'])
 		|| $product->vals['online-store']['_vatfree'] == '0'
