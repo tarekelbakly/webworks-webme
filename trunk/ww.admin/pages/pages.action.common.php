@@ -1,6 +1,6 @@
 <?php
 $special=0;
-if (isset($_REQUEST['specials'])) {
+if (isset($_REQUEST['special'])) {
 	$specials=$_REQUEST['special'];
 	if (is_array($specials)) {
 		foreach ($specials as $a=>$b) {
