@@ -25,5 +25,12 @@ if (!$allowed) {
 if (!is_numeric($id)) {
 	exit('Invalid id');
 }
-dbQuery('update comments set comment = "'.$comment.'" where id = '.(int)$id);
-echo '{"status":1, "id": '.$id.', "comment": "'.$comment.'"}';
+dbQuery(
+	'update comments set comment = "'.addslashes($comment)
+	.'" where id = '.(int)$id
+);
+echo json_encode(array(
+	'status'=>1,
+	'id'=>$id,
+	'comment'=>$comment
+));

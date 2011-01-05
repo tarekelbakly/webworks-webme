@@ -75,10 +75,10 @@ function Comments_displayComments($page) {
 			$id = $comment['id'];
 			$datetime = $comment['cdate'];
 			$allowedToEdit=is_admin() || (
-				is_array($_SESSION['comment_ids']) 
+				(isset($_SESSION['comment_ids'])&&is_array($_SESSION['comment_ids']))
 				&& in_array($id, $_SESSION['comment_ids'], false)
 			);
-			$clist.= '<div class="comment-wrapper'
+			$clist.= '<div class="comment-wrapper';
 			if ($allowedToEdit) {
 				$clist.= ' comment-editable" id="comment-wrapper-'.$id.'" '
 					.'cdate="'.$datetime.'" comment="'
