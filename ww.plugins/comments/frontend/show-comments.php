@@ -69,7 +69,7 @@ function Comments_displayComments($page) {
 	}
 	$clist='';
 	if (count($comments)) {
-		$clist = '<div id="start-comments"><a name="comments"></a>'
+		$clist = '<div id="start-comments" class="comments_list"><a name="comments"></a>'
 			.'<strong>Comments</strong>';
 		foreach ($comments as $comment) {
 			$id = $comment['id'];
@@ -78,14 +78,19 @@ function Comments_displayComments($page) {
 				is_array($_SESSION['comment_ids']) 
 				&& in_array($id, $_SESSION['comment_ids'], false)
 			);
+			$clist.= '<div class="comment-wrapper'
 			if ($allowedToEdit) {
-				$clist.= '<div class="comments" id="comment-wrapper-'.$id.'" '
+				$clist.= ' comment-editable" id="comment-wrapper-'.$id.'" '
 					.'cdate="'.$datetime.'" comment="'
-					.htmlspecialchars($comment['comment']).'">';
+					.htmlspecialchars($comment['comment']).'"';
 			}
-			$clist.='<a name="comments-'.$id.'"></a>'
-				.'<div id="comment-info-'.$id.'">Posted by ';
+			else {
+				$clist.= '"';
+			}
+			$clist.='><a name="comments-'.$id.'"></a>'
+				.'<div class="comment-info" id="comment-info-'.$id.'">Posted by ';
 			if (!empty($comment['site'])) {
+
 				$clist.= '<a href="'.$comment['site'].'" target=_blank>'
 					.htmlspecialchars($comment['name']).'</a>';
 			}
@@ -93,11 +98,10 @@ function Comments_displayComments($page) {
 				$clist.= htmlspecialchars($comment['name']);
 			}
 			$clist.= ' on '.date_m2h($datetime).'</div>'
-				.'<div id="comment-'.$id.'">'.htmlspecialchars($comment['comment'])
+				.'<div id="comment-'.$id.'" class="comments-comment">'.htmlspecialchars($comment['comment'])
 				.'</div>';
-			if ($allowedToEdit) {
-				$clist.= '</div>';
-			}
+
+			$clist.= '</div>';
 		}
 		$clist.= '</div>';
 	}
@@ -133,30 +137,30 @@ function Comments_showCommentForm($pageID) {
 			);
 	}
 	$display = '<strong>Add Comment</strong>';
-	$display.= '<form id="comment-form" method="post" 
+	$display.= '<form id="comment-form" class="comments-form" method="post" 
 		action="javascript:comments_check_captcha();">';
 	$display.= '<input type="hidden" name="page" id="page" 
 		value="'.$pageID.'" />';
-	$display.='<table><tr><th>Name</th>';
+	$display.='<table class="comments-form-table"><tr class="comments-name"><th>Name</th>';
 	$display.= '<td><input id="name" name="name" ';
 	if (isset($user)) {
 		$display.= ' value="'.htmlspecialchars($user['name']).'"';
 	}
 	$display.= ' /></td></tr>';
-	$display.= '<tr><th>Email</th>';
+	$display.= '<tr class="comments-email"><th>Email</th>';
 	$display.= '<td><input id="email" name="email"';
 	if (isset($user)) {
 		$display.= ' value="'.htmlspecialchars($user['email']).'"';
 	}
 	$display.= ' /></td></tr>'
-		.'<tr><th>Website</th>'
+		.'<tr class="comments-url"><th>Website</th>'
 		.'<td><input id="site" name="site" /></td></tr>'
-		.'<tr><th>Comment</th>'
+		.'<tr class="comments-comment"><th>Comment</th>'
 		.'<td><textarea id="comment" name="comment"></textarea></td></tr>'
-		.'<tr><td colspan="2"><div id="captcha">'
+		.'<tr><td colspan="2"><div id="captcha" class="comments_captcha">'
 		.Recaptcha_getHTML()
 		.'</div></td></tr>'
-		.'<tr><th>&nbsp;</th><td><input type="submit" id="submit" '
+		.'<tr class="comments-submit-comment"><th>&nbsp;</th><td><input type="submit" id="submit" '
 		.'value="Submit Comment"  /></td></tr>'
 		.'</table></form>';
 	return $display;

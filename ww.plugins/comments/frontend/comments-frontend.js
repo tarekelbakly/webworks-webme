@@ -20,12 +20,12 @@ $(function () {
 		}
 	});
 });
-$('div.comments').live('mouseover',function() {
+$('div.comment-editable').live('mouseover',function() {
 	var id = $(this).attr('id').replace(/comment-wrapper-/,'');
 	if (document.getElementById('links-'+id)!=null) {
 		return;
 	}
-	$('div.comments div.comments-actions').remove();
+	//$('div.comments- div.comments-actions').remove();
 	var mysqldatetime = $(this).attr('cdate');
 	var mysqldate = mysqldatetime.substring(8, 10);
 	var mysqlmonth = mysqldatetime.substring(5, 7);
