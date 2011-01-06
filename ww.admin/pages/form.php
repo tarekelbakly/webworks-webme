@@ -176,7 +176,10 @@ switch($page['type']){
 		echo ckeditor('body',$page['body']).'</div>';
 		echo '<div id="table-of-contents-footer">';
 		echo '<p>This will appear below the table of contents.</p>';
-		echo ckeditor('page_vars[footer]',$page_vars['footer']).'</div>';
+		if (!isset($page_vars['footer'])) {
+			$page_vars['footer']='';
+		}
+		echo ckeditor('page_vars[footer]', $page_vars['footer']).'</div>';
 		echo '</div></td></tr>';
 		break;
 	// }
