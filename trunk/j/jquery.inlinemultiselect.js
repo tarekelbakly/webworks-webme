@@ -339,7 +339,7 @@
 
 				});
 				$(wrapper).hide();
-				$(this).parents('form').append(wrapper);
+				$(document.body).append(wrapper);
 				$(this).before(openStr);
 
 				$(this).remove();
