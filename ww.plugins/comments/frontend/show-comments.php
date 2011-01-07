@@ -69,7 +69,7 @@ function Comments_displayComments($page) {
 	}
 	$clist='';
 	if (count($comments)) {
-		$clist = '<div id="start-comments" class="comments_list"><a name="comments"></a>'
+		$clist = '<div id="start-comments" class="comments-list"><a name="comments"></a>'
 			.'<strong>Comments</strong>';
 		foreach ($comments as $comment) {
 			$id = $comment['id'];
