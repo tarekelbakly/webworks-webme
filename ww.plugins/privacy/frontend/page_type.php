@@ -131,15 +131,18 @@ function userregistration_form($error='',$alert=''){
 		$rs=json_decode($PAGEDATA->vars['privacy_extra_fields']);
 		$cnt=0;
 		foreach($rs as $r){
-			if(!$r->name)continue;
-			if($r->type=='hidden')continue;
+			if (!$r->name || $r->type=='hidden') {
+				continue;
+			}
 			$name=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
 			$class='';
-			if($r->is_required){
+			if (isset($r->is_required) && $r->is_required) {
 				$required[]=$name.','.$r->type;
 				$class=' required';
 			}
-			if(isset($_REQUEST[$name]))$_SESSION['privacys'][$name]=$_REQUEST[$name];
+			if (isset($_REQUEST[$name])) {
+				$_SESSION['privacys'][$name]=$_REQUEST[$name];
+			}
 			$val=getVar($name);
 			if(!$val && isset($_SESSION['userdata']) && $_SESSION['userdata']){
 				switch($name){
@@ -219,7 +222,9 @@ function userregistration_form($error='',$alert=''){
 				}
 			}
 			$c.='<tr><th>'.htmlspecialchars(__($r->name));
-			if($r->is_required)$c.='<sup>*</sup>';
+			if (isset($r->is_required) && $r->is_required) {
+				$c.='<sup>*</sup>';
+			}
 			$c.="</th>\n\t<td>".$d."</td></tr>\n\n";
 			$cnt++;
 		}

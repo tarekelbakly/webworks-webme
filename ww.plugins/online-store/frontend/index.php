@@ -181,7 +181,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']) {
 		}
 		// }
 		// { unset the shopping cart data
-//		unset($_SESSION['online-store']);
+		unset($_SESSION['online-store']);
 		// }
 		$submitted=1;
 	}

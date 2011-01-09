@@ -92,15 +92,20 @@ function Form_send($page, $vars) {
 	}
 	if ($vars['forms_captcha_required']) {
 		require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
-		$result 
-			= recaptcha_check_answer(
-				RECAPTCHA_PRIVATE,
-				$_SERVER['REMOTE_ADDR'],
-				$_REQUEST['recaptcha_challenge_field'],
-				$_REQUEST['recaptcha_response_field']
-			);
-		if (!$result->is_valid) {
+		if (!isset($_REQUEST['recaptcha_challenge_field'])) {
 			$err.='<em>You must fill in the captcha (image text).</em>';
+		}
+		else {
+			$result 
+				= recaptcha_check_answer(
+					RECAPTCHA_PRIVATE,
+					$_SERVER['REMOTE_ADDR'],
+					$_REQUEST['recaptcha_challenge_field'],
+					$_REQUEST['recaptcha_response_field']
+				);
+			if (!$result->is_valid) {
+				$err.='<em>Invalid captcha. Please try again.</em>';
+			}
 		}
 	}
 	$form=Form_showForm($page, $vars, $err);
