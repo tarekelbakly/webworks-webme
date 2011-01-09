@@ -142,7 +142,9 @@ class Page{
 		return $this->relativeURL;
 	}
 	function getTopParentId(){
-		if(!$this->parent)return $this->id;
+		if (!isset($this->parent) || !$this->parent) {
+			return $this->id;
+		}
 		$p=Page::getInstance($this->parent);
 		return $p->getTopParentId();
 	}
