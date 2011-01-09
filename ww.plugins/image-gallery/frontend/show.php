@@ -23,6 +23,9 @@ function image_gallery_show($PAGEDATA){
 	$images=kfm_loadFiles($dir_id);
 	$images=$images['files'];
 	$n=count($images);
+	if (!isset($vars['footer'])) {
+		$vars['footer']='';
+	}
 	if($n){
 		switch($vars['image_gallery_type']){
 			case 'ad-gallery':
@@ -44,8 +47,7 @@ function image_gallery_show($PAGEDATA){
 			$c.='<script>var ig_prices='.json_encode($prices).';</script>';
 			WW_addScript('/ww.plugins/image-gallery/j/online-store.js');
 		}
-		if(isset($vars['footer']))$c.=$vars['footer'];
-		return $c;
+		return $c.$vars['footer'];
 	}
 	else{
 		return $c.'<em>gallery "'.$vars['image_gallery_directory'].'" not found.</em>'.$vars['footer'];
