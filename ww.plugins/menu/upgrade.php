@@ -23,6 +23,12 @@ if ($version=='4') { // menu type (0=drop-down, 1=accordion)
 	dbQuery('alter table menus add type tinyint default 0');
 	$version=5;
 }
+if ($version=='5') { // where to inherit styles from
+	dbQuery('alter table menus add style_from tinyint default 0');
+	// set existing ones back to 1
+	dbQuery('update menus set style_from=1');
+	$version=6;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

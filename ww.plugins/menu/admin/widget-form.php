@@ -1,6 +1,8 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+if (!is_admin()) {
+	die('access denied');
+}
 
 if(isset($_REQUEST['get_menu'])){
 	$r=dbRow('select * from menus where id='.(int)$_REQUEST['get_menu']);
@@ -22,8 +24,10 @@ if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$background=addslashes($_REQUEST['background']);
 	$opacity=(float)$_REQUEST['opacity'];
 	$columns=(int)$_REQUEST['columns'];
+	$style_from=(int)$_REQUEST['style_from'];
 	$sql="menus set type='$type',parent='$parent',direction='$direction',"
-		."background='$background',opacity=$opacity,columns=$columns";
+		."background='$background',opacity=$opacity,columns=$columns,"
+		."style_from=$style_from";
 	if($id){
 		$sql="update $sql where id=$id";
 		dbQuery($sql);

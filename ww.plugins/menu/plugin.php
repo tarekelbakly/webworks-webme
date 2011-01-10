@@ -15,7 +15,7 @@ $plugin=array(
 	'frontend' => array(
 		'widget' => 'menu_showWidget'
 	),
-	'version'=>5
+	'version'=>6
 );
 
 require_once SCRIPTBASE.'ww.incs/menus.php';
