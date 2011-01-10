@@ -270,13 +270,16 @@ if(!isset($pdata['images_directory'])
 if (!is_dir(USERBASE.'f'.$pdata['images_directory'])) {    
 	$parent_id = kfm_api_getDirectoryId('products/product-images');
 	$pos = strrpos($pdata['images_directory'], '/');
+	$dname='';
 	if ($pos===false) {
 		$dname = $pdata['images_directory'];
 	}
-	else {
+	else if (isset($_REQUEST['images_directory'])) {
 		$dname = substr($_REQUEST['images_directory'], $pos);
 	}
-	_createDirectory($parent_id, $dname);
+	if ($dname!='') {
+		_createDirectory($parent_id, $dname);
+	}
 }
 echo '<input type="hidden" 
 	name="images_directory" value="'.$pdata['images_directory'].'" />';

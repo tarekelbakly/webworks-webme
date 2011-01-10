@@ -327,14 +327,27 @@ function OnlineStore_showBasketWidget($vars=null) {
 	return $html;
 }
 
-
+/**
+	* get data about postage and packaging
+	*
+	* @param float  $total   basket value
+	* @param string $country country that the purchaser is in
+	* @param float  $weight  the weight of the basket
+	*
+	* @return array
+	*/
 function OnlineStore_getPostageAndPackaging($total,$country,$weight){
 	if (!OnlineStore_getNumItems()) {
 		return array('name'=>'none', 'total'=>0);
 	}
 	$pandps=OnlineStore_getPostageAndPackagingData();
+	if (!isset($_SESSION['os_pandp'])) {
+		$_SESSION['os_pandp']=0;
+	}
 	$pid=$_SESSION['os_pandp'];
-	if(!isset($pandps[$pid]) || $pandps[$pid]->name=='')$pid=0;
+	if (!isset($pandps[$pid]) || $pandps[$pid]->name=='') {
+		$pid=0;
+	}
 	$pandp=$pandps[$pid];
 	return array('name'=>$pandp->name,'total'=>OnlineStore_getPostageAndPackagingSubtotal($pandp->constraints,$total,$country,$weight));
 }
@@ -428,6 +441,9 @@ function OnlineStore_startup(){
 			'value'
 		);
 		if ($currencies==false) {
+			if (!isset($GLOBALS['DBVARS']['online_store_currency'])) {
+				$GLOBALS['DBVARS']['online_store_currency']='EUR';
+			}
 			$currency=$GLOBALS['DBVARS']['online_store_currency'];
 			$currency_symbols=array('EUR'=>'€','GBP'=>'£');
 			$_SESSION['currency']=array(
