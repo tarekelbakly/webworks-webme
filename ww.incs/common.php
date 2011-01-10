@@ -227,11 +227,13 @@ function menu_build_fg($parentid,$depth,$options){
 	// return top-level menu
 	if(!$depth)return '<ul>'.join('',$items).'</ul>';
 
-	$s='';
-	if($options['background'])$s.='background:'.$options['background'].';';
-	if($options['opacity'])$s.='opacity:'.$options['opacity'].';';
-	if($s){
-		$s=' style="'.$s.'"';
+	if ($options['style_from']=='1') {
+		$s='';
+		if($options['background'])$s.='background:'.$options['background'].';';
+		if($options['opacity'])$s.='opacity:'.$options['opacity'].';';
+		if($s){
+			$s=' style="'.$s.'"';
+		}
 	}
 
 	// return 1-column sub-menu
@@ -259,7 +261,8 @@ function menu_show_fg($opts){
 		'background'=> '', // sub-menu background colour
 		'columns'   => 1,  // for wide drop-down sub-menus
 		'opacity'   => 0,  // opacity of the sub-menu
-		'type'      => 0   // 0=drop-down, 1=accordion
+		'type'      => 0,  // 0=drop-down, 1=accordion
+		'style_from'=> 1   // inherit sub-menu style from CSS (0) or options (1)
 	);
 	foreach($opts as $k=>$v){
 		if(isset($options[$k]))$options[$k]=$v;
