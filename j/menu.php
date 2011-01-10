@@ -61,8 +61,10 @@ else {
 		AjaxMenu_getChildren(0, $_GET['pageid'], 0, $search_options)
 	).'];';
 	$p=Page::getInstance($_GET['pageid']);
-	$pid=$p->getTopParentId();
-	$d.='var currentTop='.$pid.';';
+	if (is_object($p)) {
+		$pid=$p->getTopParentId();
+		$d.='var currentTop='.$pid.';';
+	}
 	cache_save('menus', $md5, $d);
 	echo $d;
 }

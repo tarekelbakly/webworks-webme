@@ -20,7 +20,9 @@ function cache_clear($type){
 	foreach($d as $f){
 		$f=$f->getFilename();
 		if($f=='.' || $f=='..')continue;
-		unlink(USERBASE.'/ww.cache/'.$type.'/'.$f);
+		if (!is_dir(USERBASE.'/ww.cache/'.$type.'/'.$f)) {
+			unlink(USERBASE.'/ww.cache/'.$type.'/'.$f);
+		}
 	}
 }
 function cache_load($type,$md5){
