@@ -198,7 +198,7 @@ function Menu_show($b) {
 		}
 	}
 	$c.='<a class="menuItemTop nojs" href="'.$PAGEDATA->getRelativeURL()
-		.'&amp;webmespecial=sitemap">'.__('Site Map').'</a>';
+		.'?webmespecial=sitemap">'.__('Site Map').'</a>';
 	$c.='</div>';
 	if ($vals['mode']=='two-tier') {
 		$pid=$PAGEDATA->getTopParentId();
