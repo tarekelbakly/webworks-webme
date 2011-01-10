@@ -45,10 +45,12 @@ if(isset($_GET['uri'])){
 		if(!$subdir)break;
 		$dir= $subdir->id;
 	}
-	foreach($subdir->getFiles() as $file){
-		if($file->name==$fname){
-			$_GET['id']=$file->id;
-			break;
+	if (isset($subdir->getFiles)) {
+		foreach($subdir->getFiles() as $file){
+			if($file->name==$fname){
+				$_GET['id']=$file->id;
+				break;
+			}
 		}
 	}
 }

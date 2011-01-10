@@ -318,7 +318,9 @@ function Copy_recursive($src, $dst) {
 	closedir($dir);
 } 
 if ($version==27) { // create personal copy of theme
-	mkdir(USERBASE.'/themes-personal');
+	if (!file_exists(USERBASE.'/themes-personal')) {
+		mkdir(USERBASE.'/themes-personal');
+	}
 	Copy_recursive(THEME_DIR.'/'.THEME, USERBASE.'themes-personal/'.THEME);
 	$DBVARS['theme_dir_personal']=USERBASE.'themes-personal';
 	$version=28;
