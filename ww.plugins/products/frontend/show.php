@@ -756,7 +756,7 @@ class Product{
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
-	function getInstance($id=0,$r=false,$enabled=true) {
+	static function getInstance($id=0,$r=false,$enabled=true) {
 		if (!is_numeric($id)) return false;
 		if (!array_key_exists($id,self::$instances))return new Product($id,$r,$enabled);
 		return self::$instances[$id];
@@ -925,7 +925,7 @@ class Products{
 		self::$instances[$md5]=& $this;
 		return $this;
 	}
-	function getAll($search='') {
+	static function getAll($search='') {
 		$id=md5('all|'.$search);
 		if (!array_key_exists($id, self::$instances)) {
 			$product_ids=array();
@@ -937,7 +937,7 @@ class Products{
 		}
 		return self::$instances[$id];
 	}
-	function getByCategory(
+	static function getByCategory(
 		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
 	) {
 		if (!is_numeric($id)) {
@@ -976,7 +976,7 @@ class Products{
 		}
 		return self::$instances[$md5];
 	}
-	function getByCategoryName($name) {
+	static function getByCategoryName($name) {
 		$arr=explode('/', $name);
 		if ($arr[0]=='') {
 			array_shift($arr);
@@ -993,7 +993,7 @@ class Products{
 		}
 		return Products::getByCategory($cid);
 	}
-	function getByType(
+	static function getByType(
 		$id, $search='', $search_arr=array(), $sort_col='', $sort_dir='asc'
 	) {
 		if (!is_numeric($id)) {
@@ -1168,7 +1168,7 @@ class ProductType{
 		self::$instances[$this->id] =& $this;
 		return $this;
 	}
-	function getInstance($id=0) {
+	static function getInstance($id=0) {
 		if (!is_numeric($id)) {
 			return false;
 		}

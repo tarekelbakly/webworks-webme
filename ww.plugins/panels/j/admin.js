@@ -207,7 +207,7 @@ function widget_rename(ev){
 	updateWidgets($(h4).closest('.panel-wrapper'));
 	h4.text(newName);
 }
-$(document).ready(function(){
+$(function(){
 	var panel_column=$('#panels');
 	var widget_column=$('#widgets');
 	ww.widgetsByName={};

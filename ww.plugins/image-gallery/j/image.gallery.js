@@ -118,6 +118,7 @@ var Lightbox={
 		Lightbox.frameVisible=1;
 	},
 	showImage:function(){
+		Lightbox.imageWrapper=$('#lightbox_imageWrapper')[0];
 		var ws={x:$(window).width(),y:$(window).height()};
 		if(document.getElementById('lightbox_preloader')){
 			var img=document.getElementById('lightbox_preloader');
@@ -130,7 +131,6 @@ var Lightbox={
 		var minwidth=+Lightbox.data[Lightbox.at].width<200?200:Lightbox.data[Lightbox.at].width;
 		var minheight=+Lightbox.data[Lightbox.at].height<200?200:Lightbox.data[Lightbox.at].height;
 		Lightbox.imageWrapper.style.backgroundImage='url(/i/ajax-loader.gif)';
-//if(document.location.toString()=="http://kase.co.uk/Products-and-Services/Ballustrades#test")alert(+ws.y-Lightbox.data[Lightbox.at].height-100);
 		$(Lightbox.frame).animate({
 			'left':(+ws.x-minwidth-20)/2,
 			'top':(+ws.y-Lightbox.data[Lightbox.at].height-100)/2,
