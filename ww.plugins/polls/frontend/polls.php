@@ -1,6 +1,6 @@
 <?php
 function poll_display(){
-	$action=@$_REQUEST['poll_action'];
+	$action=$_REQUEST['poll_action'];
 	if(!$action){
 		$md5=md5('view questions');
 		$cache=cache_load('polls',$md5);
@@ -38,7 +38,7 @@ function poll_get_results($poll_id,$poll){
 	return $html;
 }
 function poll_vote($poll_id,$poll){
-	$num=(int)@$_REQUEST['poll_answer'];
+	$num=(int)$_REQUEST['poll_answer'];
 	if(!$num)return '<em>Please choose an option.</em>'.poll_get_html($poll_id,$poll);
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$r=dbRow("select * from poll_vote where poll_id=$poll_id and ip='$ip'");

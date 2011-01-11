@@ -43,7 +43,9 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$id=dbOne('select last_insert_id() as id','id');
 		}
 		if(isset($_FILES['image_not_found'])){
-			@mkdir(USERBASE.'f/products/types/'.$id,0777,true);
+			if (!file_exists(USERBASE.'f/products/types/'.$id)) {
+				mkdir(USERBASE.'f/products/types/'.$id,0777,true);
+			}
 			$imgs=new DirectoryIterator(USERBASE.'f/products/types/'.$id);
 			foreach ($imgs as $img) {
 				if ($img->isDot()) {
@@ -114,7 +116,9 @@ echo '<tr>';
 echo '<th>image-not-found</th><td><input type="file" name="image_not_found" />';
 if($id){
 	if(!file_exists(USERBASE.'f/products/types/'.$id.'/image-not-found.png')){
-		@mkdir(USERBASE.'f/products/types/'.$id,0777,true);
+		if (!file_exists(USERBASE.'f/products/types/'.$id)) {
+			mkdir(USERBASE.'f/products/types/'.$id,0777,true);
+		}
 		copy(
 			dirname(__FILE__).'/../i/not-found-250.png',
 			USERBASE.'f/products/types/'.$id.'/image-not-found.png'

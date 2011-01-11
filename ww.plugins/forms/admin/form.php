@@ -78,7 +78,7 @@ if (!isset($vars['forms_replyto'])) {
 }
 $c.= '<th>Reply-To</th><td>'
 	.'<select name="page_vars[forms_replyto]" id="form-replyto">'
-	.'<option>'. htmlspecialchars(@$vars['forms_replyto']).'</option>'
+	.'<option>'. htmlspecialchars($vars['forms_replyto']).'</option>'
 	.'</select></td></tr>';
 // }
 // { record in database
@@ -153,13 +153,13 @@ $c.= '</ul></div>';
 // { success message
 $c.= '<div id="success">';
 $c.= '<p>What should be displayed on-screen when the message is sent.</p>';
-$c.= ckeditor('page_vars[forms_successmsg]', @$vars['forms_successmsg']);
+$c.= ckeditor('page_vars[forms_successmsg]', $vars['forms_successmsg']);
 $c.= '</div>';
 // }
 // { template
 $c.= '<div id="template">';
 $c.= '<p>Leave blank to have an auto-generated template displayed.</p>';
-$c.= ckeditor('page_vars[forms_template]', @$vars['forms_template']);
+$c.= ckeditor('page_vars[forms_template]', $vars['forms_template']);
 $c.= '</div>';
 $c.= '</div>';
 // }

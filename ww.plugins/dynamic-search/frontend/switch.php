@@ -11,7 +11,7 @@ $catags=explode(',',$q[0]['value']);
 
 include SCRIPTBASE.'ww.plugins/dynamic-search/frontend/search.php';
 
-$sub=@$_GET['dynamic_search_submit'];
+$sub=$_GET['dynamic_search_submit'];
 
 if($sub=='') include SCRIPTBASE.'ww.plugins/dynamic-search/frontend/display.php';
 else include SCRIPTBASE.'ww.plugins/dynamic-search/frontend/results.php';

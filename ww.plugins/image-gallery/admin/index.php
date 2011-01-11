@@ -127,7 +127,7 @@ $c.='<table><tr><th>Image Directory</th>'
 	.htmlspecialchars($gvars['image_gallery_directory']).'</option>';
 foreach(image_gallery_get_subdirs(USERBASE.'f','') as $d){
 	$c.='<option value="'.htmlspecialchars($d).'"';
-	if($d==@$gvars['image_gallery_directory'])$c.=' selected="selected"';
+	if($d==$gvars['image_gallery_directory'])$c.=' selected="selected"';
 	$c.='>'.htmlspecialchars($d).'</option>';
 }
 $c.='</select></td>';
@@ -163,19 +163,19 @@ if($gvars['image_gallery_autostart'])$c.=' selected="selected"';
 $c.='>Yes</option></select></td></tr>';
 // }
 // { caption length
-$cl=(int)@$gvars['image_gallery_captionlength'];
+$cl=(int)$gvars['image_gallery_captionlength'];
 $cl=$cl?$cl:100;
 $c.='<tr><th>'.__('Caption Length').'</th><td>'
 	.'<input name="page_vars[image_gallery_captionlength]" value="'.$cl.'" />'
 	.'</td>';
 // }
 // { slide delay
-$sd=(int)@$gvars['image_gallery_slidedelay'];
+$sd=(int)$gvars['image_gallery_slidedelay'];
 $c.='<th>Slide Delay</th><td>'
 	.'<input name="page_vars[image_gallery_slidedelay]" class="small" '
 	.'value="'.$sd.'" />ms</td></tr>';
 // }
-$ts=(int)@$gvars['image_gallery_thumbsize'];
+$ts=(int)$gvars['image_gallery_thumbsize'];
 $ts=$ts?$ts:150;
 $c.='<tr><th>'.__('Thumb Size').'</th><td>'
 	.'<input name="page_vars[image_gallery_thumbsize]" value="'.$ts.'" />'

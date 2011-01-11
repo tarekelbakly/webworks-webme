@@ -11,8 +11,8 @@ $SS=array();
 $q=dbAll('select value from site_vars where name="catags"');
 $catags=explode(',',$q[0]['value']);
 
-if(@$_POST['dynamic_submit']){
-        $add=addslashes(@$_POST['dynamic_newcat']);
+if($_POST['dynamic_submit']){
+        $add=addslashes($_POST['dynamic_newcat']);
         $id=dbOne('select id from pages where name="'.$add.'"','id');
 	if(in_array($add,$catags)) $error='That category already exists.';
         if($id==''||!$id) $error='The category must be a pagename.';
@@ -23,7 +23,7 @@ if(@$_POST['dynamic_submit']){
         }
 }
 
-$delete=addslashes(@$_GET['dynamic_delete_cat']);
+$delete=addslashes($_GET['dynamic_delete_cat']);
 if($delete!=''){
 	$num=0;
 	foreach($catags as $catag){
@@ -57,7 +57,7 @@ $html.='			<tr><td>New Category:</td><td><input type="text" name="dynamic_newcat
 ';
 
 $num=1;
-$id=@$_GET['id'];;
+$id=$_GET['id'];;
 foreach($catags as $catag){
 	if($catag!=''){
 		$num++;

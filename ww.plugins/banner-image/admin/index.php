@@ -12,15 +12,15 @@ if(isset($_GET['delete_banner']) && (int)$_GET['delete_banner']){
 	$id=(int)$_GET['delete_banner'];
 	dbQuery("delete from banners_images where id=$id");
 	dbQuery("delete from banners_pages where bannerid=$id");
-	@unlink(USERBASE.'f/skin_files/banner-image/'.$id.'.png');
+	unlink(USERBASE.'f/skin_files/banner-image/'.$id.'.png');
 	$n=USERBASE.'f/skin_files/banner-image/'.$id.'_*';
 	`rm -fr $n`;
 	$updated='Banner Deleted';
 	cache_clear('banner-images');
 }
 if(isset($_POST['save_banner'])){
-	$id=(int)@$_POST['id'];
-	$pages=@$_POST['pages_'.$id];
+	$id=(int)$_POST['id'];
+	$pages=$_POST['pages_'.$id];
 	$html=sanitise_html($_POST['html_'.$id]);
 	$sql='set html="'.addslashes($html).'",name="'.addslashes($_POST['name']).'",pages='.(count($pages)?1:0);
 	if($id){

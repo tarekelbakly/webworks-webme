@@ -41,7 +41,9 @@ else{
 		.'-- choose -- </option>';
 	foreach($rs as $r){
 		$c.='<option value="'.$r['id'].'"';
-		if($r['id']==$vars['products_type_to_show'])$c.=' selected="selected"';
+		if (isset($vars['products_type_to_show']) && $r['id']==$vars['products_type_to_show']) {
+			$c.=' selected="selected"';
+		}
 		$c.='>'.htmlspecialchars($r['name']).'</option>';
 	}
 	$c.='</select>';
@@ -58,7 +60,9 @@ else{
 	$c.='<select name="page_vars[products_category_to_show]"><option value="0"> -- choose -- </option>';
 	foreach($rs as $r){
 		$c.='<option value="'.$r['id'].'"';
-		if($r['id']==$vars['products_category_to_show'])$c.=' selected="selected"';
+		if (isset($vars['products_category_to_show']) && $r['id']==$vars['products_category_to_show']) {
+			$c.=' selected="selected"';
+		}
 		$c.='>'.htmlspecialchars($r['name']).'</option>';
 	}
 	$c.='</select>';
@@ -76,7 +80,9 @@ else{
 	$c.='<select name="page_vars[products_product_to_show]"><option value="0"> -- choose -- </option>';
 	foreach($rs as $r){
 		$c.='<option value="'.$r['id'].'"';
-		if($r['id']==$vars['products_product_to_show'])$c.=' selected="selected"';
+		if (isset($vars['products_product_to_show']) && $r['id']==$vars['products_product_to_show']) {
+			$c.=' selected="selected"';
+		}
 		$c.='>'.htmlspecialchars($r['name']).'</option>';
 	}
 	$c.='</select>';

@@ -5,7 +5,7 @@ function userloginandregistrationDisplay(){
 		$c='';
 		global $loggedin,$sitedomain,$DBVARS,$PAGEDATA;
 	// }
-	if(@$_GET['hash'] && @$_GET['email']){
+	if($_GET['hash'] && $_GET['email']){
 		if(!isset($_GET['hash']) || !isset($_GET['email']))die('missing value in GET string');
 		$r=dbRow("select * from user_accounts where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
 		if(!count($r))die('that hash and email combination does not exist');
@@ -307,7 +307,7 @@ function userregistration_register(){
 		$lesc=addslashes($long_url);
 		$sesc=urlencode($short_url);
 		dbQuery("insert into short_urls values(0,now(),'$lesc','$short_url')");
-		if(@$page->vars['userlogin_registration_type']=='Email-verified'){
+		if($page->vars['userlogin_registration_type']=='Email-verified'){
     	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nAfter clicking the link below, you will be logged into the server, and a new password will be emailed out to you.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 			if(1 || $page->vars['userlogin_send_admin_emails']){
 				$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');

@@ -33,9 +33,11 @@ foreach($rs as $r){
 }
 $fields=array_unique($fields);
 asort($fields);
-foreach($fields as $field){
-	$c.='<option';
-	if($field==$vars['products_order_by'])$c.=' selected="selected"';
-	$c.='>'.htmlspecialchars($field).'</option>';
+foreach ($fields as $field) {
+	echo '<option';
+	if ($field==$vars['products_order_by']) {
+		echo ' selected="selected"';
+	}
+	echo '>', htmlspecialchars($field), '</option>';
 }
 echo $c;

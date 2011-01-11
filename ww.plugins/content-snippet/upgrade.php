@@ -22,7 +22,7 @@ if($version=='1'){ // convert to accordion
 		}
 		cache_clear('content_snippets');
 	}
-	@dbQuery('alter table content_snippets change html content text');
+	dbQuery('alter table content_snippets change html content text');
 	$version=2;
 }
 if($version=='2'){ // add directory of images

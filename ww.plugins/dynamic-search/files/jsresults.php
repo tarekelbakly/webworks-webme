@@ -33,11 +33,11 @@ require '../../../.private/config.php';
 $connect=mysql_connect($DBVARS['hostname'],$DBVARS['username'],$DBVARS['password']);
 mysql_select_db($DBVARS['db_name'],$connect);
 
-$s=addslashes(@$_GET['dynamic_search']);
-$cat=addslashes(@$_GET['dynamic_category']);
+$s=addslashes($_GET['dynamic_search']);
+$cat=addslashes($_GET['dynamic_category']);
 if($cat=='') $cat='Site Wide';
 
-$p=@$_GET['dynamic_page'];
+$p=$_GET['dynamic_page'];
 if($p==0) $p=1;
 $l=$p*10;
 $m=$l-10;

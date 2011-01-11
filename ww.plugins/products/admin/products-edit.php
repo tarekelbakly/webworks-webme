@@ -297,7 +297,10 @@ echo '<script>window.kfm={alert:function(){}};window.kfm_vars={};'
 	.'var product_id='.$id.';</script>';
 if($n){
 	echo '<div id="product-images-wrapper">';
-	for($i=0;$i<$n;$i++){
+	for ($i=0;$i<$n;$i++) {
+		if (!isset($images[$i]['caption'])) {
+			$images[$i]['caption']='';
+		}
 		$default=($images[$i]['id']==$pdata['image_default'])?' class="default"':'';
 		echo '<div'.$default.'>';
 		echo '<img src="/kfmget/'.$images[$i]['id']

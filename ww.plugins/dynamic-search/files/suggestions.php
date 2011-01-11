@@ -7,7 +7,7 @@
  *         Report Bugs: <conor@macaoidh.name>                        
  */
 
-$search=addslashes(@$_GET['chars']);
+$search=addslashes($_GET['chars']);
 
 require '../../../.private/config.php';
 

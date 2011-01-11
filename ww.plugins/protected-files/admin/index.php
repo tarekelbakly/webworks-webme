@@ -16,7 +16,7 @@ function get_subdirs($base,$dir){
 	}
 	return $arr;
 }
-$id=(int)@$_REQUEST['id'];
+$id=(int)$_REQUEST['id'];
 if(isset($_REQUEST['action'])){
 	if($_REQUEST['action']=='Save Protected Files'){
 		$details=array(
@@ -24,10 +24,10 @@ if(isset($_REQUEST['action'])){
 		foreach ($_REQUEST['details'] as $k=>$n) {
 			$details[$k]=$n;
 		}
-		$q='message="'.addslashes(@$_REQUEST['message']).'",'
-			.'template="'.addslashes(@$_REQUEST['template']).'",'
-			.'directory="'.addslashes(@$_REQUEST['directory']).'",'
-			.'recipient_email="'.addslashes(@$_REQUEST['recipient_email']).'",'
+		$q='message="'.addslashes($_REQUEST['message']).'",'
+			.'template="'.addslashes($_REQUEST['template']).'",'
+			.'directory="'.addslashes($_REQUEST['directory']).'",'
+			.'recipient_email="'.addslashes($_REQUEST['recipient_email']).'",'
 			.'details="'.addslashes(json_encode($details)).'"';
 		if ($id) {
 			dbQuery("update protected_files set $q where id=$id");
@@ -46,7 +46,7 @@ if(isset($_REQUEST['action'])){
 
 $r=dbRow('select * from protected_files where id='.$id);
 $details=json_decode($r['details'], true);
-switch(@$_REQUEST['view']){
+switch($_REQUEST['view']){
 	case 'log': // {
 		echo '<table><tr><th>Filename</th><th>Completed</th><th>Email</th><th>Date/Time</th></tr>';
 		$fs=dbAll('select file,success,email,last_access from protected_files_log where pf_id='.$id.' order by last_access desc');
@@ -76,7 +76,7 @@ switch(@$_REQUEST['view']){
 		}
 		echo '</tr>';
 		// { email to send alerts to
-		echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars(@$r['recipient_email']),'" /></td>';
+		echo '<tr><th>Email to send download alerts to</th><td><input name="recipient_email" value="',htmlspecialchars($r['recipient_email']),'" /></td>';
 		// }
 		// { page template
 		echo '<th>Page Template</th><td>';
@@ -113,9 +113,6 @@ switch(@$_REQUEST['view']){
 		// }
 	// }
 }
-/*
-|  2 | /DFT      |                 | default  |         | {"type":2,"groups":"familymembers,administrators"} | 
-*/
 ?>
 <script>
 	$(function(){

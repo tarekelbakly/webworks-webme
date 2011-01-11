@@ -23,6 +23,6 @@ function get_subdirs($base,$dir){
 $arr=array_merge(array('/'),get_subdirs(USERBASE.'f',''));
 foreach($arr as $d){
 	echo '<option value="',htmlspecialchars($d),'"';
-	if($_REQUEST['selected']==@$r['directory'])echo ' selected="selected"';
+	if($_REQUEST['selected']==$r['directory'])echo ' selected="selected"';
 	echo '>',htmlspecialchars($d),'</option>';
 }
