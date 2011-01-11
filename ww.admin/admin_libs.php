@@ -57,8 +57,8 @@ function html_fixImageResizes($src){
 
 		// create cached image
 		$imgdir=WORKDIR_IMAGERESIZES.$dir;
-		@mkdir(WORKDIR_IMAGERESIZES);
-		@mkdir($imgdir);
+		mkdir(WORKDIR_IMAGERESIZES);
+		mkdir($imgdir);
 		$imgfile=$imgdir.'/'.$width.'x'.$height.'.jpg';
 		if(file_exists($imgfile))continue;
 		$str='convert "'.addslashes($imgsrc).'" -geometry '.$width.'x'.$height.' "'.$imgfile.'"';

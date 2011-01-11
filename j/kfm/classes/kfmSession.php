@@ -57,7 +57,7 @@ class kfmSession extends kfmObject{
 	function getInstance($id=0){
 		$id=(int)$id;
 		if ($id<1) return false;
-		if (!@array_key_exists($id,self::$instances)) self::$instances[$id]=new kfmSession($id);
+		if (!array_key_exists($id,self::$instances)) self::$instances[$id]=new kfmSession($id);
 		return self::$instances[$id];
 	}
 	function set($name='',$value='',$save_in_db=true){

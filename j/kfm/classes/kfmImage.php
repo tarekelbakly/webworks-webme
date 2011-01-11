@@ -19,7 +19,7 @@ class kfmImage extends kfmFile{
 		}
 		$this->image_id=$this->getImageId();
 		if($this->getSize()){
-			$this->info=@getimagesize($this->path);
+			$this->info=getimagesize($this->path);
 			if(!$this->info)$this->info=array(0,0,'mime'=>'not/an-image');
 			$this->type=str_replace('image/','',$this->info['mime']);
 			$this->width=$this->info[0];
@@ -97,7 +97,7 @@ class kfmImage extends kfmFile{
 		}
 		$id=(int)$id;
 		if($id<1)return false;
-		if (!@array_key_exists($id,self::$instances)) self::$instances[$id]=new kfmImage($id);
+		if (!array_key_exists($id,self::$instances)) self::$instances[$id]=new kfmImage($id);
 		return self::$instances[$id];
 	}
 	function resize($new_width, $new_height=-1){

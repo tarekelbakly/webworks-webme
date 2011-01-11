@@ -6,8 +6,8 @@ if(!is_admin())exit;
 $id=isset($_REQUEST['id'])
 	?(int)$_REQUEST['id']
 	:0;
-$parent=(int)@$_REQUEST['parent'];
-$action=@$_REQUEST['action'];
+$parent=isset($_REQUEST['parent'])?(int)$_REQUEST['parent']:0;
+$action=isset($_REQUEST['action'])?$_REQUEST['action']:'';
 $msgs='';
 include('pages.funcs.php');
 if($action==__('Insert Page Details') || $action==__('Update Page Details')){
@@ -206,7 +206,10 @@ if ($importance<.1) {
 }
 echo '<tr title="used by Google. importance of page relative to other pages on site. values 0.1 to 1.0">'
 	.'<th>importance</th><td><input name="importance" value="'.$importance.'" /></td></tr>';
-echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars(@$page_vars['google-site-verification']).'" /></td></tr>';
+if (!isset($page_vars['google-site-verification'])) {
+	$page_vars['google-site-verification']='';
+}
+echo '<tr><th>Google Site Verification</th><td><input name="page_vars[google-site-verification]" value="'.htmlspecialchars($page_vars['google-site-verification']).'" /></td></tr>';
 echo '<tr>';
 // { template
 echo '<th>template</th><td>';

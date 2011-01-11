@@ -14,7 +14,7 @@ class User{
 	}
 	static function getInstance($id=0,$r=false,$enabled=true){
 		if (!is_numeric($id)) return false;
-		if (!@array_key_exists($id,self::$instances)) new User($id,$r,$enabled);
+		if (!array_key_exists($id,self::$instances)) new User($id,$r,$enabled);
 		if(!isset(self::$instances[$id]))return false;
 		return self::$instances[$id];
 	}

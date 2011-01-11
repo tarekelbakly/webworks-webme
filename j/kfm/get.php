@@ -54,7 +54,7 @@ if(isset($_GET['uri'])){
 		}
 	}
 }
-$id=(int)@$_GET['id'];
+$id=isset($_GET['id'])?(int)$_GET['id']:0;
 if ($id<1){
     echo kfm_lang('errorInvalidID');
     exit;
@@ -95,7 +95,7 @@ if (isset($_GET['type'])&&$_GET['type']=='thumb') {
 }
 // { headers
 if (strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) $name = preg_replace('/\./', '%2e', $name, substr_count($name, '.')-1);
-@set_time_limit(0);
+set_time_limit(0);
 header('Cache-Control: max-age = 2592000');
 header('Expires-Active: On');
 header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');

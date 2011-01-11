@@ -94,7 +94,7 @@ class kfmDirectory extends kfmObject{
 		foreach($subdirs as $subdir){
 			if(!$subdir->delete())return false;
 		}
-		@rmdir($this->path());
+		rmdir($this->path());
 		if(is_dir($this->path()))return $this->error('failed to delete directory '.$this->path());
 		$GLOBALS['kfm']->db->exec("delete from ".KFM_DB_PREFIX."directories where id=".$this->id);
 		return true;
@@ -174,7 +174,7 @@ class kfmDirectory extends kfmObject{
 	static function getInstance($id=1){
 		$id=(int)$id;
 		if($id<1)return;
-		if (!@array_key_exists($id,self::$instances)) {
+		if (!array_key_exists($id,self::$instances)) {
 			$dir=new kfmDirectory($id);
 			if($dir->id==0)return false;
 			self::$instances[$id]=$dir;

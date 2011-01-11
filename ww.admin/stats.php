@@ -9,7 +9,7 @@ echo admin_menu(array(
 ));
 
 echo '<div class="has-left-menu">';
-$page=@$_REQUEST['page'];
+$page=isset($_REQUEST['page'])?$_REQUEST['page']:'';
 switch($page){
 	case 'popular_pages': // {
 		require 'stats/popular_pages.php';

@@ -148,7 +148,7 @@ class kfmFile extends kfmObject{
 		if(is_object($id))$id=$id->id;
 		$id=(int)$id;
 		if($id<1)return;
-		if (!@array_key_exists($id,self::$instances)) self::$instances[$id]=new kfmFile($id);
+		if (!array_key_exists($id,self::$instances)) self::$instances[$id]=new kfmFile($id);
 		if (self::$instances[$id]->isImage()) return kfmImage::getInstance($id);
 		return self::$instances[$id];
 	}
