@@ -21,7 +21,7 @@
 **/
 function Themes_recursiveCopy($src, $dst) {
 	$dir = opendir($src);
-	@mkdir($dst);
+	mkdir($dst);
 	while (false !== ( $file = readdir($dir)) ) {
 		if (( $file != '.' ) && ( $file != '..' )) {
 			if ( is_dir($src . '/' . $file) ) {
@@ -40,13 +40,13 @@ if ($action=='set_theme') {
 	if (isset($_REQUEST['personal'])) {
 		if (is_dir($DBVARS['theme_dir_personal'].'/'.$_REQUEST['theme'])) {
 			$DBVARS['theme']=$_REQUEST['theme'];
-			$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
+			$DBVARS['theme_variant']=$_REQUEST['theme_variant'];
 		}
 	}
 	else {
 		if (is_dir($DBVARS['theme_dir'].'/'.$_REQUEST['theme'])) {
 			$DBVARS['theme']=$_REQUEST['theme'];
-			$DBVARS['theme_variant']=@$_REQUEST['theme_variant'];
+			$DBVARS['theme_variant']=$_REQUEST['theme_variant'];
 			Themes_recursiveCopy(
 				$DBVARS['theme_dir'].'/'.$_REQUEST['theme'],
 				$DBVARS['theme_dir_personal'].'/'.$_REQUEST['theme']
@@ -162,7 +162,9 @@ foreach ($dir as $file) {
 				continue;
 			}
 			$file2=preg_replace('/\.css$/', '', $file2);
-			$sel=$file2==$DBVARS['theme_variant']?' selected="selected"':'';
+			$sel=(isset($DBVARS['theme_variant']) && $file2==$DBVARS['theme_variant'])
+				?' selected="selected"'
+				:'';
 			echo '<option',$sel,'>',htmlspecialchars($file2),'</option>';
 		}
 		echo '</select>';

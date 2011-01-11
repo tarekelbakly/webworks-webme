@@ -172,7 +172,7 @@ function Menu_show($b) {
 		$vals['spans']=1;
 	}
 	$search_options=0;
-	$ajaxmenu=@$vals['nodropdowns']?'':' ajaxmenu ';
+	$ajaxmenu=$vals['nodropdowns']?'':' ajaxmenu ';
 	$c='<div id="ajaxmenu'.$parent.'" class="menuBar'.$align.$ajaxmenu
 		.$classes.' parent'.$parent.'">';
 	$rs=Menu_getChildren($parent, $PAGEDATA->id, 0, $parent, $search_options);

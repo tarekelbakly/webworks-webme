@@ -14,7 +14,7 @@ $admin_vars=array();
 // { common variables
 	foreach(array('action','resize') as $v)$$v=getVar($v);
 	foreach(array('show_items','start') as $v)$$v=getVar($v,0);
-	$id=(int)@$_REQUEST['id'];
+	$id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 // }
 WW_addScript('/j/datatables-1.7.4/media/js/jquery.dataTables.js');
 WW_addScript('/j/jquery.remoteselectoptions.js');

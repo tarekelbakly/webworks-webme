@@ -814,7 +814,7 @@ class CountriesList{
 		$c.='>';
 		foreach($this->countries as $country){
 			$iso=$country['iso'];
-			$extension=@(int)$extensions[$iso];
+			$extension=(int)$extensions[$iso];
 			if(!$extension)continue;
 			$c.='<option value="'.$extension.'"';
 			if(in_array($iso,$this->selected))$c.=' selected="selected"';

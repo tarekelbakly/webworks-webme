@@ -64,6 +64,9 @@ if(isset($_REQUEST['id'])){
 	}
 	echo '<form action="siteoptions.php?page=users&amp;id='.$id.'" method="post">';
 	echo '<input type="hidden" name="id" value="'.$id.'" />';
+	if (!isset($r['extras'])) {
+		$r['extras']='';
+	}
 	echo '<table><tr><th>Name</th><td><input name="name" value="'.htmlspecialchars($r['name']).'" /></td><th>Password</th><td><input name="password" type="password" /></td>'
 		.'<td rowspan="6" id="extras-wrapper"><input type="hidden" value="'.htmlspecialchars($r['extras'], ENT_QUOTES).'" /></td></tr>';
 	echo '<tr><th>Email</th><td><input name="email" value="'.htmlspecialchars($r['email']).'" /></td><th>(repeat)</th><td><input name="password2" type="password" /></td></tr>';

@@ -266,7 +266,7 @@ if ($version==20) { // change page_type to char string in Pages table
 	$version=21;
 }
 if ($version==21) { // add plugins to config if not enabled
-	if (@$DBVARS['plugins']=='') {
+	if ($DBVARS['plugins']=='') {
 		$DBVARS['plugins']='polls,image_gallery,forms,panels,'
 			.'banner-image,mailing-list';
 	}
@@ -304,7 +304,7 @@ if ($version==26) { // add "extras" to user_account, for metadata
   */
 function Copy_recursive($src, $dst) {
 	$dir = opendir($src);
-	@mkdir($dst);
+	mkdir($dst);
 	while (false !== ( $file = readdir($dir)) ) {
 		if (( $file != '.' ) && ( $file != '..' )) {
 			if ( is_dir($src . '/' . $file) ) {

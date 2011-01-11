@@ -19,7 +19,7 @@ function date_m2h($d, $type = 'date') {
 	if ($type == 'datetime') {
 		return date('D jS M, Y h:iA', $utime);
 	}
-	return @date(DATE_RFC822, $utime);
+	return date(DATE_RFC822, $utime);
 }
 function getVar($v, $d = '') {
 	if (isset($_GLOBAL[$v])) return $_GLOBAL[$v];

@@ -13,8 +13,8 @@
 
 require_once 'common.php';
 
-$id=@(int)$_REQUEST['id'];
-$type=@$_REQUEST['type'];
+$id=(int)$_REQUEST['id'];
+$type=$_REQUEST['type'];
 $url='/';
 switch($type){
 	case 'loginpage': // {

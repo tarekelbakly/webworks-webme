@@ -82,14 +82,14 @@ class Page{
 	}
 	static function getInstance($id=0,$fromRow=false,$pvq=false){
 		if (!is_numeric($id)) return false;
-		if (!@array_key_exists($id,self::$instances)) self::$instances[$id]=new Page($id,0,$fromRow,$pvq);
+		if (!array_key_exists($id,self::$instances)) self::$instances[$id]=new Page($id,0,$fromRow,$pvq);
 		return self::$instances[$id];
 	}
 	static function getInstanceByName($name=''){
 		if(preg_match('/[^,a-zA-Z0-9 \-_\/]/',$name))return false;
 		$name=strtolower($name);
 		$nameIndex=preg_replace('#[^,a-z0-9/]#','-',$name);
-		if(@array_key_exists($nameIndex,self::$instancesByName))return self::$instancesByName[$nameIndex];
+		if(array_key_exists($nameIndex,self::$instancesByName))return self::$instancesByName[$nameIndex];
 		if(strpos($name,'/')){
 			$names=explode('/',$nameIndex);
 			$pid=0;
@@ -105,11 +105,13 @@ class Page{
 	}
 	static function getInstanceBySpecial($sp=0){
 		if (!is_numeric($sp)) return false;
-		if (!@array_key_exists($sp,$instancesBySpecial)) $instancesBySpecial[$sp]=new Page($sp,3);
-		return $instancesBySpecial[$sp];
+		if (!array_key_exists($sp, self::$instancesBySpecial)) {
+			self::$instancesBySpecial[$sp]=new Page($sp,3);
+		}
+		return self::$instancesBySpecial[$sp];
 	}
 	static function getInstanceByType($type=0){
-		if (!@array_key_exists($type,self::$instancesByType)) new Page($type,2);
+		if (!array_key_exists($type,self::$instancesByType)) new Page($type,2);
 		if(!isset(self::$instancesByType[$type])){
 			echo 'page of type '.$type.' does not exist';
 			exit;
@@ -119,7 +121,7 @@ class Page{
 	static function getInstanceByNameAndParent($name,$parent){
 		if(preg_match('/[^,a-zA-Z0-9 \-_]/',$name))return false;
 		$name=str_replace('-','_',$name);
-	  if(!@array_key_exists($name.'/'.$parent,self::$instancesByNAndP)){
+	  if(!array_key_exists($name.'/'.$parent,self::$instancesByNAndP)){
 			$r=cache_load('pages',md5($parent.'|'.$name));
 			if($r===false){
 				$r=dbRow("SELECT * FROM pages WHERE parent=$parent AND name LIKE '".addslashes($name)."'");

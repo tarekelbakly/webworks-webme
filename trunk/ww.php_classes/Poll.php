@@ -13,7 +13,7 @@ class Poll{
 	}
 	static function getInstance($id=0,$r=false,$vals=false,$enabled=true){
 		if (!is_numeric($id)) return false;
-		if (!@array_key_exists($id,self::$instances)) new Poll($id,$r,$vals,$enabled);
+		if (!array_key_exists($id,self::$instances)) new Poll($id,$r,$vals,$enabled);
 		return self::$instances[$id];
 	}
 }
