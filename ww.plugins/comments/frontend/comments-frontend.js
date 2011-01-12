@@ -25,7 +25,7 @@ $('div.comment-editable').live('mouseover',function() {
 	if (document.getElementById('links-'+id)!=null) {
 		return;
 	}
-	//$('div.comments- div.comments-actions').remove();
+	$('div.comments- div.comments-actions').remove();
 	var mysqldatetime = $(this).attr('cdate');
 	var mysqldate = mysqldatetime.substring(8, 10);
 	var mysqlmonth = mysqldatetime.substring(5, 7);
@@ -55,7 +55,8 @@ $('div.comment-editable').live('mouseover',function() {
 	links+= '</div>';
 	$(links).insertBefore('#comment-info-'+id);
 });
-$('div.comments').live('mouseout',function(e) {
+$('div.comment-editable').live('mouseout',function(e) {
+	var id = e.target.id;
 	if(!/^comment-wrapper-[0-9]*$/.test(e.target.id)){
 		return;
 	}
@@ -83,11 +84,11 @@ function comments_check_success(data) {
 	}
 }
 function comments_insert_get_vals() {
-	var name = $('#name').val();
-	var email = $('#email').val();
-	var site = $('#site').val();
-	var page = $('#page').val();
-	var comment = $('#comment').val();
+	var name = $('#comments-name-input').val();
+	var email = $('#comments-email-input').val();
+	var site = $('#comments-site-input').val();
+	var page = $('#comments-page-id').val();
+	var comment = $('#comments-comment-input').val();
 	comment = trim(comment);
 	$.post(
 		'/ww.plugins/comments/frontend/insert.php',
@@ -106,10 +107,9 @@ function comments_display_thank_you_message(data) {
 	if (!data.status) {
 		return alert(data.message);
 	}
-	if (data.add) {
-		$('#start-comments').append('<strong>Comments</strong><br /><br />');
-	}
-	var commentString = '<div id="comment-wrapper-'+data.id+'" class="comments"'
+	$('.no-comments').remove();
+	var commentString = '<div id="comment-wrapper-'+data.id+'" '
+		+'class="comments comment-editable"'
 		+' cdate="'+data.mysqldate+'" '
 		+'comment="'+htmlspecialchars(data.comment)+'">';
 	commentString+= '<div id="comment-info-'+data.id+'">'

@@ -67,10 +67,9 @@ function Comments_displayComments($page) {
 	if (!empty($query)) {
 		$comments = dbAll($query.' order by cdate '.($commentboxfirst?'desc':'asc'));
 	}
-	$clist='';
+	$clist = '<div id="start-comments" class="comments-list"><a name="comments"></a>'
+		.'<strong>Comments</strong>';
 	if (count($comments)) {
-		$clist = '<div id="start-comments" class="comments-list"><a name="comments"></a>'
-			.'<strong>Comments</strong>';
 		foreach ($comments as $comment) {
 			$id = $comment['id'];
 			$datetime = $comment['cdate'];
@@ -103,9 +102,10 @@ function Comments_displayComments($page) {
 
 			$clist.= '</div>';
 		}
-		$clist.= '</div>';
 	}
-	// }
+	else {
+		$clist.= '<div class="no-comments"><em>No comments yet</em></div>';
+	}
 	// { get comment box HTML
 	$allowComments = dbOne(
 		'select value from page_vars 
@@ -136,27 +136,27 @@ function Comments_showCommentForm($pageID) {
 				where id = '.$userID
 			);
 	}
-	$display = '<strong>Add Comment</strong>';
-	$display.= '<form id="comment-form" class="comments-form" method="post" 
+	$display= '<form id="comment-form" class="comments-form" method="post" 
 		action="javascript:comments_check_captcha();">';
-	$display.= '<input type="hidden" name="page" id="page" 
+	$display.= '<strong>Add Comment</strong>';
+	$display.= '<input type="hidden" name="page" id="comments-page-id" 
 		value="'.$pageID.'" />';
 	$display.='<table class="comments-form-table"><tr class="comments-name"><th>Name</th>';
-	$display.= '<td><input id="name" name="name" ';
+	$display.= '<td><input id="comments-name-input" name="name" ';
 	if (isset($user)) {
 		$display.= ' value="'.htmlspecialchars($user['name']).'"';
 	}
 	$display.= ' /></td></tr>';
 	$display.= '<tr class="comments-email"><th>Email</th>';
-	$display.= '<td><input id="email" name="email"';
+	$display.= '<td><input id="comments-email-input" name="email"';
 	if (isset($user)) {
 		$display.= ' value="'.htmlspecialchars($user['email']).'"';
 	}
 	$display.= ' /></td></tr>'
 		.'<tr class="comments-url"><th>Website</th>'
-		.'<td><input id="site" name="site" /></td></tr>'
+		.'<td><input id="site" name="comments-site-input" /></td></tr>'
 		.'<tr class="comments-comment"><th>Comment</th>'
-		.'<td><textarea id="comment" name="comment"></textarea></td></tr>'
+		.'<td><textarea id="comments-comment-input" name="comment"></textarea></td></tr>'
 		.'<tr><td colspan="2"><div id="captcha" class="comments_captcha">'
 		.Recaptcha_getHTML()
 		.'</div></td></tr>'

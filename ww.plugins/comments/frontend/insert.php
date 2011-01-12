@@ -64,13 +64,13 @@ else {
 	else {
 		$addIntroString=1;
 	}
-	echo '{
-		"status": 1, 
-		"id": '.$id.',
-		"name": "'.$name.'",
-		"comment": "'.$comment.'", 
-		"humandate": "'.$date.'",
-		"mysqldate": "'.$datetime.'",
-		"add":'.$addIntroString.'
-	}';
+	$data=array();
+	$data['status']=1;
+	$data['id']=$id;
+	$data['name']=$name;
+	$data['humandate']=$date;
+	$data['mysqldate']=$datetime;
+	$data['comment']=$comment;
+	$data['add']=$addIntroString;
+	echo json_encode($data);
 }
