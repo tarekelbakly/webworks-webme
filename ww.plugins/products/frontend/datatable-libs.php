@@ -9,13 +9,15 @@ $columns=explode(
 	',',
 	preg_replace('/[^a-z0-9\-_,]/','_',strtolower($_REQUEST['sColumns']))
 );
-$sort_col=(int)$columns[(int)$_REQUEST['iSortCol_0']];
-$sort_dir=$_REQUEST['sSortDir_0'];
+$sort_col=isset($_REQUEST['iSortCol_0'])
+	?(int)$columns[(int)$_REQUEST['iSortCol_0']]
+	:0;
+$sort_dir=isset($_REQUEST['sSortDir_0'])?$_REQUEST['sSortDir_0']:'';
 if ($sort_dir!='des') {
 	$sort_dir='asc';
 }
 
-$search=$_REQUEST['sSearch'];
+$search=isset($_REQUEST['sSearch'])?$_REQUEST['sSearch']:'';
 $search_arr=array();
 for ($i=0; $i<count($columns); ++$i) {
 	if (!isset($_REQUEST['sSearch_'.$i]) || $_REQUEST['sSearch_'.$i]==='') {

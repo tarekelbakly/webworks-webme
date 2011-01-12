@@ -5,8 +5,7 @@ function userloginandregistrationDisplay(){
 		$c='';
 		global $loggedin,$sitedomain,$DBVARS,$PAGEDATA;
 	// }
-	if($_GET['hash'] && $_GET['email']){
-		if(!isset($_GET['hash']) || !isset($_GET['email']))die('missing value in GET string');
+	if (isset($_GET['hash']) && $_GET['hash'] && $_GET['email']) {
 		$r=dbRow("select * from user_accounts where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
 		if(!count($r))die('that hash and email combination does not exist');
 		$password=Password::getNew();

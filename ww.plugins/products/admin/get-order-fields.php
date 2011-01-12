@@ -40,4 +40,3 @@ foreach ($fields as $field) {
 	}
 	echo '>', htmlspecialchars($field), '</option>';
 }
-echo $c;

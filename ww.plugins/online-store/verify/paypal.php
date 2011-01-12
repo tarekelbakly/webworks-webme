@@ -17,15 +17,6 @@ foreach ($_POST as $key => $value) {
 	$req .= "&$key=$value";
 }
 if ($_POST['payment_status'] == 'Refunded') {
-	$str='';
-	foreach ($_POST as $key => $value) {
-		$str.=$key." = ". $value."\n";
-	}
-	mail(
-		'kae@verens.com', 
-		$_SERVER['HTTP_HOST'].' paypal refund (please check)'
-		, $str
-	);
 	exit;
 }
 if ($req=='cmd=_notify-validate') {

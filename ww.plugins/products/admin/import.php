@@ -221,11 +221,11 @@ if (isset($_POST['import'])) {
 							\''.addslashes($image_default[$i]).'\',
 						enabled = 1, 
 						date_created = 
-							\''.addslashes($date_created[$i]).'\',
+							\''.(isset($date_created[$i])?addslashes($date_created[$i]):'').'\',
 						data_fields = 
 							\''.addslashes($data_fields[$i]).'\',
 						images_directory = 
-							\''.addslashes($images_directory[$i]).'\''
+							\''.(isset($images_directory[$i])?addslashes($images_directory[$i]):'').'\''
 					);
 				}
 				++$products_imported;

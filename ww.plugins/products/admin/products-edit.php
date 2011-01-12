@@ -259,6 +259,7 @@ echo '</tr><tr>';
 // { images
 if(!isset($pdata['images_directory']) 
 	|| !$pdata['images_directory'] 
+	|| $pdata['images_directory']=='/'
 	|| !is_dir(USERBASE.'f/'.$pdata['images_directory'])
 ){
 	if(!is_dir(USERBASE.'f/products/product-images')){
