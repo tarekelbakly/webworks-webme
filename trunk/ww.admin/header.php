@@ -1,15 +1,16 @@
 <?php
+$dir=dirname(__FILE__);
 $webme_start_time=microtime();
 header('Content-type: text/html; Charset=utf-8');
 date_default_timezone_set('Eire');
-require '../ww.incs/common.php';
+require $dir.'/../ww.incs/common.php';
 // { if not logged in, show login page
 if (!is_admin()) {
 	include SCRIPTBASE . 'ww.admin/login.php';
 	exit;
 }
 // }
-require 'admin_libs.php';
+require $dir.'/admin_libs.php';
 $admin_vars=array();
 // { common variables
 	foreach(array('action','resize') as $v)$$v=getVar($v);
