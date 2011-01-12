@@ -11,7 +11,8 @@
   * @link     http://www.webworks.ie/
  */
 
-require 'header.php';
+$dir=dirname(__FILE__);
+require $dir.'/header.php';
 if (isset($_REQUEST['id'])) {
 	$id=(int)$_REQUEST['id'];
 }
