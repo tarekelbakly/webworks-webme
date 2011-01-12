@@ -304,7 +304,8 @@ function Products_getAddManyToCartButton($params,&$smarty) {
 function products_image($params,&$smarty) {
 	$params=array_merge(array(
 		'width'=>128,
-		'height'=>128
+		'height'=>128,
+		'nolink'=>0
 	),$params);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
@@ -324,11 +325,14 @@ function products_image($params,&$smarty) {
 		$images=kfm_loadFiles($dir_id);
 		if (count($images['files']))$iid=$images['files'][0]['id'];
 	}
-	if (!$iid)return products_image_not_found($params,$smarty);
-	return '<a class="products-lightbox" href="/kfmget/'.$iid.'">'
-		.'<img src="/kfmget/'.$iid
-		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />'
-		.'</a>';
+	if (!$iid) {
+		return products_image_not_found($params,$smarty);
+	}
+	$img='<img src="/kfmget/'.$iid
+		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';
+	return $params['nolink']
+		?$img
+		:'<a class="products-lightbox" href="/kfmget/'.$iid.'">'.$img.'</a>';
 }
 function products_image_not_found($params,&$smarty) {
 	$s=$params['width']<$params['height']?$params['width']:$params['height'];
