@@ -110,13 +110,37 @@ function products_add_to_cart($PAGEDATA){
 		$vat=true;
 	}
 	// { find "custom" values
+	$price_amendments=0;
 	$vals=array();
 	$long_desc='';
 	$md5='';
+	$pt=ProductType::getInstance($product->vals['product_type_id']);
 	foreach ($_REQUEST as $k=>$v){
 		if (strpos($k, 'products_values_')===0) {
-			$vals[]=str_replace('products_values_', '', $k)
-				.': '.$v;
+			$n=str_replace('products_values_', '', $k);
+			$df=$pt->getField($n);
+			if ($df === false // not a real field
+				|| $df->u!=1    // not a user-choosable field
+			) {
+				continue;
+			}
+			switch ($df->t) {
+				case 'selectbox': // {
+					$ok=0;
+					$strs=explode("\n", $df->e);
+					if (in_array($v, $strs)) {
+						if (strpos($v, '|')!==false) {
+							$bits=explode('|', $v);
+							$price_amendments+=(float)$bits[1];
+						}
+						$ok=1;
+					}
+					if (!$ok) {
+						continue;
+					}
+					break; // }
+			}
+			$vals[]=$n.': '.$v;
 		}
 	}
 	if (count($vals)) {
@@ -125,7 +149,7 @@ function products_add_to_cart($PAGEDATA){
 	}
 	// }
 	OnlineStore_addToCart(
-		$price,
+		$price+$price_amendments,
 		$amount,
 		$product->get('name'),
 		$long_desc,

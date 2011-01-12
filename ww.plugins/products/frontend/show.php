@@ -746,7 +746,6 @@ class Product{
 		foreach ($r as $k=>$v) {
 			$this->vals[$k]=$v;
 		}
-#		if(!is_array($vals))mail('kae@verens.com','broken '.$_SERVER['HTTP_HOST'],$r['id']);
 		foreach($vals as $val) {
 			$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
 		}
@@ -1181,6 +1180,14 @@ class ProductType{
 		}
 		return self::$instances[$id];
 	}
+	function getField($name) {
+		foreach ($this->data_fields as $k=>$v) {
+			if ($v->n==$name) {
+				return $v;
+			}
+		}
+		return false;
+	}
 	function getMissingImage($maxsize) {
 		return '<img src="/kfmgetfull/products/types/'.$this->id
 			.'/image-not-found.png,width='.$maxsize.',height='.$maxsize.'" />';
@@ -1212,7 +1219,18 @@ class ProductType{
 							if ($e=='') {
 								continue;
 							}
-							$h.='<option>'.htmlspecialchars($e).'</option>';
+							$o=$e;
+							if (strpos($e, '|')!==false) {
+								$bits=explode('|', $e);
+								$p=(float)$bits[1];
+								if ($p) {
+									$e=$bits[0].' ('
+										.($bits[1]>0?'+'.$bits[1]:$bits[1])
+										.')';
+								}
+							}
+							$h.='<option value="'.htmlspecialchars($o).'">'
+								.htmlspecialchars($e).'</option>';
 						}
 						$h.='</select>';
 					}
