@@ -15,7 +15,7 @@ function kfm_kaejax_handle_client_request(){
 	$ret['errors']=kfm_getErrors();
 	$ret['messages']=kfm_getMessages();
 	header('Content-type: text/javascript; charset=UTF-8');
-	echo json_encode($ret);
+	echo @json_encode($ret);
 	exit;
 }
 function kfm_kaejax_get_one_stub($func_name){

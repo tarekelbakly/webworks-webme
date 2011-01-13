@@ -13,7 +13,7 @@
 
 require_once 'common.php';
 
-$id=(int)$_REQUEST['id'];
+$id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 $type=$_REQUEST['type'];
 $url='/';
 switch($type){

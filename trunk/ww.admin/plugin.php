@@ -1,7 +1,7 @@
 <?php
 require 'header.php';
-$pname=$_REQUEST['_plugin'];
-$pagename=$_REQUEST['_page'];
+$pname=isset($_REQUEST['_plugin'])?$_REQUEST['_plugin']:'';
+$pagename=isset($_REQUEST['_page'])?$_REQUEST['_page']:'';
 if(preg_match('/[^\-a-zA-Z0-9]/',$pagename) || $pagename=='')die('illegal character in page name');
 if(!isset($PLUGINS[$pname]))die('no plugin of that name ('.htmlspecialchars($pname).') exists');
 $plugin=$PLUGINS[$pname];

@@ -125,7 +125,7 @@ function ob_show_and_log($type,$header=''){
 	$log->log(
 		$_SERVER['REMOTE_ADDR']
 		.'	'.$location
-		.'	'.$_SERVER['HTTP_USER_AGENT']
+		.'	'.(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'')
 		.'	'.(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'')
 		.'	'.memory_get_peak_usage()
 		.'	'.$length

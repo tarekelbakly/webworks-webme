@@ -26,7 +26,6 @@ echo '<tr><th>Plugin Name</th><th>Version</th><th>Description</th><th>Active</th
 foreach($PLUGINS as $name=>$plugin){
 	if(isset($plugin['hide_from_admin']) && $plugin['hide_from_admin'])continue;
 	echo '<tr><th>',htmlspecialchars($plugin['name']),'</th>',
-		'<td>',(float)($plugin['version']),'</td>',
 		'<td>',htmlspecialchars($plugin['description']),'</td>',
 		'<td><input type="checkbox" name="plugins[',$name,']" checked="checked" /></td>',
 		'</tr>';

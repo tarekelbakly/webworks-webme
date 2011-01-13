@@ -45,10 +45,17 @@ function html_fixImageResizes($src){
 		$dir=str_replace('/','@_@',$imgsrc);
 
 		// get absolute address of img (naive, but will work for most cases)
-		if(!preg_match('/^http/i',$imgsrc))$imgsrc=USERBASE.'/'.$imgsrc;
+		if (!preg_match('/^http/i',$imgsrc)) {
+			$imgsrc=USERBASE.'/'.$imgsrc;
+		}
 
-		list($x,$y)=getimagesize($imgsrc);
-		if(!$x || !$y || ($x==$width && $y==$height))continue;
+		if (!file_exists($imgsrc)) {
+			continue;
+		}
+		list($x, $y)=getimagesize($imgsrc);
+		if (!$x || !$y || ($x==$width && $y==$height)) {
+			continue;
+		}
 
 		// create address of resized image and update HTML
 		$newURL=WORKURL_IMAGERESIZES.$dir.'/'.$width.'x'.$height.'.jpg';
@@ -57,8 +64,12 @@ function html_fixImageResizes($src){
 
 		// create cached image
 		$imgdir=WORKDIR_IMAGERESIZES.$dir;
-		mkdir(WORKDIR_IMAGERESIZES);
-		mkdir($imgdir);
+		if (!file_exists(WORKDIR_IMAGERESIZES)) {
+			mkdir(WORKDIR_IMAGERESIZES);
+		}
+		if (!file_exists($imgdir)) {
+			mkdir($imgdir);
+		}
 		$imgfile=$imgdir.'/'.$width.'x'.$height.'.jpg';
 		if(file_exists($imgfile))continue;
 		$str='convert "'.addslashes($imgsrc).'" -geometry '.$width.'x'.$height.' "'.$imgfile.'"';
