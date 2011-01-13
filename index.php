@@ -176,17 +176,17 @@ if (isset($_REQUEST['_p'])
 // }
 // { main content
 // { check if page is protected
-$allowed=1;
+$access_allowed=1;
 foreach ($PLUGINS as $p) {
-	if (!$allowed) {
+	if (!$access_allowed) {
 		break;
 	}
 	if (isset($p['frontend']['page_display_test'])) {
-		$allowed=$p['frontend']['page_display_test']($PAGEDATA);
+		$access_allowed=$p['frontend']['page_display_test']($PAGEDATA);
 	}
 }
 // }
-if (!$allowed) {
+if (!$access_allowed) {
 	$c.='<h2>Permission Denied</h2><p>This is a protected document.</p>';
 	if (isset($_SESSION['userdata'])) {
 		$c.='<p>You are not in a user-group which has access to this page. '
