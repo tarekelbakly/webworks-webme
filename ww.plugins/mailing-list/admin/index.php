@@ -15,7 +15,7 @@ echo admin_menu(array(
 
 echo '<div class="has-left-menu">';
 
-$page=$_GET['mailing_list'];
+$page=isset($_GET['mailing_list'])?$_GET['mailing_list']:'';
 $dir=dirname(__FILE__);
 switch($page){
 	case 'form_options':

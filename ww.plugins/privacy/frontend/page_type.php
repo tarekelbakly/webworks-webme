@@ -261,7 +261,9 @@ function userregistration_register(){
 		foreach($rs as $r){
 			if(!$r->name)continue;
 			$ename=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
-			$extras[$r->name]=$_REQUEST['privacy_extras_'.$ename];
+			$extras[$r->name]=isset($_REQUEST['privacy_extras_'.$ename])
+				?$_REQUEST['privacy_extras_'.$ename]
+				:'';
 		}
 	// }
 	// { check for required fields
@@ -273,7 +275,7 @@ function userregistration_register(){
 		$missing[]='your email address';
 	}
 	foreach ($rs as $r) {
-		if ($r->is_required && (!isset($_REQUEST['privacy_extras_'.$r->name]) || !$_REQUEST['privacy_extras_'.$r->name])) {
+		if (isset($r->is_required) && $r->is_required && (!isset($_REQUEST['privacy_extras_'.$r->name]) || !$_REQUEST['privacy_extras_'.$r->name])) {
 			$missing[]=$r->name;
 		}
 	}

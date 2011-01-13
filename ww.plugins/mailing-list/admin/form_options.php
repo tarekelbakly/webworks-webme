@@ -13,25 +13,26 @@ foreach($options as $option){
 	$OPT[$option['name']]=$option['value'];
 }
 
-if($FIELD['use_js']==1)
-echo '
-<script type="text/javascript">
-$(form_valid);
-function form_valid(){
-	$("#form").submit(function{confirm("test")});
-} 
-function delete_row(){
-	var id=this.href.replace(/.*!/,"");
-	if(confirm("Are you sure you want to delete this email from the list?")){
-		$.getJSON("/ww.admin/plugin.php?_plugin=mailing-list&mailing_list=delete&_page=index&id="+id);
-		$(this).parent().parent().fadeOut("slow",function(){
-			$(this).remove();
-		});
+if (isset($FIELD) && isset($FIELD['use_js']) && $FIELD['use_js']==1) {
+	echo '
+	<script type="text/javascript">
+	$(form_valid);
+	function form_valid(){
+		$("#form").submit(function{confirm("test")});
+	} 
+	function delete_row(){
+		var id=this.href.replace(/.*!/,"");
+		if(confirm("Are you sure you want to delete this email from the list?")){
+			$.getJSON("/ww.admin/plugin.php?_plugin=mailing-list&mailing_list=delete&_page=index&id="+id);
+			$(this).parent().parent().fadeOut("slow",function(){
+				$(this).remove();
+			});
+		}
+		return false;
 	}
-	return false;
+	</script>
+	';
 }
-</script>
-';
 
 echo 	'<h3>Form Options</h3>';
 

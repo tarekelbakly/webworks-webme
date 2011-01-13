@@ -24,6 +24,9 @@ require_once SCRIPTBASE.'ww.incs/recaptcha.php';
   * @return $html The comments and an add comment form
 **/
 function Comments_displayComments($page) {
+	if (!$GLOBALS['access_allowed']) {
+		return '';
+	}
 	WW_addScript('/ww.plugins/comments/frontend/comments-frontend.js');
 	WW_addCSS('/ww.plugins/comments/frontend/comments.css');
 	// { order of display
@@ -34,14 +37,19 @@ function Comments_displayComments($page) {
 	$hideComments=isset($page->vars['hide_comments'])
 		&& $page->vars['hide_comments'];
 	if ($hideComments) {
-		$query = 'select * from comments where objectid = '.$page->id;
-		$query.= ' and id in (';
-		foreach ($_SESSION['comment_ids'] as $comment) {
-			$query.= (int)$comment.', ';
-		}
-		if (is_numeric(strpos($query, ', '))) {
-			$query = substr_replace($query, '', strrpos($query, ', '));
-			$query.= ')';
+		if (isset($_SESSION['comment_ids']) && count($_SESSION['comment_ids'])) {
+			$query = 'select * from comments where objectid = '.$page->id;
+			$query.= ' and id in (';
+			foreach ($_SESSION['comment_ids'] as $comment) {
+				$query.= (int)$comment.', ';
+			}
+			if (is_numeric(strpos($query, ', '))) {
+				$query = substr_replace($query, '', strrpos($query, ', '));
+				$query.= ')';
+			}
+			else {
+				$query = '';
+			}
 		}
 		else {
 			$query = '';
@@ -67,9 +75,10 @@ function Comments_displayComments($page) {
 	if (!empty($query)) {
 		$comments = dbAll($query.' order by cdate '.($commentboxfirst?'desc':'asc'));
 	}
-	$clist = '<div id="start-comments" class="comments-list"><a name="comments"></a>'
-		.'<strong>Comments</strong>';
+	$clist='';
 	if (count($comments)) {
+		$clist = '<div id="start-comments" class="comments-list"><a name="comments"></a>'
+			.'<strong>Comments</strong>';
 		foreach ($comments as $comment) {
 			$id = $comment['id'];
 			$datetime = $comment['cdate'];
@@ -98,13 +107,12 @@ function Comments_displayComments($page) {
 			}
 			$clist.= ' on '.date_m2h($datetime).'</div>'
 				.'<div id="comment-'.$id.'" class="comments-comment">'.htmlspecialchars($comment['comment'])
-				.'</div>';
-
-			$clist.= '</div>';
+				.'</div></div>';
 		}
+		$clist.='</div>';
 	}
 	else {
-		$clist.= '<div class="no-comments"><em>No comments yet</em></div>';
+		$clist.= '';
 	}
 	// { get comment box HTML
 	$allowComments = dbOne(
