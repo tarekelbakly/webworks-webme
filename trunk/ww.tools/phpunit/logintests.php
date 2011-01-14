@@ -29,12 +29,13 @@ class LoginTests extends PHPUnit_Framework_TestCase {
 	**/
 	function setUp() {
 		$tmpCurlHandle=curl_init();
-		$tmpUrl='http://webworks-webme/?page=logout';
+		$tmpUrl='http://127.0.0.1/?page=logout';
 		curl_setopt($tmpCurlHandle, CURLOPT_URL, $tmpUrl);
 		curl_exec($tmpCurlHandle);
 		curl_close($tmpCurlHandle);
 		$this->curl_handle = curl_init();
-		$this->url = 'http://webworks-webme/ww.admin';
+		$this->url = 'http://127.0.0.1/ww.admin/pages.php';
+		curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($this->curl_handle, CURLOPT_URL, $this->url);
 		curl_setopt($this->curl_handle, CURLOPT_POST, true);
 	}
@@ -50,13 +51,54 @@ class LoginTests extends PHPUnit_Framework_TestCase {
 	function testAuthorisedLogin() {
 		$email='bhamilton@webworks.ie';
 		$pass='ive8448';
-		$fields=array(
-			'email'=>$email,
-			'password'=>$pass
-		);
+		$fields
+			=array(
+				'email'=>$email,
+				'password'=>$pass,
+				'action'=>'login'
+			);
 		curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $fields);
 		$response=curl_exec($this->curl_handle);
-		curl_($this->curl_handle);
-		$this->assertEquals(true, isset($_SESSION['userdata']));
+		$dir=dirname(__FILE__);
+		$hasPageForm=strpos($response, 'div id="pages-wrapper"');
+		$hasLoginTab=strpos($response, 'div id="admin-login"');
+		$this->assertEquals(false, $hasLoginTab);
+		$this->assertNotEquals(false, $hasPageForm);
+	}
+	/**
+	  * Tests a user logging in with the wrong password
+	  *
+	**/
+	function testWrongPasswordLogin() {
+		$email='bhamilton';
+		$password='wrongpass';
+		$fields
+			=array(
+				'email'=>$email,
+				'password'=>$password,
+				'action'=>'login'
+			);
+		curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $fields);
+		$response=curl_exec($this->curl_handle);
+		$hasPageForm=strpos($response, 'div id="pages-wrapper"');
+		$hasLoginForm=strpos($response, 'div id="admin-login"');
+		$this->assertEquals(false, $hasPageForm);
+		$this->assertNotEquals(false, $hasLoginForm);
+	}
+	function testNonAdminLogin() {
+		$email='belinda0304@hotmail.com';
+		$password='belindapass';
+		$fields
+			=array(
+				'email'=>$email,
+				'password'=>$password,
+				'action'=>'login'
+			);
+		curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $fields);
+		$response=curl_exec($this->curl_handle);
+		$hasPageForm=strpos($response, 'div id="pages-wrapper"');
+		$hasLoginForm=strpos($response, 'div id="admin-login"');
+		$this->assertEquals(false, $hasPageForm);
+		$this->assertNotEquals(false, $hasLoginForm);
 	}
 }
