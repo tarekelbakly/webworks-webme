@@ -60,7 +60,7 @@ function Forum_show(&$PAGEDATA) {
 			$forum_id=dbLastInsertId();
 		}
 		else {
-			if (count($forums==1)) {
+			if (count($forums)==1) {
 				$view=1;
 				$forum_id=$forums[0]['id'];
 			}
@@ -161,7 +161,15 @@ function Forum_showForum(&$PAGEDATA, &$id) {
   * @return string HTML of the forum creation tool
   */
 function Forum_showForums(&$PAGEDATA, &$forums) {
-	return 'TODO Forum_showForums';
+	$c='<div class="forums-list"><div class="forums-list-intro">'
+		.'Forums on this page</div>';
+	foreach($forums as $forum) {
+		$c.='<div class="forum-forum">'
+			.'<a href="'.$PAGEDATA->getRelativeURL.'?forum-f='.$forum['id'].'">'
+				.$forum['name'].'</a></div>';
+	}
+	$c.='</div>';
+	return $c;
 }
 
 /**

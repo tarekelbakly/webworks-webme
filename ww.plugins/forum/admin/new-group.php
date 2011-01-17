@@ -30,7 +30,7 @@ if (!$group) {
 else {
 	$user = get_userid();
 	dbQuery(
-		'insert into users_groups (user_accounts_id, group_id)'
+		'insert into users_groups (user_accounts_id, groups_id)'
 		.'values('.$user.', '.$group.')'
 	);
 	$groups 

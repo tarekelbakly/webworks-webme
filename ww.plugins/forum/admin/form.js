@@ -76,7 +76,7 @@ function forums_admin_update_posts(data) {
 		var posts = data.posts;
 		var table = window.postsForModeration;
 		for (var i=0; i<posts.length; ++i) {
-			var row = $('#posts-for-moderation-'+posts[i]);
+			var row = $('#post-for-moderation-'+posts[i]);
 			var pos = table.fnGetPosition(row[0]);
 			table.fnDeleteRow(pos);
 		}

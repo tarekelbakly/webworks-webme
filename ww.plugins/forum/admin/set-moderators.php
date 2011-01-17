@@ -40,15 +40,18 @@ else { //remove a group
 		}
 	}
 	$autoApprove = $_REQUEST['autoApprove'];
-	if (!count($moderatorGroups)&&$autoApprove) { // Approve all posts for forum
-		$sql = 'update forums_posts set moderated = 1 where thread_id in '
-			.'(select id from forums_threads where forum_id = '.$forum.')';
-		dbQuery($sql);
+	if (!count($moderatorGroups)&&($autoApprove=='true')) { 
+		// Approve all posts for forum
 		$sql = 'select id from forums_posts where thread_id in '
-			.'(select id from forums_threads where forum_id = '.$forum.')';
+			.'(select id from forums_threads where forum_id = '.$forum.')'
+			.'and moderated=0';
 		$results = dbAll($sql);
 		$response['posts'] = array();
 		foreach ($results as $result) {
+			dbQuery(
+				'update forums_posts set moderated = 1 '
+				.'where id = '.$result['id']
+			);
 			$response['posts'][] = $result['id'];
 		}
 	}
