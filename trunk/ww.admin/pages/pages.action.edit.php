@@ -41,7 +41,7 @@ $q='update pages set importance="'.$importance.'"'
 	.',keywords="'.addslashes($keywords).'"'
 	.',description="'.addslashes($description).'"'
 	.',name="'.addslashes($name).'",title="'.addslashes($_POST['title']).'"'
-	.',original_body="'.addslashes($original_body).'"'
+	.',original_body="'.addslashes(sanitise_html_essential($original_body)).'"'
 	.',body="'.addslashes($body).'",parent='.$pid
 	.',special='.$special;
 $q.=' where id='.$id;
