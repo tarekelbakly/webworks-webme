@@ -14,7 +14,6 @@ class kfmImage extends kfmFile{
 		else return false;
 		if(!$this->exists()){
 			$this->delete();
-			self::$instances[$file->id]=false;
 			return false;
 		}
 		$this->image_id=$this->getImageId();

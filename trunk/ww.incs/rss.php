@@ -20,7 +20,7 @@ if ($page) {
 	if (count($r2)) {
 		if ($r2['rss']=='') {
 			require_once SCRIPTBASE.'/ww.incs/page.summaries.php';
-			displayBlogExcerpts($page->id);
+			PageSummaries_getHtml($page->id);
 			$r2=dbRow('select rss from page_summaries where page_id='.$page->id);
 		}
 		$rss=str_replace('&rsquo;', '&apos;', $r2['rss']);
