@@ -64,6 +64,12 @@ class LoginTests extends PHPUnit_Framework_TestCase {
 		$hasLoginTab=strpos($response, 'div id="admin-login"');
 		$this->assertEquals(false, $hasLoginTab);
 		$this->assertNotEquals(false, $hasPageForm);
+		curl_setopt($this->curl_handle, CURLOPT_POST, false);
+		$response=curl_exec($this->curl_handle);
+		$hasPageForm=strpos($response, 'div id="pages-wrapper"');
+		$hasLoginForm=strpos($response, 'div id="admin-login"');
+		$this->assertNotEquals(false, $hasLoginForm);
+		$this->assertEquals(false, $hasPageForm);
 	}
 	/**
 	  * Tests a user logging in with the wrong password
