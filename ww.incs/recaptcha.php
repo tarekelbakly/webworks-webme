@@ -26,6 +26,7 @@ function Recaptcha_getHTML() {
 		.'custom_theme_widget:"recaptcha_widget"};</script>'
 		.'<div id="recaptcha_widget" style="display:none">'
 		.'<div id="recaptcha_image"></div>'
+		.'<a href="javascript:Recaptcha.reload()">reload captcha</a><br />'
 		.'<div class="recaptcha_only_if_incorrect_sol" style="color:red">'
 		.'Incorrect please try again</div><span class="recaptcha_only_if_image">'
 		.'Enter the words above:</span>'

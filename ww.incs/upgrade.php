@@ -304,7 +304,9 @@ if ($version==26) { // add "extras" to user_account, for metadata
   */
 function Copy_recursive($src, $dst) {
 	$dir = opendir($src);
-	mkdir($dst);
+	if (!file_exists($dst)) {
+		mkdir($dst);
+	}
 	while (false !== ( $file = readdir($dir)) ) {
 		if (( $file != '.' ) && ( $file != '..' )) {
 			if ( is_dir($src . '/' . $file) ) {
