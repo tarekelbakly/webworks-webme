@@ -184,25 +184,17 @@ function ckeditor($name,$value='',$height=250){
 		.'",{filebrowserBrowseUrl:"/j/kfm/",menu:"WebME",scayt_autoStartup:false});});'
 		."//]]></script>";
 }
-function sanitise_html($original_html) {
-	/**
-		* this function cleans up the crud that gets inserted by programs such as Word or CKeditor, or Skype
-		*/
-	$original_html = html_fixImageResizes($original_html);
+function sanitise_html_essential($original_html) {
 	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
 	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
 	do{
 		$html = $original_html;
-		// { clean white-space
-		$html = str_replace('{{LINERETURN}}{{CARRIAGERETURN}}', "{{CARRIAGERETURN}}", $html);
-		$html = str_replace('>{{CARRIAGERETURN}}','>',$html);
-		$html = str_replace('{{CARRIAGERETURN}}{{CARRIAGERETURN}}', '{{CARRIAGERETURN}}', $html);
-		$html = preg_replace('/\s+/',' ',$html);
-		$html = preg_replace("/<p>\s*/",'<p>',$html);
-		$html = preg_replace("#\s*<br( ?/)?>\s*#",'<br />',$html);
-		$html = preg_replace("#\s*<li>\s*#",'<li>',$html);
-		$html = str_replace(">\t",'>',$html);
-		$html = preg_replace('#<p([^>]*)>\s*\&nbsp;\s*</p>#','<p\1></p>',$html);
+		// { clean old fckeditor stuff
+		$html = preg_replace('#<link href="[^"]*editor/css/fck_editorarea.css" rel="stylesheet" type="text/css" />#', '', $html);
+		$html = preg_replace('#<style _fcktemp="true" type="text/css">[^<]*</style>#', '', $html);
+		$html = preg_replace('#<link _fcktemp="true" href="[^"]*editor/editor/css/fck_internal.css" rel="stylesheet" type="text/css" />#', '', $html);
+		$html = preg_replace('#_fcksavedurl="[^"]*"#', '', $html);
+		$html = str_replace('class="FCK__ShowTableBorders"', '', $html);
 		// }
 		// { clean skype crap from page
 		$html = str_replace('<span class="skype_pnh_left_span" skypeaction="skype_dropdown">&nbsp;&nbsp;</span>','',$html);
@@ -223,7 +215,6 @@ function sanitise_html($original_html) {
 		$html = preg_replace('#<span>\s*</span>#', '', $html);
 		$html = preg_replace('#<meta[^>]*>\s*</meta>#','',$html);
 		$html = str_replace(' alt=""','',$html);
-		$html = preg_replace('/<!--[^>]*-->/','',$html);
 		// }
 		// { clean up Word crap
 		$html = preg_replace('#<link [^>]*href="file[^>]*>#','',$html);
@@ -236,6 +227,38 @@ function sanitise_html($original_html) {
 		$html = preg_replace('#<object classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=[^>]*></object>#','',$html);
 		$html = preg_replace('#<style>\s[a-z0-9]*.:[^<]*</style>#','',$html);
 		$html = preg_replace('#<!--\[if !mso\][^<]*<!\[endif\]-->#','',$html);
+		// }
+		$html=str_replace('&quot;','"',$html);
+		$has_changed=$html!=$original_html;
+		$original_html=$html;
+	}while($has_changed);
+	$html = str_replace('{{CARRIAGERETURN}}', "\n", $html);
+	$html = str_replace('{{LINERETURN}}', "\r", $html);
+	return $html;
+}
+function sanitise_html($original_html) {
+	/**
+		* this function cleans up the crud that gets inserted by programs such as Word or CKeditor, or Skype
+		*/
+	$original_html = sanitise_html_essential($original_html);
+	$original_html = html_fixImageResizes($original_html);
+	$original_html = str_replace("\n", '{{CARRIAGERETURN}}', $original_html);
+	$original_html = str_replace("\r", '{{LINERETURN}}', $original_html);
+	do{
+		$html = $original_html;
+		// { clean white-space
+		$html = str_replace('{{LINERETURN}}{{CARRIAGERETURN}}', "{{CARRIAGERETURN}}", $html);
+		$html = str_replace('>{{CARRIAGERETURN}}','>',$html);
+		$html = str_replace('{{CARRIAGERETURN}}{{CARRIAGERETURN}}', '{{CARRIAGERETURN}}', $html);
+		$html = preg_replace('/\s+/',' ',$html);
+		$html = preg_replace("/<p>\s*/",'<p>',$html);
+		$html = preg_replace("#\s*<br( ?/)?>\s*#",'<br />',$html);
+		$html = preg_replace("#\s*<li>\s*#",'<li>',$html);
+		$html = str_replace(">\t",'>',$html);
+		$html = preg_replace('#<p([^>]*)>\s*\&nbsp;\s*</p>#','<p\1></p>',$html);
+		// }
+		// { remove empty elements and parameters
+		$html = preg_replace('/<!--[^>]*-->/','',$html);
 		// }
 		// { combine nested elements
 		$html = preg_replace('#<span style="([^"]*?);?">(\s*)<span style="([^"]*)">([^<]*|<img[^>]*>)</span>(\s*)</span>#', '\2<span style="\1;\3">\4</span>\5', $html);
@@ -263,7 +286,6 @@ function sanitise_html($original_html) {
 		$html=preg_replace('#\s*<p'.$sillystuff.'>\s*</p>\s*#','<p style="\1\3"></p>',$html);
 		$html=str_replace('<p style=""></p>','<p></p>',$html);
 		// }
-		$html=str_replace('&quot;','"',$html);
 		$has_changed=$html!=$original_html;
 		$original_html=$html;
 	}while($has_changed);
