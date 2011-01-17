@@ -224,7 +224,7 @@ if(!isset($ignore_webme_plugins)){
 	foreach($DBVARS['plugins'] as $pname){
 		if(strpos('/',$pname)!==false)continue;
 		require SCRIPTBASE . 'ww.plugins/'.$pname.'/plugin.php';
-		if (isset($plugin['version']) && $plugin['version'] && ($DBVARS[$pname.'|version']!=$plugin['version'])){
+		if (isset($plugin['version']) && $plugin['version'] && (!isset($DBVARS[$pname.'|version']) || $DBVARS[$pname.'|version']!=$plugin['version'])){
 			$version=(int)$DBVARS[$pname.'|version'];
 			require SCRIPTBASE . 'ww.plugins/'.$pname.'/upgrade.php';
 			header('Location: '.$_SERVER['REQUEST_URI']);

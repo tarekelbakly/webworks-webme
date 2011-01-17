@@ -44,7 +44,6 @@ foreach($dir as $plugin){
 		continue;
 	}
 	echo '<tr><th>',htmlspecialchars($plugin['name']),'</th>',
-		'<td>',(float)($plugin['version']),'</td>',
 		'<td>',htmlspecialchars($plugin['description']),'</td>',
 		'<td><input type="checkbox" name="plugins[',$name,']" /></td>',
 		'</tr>';

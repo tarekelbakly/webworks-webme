@@ -86,7 +86,7 @@ class Page{
 		return self::$instances[$id];
 	}
 	static function getInstanceByName($name=''){
-		if(preg_match('/[^,a-zA-Z0-9 \-_\/]/',$name))return false;
+		if(preg_match('/[^!,a-zA-Z0-9 \-_\/]/',$name))return false;
 		$name=strtolower($name);
 		$nameIndex=preg_replace('#[^,a-z0-9/]#','-',$name);
 		if(array_key_exists($nameIndex,self::$instancesByName))return self::$instancesByName[$nameIndex];
