@@ -32,6 +32,7 @@ function content_snippet_edit(ev){
 		'/ww.plugins/content-snippet/admin/widget-form.php',
 		{'get_content_snippet':id},
 		function(res){
+			if(res.content==null)res.content='';
 			d.dialog({
 				minWidth:630,
 				minHeight:450,

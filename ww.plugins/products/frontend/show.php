@@ -372,7 +372,8 @@ function _Products_listCategories($params, &$smarty) {
 	$cats=dbAll('select * from products_categories where parent_id='.((int)$parent).' and enabled order by name');
 	$html='<ul class="products-list-categories sc_subcatnames">';
 	foreach ($cats as $cat) {
-		$html.='<li><a href="">'.htmlspecialchars($cat['name']).'</a></li>';
+		$cat=ProductCategory::getInstance($cat['id']);
+		$html.='<li><a href="'.$cat->getRelativeUrl().'">'.htmlspecialchars($cat->vals['name']).'</a></li>';
 	}
 	$html.='</ul>';
 	return $html;
@@ -648,6 +649,9 @@ function products_show_all($PAGEDATA, $start=0, $limit=0, $order_by='', $order_d
 		$product_id= $_REQUEST['product_id'];
 		$products= Products::getAll('', $product_id);
 	}
+	else if (isset($_REQUEST['product_category'])) {
+		$products=Products::getByCategory($_REQUEST['product_category']);
+	}
 	else {
 		$products=Products::getAll($search);
 	}
@@ -746,8 +750,13 @@ class Product{
 		foreach ($r as $k=>$v) {
 			$this->vals[$k]=$v;
 		}
-		foreach($vals as $val) {
-			$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
+		foreach($vals as $k=>$val) {
+			if (!is_object($val)) {
+				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$k)]=$val;
+			}
+			else {
+				$this->vals[preg_replace('/[^a-zA-Z0-9\-_]/','_',$val->n)]=$val->v;
+			}
 		}
 		if (isset($online_store_data)) {
 			foreach ($online_store_data as $name=>$value) {
@@ -1259,5 +1268,40 @@ class ProductType{
 					.'_'.$this->id
 			)
 			.'</div>';
+	}
+}
+class ProductCategory{
+	static $instances=array();
+	public $vals;
+	function __construct($id) {
+		$id=(int)$id;
+		$r=dbRow('select * from products_categories where id='.$id);
+		if (!count($r)) {
+			return false;
+		}
+		$this->vals=$r;
+		self::$instances[$this->vals['id']] =& $this;
+		return $this;
+	}
+	static function getInstance($id=0) {
+		if (!is_numeric($id)) {
+			return false;
+		}
+		if (!array_key_exists($id, self::$instances)) {
+			new ProductCategory($id);
+		}
+		return self::$instances[$id];
+	}
+	function getRelativeUrl(){
+		// { see if there are any pages that use this category
+		// }
+		// { or get at least any product page
+		$pid=dbOne('select id from pages where type="products" limit 1', 'id');
+		if ($pid) {
+			$page=Page::getInstance($pid);
+			return $page->getRelativeUrl().'?product_category='.$this->vals['id'];
+		}
+		// }
+		return '/#no-url-available';
 	}
 }

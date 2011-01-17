@@ -1,17 +1,17 @@
-$(function () {
+$(function() {
 	my_table = $("#comments-table").dataTable();
 	if (noModeration) {
 		my_table.fnSetColumnVis(5, false);
 	}
 });
-function start_edit (id, comment) {
+function start_edit(id, comment) {
 	$('<textarea id="comment-edit">'+comment+'</textarea>')
 	.dialog(
 		{
 			title:'Edit this comment below',
 			modal:true,
 			buttons: {
-				'Save' : function () {
+				'Save' : function() {
 					$.post(
 						'/ww.plugins/comments/admin/edit.php',
 						{
@@ -29,7 +29,7 @@ function start_edit (id, comment) {
 		}
 	);
 }
-function start_delete (id, my_table) {
+function start_delete(id, my_table) {
 	if (confirm('Are you sure you want to delete this comment')) {
 		$.post(
 			'/ww.plugins/comments/admin/delete.php',
@@ -41,14 +41,14 @@ function start_delete (id, my_table) {
 		);
 	}
 }
-function remove_row (data) {
+function remove_row(data) {
 	if (!data.status) {
 		return alert('Could not delete this comment');
 	}
 	var pos = my_table.fnGetPosition($('#comment-'+data.id)[0]);
 	my_table.fnDeleteRow(pos);
 }
-function update_comment (data) {
+function update_comment(data) {
 	var pos = my_table.fnGetPosition(($('#comment-'+data.id))[0]);
 	my_table.fnUpdate(data.comment, pos, 4);
 	my_table.fnUpdate(
@@ -63,7 +63,7 @@ function update_comment (data) {
 	);
 	$('#comment-edit').remove();
 }
-function set_moderation () {
+function set_moderation() {
 	var val = $('#no_moderation').attr('checked');
 	$.post(
 		'/ww.plugins/comments/admin/set_moderation.php',
@@ -72,6 +72,15 @@ function set_moderation () {
 		},
 		update_table_columns,
 		"json"
+	);
+}
+function set_captchas() {
+	var val = $('#no_captchas').attr('checked');
+	$.post(
+		'/ww.plugins/comments/admin/set_captchas.php',
+		{
+			"value":val
+		}
 	);
 }
 function update_table_columns(data) {
@@ -84,7 +93,7 @@ function update_table_columns(data) {
 		break // }
 	}
 }
-function start_moderation (id, val) {
+function start_moderation(id, val) {
 	$.post(
 		'/ww.plugins/comments/admin/moderate.php',
 		{

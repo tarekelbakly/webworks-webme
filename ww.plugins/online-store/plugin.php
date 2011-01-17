@@ -355,7 +355,9 @@ function OnlineStore_getPostageAndPackagingData(){
 	$p=Page::getInstance($_SESSION['onlinestore_checkout_page']);
 	$p->initValues();
 	$r=$p->vars['online_stores_postage'];
-	if($r=='')$r='[{"name":"no postage and packaging set","constraints":[{"type":"set_value","value":"0"}]}]';
+	if ($r=='' || $r=='[]') {
+		$r='[{"name":"no postage and packaging set","constraints":[{"type":"set_value","value":"0"}]}]';
+	}
 	return json_decode($r);
 }   
 function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weight){

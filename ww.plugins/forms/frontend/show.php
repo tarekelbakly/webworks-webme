@@ -109,13 +109,17 @@ function Form_send($page, $vars) {
 		}
 	}
 	$form=Form_showForm($page, $vars, $err);
+	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
+	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
+	if ($from == '') {
+		$err='please fill in the "'.$vars['forms_replyto'].'" field.';
+	}
 	if ($err!='') {
 		$c.=Form_showForm($page, $vars, $err);
 	}
 	else {
 		if ($vars['forms_send_as_email']) {
 			$form=Form_showForm($page, $vars, $err, true);
-			$from=$_REQUEST[preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto'])];
 			$to=$vars['forms_recipient'];
 			$form=str_replace(
 				array(

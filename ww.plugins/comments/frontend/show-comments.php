@@ -144,6 +144,7 @@ function Comments_showCommentForm($pageID) {
 				where id = '.$userID
 			);
 	}
+	$noCaptchas=(int)dbOne('select value from site_vars where name = "comments_no_captchas"', 'value');
 	$display= '<form id="comment-form" class="comments-form" method="post" 
 		action="javascript:comments_check_captcha();">';
 	$display.= '<strong>Add Comment</strong>';
@@ -164,12 +165,14 @@ function Comments_showCommentForm($pageID) {
 		.'<tr class="comments-url"><th>Website</th>'
 		.'<td><input id="site" name="comments-site-input" /></td></tr>'
 		.'<tr class="comments-comment"><th>Comment</th>'
-		.'<td><textarea id="comments-comment-input" name="comment"></textarea></td></tr>'
-		.'<tr><td colspan="2"><div id="captcha" class="comments_captcha">'
-		.Recaptcha_getHTML()
-		.'</div></td></tr>'
-		.'<tr class="comments-submit-comment"><th>&nbsp;</th><td><input type="submit" id="submit" '
+		.'<td><textarea id="comments-comment-input" name="comment"></textarea></td></tr>';
+	if (!$noCaptchas) {
+		$display.='<tr><td colspan="2"><div id="captcha" class="comments_captcha">'
+			.Recaptcha_getHTML()
+			.'</div></td></tr>';
+	}
+	$display.='<tr class="comments-submit-comment"><th>&nbsp;</th><td><input type="submit" id="submit" '
 		.'value="Submit Comment"  /></td></tr>'
-		.'</table></form>';
+		.'</table></form><script>comments_noCaptchas='.$noCaptchas.';</script>';
 	return $display;
 }

@@ -63,6 +63,9 @@ $('div.comment-editable').live('mouseout',function(e) {
 	$("#links-"+($(this).attr('id')).replace(/comment-wrapper-/,'')).remove();
 });
 function comments_check_captcha() {
+	if (window.comments_noCaptchas) {
+		return comments_check_success({status:1});
+	}
 	var correct = $('#recaptcha_challenge_field').val();
 	var response = $('#recaptcha_response_field').val();
 	$.post(

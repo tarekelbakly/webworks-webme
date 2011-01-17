@@ -13,21 +13,37 @@
   * @link       www.webworks.ie
 **/
 
-echo 'Don\'t moderate comments for this site? ';
+// { global options
+echo '<table>';
+// { use moderation
+echo '<table><tr><th>Don\'t moderate comments for this site?</th>';
 $noModeration = 0;
 $sql = 'select value from site_vars where name = "comments_no_moderation"';
 if (dbOne($sql, 'value')) {
 	$noModeration = dbOne($sql, 'value');
 }
-echo '<script>';
-echo 'noModeration = '.$noModeration;
-echo '</script>';
+echo '<td><script>noModeration = '.$noModeration.'</script>';
 echo '<input type="checkbox" id="no_moderation"';
 if ($noModeration) {
 	echo ' checked = "checked"';
 }
-echo ' onchange="set_moderation();" />';
-echo '<br />';
+echo ' onchange="set_moderation();" /></td></tr>';
+// }
+// { use captchas
+echo '<tr><th>Don\'t use captchas for spam filtering?</th>';
+$noCaptchas = 0;
+$sql = 'select value from site_vars where name = "comments_no_captchas"';
+if (dbOne($sql, 'value')) {
+	$noCaptchas = dbOne($sql, 'value');
+}
+echo '<td><input type="checkbox" id="no_captchas"';
+if ($noCaptchas) {
+	echo ' checked = "checked"';
+}
+echo ' onchange="set_captchas();" /></td></tr>';
+// }
+echo '</table>';
+// }
 echo '<strong>Comments</strong>';
 $comments = dbAll('select * from comments');
 echo '<div style="width:80%">';
