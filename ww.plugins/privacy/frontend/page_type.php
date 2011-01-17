@@ -34,7 +34,7 @@ function userloginandregistrationDisplay(){
 				$r['password']=$password;
 				$_SESSION['userdata']=$r;
 			// }
-			$n=$_SESSION['userdata']['name']==''?$_SESSION['userdata']['contactname']:$_SESSION['userdata']['name'];
+			$n=$_SESSION['userdata']['name'];
 			dbQuery('update user_accounts set last_view=now() where id='.$r['id']);
 			if($action=='Login'){
 				$redirect_url='';
@@ -244,7 +244,6 @@ function userregistration_form($error='',$alert=''){
 function userregistration_register(){
 	global $DBVARS,$PAGEDATA;
 	// { variables
-		$contactname=getVar('contactname');
 		$name=getVar('name');
 		$email=getVar('email');
 		$phone=getVar('phone');
@@ -329,7 +328,7 @@ function userregistration_register(){
 }
 function userregistration_showProfile(){
 	$ud=$_SESSION['userdata'];
-	$name=$ud['name']?$ud['name']:$ud['contactname'];
+	$name=$ud['name']?$ud['name']:'';
 	$c='<a class="logout" href="/?logout=1">log out</a><h2>User Profile: '.htmlspecialchars($name).'</h2><table>';
 	$c.='</table>';
 	return $c;
