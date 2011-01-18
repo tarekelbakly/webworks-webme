@@ -13,12 +13,62 @@ if(!file_exists($file) || !is_file($file)){
 	}
 }
 
+function CSS_colourCode($code){
+	if ($code{0}=='#') {
+		$code=substr($code, 1, strlen($code)-1);
+	}
+	if (strlen($code)==3) {
+		$chars=str_split($code);
+		foreach ($chars as $k=>$v) {
+			$chars[$k]=$v.$v;
+		}
+		var_dump($chars);
+		$code=join('', $chars);
+	}
+	return $code;
+}
+$mimetype=get_mimetype(preg_replace('/.*\./','',$file));
+if ($mimetype=='text/css') {
+	$parsed=USERBASE.'/f/.files/css_'.str_replace('/', '|', $file);
+	if (1 || !file_exists($parsed) || filemtime($parsed)<filemtime($file)) {
+		$f=file_get_contents($file);
+		$f=str_replace(array("\n", "\r"), '', $f);
+		$f=preg_replace('/\s+/', ' ', $f);
+		// { cool stuff
+		preg_match_all('/\.([a-z\-]*)\(([^\)]*)\);/', $f, $matches);
+		for ($i=0; $i<count($matches[0]); ++$i) {
+			switch($matches[1][$i]) {
+				case 'linear-gradient': // {
+					$colours=explode(', ', $matches[2][$i]);
+					foreach ($colours as $k=>$v) {
+						$colours[$k]=CSS_colourCode($v);
+					}
+					$css='background:-moz-linear-gradient(top,#'
+						.$colours[0].',#'.$colours[1].');'
+						.'background:-webkit-gradient(linear,left top,left bottom,from(#'
+						.$colours[0].'), to(#'.$colours[1].'));'
+						.'filter: progid:DXImageTransform.Microsoft.gradient(startColor'
+						.'str=#FF'.$colours[0].', endColorstr=#FF'.$colours[1].');'
+						.'-ms-filter: "progid:DXImageTransform.Microsoft.gradient(start'
+						.'Colorstr=#FF'.$colours[0].', endColorstr=#FF'.$colours[1].')";';
+					break; // }
+				default:
+					$css=$matches[0][$i];
+			}
+			$f=str_replace($matches[0][$i], $css, $f);
+		}
+		// }
+		file_put_contents($parsed, $f);
+	}
+	$file=$parsed;
+}
+
 header('Content-Description: File Transfer');
-header('Content-Type: '.get_mimetype(preg_replace('/.*\./','',$file)));
+header('Content-Type: '.$mimetype);
 header('Content-Transfer-Encoding: binary');
-header('Cache-Control: max-age = 2592000');
 header('Expires-Active: On');
-header('Expires: Fri, 1 Jan 2500 01:01:01 GMT');
+header('Cache-Control: max-age = 3600');
+header('Expires: '. date('r', time()+3600));
 header('Pragma:');
 header('Content-Length: ' . filesize($file));
 ob_clean();
