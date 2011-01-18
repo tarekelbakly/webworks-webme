@@ -2,13 +2,8 @@
 /**
   * Deletes a comment
   *
-<<<<<<< .mine
-  * PHP Version 5
-  *
-=======
   * PHP Version 5.3
   *
->>>>>>> .r906
   * @category   CommentsPlugin
   * @package    WebworksWebme
   * @subpackage CommentsPlugin

@@ -17,7 +17,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/common.php';
 
 $name = $_REQUEST['name'];
 $email = $_REQUEST['email'];
-$site = $_REQUEST['site'];
+$site = isset($_REQUEST['site'])?$_REQUEST['site']:'';
 $page = $_REQUEST['page'];
 $comment = $_REQUEST['comment'];
 
