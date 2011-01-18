@@ -15,12 +15,17 @@ $plugin=array(
 			'Products>Relation Types'=> 'relation-types',
 			'Products>Export Data' => 'exports'
 		),
-		'page_type' => 'products_admin_page_form'
+		'page_type' => 'products_admin_page_form',
+		'widget' => array(
+			'form_url'   => '/ww.plugins/products/admin/widget.php',
+			'js_include' => '/ww.plugins/products/admin/widget.js'
+		)
 	),
 	'description' => 'Product catalogue.',
 	'frontend' => array(
 		'admin-script' => '/ww.plugins/products/j/frontend-admin.js',
 		'page_type' => 'products_frontend',
+		'widget' => 'Products_widget',
 		'template_functions' => array(
 			'PRODUCTS_BUTTON_ADD_TO_CART' => array(
 				'function' => 'products_get_add_to_cart_button'
@@ -165,4 +170,8 @@ function Products_listCategories($params, &$smarty){
 function Products_listCategoryContents($params, &$smarty){
 	require_once dirname(__FILE__).'/frontend/show.php';
 	return _Products_listCategoryContents($params, $smarty);
+}
+function Products_widget($vars=null){
+	require_once dirname(__FILE__).'/frontend/show.php';
+	require dirname(__FILE__).'/frontend/widget.php';
 }
