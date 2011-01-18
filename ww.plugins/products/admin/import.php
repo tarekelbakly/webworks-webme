@@ -107,6 +107,9 @@ if (isset($_POST['import'])) {
 						$data = $row[$i];
 						break;
 					}
+					if (!is_array(${$col}) && in_array($col, $cols)) {
+						${$col}=array();
+					}
 					if (is_array(${$col})) {
 						if (in_array($col, $cols)) {
 							${$col}[$numRows-1] = $data;
@@ -172,18 +175,15 @@ if (isset($_POST['import'])) {
 					elseif (is_numeric($id[$i])) {
 						dbQuery(
 							'insert into products 
-							values
-							(
-								\''.(int)$id[$i].'\',
-								\''.addslashes($name[$i]).'\',
-								\''.$ptid.'\',
-								\'1\',
-								\''.addslashes($image_default[$i]).'\',
-								\''.addslashes($date_created[$i]).'\',
-								\''.addslashes($data_fields[$i]).'\',
-								\''.addslashes($images_directory[$i]).'\'
-							)'
-						);
+								set id='.(int)$id[$i].',
+								name=\''.addslashes($name[$i]).'\',
+								product_type_id=\''.$ptid.'\',
+								enabled=\'1\',
+								image_default=\''.addslashes($image_default[$i]).'\',
+								date_created=\''.addslashes($date_created[$i]).'\',
+								data_fields=\''.addslashes($data_fields[$i]).'\',
+								images_directory=\''.addslashes($images_directory[$i]).'\'
+						');
 					}
 					elseif ($id[$i]==null) {
 						dbQuery(
@@ -211,22 +211,12 @@ if (isset($_POST['import'])) {
 					}
 				}
 				else {
-					dbQuery(
-						'insert into products	
-						set 
-						name = 
-							\''.addslashes($name[$i]).'\',
-						product_type_id = '.$ptid.',
-						image_default = 
-							\''.addslashes($image_default[$i]).'\',
-						enabled = 1, 
-						date_created = 
-							\''.(isset($date_created[$i])?addslashes($date_created[$i]):'').'\',
-						data_fields = 
-							\''.addslashes($data_fields[$i]).'\',
-						images_directory = 
-							\''.(isset($images_directory[$i])?addslashes($images_directory[$i]):'').'\''
-					);
+					$sql='insert into products	set name = \''.addslashes($name[$i]).'\', product_type_id = '.$ptid.',
+						image_default = \''.addslashes($image_default[$i]).'\', enabled = 1, 
+						date_created = \''.(isset($date_created[$i])?addslashes($date_created[$i]):'').'\',
+						data_fields = \''.addslashes($data_fields[$i]).'\',
+						images_directory = \''.(isset($images_directory[$i])?addslashes($images_directory[$i]):'').'\'';
+					dbQuery($sql);
 				}
 				++$products_imported;
 			}
