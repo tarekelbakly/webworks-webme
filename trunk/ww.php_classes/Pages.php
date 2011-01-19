@@ -2,22 +2,36 @@
 class Pages{
 	static $instancesByParent = array();
 	public $pages=array();
-	function __construct($v,$byField=0){
-		# byField: 0=Parent; 1=Name
+	function __construct($constraint, $filter=true){
 		global $isadmin;
-		$filter=$isadmin?'':' && !(special&2)';
-		if (!$byField && is_numeric($v)) $rs=dbAll("select * from pages where parent=$v$filter order by ord,name");
-		else $rs=array();
-		if(!count($rs))$rs=array();
-		foreach($rs as $r)$this->pages[] = Page::getInstance($r['id'],$r);
-		Pages::$instancesByParent[$v] =& $this;
+		$filter=($isadmin || !$filter)?'':' && !(special&2)';
+		$rs=dbAll(
+			"select * from pages where $constraint $filter order by special&2,ord,name"
+		);
+		if (!count($rs)) {
+			$rs=array();
+		}
+		foreach ($rs as $r) {
+			$this->pages[] = Page::getInstance($r['id'],$r);
+		}
+		Pages::$instancesByParent[$constraint] =& $this;
+	}
+	static function getInstancesByType($type){
+		$constraint='type="'.addslashes($type).'"';
+		if (!array_key_exists($constraint, self::$instancesByParent)) {
+			new Pages($constraint, false);
+		}
+		return self::$instancesByParent[$constraint];
 	}
 	static function getInstancesByParent($pid=0){
-		if (!is_numeric($pid)) return false;
-		if (!array_key_exists($pid, self::$instancesByParent)) {
-			new Pages($pid);
+		if (!is_numeric($pid)) {
+			return false;
 		}
-		return self::$instancesByParent[$pid];
+		$constraint='parent='.$pid;
+		if (!array_key_exists($constraint, self::$instancesByParent)) {
+			new Pages($constraint);
+		}
+		return self::$instancesByParent[$constraint];
 	}
 	static function precache($ids){
 		if (count($ids)) {

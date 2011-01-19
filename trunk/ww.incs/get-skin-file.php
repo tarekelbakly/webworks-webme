@@ -30,10 +30,8 @@ function CSS_colourCode($code){
 $mimetype=get_mimetype(preg_replace('/.*\./','',$file));
 if ($mimetype=='text/css') {
 	$parsed=USERBASE.'/f/.files/css_'.str_replace('/', '|', $file);
-	if (1 || !file_exists($parsed) || filemtime($parsed)<filemtime($file)) {
+	if (!file_exists($parsed) || filectime($parsed)<filectime($file)) {
 		$f=file_get_contents($file);
-		$f=str_replace(array("\n", "\r"), '', $f);
-		$f=preg_replace('/\s+/', ' ', $f);
 		// { cool stuff
 		preg_match_all('/\.([a-z\-]*)\(([^\)]*)\);/', $f, $matches);
 		for ($i=0; $i<count($matches[0]); ++$i) {

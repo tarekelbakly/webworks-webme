@@ -136,7 +136,7 @@ function Template_logoDisplay($vars) {
 		$to=addslashes($image_file);
 		`convert $from -geometry $geometry $to`;
 	}
-	return '<img id="logo" src="/f/skin_files/logo-'.$geometry.'.png" />';
+	return '<img id="logo" src="/i/blank.gif" style="background:url(/f/skin_files/logo-'.$geometry.'.png) no-repeat;width:'.$x.'px;height:'.$y.'px;" />';
 }
 // { user authentication
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='login'){
