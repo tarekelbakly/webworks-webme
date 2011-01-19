@@ -184,6 +184,8 @@ function Form_showForm(
 		'select * from forms_fields where formsId="'.$page['id'].'" order by id'
 	);
 	$cnt=0;
+	$has_date=false;
+	$has_ccdate=false;
 	foreach ($q2 as $r2) {
 		if ($r2['type']=='hidden' && !$only_show_contents) {
 			continue;
@@ -260,6 +262,7 @@ function Form_showForm(
 					$d='<input name="'.$name.'" value="'
 						.$_REQUEST[$name].'" class="ccdate" />';
 				}
+				$has_ccdate=true;
 			break;
 			// }
 			case 'date': // {
@@ -270,6 +273,7 @@ function Form_showForm(
 					date_m2h($_REQUEST[$name]):
 					'<input name="'.$name.'" value="'
 						.$_REQUEST[$name].'" class="date" />';
+				$has_date=true;
 			break;
 			// }
 			case 'email': // {
@@ -381,14 +385,16 @@ function Form_showForm(
 	if (!$only_show_contents && $show_submit) {
 		$c.='</form>';
 	}
-	$c.='<script>$(function(){'
-		.'$("input.date").datepicker({'
-		.'"dateFormat":"yy-mm-dd"'
-		.'});'
-		.'$(".ccdate").datepicker({'
-		.'"dateFormat":"yy-mm"'
-		.'});'
-	.'});</script>';
+	$script='';
+	if ($has_date) {
+		$script.='$("input.date").datepicker({"dateFormat":"yy-mm-dd"});';
+	}
+	if ($has_ccdate) {
+		$script.='$("input.ccdate").datepicker({"dateFormat":"yy-mm"});';
+	}
+	if ($script) {
+		$c.='<script>'.$script.'</script>';
+	}
 	return $c;
 }
 
