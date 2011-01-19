@@ -72,6 +72,7 @@ function admin_menubar_init(links){
 	$('<div id="admin-menubar">'+links.join()+'</div>').appendTo(document.body);
 }
 $(function(){
+	return;
 	admin_menubar_init();
 	$('<a href="javascript:admin_menubar_toggle()" id="admin-menubar-hider"></a>').appendTo(document.body);
 })

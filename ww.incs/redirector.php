@@ -37,12 +37,12 @@ switch($type){
 				$get[]=urlencode($k).'='.urlencode($v);
 			}
 		}
-		$p=Page::getInstanceByType($type);
-		if (!$p) {
+		$p=Pages::getInstancesByType($type);
+		if (!count($p)) {
 			$url='/';
 		}
 		else {
-			$url=$p->getRelativeUrl();
+			$url=$p->pages[0]->getRelativeUrl();
 		}
 		if (count($get)) {
 			$url.='?'.join('&', $get);
