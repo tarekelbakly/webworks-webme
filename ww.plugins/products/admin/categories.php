@@ -1,8 +1,3 @@
-<script src="/j/jquery.jstree/jquery.tree.js"></script>
-<script src="/j/jquery.inlinemultiselect.js"></script>
-<script src="/ww.plugins/products/admin/get-product-names-js.php"></script>
-<script src="/ww.plugins/products/admin/categories.js"></script>
-<script src="/ww.plugins/products/admin/create-page.js"></script>
 <table>
 	<tr><th style="width:300px">Categories</th><th style="width:300px">Attributes</th></tr>
 	<tr><td>
@@ -19,9 +14,9 @@ function show_cats($id){
 	if(!isset($cats[$id]))return;
 	echo '<ul>';
 	foreach($cats[$id] as $cat) {
-		echo '<li id="cat_'.$cat['id'].'"><a href="#"';
+		echo '<li id="cat_'.$cat['id'].'"><a href="javascript:;"';
 		if($cat['enabled']=='0')echo ' class="disabled"';
-		echo '><ins>&nbsp;</ins>'.htmlspecialchars($cat['name']).'</a>';
+		echo '>'.htmlspecialchars($cat['name']).'</a>';
 		show_cats($cat['id']);
 		echo '</li>';
 	}
@@ -29,8 +24,10 @@ function show_cats($id){
 }
 show_cats(0);
 echo '<script>selected_cat='.$cats[0][0]['id'].';</script>';
-?>
-</div>
-</td>
-<td id="products-categories-attrs"></td></tr>
-</table>
+echo '</div></td><td id="products-categories-attrs"></td></tr></table>';
+WW_addScript('/j/farbtastic-1.3u/farbtastic.js');
+WW_addScript('/j/jstree-svn/jquery.jstree.js');
+WW_addScript('/j/jquery.inlinemultiselect.js');
+WW_addScript('/ww.plugins/products/admin/get-product-names-js.php');
+WW_addScript('/ww.plugins/products/admin/categories.js');
+WW_addScript('/ww.plugins/products/admin/create-page.js');
