@@ -127,5 +127,10 @@ if ($version==14) { // prices_based_on_usergroup
 	dbQuery('alter table products_types add prices_based_on_usergroup tinyint default 0');
 	$version=15;
 }
+if ($version==15) { // add "associated_colour" to types and categories
+	dbQuery('alter table products_categories add associated_colour char(6) default "ffffff"');
+	dbQuery('alter table products_types add associated_colour char(6) default "ffffff"');
+	$version=16;
+}
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

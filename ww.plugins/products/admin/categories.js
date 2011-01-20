@@ -53,7 +53,7 @@ function products_categories_show_attrs(ret){
 			ret.attrs.parent_id?'inside':-1
 		);
 	}
-	$('#cat_'+ret.attrs.id+' a').text(ret.attrs.name);
+	$('#cat_'+ret.attrs.id+'>a').text(ret.attrs.name);
 	$('#pc_edit_name').val(ret.attrs.name);
 	switch(ret.attrs.enabled){
 		case '0': // disabled
