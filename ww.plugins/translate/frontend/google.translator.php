@@ -18,7 +18,7 @@ class Google_Translate_API {
 	 * @param $from String[optional] Original language of $text. An empty String will let google decide the language of origin
 	 * @param $to String[optional] Language to translate $text to
 	 */
-	function translate($text, $from = '', $to = 'en') {
+	function translate($text, $from = 'pt', $to = 'en') {
 		$url = 'http://ajax.googleapis.com/ajax/services/language/translate';
 		$postdata = array(
 			'v'=>'1.0',
@@ -31,25 +31,9 @@ class Google_Translate_API {
 		curl_setopt ($ch, CURLOPT_POSTFIELDS, $postdata);
 		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
 		$response = str_replace(array("\n","\r"),' ',curl_exec( $ch ));
-	/*
-		$url = 'http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q='.rawurlencode($text).'&langpair='.rawurlencode($from.'|'.$to);
-		$response = file_get_contents(
-			$url,
-			null,
-			stream_context_create(
-				array(
-					'http'=>array(
-						'method'=>"GET",
-						'header'=>"Referer: http://".$_SERVER['HTTP_HOST']."/\r\n"
-					)
-				)
-			)
-		);
-	*/
 		if (preg_match("/{\"translatedText\":\"([^\"]+)\"/i", $response, $matches)) {
 			$r=json_decode($response);
 			return $r->responseData->translatedText;
-//			return self::_unescapeUTF8EscapeSeq($matches[1]);
 		}
 		return false;
 	}

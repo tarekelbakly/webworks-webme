@@ -4,6 +4,8 @@ require_once KFM_BASE_PATH.'/api/api.php';
 require_once KFM_BASE_PATH.'/initialise.php';
 if (!file_exists(USERBASE.'/ww.cache/products')) {
 	mkdir(USERBASE.'/ww.cache/products');
+}
+if (!file_exists(USERBASE.'/ww.cache/products/templates')) {
 	mkdir(USERBASE.'/ww.cache/products/templates');
 	mkdir(USERBASE.'/ww.cache/products/templates_c');
 }
@@ -353,6 +355,9 @@ function products_images($params,&$smarty) {
 	if (!$dir_id)return ''; // TODO: no-image here
 	$images=kfm_loadFiles($dir_id);
 	$arr=array();
+	if (count($images['files'])<2) {
+		return ''; // no point showing only one image
+	}
 	foreach($images['files'] as $image) {
 		$arr[]='<img src="/kfmget/'.$image['id']
 			.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"'
@@ -1264,8 +1269,7 @@ class ProductType{
 		$smarty->assign('_name',$product->vals['name']);
 		return '<div class="products-product" id="products-'.$product->get('id')
 			.'">'.$smarty->fetch(
-				USERBASE.'/ww.cache/products/templates/types_'.$template
-					.'_'.$this->id
+				USERBASE.'/ww.cache/products/templates/types_'.$template.'_'.$this->id
 			)
 			.'</div>';
 	}
