@@ -1,7 +1,7 @@
-<script src="/j/jstree-1.0rc2/jquery.jstree.js"></script>
-<script src="/j/jstree-1.0rc2/_lib/jquery.cookie.js"></script>
-<script src="/ww.admin/pages/menu.js"></script>
 <?php
+WW_addScript('/j/jstree-svn/jquery.jstree.js');
+WW_addScript('/j/jstree-svn/_lib/jquery.cookie.js');
+WW_addScript('/ww.admin/pages/menu.js');
 echo '<div id="pages-wrapper">';
 $rs=dbAll('select id,special&2 as disabled,type,name,parent from pages order by ord,name');
 $pages=array();
