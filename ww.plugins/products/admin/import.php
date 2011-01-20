@@ -1,19 +1,19 @@
 <?php
 /**
-  * The import script
-  *
-  * PHP Version 5
-  *
-  * Displays a form to upload a file, checks its type and puts its contents
-  * into the products database
-  *
-  * @category   ProductsPlugin
-  * @package    WebWorksWebme
-  * @subpackage ProductsPlugin
-  * @author     Belinda Hamilton <bhamilton@webworks.ie>
-  * @license    GPL Version 2
-  * @link       www.webworks.ie
- */
+	* The import script
+	*
+	* PHP Version 5
+	*
+	* Displays a form to upload a file, checks its type and puts its contents
+	* into the products database
+	*
+	* @category   ProductsPlugin
+	* @package    WebWorksWebme
+	* @subpackage ProductsPlugin
+	* @author     Belinda Hamilton <bhamilton@webworks.ie>
+	* @license    GPL Version 2
+	* @link       www.webworks.ie
+	**/
 echo '<script src="/ww.plugins/products/admin/products.js"></script>';
 $name=array();
 if (isset($_POST['import'])) {
@@ -147,7 +147,16 @@ if (isset($_POST['import'])) {
 			}
 			// { Put the data into the products database
 			$products_imported=0;
-			$ptid=dbOne('select id from products_types','id');
+			$ptid=0;
+			if (isset($_REQUEST['product_type_id'])) {
+				$ptid=dbOne(
+					'select id from products_types where id='
+					.((int)$_REQUEST['product_type_id']),'id'
+				);
+			}
+			if (!$ptid) {
+				$ptid=dbOne('select id from products_types','id');
+			}
 			for ($i=0; $i<$numRows; $i++) {
 				if (!isset($name[$i]) || $name[$i]=='') {
 					$name[$i]='NO NAME SUPPLIED';
@@ -266,60 +275,63 @@ if (isset($_POST['import'])) {
 	}
 	cache_clear('products');
 }
-// { The Form
-echo '<form method="post" enctype="multipart/form-data">';
-echo 'Delete products before import? ';
-echo '<input type="checkbox" id="clear_database" name="clear_database"
-	onchange="toggle_remove_associated_files();" />';
-echo '<div id="new_line"></div>'; // a <br /> will keep an extra line
-echo 'Import data fields as ';
-echo '<select name="data_fields_option">';
-echo '<option value="cols">individual columns in file</option>';
-echo '<option value="json">data_fields column in file</option>';
-echo '</select><br />';
+// { display form
+echo '<form method="post" enctype="multipart/form-data"><table>';
+// { types
+echo '<tr><th>Product type</th><td><select name="product_type_id">';
+$types=dbAll('select id,name from products_types order by name');
+echo '<option value="0"> -- please choose -- </option>';
+foreach ($types as $r) {
+	echo '<option value="'.$r['id'].'">'.htmlspecialchars($r['name']).'</option>';
+}
+echo '</select></td></tr>';
+// }
+echo '<tr><th>Delete products before import?</th>'
+	.'<td><input type="checkbox" id="clear_database" name="clear_database" '
+	.'onchange="toggle_remove_associated_files();" /></td></tr>'
+	.'<tr><th>The CSV file is formatted as</th>'
+	.'<td><select name="data_fields_option">'
+	.'<option value="cols">individual columns in file (default)</option>'
+	.'<option value="json">data_fields column in file</option>'
+	.'</select></td></tr>';
 $cats = dbAll('select name, id from products_categories');
 $jsonCats = json_encode($cats);
-echo 'Delete categories before import? ';
-echo '<input type="checkbox" name="clear_categories_database" 
-	id="clear_categories_database" 
-		onchange=\'show_hide_cat_options('.$jsonCats.');\' />';
-echo '<br />';
-echo 'Delete empty categories on import? ';
-echo '<input type="checkbox" name="prune_cats" id = "prune-cats" />';
-echo '<br />';
-echo 'Import into categories ';
-echo '<select id="cat_options" name="cat_options">';
-echo '<option value="">--none--</option>';
-echo '<option value="0">In File</option>';
+echo '<tr><th>Delete categories before import?</th>'
+	.'<td><input type="checkbox" name="clear_categories_database" '
+	.'id="clear_categories_database" '
+	.'onchange=\'show_hide_cat_options('.$jsonCats.');\' /></td></tr>';
+echo '<tr><th>Delete empty categories on import?</th>'
+	.'<td><input type="checkbox" name="prune_cats" id = "prune-cats" /></td></tr>';
+echo '<tr><th>Import into categories</th>'
+	.'<td><select id="cat_options" name="cat_options">'
+	.'<option value="">--none--</option>'
+	.'<option value="0">In File</option>';
 foreach ($cats as $cat) {
 	echo '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
 }
-echo '</select><br />';
-echo 'Create pages for imported categories? ';
-echo '<input type="checkbox" name="create_page" />';
-echo '<br />';
-echo 'Hide created pages? ';
-echo '<input type="checkbox" name="hide_pages" />';
-echo '<br />';
-echo 'Delete empty category pages on import? ';
-echo '<input type="checkbox" name="prune_cat_pages" />';
-echo '<br />';
-echo 'Select import file ';
-echo '<input type="file" name="file" />';
-echo '<br />';
-echo '<input type="submit" name="import" value="Import Data" />';
+echo '</select></td></tr>';
+echo '<tr><th>Create pages for imported categories?</th>'
+	.'<td><input type="checkbox" name="create_page" /></td></tr>';
+echo '<tr><th>Hide created pages?</th>'
+	.'<td><input type="checkbox" name="hide_pages" /></td></tr>';
+echo '<tr><th>Delete empty category pages on import?</th>'
+	.'<td><input type="checkbox" name="prune_cat_pages" /></td></tr>';
+echo '<tr><th>Select import file</th>'
+	.'<td><input type="file" name="file" /></td></tr>';
+echo '</table><input type="submit" name="import" value="Import Data" />';
 echo '</form>';
 echo '<p>The imported file must be a CSV file, where the headers exaclty match (including letter-case) the product types you are importing into.</p>';
 // }
+
 /**
-  * Inserts categories into products. 
-  * If the category doesn't exist it creates it
-  *
-  * @param array $categories The category list from the file
-  * @param array $id         The product ids
-  *
-  * @return array $cs The category id's
-**/
+	* Inserts categories into products. 
+	* If the category doesn't exist it creates it
+	*
+	* @param array $categories The category list from the file
+	* @param array $id         The product ids
+	*
+	* @return array $cs The category id's
+	**/
 function Products_Import_insertIntocats ($categories, $id) {
 	$cs = array();
 	switch ($_POST['cat_options']) {
@@ -398,11 +410,11 @@ function Products_Import_insertIntocats ($categories, $id) {
 	return $cs;
 }
 /**
-  * Checks if a category and it's subcategories are empty. If so it deletes them
-  *
-  * @param int $catID The category id to check
-  *
-  * @return void The statement is just there to finish quickly if it can
+	* Checks if a category and it's subcategories are empty. If so it deletes them
+	*
+	* @param int $catID The category id to check
+	*
+	* @return void The statement is just there to finish quickly if it can
 **/
 function Products_Import_pruneCats ($catID) {
 	$prod_id
@@ -442,12 +454,12 @@ function Products_Import_pruneCats ($catID) {
 	}
 }
 /**
-  * Creates a page for the imported categories
-  *
-  * @param array $categories The category list
-  *
-  * @return void
-  *
+	* Creates a page for the imported categories
+	*
+	* @param array $categories The category list
+	*
+	* @return void
+	*
 **/
 function Products_Import_createPage ($categories) {
 	cache_clear('pages');
@@ -575,16 +587,16 @@ function Products_Import_createPage ($categories) {
 	dbQuery('delete from page_vars where name = "products_cat_id"');
 }
 /**
-  * Deletes or changes pages of empty categories
-  *
-  * If a category is empty and has a page it checks if that page has subpages
-  * if it does the page type is changed to table of contents.
-  * If the page has no subpages it is deleted.
-  *
-  * @param int $id The category id
-  *
-  * @return void
-  *
+	* Deletes or changes pages of empty categories
+	*
+	* If a category is empty and has a page it checks if that page has subpages
+	* if it does the page type is changed to table of contents.
+	* If the page has no subpages it is deleted.
+	*
+	* @param int $id The category id
+	*
+	* @return void
+	*
 **/
 function Products_Import_pruneCatPages($id) {
 	if (!$id>0) {
@@ -642,15 +654,15 @@ function Products_Import_pruneCatPages($id) {
 	dbQuery('delete from page_vars where page_id = '.$page_id);
 }
 /**
-  * Takes a list of categories and a page that contains a category that doesn't
-  * exist. If the page has no subpages it will delete it. If it does have subpages
-  * it changes its type to table of contents
-  *
-  * @param int   $page The id of the page we are checking
-  * @param array $cats The list of existing categories
-  *
-  * @return void
-  *
+	* Takes a list of categories and a page that contains a category that doesn't
+	* exist. If the page has no subpages it will delete it. If it does have subpages
+	* it changes its type to table of contents
+	*
+	* @param int   $page The id of the page we are checking
+	* @param array $cats The list of existing categories
+	*
+	* @return void
+	*
 **/
 function Products_Import_deletePagesForCatsThatDontExist($page, $cats) {
 	$subs 

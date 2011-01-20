@@ -34,5 +34,5 @@ function news_front($PAGEDATA) {
 
 function news_showWidget($vars) {
 	require SCRIPTBASE.'ww.plugins/news/frontend/widget.php';
-	return $html;
+	return '<div class="news-wrapper">'.$html.'</div>';
 }
