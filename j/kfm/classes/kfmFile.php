@@ -46,10 +46,12 @@ class kfmFile extends kfmObject{
 	 * @return bool true opon success, false on error
 	 */
 	function delete(){
-		if(!$GLOBALS['kfm']->setting('allow_file_delete'))return $this->error(kfm_lang('permissionDeniedDeleteFile'));
-		if(!kfm_cmsHooks_allowedToDeleteFile($this->id))return $this->error(kfm_lang('CMSRefusesFileDelete',$this->path));
-		if($this->exists() && !$this->writable)return $this->error(kfm_lang('fileNotMovableUnwritable',$this->name));
-		if(!$this->exists() || unlink($this->path))$GLOBALS['kfm']->db->exec("DELETE FROM ".KFM_DB_PREFIX."files WHERE id=".$this->id);
+		if (!$GLOBALS['kfm']->setting('allow_file_delete')) return $this->error(kfm_lang('permissionDeniedDeleteFile'));
+		if (!kfm_cmsHooks_allowedToDeleteFile($this->id)) return $this->error(kfm_lang('CMSRefusesFileDelete',$this->path));
+		if ($this->exists() && !$this->writable) return $this->error(kfm_lang('fileNotMovableUnwritable',$this->name));
+		if (!$this->exists() || !file_exists($this->path) || unlink($this->path)) {
+			$GLOBALS['kfm']->db->exec("DELETE FROM ".KFM_DB_PREFIX."files WHERE id=".$this->id);
+		}
 		else return $this->error(kfm_lang('failedDeleteFile',$this->name));
 		return true;
 	}
