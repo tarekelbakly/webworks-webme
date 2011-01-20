@@ -157,11 +157,13 @@ function WW_getCSS(){
 	foreach($css_urls as $s)$url.='|'.$s;
 	return '<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($url).'" />';
 }
-function WW_getScripts(){
+function WW_getScripts() {
 	global $scripts,$scripts_inline;
 	if(!count($scripts))return '';
-	return '<script src="'.join('"></script><script src="',$scripts).'"></script>'
-		.'<script>'.join('',$scripts_inline).'</script>';
+	$inline=count($scripts_inline)
+		?'<script>'.join('', $scripts_inline).'</script>':'';
+	return '<script src="'.join('"></script><script src="', $scripts).'"></script>'
+		.$inline;
 }
 function drawMenu($menuArray){
 	$c='';
