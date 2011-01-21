@@ -9,6 +9,9 @@ function ImageTransition_show($vars) {
 		if ($r && is_array($r)) {
 			$imgs=array();
 			$dir=USERBASE.'f'.$r['directory'];
+			if (!file_exists($dir) || !is_dir($dir)) {
+				return '<!-- '.$dir.' -->';
+			}
 			$fs=new DirectoryIterator($dir);
 			$max=array(0,0);
 			foreach ($fs as $f) {

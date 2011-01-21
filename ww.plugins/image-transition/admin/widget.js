@@ -15,6 +15,10 @@ function image_transition_edit(ev){
 			minHeight:400,
 			height:400,
 			width:630,
+			close:function(){
+				d.dialog('destroy');
+				$('#image_transition_form').remove();
+			},
 			modal:true,
 			buttons:{
 				'Save':function(){
@@ -38,13 +42,11 @@ function image_transition_edit(ev){
 							w.data('widget',wd);
 							updateWidgets(w.closest('.panel-wrapper'));
 							d.dialog('close');
-							$('#image_transition_form').remove();
 						}
 					,'json');
 				},
 				'Close':function(){
 					d.dialog('close');
-					$('#image_transition_form').remove();
 				}
 			}
 		});

@@ -17,8 +17,7 @@ $plugin=array(
 		),
 		'page_type' => 'products_admin_page_form',
 		'widget' => array(
-			'form_url'   => '/ww.plugins/products/admin/widget.php',
-			'js_include' => '/ww.plugins/products/admin/widget.js'
+			'form_url'   => '/ww.plugins/products/admin/widget.php'
 		)
 	),
 	'description' => 'Product catalogue.',

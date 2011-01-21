@@ -85,7 +85,9 @@ function protectedFiles_check($vars){
 					else{
 						unset($_SESSION['protected_files_stage2']);
 						if(!isset($_SESSION['referer'])) {
-							$_SESSION['referer']=$_SERVER['HTTP_REFERER'];
+							$_SESSION['referer']=isset($_SERVER['HTTP_REFERER'])
+								?$_SERVER['HTTP_REFERER']
+								:'';
 						}
 						protectedFiles_log($fname,0,'',$pr['id']);
 						$PAGEDATA=Page::getInstance(0);
