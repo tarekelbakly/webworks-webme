@@ -243,9 +243,10 @@ function Product_datatableMultiple (&$products, $direction) {
 	}
 	switch ($direction){
 		case 'horizontal': // {
-			WW_addScript('/j/datatables-1.7.4/media/js/jquery.dataTables.js');
+			WW_addScript('/j/jquery.dataTables.min.js');
 			WW_addScript('/ww.plugins/products/frontend/show-horizontal.js');
 			WW_addCSS('/ww.plugins/products/frontend/show-horizontal.css');
+			WW_addCSS('/j/jquery.dataTables.css');
 			$html='<table class="product-horizontal">';
 			$html.='<thead><tr>';
 			foreach($headers as $n=>$v) {
