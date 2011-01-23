@@ -21,6 +21,7 @@ WW_addScript('/j/jquery.dataTables.min.js');
 WW_addCSS('/j/jquery.dataTables.css');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
+WW_addScript('/j/ckeditor-3.5/ckeditor.js');
 WW_addScript('/j/cluetip/jquery.cluetip.js');
 WW_addScript('/ww.admin/j/admin.js');
 ?>
@@ -29,7 +30,6 @@ WW_addScript('/ww.admin/j/admin.js');
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>
 		<?php echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'; ?>
-		<script src="/j/ckeditor/ckeditor.js"></script>
 		<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
 		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" />
