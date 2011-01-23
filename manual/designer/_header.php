@@ -5,4 +5,4 @@
 	</head>
 	<body>
 		<div id="wrapper">
-			<h1>WebWorks WebME manual - Administration</h1>
+			<h1>WebWorks WebME manual - Design</h1>

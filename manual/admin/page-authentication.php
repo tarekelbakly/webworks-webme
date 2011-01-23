@@ -1,5 +1,5 @@
 <?php require '_header.php'; ?>
-		<h2>Administrator Documentation - Page Authentication</h2>
+		<h2>Page Authentication</h2>
 
 		<p>Authentication for pages can be done in two ways:</p>
 		<ol>
