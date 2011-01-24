@@ -2,12 +2,21 @@
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
 if(!is_admin())die('access denied');
 
-if(!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']))exit;
-if(!isset($_REQUEST['name']) || $_REQUEST['name']=='')exit;
+if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id'])
+	|| !isset($_REQUEST['name']) || $_REQUEST['name']==''
+	|| !isset($_REQUEST['associated_colour'])
+	|| strlen($_REQUEST['associated_colour'])!=6
+) {
+	exit;
+}
 
 include 'libs.php';
 
-dbQuery('update products_categories set name="'.addslashes($_REQUEST['name']).'",enabled="'.((int)$_REQUEST['enabled']).'" where id='.$_REQUEST['id']);
+dbQuery(
+	'update products_categories set name="'.addslashes($_REQUEST['name']).'"'
+	.',enabled="'.((int)$_REQUEST['enabled']).'"'
+	.',associated_colour="'.addslashes($_REQUEST['associated_colour']).'"'
+	.' where id='.$_REQUEST['id']);
 cache_clear('products');
 
 $pageid	

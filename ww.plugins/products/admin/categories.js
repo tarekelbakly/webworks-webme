@@ -1,26 +1,50 @@
 $(function(){
+	function save(){
+		$.post('/ww.plugins/products/admin/save-category-attrs.php?id='+window.selected_cat,{
+			"name"   :$('#pc_edit_name').val(),
+			"enabled":$('#pc_edit_enabled').val(),
+			"associated_colour" :$('#pc_colour').val().replace(/#/,'')
+		},'json');
+	}
 	function show_attributes(ret){
 		window.selected_cat=ret.attrs.id;
+		var coloursave=false;
+		ret.attrs.colour=ret.attrs.associated_colour;
+		if (!ret.attrs.colour || ret.attrs.colour.length!=6) {
+			ret.attrs.colour='ffffff';
+		}
 		// { Remove the links so that they don't get added twice
 		$('#create_link,#frontend_link').remove();
 		// }
 		var table=$('#products-categories-attrs>table');
 		if(!table.length){
-			table='<table style="width:100%">'
+			table='<table id="attrs_table" style="width:100%">'
 				+'<tr><th>Name</th><td><input id="pc_edit_name" /></td></tr>'
 				+'<tr><th>Enabled</th><td><select id="pc_edit_enabled"><option value="1">Yes</option><option value="0">No</option></td></tr>';
 			// { products
-			table+='<tr id="products"><th>Products</th><td><form><select name="pc_edit_products[]" id="pc_edit_products" multiple="multiple">';
+			table+='<tr id="products"><th>Products</th><td><form><select style="display:none" name="pc_edit_products[]" id="pc_edit_products" multiple="multiple">';
 			for(var i=0;i<window.product_names.length;++i){
 				table+='<option value="'+window.product_names[i][1]+'">'+window.product_names[i][0]+'</option>';
 			}
 			table+='</select></form></td></tr>';
+			// }
+			// { colour
+			table+='<tr id="colour"><th>Colour</th>'
+				+'<td><input id="pc_colour" />'
+				+'<div id="colour-picker"></div>'
+				+'</td></tr>';
 			// }
 			// { delete
 			table+='<tr><th>Delete</th><td><a href="javascript:;" class="delete">[x]</a></td></tr>';
 			// }
 			table+='</table>';
 			table=$(table).appendTo('#products-categories-attrs');
+			$('#colour-picker').farbtastic(function(colour){
+				$('#colour input').val(colour);
+				if (coloursave) {
+					save();
+				}
+			});
 			$('#pc_edit_products').inlinemultiselect({
 				"endSeparator":", ",
 				"onClose":function(){
@@ -46,22 +70,18 @@ $(function(){
 		}
 		$('#cat_'+ret.attrs.id+'>a').text(ret.attrs.name);
 		$('#pc_edit_name').val(ret.attrs.name);
-		switch(ret.attrs.enabled){
-			case '0': // disabled
-				$('#cat_'+ret.attrs.id+' a').addClass('disabled');
-				$('#create_link').remove();
-				break;
-			default:  // enabled
-				$('#cat_'+ret.attrs.id+' a').removeClass('disabled');
-				if (ret.page==null) {
-					$(
-						'<tr id="create_link"><th>Link</th>'+
-						'<td><a href="javascript:;" id="page_create_link"'+
-						'onClick='+
-						'"createPopup(\''+ret.attrs.name+'\', '+ret.attrs.id+', 2);"'
-						+'>Create a page for this category</a></td></tr>'
-					).insertAfter($('#products'));
-				}
+		$.farbtastic('#colour-picker')
+			.setColor('#'+ret.attrs.colour);
+		coloursave=true;
+		$('#cat_'+ret.attrs.id+' a').removeClass('disabled');
+		if (ret.page==null) {
+			$(
+				'<tr id="create_link"><th>Link</th>'+
+				'<td><a href="javascript:;" id="page_create_link"'+
+				'onClick='+
+				'"createPopup(\''+ret.attrs.name+'\', '+ret.attrs.id+', 2);"'
+				+'>Create a page for this category</a></td></tr>'
+			).insertAfter($('#colour'));
 		}
 		if (ret.page!=null) {
 			$(
@@ -124,12 +144,7 @@ $(function(){
 		.appendTo(div);
 	div.insertAfter('#categories-wrapper');
 	$.getJSON('/ww.plugins/products/admin/get-category-attrs.php?id='+window.selected_cat,show_attributes);
-	$('#pc_edit_name, #pc_edit_enabled').live('change', function(){
-		$.post('/ww.plugins/products/admin/save-category-attrs.php?id='+window.selected_cat,{
-			"name"   :$('#pc_edit_name').val(),
-			"enabled":$('#pc_edit_enabled').val()
-		},show_attributes,'json');
-	});
+	$('#pc_edit_name, #pc_edit_enabled, #pc_colour').live('change', save);
 	$('#products-categories-attrs>table .delete').live('click',function(){
 		if(!confirm("Are you sure you want to delete this category?"))return;
 		$.getJSON('/ww.plugins/products/admin/delete-category.php?id='+window.selected_cat,function(){

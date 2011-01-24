@@ -1,7 +1,7 @@
 <?php
 $diameter=280;
 $cats=dbAll(
-	'select id,name from products_categories where parent_id=3 and enabled'
+	'select id,name,associated_colour as col from products_categories where parent_id=3 and enabled'
 );
 
 $id='products_categories_'.md5(rand());

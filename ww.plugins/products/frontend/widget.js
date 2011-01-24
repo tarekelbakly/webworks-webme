@@ -153,9 +153,9 @@ function products_widget(id, categories) {
 			p3:[radius+(x-radius)/10, radius+(y-radius)/10],
 			p4:[x, y],
 			bg:{
-				r:255-parseInt(Math.random()*100),
-				g:255-parseInt(Math.random()*100),
-				b:0
+				r:Number('0x'+categories[i].col.substring(0,2)),
+				g:Number('0x'+categories[i].col.substring(2,4)),
+				b:Number('0x'+categories[i].col.substring(4,6))
 			}
 		}
 		drawSegment(categories[i]);
