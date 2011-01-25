@@ -1,0 +1,29 @@
+<ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#templates">Templates</a></li>
+</ul>
+<a name="overview"></a><a href="#top">top</a>
+<h2>Overview</h2>
+<p>Products are created by using the <code>Products &gt; Types</code> admin page.</p>
+<i> ... insert more documentation ... </i>
+
+<a name="templates"></a>
+<h2>Templates</h2>
+<p>Product templates define how the product will look on the front-end of the site.</p>
+<p>If you don't define a template, then all the product fields will be shown in a tabular format.</p>
+<p>There are two templates for each type - a "multi-view" template, and a "single-view" template. The multi-view template is shown on pages where more than one product may be visible, and the single-view template is used on pages dedicated to displaying a single product.</p>
+<p>A product template is designed much the same as a web-page template.</p>
+<p>Let's say you have the following fields in your product type: email, name, address, phone</p>
+<p>You can display this as a table using code like this:</p>
+<pre>
+&lt;table
+	&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;td&gt;{{$name|escape}}&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;th&gt;Email&lt;/th&gt;&lt;td&gt;&lt;a href="mailto:{{$email|escape}}"&gt;{{$email|escape}}&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;th&gt;Phone&lt;/th&gt;&lt;td&gt;{{$phone|escape}}&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;th&gt;Address&lt;/th&gt;&lt;td&gt;{{$address}}&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+<p>The variables names are equal, including case, to the product field names.</p>
+<p>Notice the <code>|escape</code> bits. If someone enters something like <code>great &lt;3 stuff</code> in the name, email or phone fields, then WebME should convert the <code>&lt;</code> to <code>&amp;lt;</code> before pasting to the HTML. This is called "escaping".</p>
+<p>We don't use <code>|escape</code> on the address or any other textarea fiel, as these are usually filled in with rich-text editors so are fine to output directly.</p>
+

@@ -62,7 +62,7 @@ pre{
 #left-nav ul{
 	padding-left: 20px;
 }
-#left-nav ul li:before{
+#left-nav ul li a:before{
 	content:'»';
 }
 #wrapper{

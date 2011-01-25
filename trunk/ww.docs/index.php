@@ -3,7 +3,7 @@
 		<link rel="stylesheet" href="css/styles.css" />
 	</head>
 	<frameset cols="20%,*" border="0">
-		<frame src="menu.html"></frame>
+		<frame src="menu.php"></frame>
 		<frame src="contents.html" name="main-frame"></frame>
 	</frameset>
 	<noframes>
