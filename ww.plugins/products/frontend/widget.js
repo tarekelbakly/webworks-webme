@@ -161,7 +161,7 @@ function products_widget(id, categories) {
 		drawSegment(categories[i]);
 		var $str=products_widget_drawText(
 			categories[i].name,
-			'/_r?type=products&products_category='+categories[i].id,
+			'/_r?type=products&product_cid='+categories[i].id,
 			radius,
 			radius,
 			radius-10,

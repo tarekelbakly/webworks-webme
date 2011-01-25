@@ -1,7 +1,7 @@
 // Farbtastic 2.0 alpha
 (function ($) {
   
-var __debug = true;
+var __debug = false;
 
 $.fn.farbtastic = function (options) {
   $.farbtastic(this, options);
@@ -494,8 +494,8 @@ $._farbtastic = function (container, options) {
     options = { callback: options };
   }
   options = $.extend({
-    width: 300,
-    wheelWidth: (options.width || 300) / 10,
+    width: 200,
+    wheelWidth: (options.width || 200) / 10,
     callback: null
   }, options);
 
