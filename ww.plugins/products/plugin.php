@@ -88,7 +88,11 @@ function products_frontend($PAGEDATA){
 		$PAGEDATA->vars['products_category_to_show']=(int)$_REQUEST['product_cid'];
 	}
 	if(!isset($PAGEDATA->vars['footer']))$PAGEDATA->vars['footer']='';
-	return $PAGEDATA->render().products_show($PAGEDATA).$PAGEDATA->vars['footer'];
+	// first render the products, in case the page needs to know what template was used
+	$producthtml=products_show($PAGEDATA);
+	return $PAGEDATA->render()
+		.$producthtml
+		.$PAGEDATA->vars['footer'];
 }
 function products_add_to_cart($PAGEDATA){
 	if (!isset($_REQUEST['products_action'])) {

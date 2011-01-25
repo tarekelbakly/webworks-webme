@@ -79,6 +79,48 @@ $(function(){
 			$this.closest('div').remove();
 		});
 	});
+	$('#product-images-wrapper a.caption').click(function() {
+		var $this=$(this);
+		var id=$this[0].id.replace('products-cbtn-','');
+		var caption=$('#products-img-'+id).attr('title');
+		var title='';
+		if (caption==null || caption=='') {
+			title='Add Caption';
+		}
+		else {
+			title='Edit Caption';
+		}
+		var $html=$('<div id="product-caption-dialog" title="'+title+'">'
+			+'Enter the new caption<br />'
+			+'<textarea id="product-caption">'+htmlspecialchars(caption)+'</textarea>'
+		).dialog({
+			buttons:{
+				'Edit': function () {
+					var newCaption = $('#product-caption').val();
+					$.post(
+						'/j/kfm/rpc.php',
+						{
+							"action":'change_caption',
+							"id":id,
+							"caption":newCaption
+						},
+						function(){
+							$('#products-img-'+id).attr('title', newCaption);
+							$html.remove();
+						},
+						"json"
+					);
+				},
+				'Cancel': function () {
+					$html.remove();
+				}
+			},
+			close:function(){
+				$html.remove();
+			},
+			modal:true
+		});
+	});
 	$("#tabs").tabs();
 	$('#products-form').submit(products_form_validate);
 });

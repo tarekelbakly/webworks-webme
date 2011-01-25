@@ -1,14 +1,15 @@
 $(function(){
 	$('a.products-lightbox').lightBox();
 	$('div.product-images img').click(function(){
-		var src=$('a.products-lightbox img').attr('src')
-			,id=this.src.replace(/.*kfmget\/([0-9]*)[^0-9].*/,'$1')
-			,$wrapper=$(this).closest('.products-product');
+		var src=$('a.products-lightbox img').attr('src'),
+			id=this.src.replace(/.*kfmget\/([0-9]*)[^0-9].*/,'$1'),
+			$wrapper=$(this).closest('.products-product')
+			caption=this.title;
 		$wrapper
-			.find('a.products-lightbox')
-			.attr('href','/kfmget/'+id)
-			.find('img')
-			.attr('src',src.replace(/kfmget\/([0-9]*)/,'kfmget/'+id));
+			.find('a.products-lightbox').attr('href','/kfmget/'+id)
+			.find('img').attr('src',src.replace(/kfmget\/([0-9]*)/,'kfmget/'+id));
+		$wrapper
+			.find('span.caption').html(caption);
 	});
 	var cache={},lastXhr;
 	$('input[name=products-search]')

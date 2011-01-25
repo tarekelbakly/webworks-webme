@@ -304,13 +304,16 @@ if($n){
 		}
 		$default=($images[$i]['id']==$pdata['image_default'])?' class="default"':'';
 		echo '<div'.$default.'>';
-		echo '<img src="/kfmget/'.$images[$i]['id']
-		.',width=64,height=64" title="'
-		.str_replace('\\\\n','<br />',$images[$i]['caption'])
-		.'" /><br /><input type="checkbox" id="products-dchk-'
-		.$images[$i]['id'].'" />'
-		.'<a class="delete" href="javascript:;" id="products-dbtn-'
+		echo '<img id="products-img-'.$images[$i]['id']
+			.'" src="/kfmget/'.$images[$i]['id']
+			.',width=64,height=64" title="'
+			.str_replace('\\\\n','<br />',$images[$i]['caption'])
+			.'" /><br /><input type="checkbox" id="products-dchk-'
+			.$images[$i]['id'].'" />'
+			.'<a class="delete" href="javascript:;" id="products-dbtn-'
 			.$images[$i]['id'].'">delete</a><br />'
+			.'<a class="caption" href="javascript:;" id="products-cbtn-'
+			.$images[$i]['id'].'">edit caption</a><br />'
 			.'<a class="mark-as-default" href="javascript:;" '
 			.'id="products-dfbtn-'.$images[$i]['id'].'">set default</a></div>';
 	}

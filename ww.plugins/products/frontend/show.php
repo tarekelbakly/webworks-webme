@@ -326,13 +326,17 @@ function products_image($params,&$smarty) {
 		$dir_id=kfm_api_getDirectoryId(preg_replace('/^\//','',$directory));
 		if (!$dir_id)return products_image_not_found($params,$smarty);
 		$images=kfm_loadFiles($dir_id);
-		if (count($images['files']))$iid=$images['files'][0]['id'];
+		if (count($images['files'])) {
+			$image=$images['files'][0];
+			$iid=$image->id;
+		}
 	}
 	if (!$iid) {
 		return products_image_not_found($params,$smarty);
 	}
 	$img='<img src="/kfmget/'.$iid
-		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />';
+		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />'
+		.'<br /><span class="caption">'.htmlspecialchars($image->caption).'</span>';
 	return $params['nolink']
 		?$img
 		:'<a class="products-lightbox" href="/kfmget/'.$iid.'">'.$img.'</a>';
@@ -362,7 +366,7 @@ function products_images($params,&$smarty) {
 	foreach($images['files'] as $image) {
 		$arr[]='<img src="/kfmget/'.$image['id']
 			.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'"'
-			.' />';
+			.' title="'.htmlspecialchars($image['caption']).'" />';
 	}
 	return '<div class="product-images">'.join('',$arr).'</div>';
 }
@@ -1209,6 +1213,7 @@ class ProductType{
 	}
 	function render($product, $template='singleview') {
 		global $DBVARS;
+		$GLOBALS['products_template_used']=$template;
 		if (isset($DBVARS['online_store_currency'])) {
 			$csym=$DBVARS['online_store_currency'];
 		}
