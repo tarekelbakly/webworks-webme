@@ -26,11 +26,11 @@ function convert_date_to_human_readable(){
 			'setDate', new Date(dparts[0],dparts[1]-1,dparts[2])
 		);
 }
-function webme_keepSessionAlive(){
-	setTimeout(webme_keepSessionAlive,60000);
-	$.get('/ww.admin/keepalive.php');
-}
 $(function(){
+	function keepAlive(){
+		setTimeout(keepAlive,1700000);
+		$.get('/ww.admin/keepalive.php');
+	}
 	$('.datatable').each(function(){
 		var $this=$(this);
 		if ($this.hasClass('desc')) {
@@ -72,5 +72,5 @@ $(function(){
 		});
 		$('.help').cluetip();
 	}
-	setTimeout(webme_keepSessionAlive,60000);
+	setTimeout(keepAlive,1700000);
 });
