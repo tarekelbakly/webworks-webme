@@ -80,6 +80,7 @@ function smarty_setup($compile_dir){
 	$smarty->right_delimiter = '}}';
 	$smarty->assign('WEBSITE_TITLE',htmlspecialchars($DBVARS['site_title']));
 	$smarty->assign('WEBSITE_SUBTITLE',htmlspecialchars($DBVARS['site_subtitle']));
+	$smarty->assign('GLOBALS', $GLOBALS);
 	$smarty->register_function('BREADCRUMBS','Template_breadcrumbs');
 	$smarty->register_function('LOGO', 'Template_logoDisplay');
 	$smarty->register_function('MENU', 'menuDisplay');

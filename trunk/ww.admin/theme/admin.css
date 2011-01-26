@@ -386,6 +386,17 @@ a.accordion-header{color: #000 !important;border-bottom:1px solid #000 !importan
 	line-height:21px;
 	font-family:"Univers", Tahoma, Trebuchet MS;
 }
+#nav-help a{
+	display:inline-block;
+	text-align:center;
+	text-decoration:none;
+	padding:2px 10px;
+	color:blue;
+	font-weight:bold;
+	font-size:12px;
+	line-height:21px;
+	font-family:"Univers", Tahoma, Trebuchet MS;
+}
 #menu-top>ul>li>a:hover{
 	font-style:italic;
 	color:#99CC00;

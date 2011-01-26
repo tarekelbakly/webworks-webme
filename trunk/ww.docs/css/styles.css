@@ -48,7 +48,7 @@ code, pre, code *, pre *{
 	font-family:monospace;
 }
 pre{
-	background:#eee;
+	background:#fff;
 	box-shadow:2px 2px 5px #000;
 	-moz-box-shadow:2px 2px 5px #000;
 	-webkit-box-shadow:2px 2px 5px #000;

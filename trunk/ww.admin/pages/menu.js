@@ -104,7 +104,7 @@ $(function(){
 	$('<button>add main page</button>')
 		.click(pages_add_main_page)
 		.appendTo(div);
-	div.appendTo('#pages-wrapper');
+	div.appendTo('div.left-menu');
 	$('#pages-wrapper a').live('click',function(e){
 		var node=e.target.parentNode;
 		document.getElementById('page-form-wrapper')
