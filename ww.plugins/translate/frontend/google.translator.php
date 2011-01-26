@@ -18,7 +18,7 @@ class Google_Translate_API {
 	 * @param $from String[optional] Original language of $text. An empty String will let google decide the language of origin
 	 * @param $to String[optional] Language to translate $text to
 	 */
-	function translate($text, $from = 'pt', $to = 'en') {
+	function translate($text, $from = 'en', $to = 'en') {
 		$url = 'http://ajax.googleapis.com/ajax/services/language/translate';
 		$postdata = array(
 			'v'=>'1.0',

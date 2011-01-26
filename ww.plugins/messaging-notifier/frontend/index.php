@@ -79,7 +79,7 @@ function parse_messaging_notifier($data,$vars){
 }
 function messaging_notifier_get_rss($r){
 	$f=file_get_contents($r->url);
-	$dom=DOMDocument::loadXML($f);
+	$dom=@DOMDocument::loadXML($f);
 	$items=$dom->getElementsByTagName('item');
 	$arr=array();
 	foreach($items as $item){

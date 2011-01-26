@@ -36,7 +36,7 @@ else {
 			$text=$fp->body;
 			$c = Google_Translate_API::translate(
 				$text,
-				'en',
+				$PAGEDATA->vars['translate_language_from'],
 				$PAGEDATA->vars['translate_language']
 			);
 			if ($c === false) {

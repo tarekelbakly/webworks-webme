@@ -98,7 +98,9 @@ function Translate_check_current_page($PAGEDATA) {
 	}
 	// }
 	$page=Page::getInstance($page_id);
-	redirect($page->getRelativeUrl());
+	if ($page->id) {
+		redirect($page->getRelativeUrl());
+	}
 	// }
 }
 
