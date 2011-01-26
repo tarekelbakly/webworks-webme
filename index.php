@@ -302,7 +302,7 @@ $c.='<style>.loggedin{display:'
 	.'} .loggedinCell{display:'
 	.(is_logged_in()?'table-cell':'none')
 	.'}</style>';
-$jquery_versions=array('1.4.4', '1.8.7');
+$jquery_versions=array('1.4.4', '1.8.9');
 if (isset($DBVARS['offline']) && $DBVARS['offline']) {
 	if (!file_exists(USERBASE.'/f/.files/jqueryui-'.$jquery_versions[1].'.js')) {
 		$f=file_get_contents('https://ajax.googleapis.com/ajax/libs/jqueryui/'
@@ -332,16 +332,16 @@ if (isset($DBVARS['offline']) && $DBVARS['offline']) {
 				.'reload this page, then go offline.';
 		}
 	}
-	$c.='<script src="/f/.files/jqueryui-'.$jquery_versions[1]
+	$c.='<script src="/f/.files/jquery-'.$jquery_versions[0]
 		.'.js"></script>'
-		.'<script src="/f/.files/jquery-'.$jquery_versions[0]
+		.'<script src="/f/.files/jqueryui-'.$jquery_versions[1]
 		.'.js"></script>';
 }
 else {
 	$c.='<script src="https://ajax.googleapis.com/ajax/libs/jquery/'
-		.'1.4.4/jquery.min.js"></script>'
+		.$jquery_versions[0].'/jquery.min.js"></script>'
 		.'<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/'
-		.'1.8.7/jquery-ui.min.js"></script>';
+		.$jquery_versions[1].'/jquery-ui.min.js"></script>';
 }
 $c.='<script src="WW_SCRIPTS_GO_HERE"></script>';
 if (is_admin()) {
