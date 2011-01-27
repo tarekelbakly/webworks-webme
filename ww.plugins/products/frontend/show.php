@@ -328,7 +328,7 @@ function products_image($params,&$smarty) {
 		$images=kfm_loadFiles($dir_id);
 		if (count($images['files'])) {
 			$image=$images['files'][0];
-			$iid=$image->id;
+			$iid=$image['id'];
 		}
 	}
 	if (!$iid) {
