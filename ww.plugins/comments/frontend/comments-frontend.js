@@ -112,7 +112,7 @@ function comments_display_thank_you_message(data) {
 	}
 	$('.no-comments').remove();
 	var commentString = '<div id="comment-wrapper-'+data.id+'" '
-		+'class="comments comment-editable"'
+		+'class="comment-wrapper comment-editable"'
 		+' cdate="'+data.mysqldate+'" '
 		+'comment="'+htmlspecialchars(data.comment)+'">';
 	commentString+= '<div id="comment-info-'+data.id+'">'

@@ -88,15 +88,16 @@ function Comments_displayComments($page) {
 			);
 			$clist.= '<div class="comment-wrapper';
 			if ($allowedToEdit) {
-				$clist.= ' comment-editable" id="comment-wrapper-'.$id.'" '
+				$clist.= ' comment-editable" '
 					.'cdate="'.$datetime.'" comment="'
 					.htmlspecialchars($comment['comment']).'"';
 			}
 			else {
-				$clist.= '"';
+				$clist.= '" ';
 			}
-			$clist.='><a name="comments-'.$id.'"></a>'
-				.'<div class="comment-info" id="comment-info-'.$id.'">Posted by ';
+			$clist.='id="comment-wrapper-'.$comment['id'].'"'
+					.'><a name="comments-'.$id.'"></a>'
+					.'<div class="comment-info" id="comment-info-'.$id.'">Posted by ';
 			if (!empty($comment['site'])) {
 
 				$clist.= '<a href="'.$comment['site'].'" target=_blank>'
