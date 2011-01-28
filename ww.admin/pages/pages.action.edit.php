@@ -1,12 +1,14 @@
 <?php
-function recursively_update_page_templates($id,$template){
-	$pages=Pages::getInstancesByParent($id);
+function recursively_update_page_templates ($id, $template) {
+	$pages=Pages::getInstancesByParent($id, false);
 	$ids=array();
-	foreach($pages->pages as $page){
+	foreach ($pages->pages as $page) {
 		$ids[]=$page->id;
 		recursively_update_page_templates($page->id,$template);
 	}
-	if(!count($ids))return;
+	if (!count($ids)) {
+		return;
+	}
 	dbQuery('update pages set template="'.addslashes($template).'" where id in ('.join(',',$ids).')');
 }
 require_once dirname(__FILE__).'/pages.action.common.php';
@@ -26,7 +28,7 @@ $body=$original_body;
 $body=sanitise_html($body);
 $name=$_REQUEST['name'];
 // { check that name is not duplicate of existing page
-if(dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id')){
+if (dbOne('select id from pages where name="'.addslashes($name).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id')) {
 	$i=2;
 	while(dbOne('select id from pages where name="'.addslashes($name.$i).'" and parent='.$pid.' and id!="'.$_POST['id'].'"','id'))$i++;
 	$msgs.='<em>'.__('A page named "%1" already exists. Page name amended to "%2"',$name,$name.$i).'</em>';
