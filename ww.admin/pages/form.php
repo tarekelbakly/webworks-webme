@@ -1,9 +1,10 @@
 <?php
-require '../../ww.incs/common.php';
-require '../admin_libs.php';
+require_once '../../ww.incs/common.php';
+require_once '../admin_libs.php';
 if (!is_admin()) {
 	exit;
 }
+
 // { take care of actions
 $id=isset($_REQUEST['id'])
 	?(int)$_REQUEST['id']
@@ -24,9 +25,8 @@ $edit=($is_an_update || $action=='edit' || $id)?1:0;
 // { display header and link in scripts
 echo '<html><head>'
 	.'<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>'
-	.'<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>'
+	.'<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>'
 	.'<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'
-	.'<script src="/js/1280482416"></script>'
 	.'<script src="/j/ckeditor-3.5/ckeditor.js"></script>'
 	.'<script src="/ww.admin/j/admin.js"></script>'
 	.'<script src="/j/jquery.dataTables.min.js"></script>'
@@ -40,7 +40,6 @@ echo '<html><head>'
 	.'</head>'
 	.'<body class="noheader">';
 // }
-
 
 if($id && $edit){ // check that page exists
 	$page=dbRow("SELECT * FROM pages WHERE id=$id");
