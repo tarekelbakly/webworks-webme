@@ -21,7 +21,9 @@ function kfm_translate($str,$context,$lang){
 	}
 	// }
 	// { if not, retrieve from kfm.verens.com
-	$trans=file_get_contents('http://kfm.verens.com/extras/translate.php?str='.urlencode($str).'&lang='.urlencode($lang).'&context='.urlencode($context));
+	$url='http://kfm.verens.com/extras/translate.php?str='.urlencode($str)
+		.'&lang='.urlencode($lang).'&context='.urlencode($context);
+	$trans=file_get_contents($url);
 	$_trans=sql_escape($trans);
 	$GLOBALS['kfmdb']->query("INSERT INTO ".KFM_DB_PREFIX."translations (original,translation,language,context,found) VALUES ('$_str','$_trans','$_lang','$_context',0)");
 	return $trans;
