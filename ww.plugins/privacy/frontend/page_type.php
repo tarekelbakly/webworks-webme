@@ -41,7 +41,9 @@ function userloginandregistrationDisplay(){
 				if(isset($_REQUEST['login_referer']) && strpos($_REQUEST['login_referer'],'/')===0){
 					$redirect_url=$_REQUEST['login_referer'];
 				}
-				else if($PAGEDATA->vars['userlogin_redirect_to']){
+				else if(isset($PAGEDATA->vars['userlogin_redirect_to'])
+					&& $PAGEDATA->vars['userlogin_redirect_to']
+				) {
 					$p=Page::getInstance($PAGEDATA->vars['userlogin_redirect_to']);
 					$redirect_url=$p->getRelativeUrl();
 				}
