@@ -78,5 +78,7 @@ if(isset($_REQUEST['frontend-admin'])){
 	echo '<script type="text/javascript">parent.location=parent.location;</script>';
 }
 else{
-	echo '<script>window.parent.document.getElementById("page_'.$id.'").childNodes[0].innerHTML="'.htmlspecialchars($name).'";</script>';
+	echo '<script>window.parent.document.getElementById("page_'.$id.'")'
+		.'.childNodes[1].innerHTML=\'<ins class="jstree-icon">&nbsp;</ins>'
+		.htmlspecialchars($name).'\';</script>';
 }

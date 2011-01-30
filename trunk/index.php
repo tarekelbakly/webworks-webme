@@ -284,6 +284,7 @@ $smarty->assign(
 	'PAGECONTENT', '<div id="ww-pagecontent">'.$pagecontent.'</div>'
 );
 $smarty->assign('PAGEDATA', $PAGEDATA);
+$smarty->assign('THEMEDIR', '/ww.skins/'.THEME);
 // }
 // { build metadata
 // { page title

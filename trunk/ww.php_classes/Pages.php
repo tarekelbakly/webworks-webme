@@ -23,13 +23,13 @@ class Pages{
 		}
 		return self::$instancesByParent[$constraint];
 	}
-	static function getInstancesByParent($pid=0){
+	static function getInstancesByParent($pid=0, $filter=true){
 		if (!is_numeric($pid)) {
 			return false;
 		}
 		$constraint='parent='.$pid;
 		if (!array_key_exists($constraint, self::$instancesByParent)) {
-			new Pages($constraint);
+			new Pages($constraint, $filter);
 		}
 		return self::$instancesByParent[$constraint];
 	}

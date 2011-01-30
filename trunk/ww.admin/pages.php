@@ -19,7 +19,7 @@ if (isset($_REQUEST['id'])) {
 else {
 	$id=0;
 }
-echo '<h1>'.__('Pages').'</h1>';
+echo '<h1>Pages</h1>';
 echo '<div class="left-menu">';
 require_once 'pages/menu.php';
 echo '</div>';
@@ -28,6 +28,5 @@ echo '<div class="has-left-menu">'
 	,'src="/ww.admin/pages/form.php?id=',$id,'"></iframe>'
 	,'</div>'
 	,'<script>window.page_menu_currentpage=',$id,';</script>'
-	,'<script src="/j/jquery.remoteselectoptions.js"></script>'
 	,'<style type="text/css">@import "pages/css.css";</style>';
 require 'footer.php';

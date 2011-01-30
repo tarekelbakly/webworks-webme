@@ -87,6 +87,8 @@ $(function(){
 				}
 			},
 			'dnd': {
+				'drag_target': false,
+				'drop_target': false,
 				'drag_finish': function(data) {
 					var node=data.o[0];
 					setTimeout(function(){

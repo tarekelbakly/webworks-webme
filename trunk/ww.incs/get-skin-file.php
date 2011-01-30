@@ -56,6 +56,7 @@ if ($mimetype=='text/css') {
 			$f=str_replace($matches[0][$i], $css, $f);
 		}
 		// }
+		$f=str_replace('{{$THEMEDIR}}', '/ww.skins/'.THEME, $f);
 		file_put_contents($parsed, $f);
 	}
 	$file=$parsed;
