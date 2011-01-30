@@ -304,11 +304,12 @@ function Products_getAddManyToCartButton($params,&$smarty) {
 		.'<input type="hidden" name="product_id" value="'
 		. $smarty->_tpl_vars['product']->id .'" /></form>';
 }
-function products_image($params,&$smarty) {
+function products_image($params, &$smarty) {
 	$params=array_merge(array(
 		'width'=>128,
 		'height'=>128,
-		'nolink'=>0
+		'nolink'=>0,
+		'magnifier'=>0
 	),$params);
 	$product=$smarty->_tpl_vars['product'];
 	$vals=$product->vals;
@@ -337,6 +338,20 @@ function products_image($params,&$smarty) {
 	$img='<img src="/kfmget/'.$iid
 		.'&amp;width='.$params['width'].'&amp;height='.$params['height'].'" />'
 		.'<br /><span class="caption">'.htmlspecialchars($image->caption).'</span>';
+	if ($params['nolink']) {
+		return $img;
+	}
+	if ($params['magnifier']) {
+		WW_addScript(
+			'/ww.plugins/products/j/jquery.magnifier.0.2/js/jquery.magnifier/js/'
+			.'jquery.magnifier.0.2.js'
+		);
+		WW_addCSS(
+			'/ww.plugins/products/j/jquery.magnifier.0.2/js/jquery.magnifier/css/jquery.magnifier.css'
+		);
+		WW_addInlineScript('$("a[rel*=magnify]").magnify()');
+		return '<a href="/kfmget/'.$iid.'" rel="magnify">'.$img.'</a>';
+	}
 	return $params['nolink']
 		?$img
 		:'<a class="products-lightbox" href="/kfmget/'.$iid.'">'.$img.'</a>';
@@ -542,8 +557,8 @@ function products_show($PAGEDATA) {
 		$PAGEDATA->vars['products_what_to_show']='0';
 	}
 	WW_addScript('/ww.plugins/products/j/jquery.lightbox-0.5.min.js');
-	WW_addScript('/ww.plugins/products/frontend/js.js');
 	WW_addCSS('/ww.plugins/products/c/jquery.lightbox-0.5.css');
+	WW_addScript('/ww.plugins/products/frontend/js.js');
 	$c='';
 	// { search
 	$search=isset($_REQUEST['products-search'])

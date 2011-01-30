@@ -529,23 +529,11 @@ if (count($relations)) {
 		.'<option value=""> -- please choose -- </option>';
 	WW_addScript('/ww.plugins/products/admin/products-edit-related.js');
 	echo '</td></tr></table></div>';
-
-/*
-mysql> describe products_relations;
-+-------------+---------+------+-----+---------+-------+
-| Field       | Type    | Null | Key | Default | Extra |
-+-------------+---------+------+-----+---------+-------+
-| relation_id | int(11) | YES  |     | 0       |       |
-| from_id     | int(11) | YES  |     | 0       |       |
-| to_id       | int(11) | YES  |     | 0       |       |
-+-------------+---------+------+-----+---------+-------+
-3 rows in set (0.07 sec)
-*/
 }
 // }
 if(isset($_REQUEST['frontend-admin'])){
 	echo '<input type="hidden" name="frontend-admin" value="1" />';
 }
 echo '</div><input type="submit" value="Save" /></form>';
-WW_addScript('/ww.plugins/products/admin/products.js');
+WW_addScript('/ww.plugins/products/admin/products-edit.js');
 WW_addScript('/ww.plugins/products/admin/create-page.js');
