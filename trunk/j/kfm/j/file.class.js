@@ -37,18 +37,7 @@ File.prototype.setText=function(el,varname){
 	$j(el).text(v);
 };
 File.prototype.setThumbnailBackground=function(el,reset){
-	var fsdata=window.kfm_incrementalFileDisplay_vars.data.sprites;
-	var id=this.id;
-	if(fsdata){ // sprites exist
-		css_sprite=[];
-		for(var i=0;i<fsdata.length;++i)if(fsdata[i].files.indexOf(id)!=-1){
-			el.style.backgroundImage='url("sprite.php?md5='+fsdata[i].sprite+'")';
-			el.style.backgroundPosition=-64*fsdata[i].files.indexOf(id)+'px top';
-			return;
-		}
-	}
-	// sprite doesn't exist, or image is not in a CSS sprite
-	el.style.background='url(get.php?id='+id+'&width=64&height=64'+kfm_vars.get_params+') center top no-repeat';
+	el.style.background='url('+this.icon_url+') center top no-repeat';
 }
 File.prototype.iterateThumbnailQueue=function(){
 	if(!File_ThumbnailsQueue.length){
