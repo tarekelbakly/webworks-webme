@@ -58,16 +58,6 @@ $(function(){
 				}
 			});
 		}
-		if(!document.getElementById('cat_'+ret.attrs.id)){
-			$.jstree._focused().create(
-				{
-					data:ret.attrs.name,
-					attributes: { id :'cat_'+ret.attrs.id}
-				},
-				ret.attrs.parent_id?'#cat_'+ret.attrs.parent_id:-1,
-				ret.attrs.parent_id?'inside':-1
-			);
-		}
 		$('#cat_'+ret.attrs.id+'>a').text(ret.attrs.name);
 		$('#pc_edit_name').val(ret.attrs.name);
 		$.farbtastic('#colour-picker')
@@ -125,9 +115,11 @@ $(function(){
 			var name=prompt('what do you want to name this sub-category?');
 			if(!name)return;
 			$.getJSON('/ww.plugins/products/admin/add-new-category.php',{
-				"parent_id":$.jstree._focused().selected[0].id.replace(/.*_/,''),
+				"parent_id":$.jstree._focused().get_selected()[0].id.replace(/.*_/,''),
 				"name":name
-			},show_attributes);
+			},function(){
+				document.location=document.location;
+			});
 		})
 		.appendTo(div);
 	$('<button>add main category</button>')
