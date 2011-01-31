@@ -3,7 +3,8 @@ $plugin=array(
 	'name' => 'Feed Reader',
 	'admin' => array(
 		'widget' => array(
-			'form_url' => '/ww.plugins/messaging-notifier/admin/widget-form.php'
+			'form_url' => '/ww.plugins/messaging-notifier/admin/widget-form.php',
+			'js_include' => '/ww.plugins/image-transition/admin/widget.js'
 		)
 	),
 	'description' => 'Show messages from feeds such as twitter, rss, phpbb3',
