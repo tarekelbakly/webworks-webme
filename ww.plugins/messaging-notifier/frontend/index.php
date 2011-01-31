@@ -11,13 +11,32 @@ function show_messaging_notifier($vars) {
 		}
 	}
 }
-function parse_messaging_notifier($data,$vars){
+function parse_messaging_notifier($data, $vars){
+	if (!isset($vars->hide_story_title)) {
+		$vars->hide_story_title=0;
+	}
+	if (!isset($vars->characters_shown)) {
+		$vars->characters_shown=200;
+	}
+	if (!isset($vars->scrolling)) {
+		$vars->scrolling=0;
+	}
+	if (!isset($vars->load_in_other_tab)) {
+		$vars->load_in_other_tab=1;
+	}
+	if (!isset($vars->stories_to_show)) {
+		$vars->stories_to_show=10;
+	}
 	$altogether=array();
 	foreach($data as $r){
 		$md5=md5($r->url);
 		$f=cache_load('messaging-notifier',$md5);
-		if($f===false || (file_exists(USERBASE.'ww.cache/messaging-notifier/'.$md5) && filectime(USERBASE.'ww.cache/messaging-notifier/'.$md5)+$r->refresh*60 < time())){
+		if(1 || $f===false || (file_exists(USERBASE.'ww.cache/messaging-notifier/'.$md5) && filectime(USERBASE.'ww.cache/messaging-notifier/'.$md5)+$r->refresh*60 < time())){
 			switch($r->type){
+				case 'WebME News Page': // {
+					$f=messaging_notifier_get_webmeNews($r);
+					break;
+				// }
 				case 'email': // {
 					$f=messaging_notifier_get_email($r);
 					break;
@@ -93,6 +112,28 @@ function messaging_notifier_get_rss($r){
 		$i['description']=$description->item(0)->nodeValue;
 		$unixtime=$item->getElementsByTagName('pubDate');
 		$i['unixtime']=strtotime($unixtime->item(0)->nodeValue);
+		$arr[]=$i;
+	}
+	cache_save('messaging-notifier',md5($r->url),$arr);
+	return $arr;
+}
+function messaging_notifier_get_webmeNews($r) {
+	if (!is_numeric($r->url)) {
+		return array();
+	}
+	$items=dbAll(
+		'select id,name,associated_date,body from pages where parent='.$r->url
+		.' order by associated_date desc limit 20'
+	);
+	$arr=array();
+	foreach($items as $item){
+		$p=Page::getInstance($item['id']);
+		$i=array();
+		$i['type']='WebME-News-Page';
+		$i['title']=$item['name'];
+		$i['link']='/?pageid='.$item['id'];
+		$i['unixtime']=strtotime($item['associated_date']);
+		$i['description']=$item['body'];
 		$arr[]=$i;
 	}
 	cache_save('messaging-notifier',md5($r->url),$arr);

@@ -4,7 +4,7 @@ $plugin=array(
 	'admin' => array(
 		'widget' => array(
 			'form_url' => '/ww.plugins/messaging-notifier/admin/widget-form.php',
-			'js_include' => '/ww.plugins/image-transition/admin/widget.js'
+			'js_include' => '/ww.plugins/messaging-notifier/admin/widget.js'
 		)
 	),
 	'description' => 'Show messages from feeds such as twitter, rss, phpbb3',

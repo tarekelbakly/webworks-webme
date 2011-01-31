@@ -10,13 +10,14 @@ function messaging_notifier_edit(ev){
 		d.dialog({
 			minWidth:630,
 			minHeight:400,
+			modal:true,
 			height:400,
 			width:630,
 			buttons:{
 				'Save':function(){
 					var data=[];
 					$('tr',d).each(function(){
-						var sel=$('select',this),url=$('input.url',this),refresh=$('input.refresh',this);
+						var sel=$('select',this),url=$('.url',this),refresh=$('input.refresh',this);
 						if(!sel.length || !url.length)return;
 						refresh=parseInt(refresh.val());
 						if(refresh<1)refresh=60;
@@ -58,27 +59,47 @@ function messaging_notifier_edit(ev){
 }
 function messaging_notifier_table_row(rdata){
 	var ts=[
+		['WebME News Page','select the news page you want to add to the aggregate'],
 		['email','enter in this form: username|password|mailserver|optional_link_url'],
 		['phpBB3','address of the forum. example: http://forum.php.ie/viewforum.php?f=2'],
 		['RSS','address of the RSS feed. example: http://planet.php.ie/rss/'],
-		['Twitter','address of the twitter account. example: http://twitter.com/IrishPhpUG']
+		['Twitter','address of the twitter account. example: http://twitter.com/IrishPhpUG'],
 	];
 	if(!rdata)rdata={'type':'','url':'','refresh':60};
-	var tr='<tr><td><select><option>--none--</option>';
+	var tr='<tr><td><select class="type"><option>--none--</option>';
 	for(var j=0;j<ts.length;++j){
 		tr+='<option title="'+ts[j][1]+'"';
 		if(rdata.type==ts[j][0])tr+=' selected="selected"';
 		tr+='>'+ts[j][0]+'</option>';
 	}
 	tr+='</select></td>';
-	tr+='<td><input style="width:100%" class="url" value="'+rdata.url+'" /><span></span></td>';
+	if (rdata.type=='WebME News Page') {
+		tr+='<td><select class="url"><option>'+rdata.url+'</option></select><span></span></td>';
+	}
+	else {
+		tr+='<td><input style="width:100%" class="url" value="'+rdata.url+'" /><span></span></td>';
+	}
 	tr+='<td><input size="3" class="refresh" value="'+rdata.refresh+'" /></td>';
 	tr+='</tr>';
 	var $tr=$(tr);
-	$('select',$tr).change(function(){
+	$tr.find('select.type').change(function(){
+		var $this=$(this);
+		var $url=$this.closest('tr').find('.url');
+		if($this.val()=='WebME News Page') {
+			$('<select class="url"><option>'+$url.val()+'</option></select>').replaceAll($url);
+		}
+		else {
+			$('<input style="width:100%" class="url" value="'+$url.val()+'" />').replaceAll($url);
+		}
 		var opt=this.getElementsByTagName('option')[this.selectedIndex];
-		$('span',$(this).closest('tr')).html(opt.title);
+		$('span',$url.closest('td')).html(opt.title);
 		if(opt.title)$tr.closest('table').append(messaging_notifier_table_row());
+		$tr.find('select.url').remoteselectoptions({
+			url:"/ww.admin/pages/get_parents.php"
+		});
+	});
+	$tr.find('select.url').remoteselectoptions({
+		url:"/ww.admin/pages/get_parents.php"
 	});
 	return $tr;
 }
