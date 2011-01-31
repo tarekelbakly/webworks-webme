@@ -19,10 +19,12 @@ function selectkiddies($i=0,$n=1,$s=0,$id=0){
 	foreach($q as $r){
 		if($r['id']!=''){
 			echo '<option value="'.$r['id'].'" title="'.htmlspecialchars($r['name']).'"';
-			echo($s==$r['id'])?' selected="selected">':'>';
-			for($j=0;$j<$n;$j++)echo '&nbsp;';
+			echo ($s==$r['id'])?' selected="selected">':'>';
+			echo str_repeat('&raquo; ', $n);
 			$name=$r['name'];
-			if(strlen($name)>20)$name=substr($name,0,17).'...';
+			if (strlen($name)>20) {
+				$name=substr($name,0,17).'...';
+			}
 			echo htmlspecialchars($name).'</option>';
 			selectkiddies($r['id'],$n+1,$s,$id);
 		}

@@ -12,7 +12,7 @@ class Pages{
 			$rs=array();
 		}
 		foreach ($rs as $r) {
-			$this->pages[] = Page::getInstance($r['id'],$r);
+			$this->pages[] = Page::getInstance($r['id'], $r);
 		}
 		Pages::$instancesByParent[$constraint] =& $this;
 	}
@@ -35,8 +35,8 @@ class Pages{
 	}
 	static function precache($ids){
 		if (count($ids)) {
-			$rs3=dbAll('select * from pages where id in ('.join(',',$ids).')');
-			$pvars=dbAll('select * from page_vars where page_id in ('.join(',',$ids).')');
+			$rs3=dbAll('select * from pages where id in ('.join(',', $ids).')');
+			$pvars=dbAll('select * from page_vars where page_id in ('.join(',', $ids).')');
 			$rs2=array();
 			foreach ($pvars as $p) {
 				if (!isset($rs2[$p['page_id']])) {
@@ -46,10 +46,10 @@ class Pages{
 			}
 			foreach ($rs3 as $r) {
 				if (isset($rs2[$r['id']])) {
-					Page::getInstance($r['id'],$r,$rs2[$r['id']]);
+					Page::getInstance($r['id'], $r, $rs2[$r['id']]);
 				}
 				else {
-					Page::getInstance($r['id'],$r);
+					Page::getInstance($r['id'], $r);
 				}
 			}
 		}
