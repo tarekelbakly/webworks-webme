@@ -94,7 +94,11 @@ if (isset($_GET['type'])&&$_GET['type']=='thumb') {
     }
 }
 // { headers
-if (strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) $name = preg_replace('/\./', '%2e', $name, substr_count($name, '.')-1);
+if (isset($_SERVER['HTTP_USER_AGENT'])
+	&& strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE')
+) {
+	$name = preg_replace('/\./', '%2e', $name, substr_count($name, '.')-1);
+}
 set_time_limit(0);
 header('Cache-Control: max-age = 2592000');
 header('Expires-Active: On');
