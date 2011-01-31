@@ -1,7 +1,9 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
-if(isset($_REQUEST['get_messaging_notifier'])){
+if (!is_admin()) {
+	die('access denied');
+}
+if (isset($_REQUEST['get_messaging_notifier'])) {
 	$id=(int)$_REQUEST['get_messaging_notifier'];
 	if($id)$r=dbRow('select * from messaging_notifier where id='.$id);
 	else $r=array('id'=>0,'messages_to_show'=>10,'data'=>'[]');
@@ -9,7 +11,7 @@ if(isset($_REQUEST['get_messaging_notifier'])){
 	echo json_encode($r);
 	exit;
 }
-if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
+if (isset($_REQUEST['action']) && $_REQUEST['action']=='save') {
 	$id=(int)$_REQUEST['id'];
 	$id_was=$id;
 	$data=json_decode($_REQUEST['data']);
@@ -42,8 +44,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='save'){
 	exit;
 }
 
-if(isset($_REQUEST['id']))$id=(int)$_REQUEST['id'];
-else $id=0;
+if (isset($_REQUEST['id'])) {
+	$id=(int)$_REQUEST['id'];
+}
+else {
+	$id=0;
+}
 
 echo '<a href="javascript:;" id="messaging_notifier_editlink_'.$id.'" class="button messaging_notifier_editlink">view or edit feeds</a><br />';
 // { show story title
