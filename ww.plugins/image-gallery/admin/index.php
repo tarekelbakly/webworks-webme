@@ -50,7 +50,10 @@ if(!$gvars['image_gallery_directory'] || !is_dir(USERBASE.'f/'.$gvars['image_gal
 		mkdir(USERBASE.'f/image-galleries');
 	}
 	$gvars['image_gallery_directory']='/image-galleries/page-'.$name;
-	mkdir(USERBASE.'f/'.$gvars['image_gallery_directory']);
+	$dir=USERBASE.'f/'.$gvars['image_gallery_directory'];
+	if (!file_exists($dir)) {
+		mkdir($dir);
+	}
 }
 $dir=preg_replace('/^\//','',$gvars['image_gallery_directory']);
 $dir_id=kfm_api_getDirectoryID($dir);
