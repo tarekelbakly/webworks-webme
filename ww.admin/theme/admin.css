@@ -488,3 +488,6 @@ div.help{
 .dataTables_wrapper{
 	width:100%;
 }
+.CodeMirror-wrapping{
+	border: 1px solid #000;
+}
