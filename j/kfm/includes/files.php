@@ -190,7 +190,7 @@ function _rm($id){
 function _saveTextFile($fid,$text){
 	if(!$GLOBALS['kfm']->setting('allow_file_edit'))return kfm_error(kfm_lang('permissionDeniedEditFile'));
 	$f=kfmFile::getInstance($fid);
-	if(!$f->checkName())return kfm_error(kfm_lang('permissionDeniedEditFile'));
+	if(!$f->checkName($f->name))return kfm_error(kfm_lang('permissionDeniedEditFile'));
 	if($f->setContent($text))kfm_addMessage(kfm_lang('file saved'));
 }
 function _search($keywords,$tags){

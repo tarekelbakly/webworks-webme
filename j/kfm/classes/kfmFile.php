@@ -270,7 +270,7 @@ class kfmFile extends kfmObject{
 	 * Check if the filename is authorized by the system according to the configuration
 	 * @return bool $authorized true when authorized, false if not
 	 */
-	static function checkName($filename=false){
+	function checkName($filename=false){
 		if ($filename===false) $filename=$this->name;
 		$filename=trim($filename);
 
