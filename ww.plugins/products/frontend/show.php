@@ -1147,6 +1147,14 @@ class Products{
 			break;
 			// }
 			default: // { use template
+				if (count($prods)) { // display the first item's header
+					$product=Product::getInstance($prods[0]);
+					$type=ProductType::getInstance($product->get('product_type_id'));
+					$smarty=products_setup_smarty();
+					$c.=$smarty->fetch(
+						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_header'
+					);
+				}
 				foreach ($prods as $pid) {
 					$product=Product::getInstance($pid);
 					if ($product && isset($product->id) && $product->id) {
@@ -1162,6 +1170,12 @@ class Products{
 							$c.=$type->render($product, 'multiview');
 						}
 					}
+				}
+				if (count($prods)) { // display the first item's header
+					$smarty=products_setup_smarty();
+					$c.=$smarty->fetch(
+						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_footer'
+					);
 				}
 			// }
 		}
@@ -1190,6 +1204,14 @@ class ProductType{
 			return false;
 		}
 		$this->data_fields=json_decode($r['data_fields']);
+		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v.'_header';
+		if (!file_exists($tpl_cache)) {
+			file_put_contents($tpl_cache, $r['multiview_template_header']);
+		}
+		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v.'_footer';
+		if (!file_exists($tpl_cache)) {
+			file_put_contents($tpl_cache, $r['multiview_template_footer']);
+		}
 		$tpl_cache=USERBASE.'/ww.cache/products/templates/types_multiview_'.$v;
 		if (!file_exists($tpl_cache)) {
 			file_put_contents($tpl_cache, $r['multiview_template']);

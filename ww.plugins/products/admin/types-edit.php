@@ -21,16 +21,22 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		if (strlen($singleview)<20) {
 			$singleview = '{{PRODUCTS_DATATABLE}}'.$singleview;
 		}
-		$multiview = sanitise_html($_REQUEST['multiview_template']);
+		$multiview = $_REQUEST['multiview_template'];
+		$multiview_header = $_REQUEST['multiview_template_header'];
+		$multiview_footer = $_REQUEST['multiview_template_footer'];
 		if (strlen($multiview)<20) {
 			$multiview = '{{PRODUCTS_DATATABLE align=horizontal}}';
 			$multiview.= '<a href="{{PRODUCTS_LINK}}">more</a>';
 		}
 		$singleview=str_replace('&quot;', '"', $singleview);
 		$multiview=str_replace('&quot;', '"', $multiview);
+		$multiview_header=str_replace('&quot;', '"', $multiview_header);
+		$multiview_footer=str_replace('&quot;', '"', $multiview_footer);
 		$sql='set name="'.addslashes($_REQUEST['name'])
 			.'",data_fields="'.addslashes($data_fields)
 			.'",multiview_template="'.addslashes($multiview)
+			.'",multiview_template_header="'.addslashes($multiview_header)
+			.'",multiview_template_footer="'.addslashes($multiview_footer)
 			.'",singleview_template="'.addslashes($singleview).'"';
 		if (isset($_POST['is_for_sale'])) {
 			$sql.=',is_for_sale=1';
