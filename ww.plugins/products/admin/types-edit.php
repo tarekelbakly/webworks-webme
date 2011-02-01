@@ -147,10 +147,23 @@ echo '</div>';
 echo '<div id="multiview-template">'
 	.'<p>This template is for how the product looks when it is in a list '
 	.'of products. Leave this blank to have one auto-generated when needed.</p>'
-	.ckeditor('multiview_template',$tdata['multiview_template'])
-	.'<p class="sample-codes">'
-	.'Example codes: {{PRODUCTS_IMAGE}}, {{PRODUCTS_LINK}}, {{$_name}}</p>'
+	.'<strong>Header</strong><br />'
+	.'<textarea name="multiview_template_header" id="multiview_template_header"'
+	.' style="width:100%;height:5em;" title="header">'
+	.htmlspecialchars($tdata['multiview_template_header'])
+	.'</textarea>'
+	.'<strong>Body</strong><br />'
+	.'<textarea name="multiview_template" id="multiview_template"'
+	.' style="width:100%;height:15em;" title="body">'
+	.htmlspecialchars($tdata['multiview_template'])
+	.'</textarea>'
+	.'<strong>Footer</strong>'
+	.'<textarea name="multiview_template_footer" id="multiview_template_footer"'
+	.' style="width:100%;height:5em;" title="footer">'
+	.htmlspecialchars($tdata['multiview_template_footer'])
+	.'</textarea>'
 	.'</div>';
+WW_addScript('/j/CodeMirror-0.93/js/codemirror.js');
 // }
 // { single-view template
 echo '<div id="singleview-template">'
