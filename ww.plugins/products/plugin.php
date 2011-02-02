@@ -177,4 +177,5 @@ function Products_listCategoryContents($params, &$smarty){
 function Products_widget($vars=null){
 	require_once dirname(__FILE__).'/frontend/show.php';
 	require dirname(__FILE__).'/frontend/widget.php';
+	return $html;
 }

@@ -113,9 +113,6 @@ $(function(){
 		}
 	}
 	function products_validate_form(){
-		$('#multiview_template').val(multiview_template.getCode());
-		$('#multiview_template_header').val(multiview_template_header.getCode());
-		$('#multiview_template_footer').val(multiview_template_footer.getCode());
 		if($('#data_fields_rows .product-type-fd-name.error').length){
 			alert("one or more field names has an error\nhover your mouse over the field name to get an explanation");
 			return false;
@@ -128,41 +125,5 @@ $(function(){
 	$('div.has-left-menu>form').submit(products_validate_form);
 	$('#data_fields_rows .product-type-fd-name').live('keyup',function(){
 		products_data_check_field_name(this);
-	});
-	var multiview_template_header = CodeMirror.fromTextArea("multiview_template_header", {
-	  parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js",
-			"parsejavascript.js", "parsehtmlmixed.js"],
-		reindentOnLoad:false,
-	  path: "/j/CodeMirror-0.93/js/",
-		height:"dynamic",
-		stylesheet: [
-			"/j/CodeMirror-0.93/css/xmlcolors.css",
-			"/j/CodeMirror-0.93/css/jscolors.css",
-			"/j/CodeMirror-0.93/css/csscolors.css"
-		]
-	});
-	var multiview_template = CodeMirror.fromTextArea("multiview_template", {
-	  parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js",
-			"parsejavascript.js", "parsehtmlmixed.js"],
-		reindentOnLoad:false,
-	  path: "/j/CodeMirror-0.93/js/",
-		height: "dynamic",
-		stylesheet: [
-			"/j/CodeMirror-0.93/css/xmlcolors.css",
-			"/j/CodeMirror-0.93/css/jscolors.css",
-			"/j/CodeMirror-0.93/css/csscolors.css"
-		]
-	});
-	var multiview_template_footer = CodeMirror.fromTextArea("multiview_template_footer", {
-	  parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js",
-			"parsejavascript.js", "parsehtmlmixed.js"],
-		reindentOnLoad:false,
-		height: "dynamic",
-	  path: "/j/CodeMirror-0.93/js/",
-		stylesheet: [
-			"/j/CodeMirror-0.93/css/xmlcolors.css",
-			"/j/CodeMirror-0.93/css/jscolors.css",
-			"/j/CodeMirror-0.93/css/csscolors.css"
-		]
 	});
 });
