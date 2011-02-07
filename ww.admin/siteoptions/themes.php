@@ -106,6 +106,9 @@ foreach ($dir as $file) {
 				continue;
 			}
 			$file2=preg_replace('/\.css$/', '', $file2);
+			if (!isset($DBVARS['theme_variant'])) {
+				$DBVARS['theme_variant']='';
+			}
 			$sel=$file2==$DBVARS['theme_variant']?' selected="selected"':'';
 			echo '<option',$sel,'>',htmlspecialchars($file2),'</option>';
 		}
