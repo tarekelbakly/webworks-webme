@@ -25,6 +25,9 @@ $all=array();
 $s=$start+$vars['image_gallery_x']*$vars['image_gallery_y'];
 if($s>$n)$s=$n;
 for($i=$start;$i<$s;++$i){
+	if (!isset($images[$i]['caption'])) {
+		$images[$i]['caption']='';
+	}
 	$cap=$images[$i]['caption'];
 	if(strlen($cap)>$vars['image_gallery_captionlength'])$cap=substr($cap,0,$vars['image_gallery_captionlength']-3).'...';
 	$all[]=array(

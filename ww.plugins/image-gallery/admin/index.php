@@ -71,6 +71,9 @@ $c.='<iframe src="/ww.plugins/image-gallery/admin/uploader.php'
 if($n){
 	$c.='<div id="image-gallery-wrapper">';
 	for($i=0;$i<$n;$i++){
+		if (!isset($images[$i]['caption'])) {
+			$images[$i]['caption']='';
+		}
 		$c.='<div><img src="/kfmget/'.$images[$i]['id'].','
 		.'width=64,height=64" id="image-gallery-image'.$images[$i]['id'].'" '
 		.'title="'.str_replace('\\\\n','<br />',$images[$i]['caption']).'" />'

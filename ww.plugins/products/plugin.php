@@ -156,13 +156,16 @@ function products_add_to_cart($PAGEDATA){
 		$md5=','.md5($long_desc.'products_'.$id);
 	}
 	// }
+	$http_referer=isset($_SERVER['HTTP_REFERER'])
+		?$_SERVER['HTTP_REFERER']
+		:'';
 	OnlineStore_addToCart(
 		$price+$price_amendments,
 		$amount,
 		$product->get('name'),
 		$long_desc,
 		'products_'.$id.$md5,
-		$_SERVER['HTTP_REFERER'],
+		$http_referer,
 		$vat
 	);
 }
