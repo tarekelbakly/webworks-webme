@@ -112,7 +112,9 @@ if ($kfm->setting('allow_file_upload')) {
 							$data = @exif_read_data($to, 0, true);
 							if (is_array($data)&&isset($data['COMMENT'])&&is_array($data['COMMENT'])) $comment = join("\n", $data['COMMENT']);
 						}
-						$file->setCaption($comment);
+						if (method_exists($file, 'setCaption')) {
+							$file->setCaption($comment);
+						}
 					}
 					else if (isset($_POST['kfm_unzipWhenUploaded'])&&$_POST['kfm_unzipWhenUploaded']) {
 						kfm_extractZippedFile($fid);
