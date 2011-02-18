@@ -1149,10 +1149,11 @@ class Products{
 			default: // { use template
 				if (count($prods)) { // display the first item's header
 					$product=Product::getInstance($prods[0]);
-					$type=ProductType::getInstance($product->get('product_type_id'));
+					$typeID=$product->get('product_type_id');
+					$type=ProductType::getInstance($typeID);
 					$smarty=products_setup_smarty();
 					$c.=$smarty->fetch(
-						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_header'
+						USERBASE.'/ww.cache/products/templates/types_multiview_'.$typeID.'_header'
 					);
 				}
 				foreach ($prods as $pid) {
@@ -1171,10 +1172,10 @@ class Products{
 						}
 					}
 				}
-				if (count($prods)) { // display the first item's header
+				if (count($prods)) { // display the last item's footer
 					$smarty=products_setup_smarty();
 					$c.=$smarty->fetch(
-						USERBASE.'/ww.cache/products/templates/types_multiview_'.$type->id.'_footer'
+						USERBASE.'/ww.cache/products/templates/types_multiview_'.$typeID.'_footer'
 					);
 				}
 			// }
