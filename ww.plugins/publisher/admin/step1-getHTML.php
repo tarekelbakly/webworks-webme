@@ -21,6 +21,9 @@ if (file_exists($base)) {
 	rrmdir($base);
 }
 mkdir($base);
+file_put_contents($base.'/website.html', '<script>document.location="site/index.html";</script>');
+$base=$base.'/site';
+mkdir($base);
 
 $pids=dbAll('select id from pages');
 $page_names=array();

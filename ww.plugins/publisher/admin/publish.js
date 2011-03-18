@@ -7,7 +7,9 @@ function publisher_start() {
 			+'<li id="publisher-3"></li>'
 			+'<li id="publisher-4"></li>'
 			+'<li id="publisher-5"></li>'
-			+'<li id="publisher-6">zip it all up</li>'
+			+'<li id="publisher-6"></li>'
+			+'<li id="publisher-7"></li>'
+			+'<li id="publisher-8"></li>'
 			+'</ol>'
 		);
 	publisher_step1();
@@ -39,7 +41,7 @@ function publisher_step3(){
 		.append(' completed');
 	$('#publisher-3')
 		.css('text-decoration','blink')
-		.text('getting list of CSS, Images, JavaScript files... ');
+		.text('getting list of CSS, Images, JavaScript files ... ');
 	$.post('/ww.plugins/publisher/admin/step3-getCSSandJavaScript.php',publisher_step4);
 }
 function publisher_step4(){
@@ -63,7 +65,7 @@ function publisher_step5(){
 		.append(' completed');
 	$('#publisher-5')
 		.css('text-decoration','blink')
-		.text('getting list of image references in CSS files');
+		.text('getting list of file references in CSS files ...');
 	$.post('/ww.plugins/publisher/admin/step5-getImageReferencesInCssFiles.php',publisher_step6);
 }
 function publisher_step6(){
@@ -75,9 +77,28 @@ function publisher_step6(){
 		.append(' completed');
 	$('#publisher-6')
 		.css('text-decoration','blink')
-		.text('download images referenced in CSS files');
+		.text('downloading files referenced in CSS files ...');
 	$.post('/ww.plugins/publisher/admin/step6-downloadImageReferencesInCssFiles.php',publisher_step7);
 }
 function publisher_step7(){
-
+	$('#publisher-6')
+		.css({
+			'text-decoration':'none',
+			'color':'#666'
+		})
+		.append(' completed');
+	$('#publisher-7')
+		.css('text-decoration','blink')
+		.text('preparing zipped version of site ...');
+	$.post('/ww.plugins/publisher/admin/step7-zipItUp.php',publisher_step8);
+}
+function publisher_step8(){
+	$('#publisher-7')
+		.css({
+			'text-decoration':'none',
+			'color':'#666'
+		})
+		.append(' completed');
+	$('#publisher-8')
+		.html('<a href="/f/.files/published-site.tar.bz2">download your published website</a>');
 }

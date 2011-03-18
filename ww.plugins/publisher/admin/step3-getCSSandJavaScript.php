@@ -4,7 +4,7 @@ if (!is_admin()) {
 	die('access denied');
 }
 
-$base=USERBASE.'/ww.cache/publisher';
+$base=USERBASE.'/ww.cache/publisher/site';
 
 $css=array();
 $images=array();
@@ -42,7 +42,8 @@ foreach ($files as $file) {
 	}
 	// }
 	// { get list of javascript files
-	preg_match_all('/"([^"]*\.js)"/', $f, $matches);
+	$js[]=array('/j/menu.php','menu.js');
+	preg_match_all('#"([^"]*\.js|/js/[0-9]*)"#', $f, $matches);
 	foreach ($matches[1] as $m) {
 		$js[]=array($m, str_replace('/', '@', $m));
 	}
