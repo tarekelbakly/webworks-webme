@@ -93,6 +93,12 @@ if (isset($_GET['type'])&&$_GET['type']=='thumb') {
         $extension = $file->getExtension();
     }
 }
+
+if (!file_exists($path)) {
+	echo 'file does not exist';
+	exit;
+}
+
 // { headers
 if (isset($_SERVER['HTTP_USER_AGENT'])
 	&& strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE')
