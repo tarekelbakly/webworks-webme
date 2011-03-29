@@ -188,7 +188,7 @@ class kfmDirectory extends kfmObject{
 	function getPath(){
 		$pathTmp=$this->name.'/';
 		$pid=$this->pid;
-		if(!$pid)return $GLOBALS['rootdir'];
+		if(!$pid)return isset($GLOBALS['rootdir'])?$GLOBALS['rootdir']:'';
 		while($pid>1){
 			$p=kfmDirectory::getInstance($pid);
 			if($p==false)return 'non-existing-directory';
