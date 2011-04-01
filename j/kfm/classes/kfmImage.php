@@ -182,9 +182,12 @@ class kfmImage extends kfmFile{
 		$this->thumb_url='get.php?type=thumb&id='.$id.GET_PARAMS;
 		$this->thumb_id=$id;
 		$this->thumb_path=str_replace('//','/',WORKPATH.'thumbs/'.$id.$hslparam.$GLOBALS['kfm_thumb_format']);
-		if(!file_exists($this->thumb_path) && file_exists(WORKPATH.'thumbs/'.$id.'.'.preg_replace('/.*\//','',$this->info['mime']))){
-			copy(WORKPATH.'thumbs/'.$id.'.'.preg_replace('/.*\//','',$this->info['mime']),$this->thumb_path);
-			unlink(WORKPATH.'thumbs/'.$id.'.'.preg_replace('/.*\//','',$this->info['mime']));
+		if(!file_exists($this->thumb_path)){
+			$tpath=WORKPATH.'thumbs/'.$id.'.'.preg_replace('/.*\//','',$this->info['mime']);
+			if (file_exists($tpath)) {
+				copy($tpath,$this->thumb_path);
+				unlink($tpath);
+			}
 		}
 		if(!file_exists($this->thumb_path))$this->createThumb();
 	}

@@ -40,12 +40,14 @@ if(
 	unlink(USERBASE.'/ww.cache/j/js-'.$name);
 }
 
-$js=cache_load('j','js-'.$name);
-if($js==false){
+if (!file_exists(USERBASE.'/ww.cache/j/js-'.$name)) {
 	$js='';
 	foreach($files as $f){
 		$js.=file_get_contents($f).';';
 	}
-	cache_save('j','js-'.$name,$js);
+	if (!file_exists(USERBASE.'/ww.cache/j')) {
+		mkdir(USERBASE.'/ww.cache/j');
+	}
+	file_put_contents(USERBASE.'/ww.cache/j/js-'.$name, $js);
 }
-echo $js;
+readfile(USERBASE.'/ww.cache/j/js-'.$name);
