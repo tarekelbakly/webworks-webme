@@ -18,9 +18,7 @@ $name=isset($_REQUEST['name'])?$_REQUEST['name']:'';
 
 function Copy_recursive($src,$dst) {
 	$dir = opendir($src);
-	if (!file_exists($dst)) {
-		mkdir($dst);
-	}
+	@mkdir($dst);
 	while (false !== ($file=readdir($dir))) {
 		if (($file!='.') && ($file!='..')) {
 			if (is_dir($src.'/'.$file)) {

@@ -63,14 +63,17 @@ if ($kfm->setting('allow_file_upload')) {
 			}
 			else $to = $toDir->path().'/'.$filename;
 			if (!is_file($tmpname)) $errors[] = 'No file uploaded';
-			else if (!kfmFile::checkName($filename)) {
+			else if (@!kfmFile::checkName($filename)) {
 				$errors[] = 'The filename: '.$filename.' is not allowed';
 			}
-			else if(in_array(kfmFile::getExtension($filename),$kfm->setting('banned_upload_extensions'))){
+			else if(in_array(@kfmFile::getExtension($filename),$kfm->setting('banned_upload_extensions'))){
 				$errors[] = 'The extension: '.kfmFile::getExtension($filename).' is not allowed';
 			}
 			// { check to see if it's an image, and if so, is it bloody massive
-			if(in_array(kfmFile::getExtension($filename),array('jpg', 'jpeg', 'gif', 'png', 'bmp'))){
+			if (in_array(
+				strtolower(preg_replace('/.*\./', '', $filename)),
+				array('jpg', 'jpeg', 'gif', 'png', 'bmp')
+			)){
 				list($width, $height, $type, $attr)=getimagesize($tmpname);
 				if($width>$toDir->maxWidth() || $height>$toDir->maxHeight()){
 					$errors[] = 'Please do not upload images which are larger than '.$toDir->maxWidth().'x'.$toDir->maxHeight();
@@ -89,7 +92,7 @@ if ($kfm->setting('allow_file_upload')) {
 			}
 			else {
 				chmod($to, octdec('0'.$kfm->setting('default_upload_permission')));
-				$fid  = kfmFile::addToDb($filename, $kfm_session->get('cwd_id'));
+				$fid  = @kfmFile::addToDb($filename, $kfm_session->get('cwd_id'));
 				$file = kfmFile::getInstance($fid);
 				if (function_exists('exif_imagetype')) {
 					$imgtype = exif_imagetype($to);

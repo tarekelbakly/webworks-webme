@@ -14,9 +14,7 @@
 require_once 'common.php';
 
 $id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
-$type=isset($_REQUEST['type'])
-	?$_REQUEST['type']
-	:'';
+$type=$_REQUEST['type'];
 $url='/';
 switch($type){
 	case 'loginpage': // {

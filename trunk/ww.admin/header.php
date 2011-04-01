@@ -17,8 +17,8 @@ $admin_vars=array();
 	foreach(array('show_items','start') as $v)$$v=getVar($v,0);
 	$id=isset($_REQUEST['id'])?(int)$_REQUEST['id']:0;
 // }
-WW_addScript('/j/jquery.dataTables.min.js');
-WW_addCSS('/j/jquery.dataTables.css');
+WW_addScript('/j/jquery.dataTables-1.7.5/jquery.dataTables.min.js');
+WW_addCSS('/j/jquery.dataTables-1.7.5/jquery.dataTables.css');
 WW_addScript('/j/jquery.remoteselectoptions.js');
 WW_addScript('/j/fg.menu/fg.menu.js');
 WW_addScript('/j/ckeditor-3.5/ckeditor.js');
@@ -27,12 +27,12 @@ WW_addScript('/ww.admin/j/admin.js');
 ?>
 <html>
 	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+<?php
+	echo Core_getJQueryScripts();
+?>
 		<?php echo '<script src="/js/'.filemtime(SCRIPTBASE.'j/js.js').'"></script>'; ?>
 		<link rel="stylesheet" type="text/css" href="/j/cluetip/jquery.cluetip.css" />
 		<link rel="stylesheet" href="/ww.admin/theme/admin.css" type="text/css" />
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/south-street/jquery-ui.css" type="text/css" />
 <?php
 foreach($PLUGINS as $pname=>$p){
 	if(file_exists(SCRIPTBASE.'/ww.plugins/'.$pname.'/admin/admin.css'))echo '<link rel="stylesheet" href="/ww.plugins/'.$pname.'/admin/admin.css" type="text/css" />';
@@ -70,6 +70,7 @@ foreach($PLUGINS as $pname=>$p){
 	// { add final items
 	$menus['Stats']=    array('_link'=>'/ww.admin/stats.php');
 	$menus['View Site']=array( '_link'=>'/', '_target'=>'_blank');
+	$menus['Help']=array( '_link'=>'http://kvweb.me/', '_target'=>'_blank');
 	$menus['Log Out']=  array('_link'=>'/?logout=1');
 	// }
 	// { display menu as UL list

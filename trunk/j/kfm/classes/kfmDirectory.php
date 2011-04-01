@@ -148,7 +148,7 @@ class kfmDirectory extends kfmObject{
 		if(file_exists($this->path()) && is_dir($this->path())) {
 			foreach(new directoryIterator($this->path()) as $f){
 				if($f->isDot())continue;
-				if(is_file($this->path().$f) && kfmFile::checkName($f))$tmp[]=$f.'';
+				if(is_file($this->path().$f) && @kfmFile::checkName($f))$tmp[]=$f.'';
 			}
 		}
 		natsort($tmp);
@@ -156,7 +156,9 @@ class kfmDirectory extends kfmObject{
 		// { load file details from database
 		$files=array();
 		foreach($tmp as $filename){
-			if(!isset($fileshash[$filename]))$fileshash[$filename]=kfmFile::addToDb($filename,$this->id);
+			if (!isset($fileshash[$filename])) {
+				$fileshash[$filename]=@kfmFile::addToDb($filename,$this->id);
+			}
 			$file=kfmFile::getInstance($fileshash[$filename]);
 			if(!$file)continue;
 			if($file->isImage()){
@@ -188,7 +190,7 @@ class kfmDirectory extends kfmObject{
 	function getPath(){
 		$pathTmp=$this->name.'/';
 		$pid=$this->pid;
-		if(!$pid)return isset($GLOBALS['rootdir'])?$GLOBALS['rootdir']:'';
+		if(!$pid)return $GLOBALS['rootdir'];
 		while($pid>1){
 			$p=kfmDirectory::getInstance($pid);
 			if($p==false)return 'non-existing-directory';

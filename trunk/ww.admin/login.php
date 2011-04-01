@@ -16,20 +16,26 @@ if(!$existing_accounts && isset($_REQUEST['email']) && isset($_REQUEST['password
 	$password=md5($_REQUEST['password']);
 	if(!filter_var($email,FILTER_VALIDATE_EMAIL))$message=__('Please make sure to use a valid email address');
 	else{
-		dbQuery("insert into user_accounts (id,email,name,password,active,parent) values(1,'".addslashes($email)."','Administrator','$password',1,0)");
+		dbQuery(
+			'insert into user_accounts set id=1,email="'.addslashes($email).'",'
+			.'name="Administrator",password="'.$password.'",active=1,parent=0,'
+			.'date_created=now()'
+		);
 		dbQuery("insert into groups values(1,'administrators',0)");
 		dbQuery("insert into users_groups values(1,1)");
-		$message='User account created. Please login now (press F5 and choose to resubmit the login data)';
+		$message='User account created. Please login now (press F5 and choose '
+			.'to resubmit the login data)';
 	}
 }
 ?>
 <html>
 	<head>
 		<title><?php echo __('Login'); ?></title>
+<?php
+	require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/common.php';
+	echo Core_getJQueryScripts();
+?>
 		<link rel="stylesheet" type="text/css" href="/ww.admin/theme/login.css" />
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="/js/"></script>
 		<script>
 			$(function() {
 				$('#login-tabs').tabs();
