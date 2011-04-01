@@ -9,7 +9,7 @@ function SendAsEmail_showWidget($vars) {
 	if (strpos($url, '&') !== false && strpos($url, '?') === false) {
 		$url=preg_replace('/&/', '?', $url, 1);
 	}
-	echo '<div class="sendasemail-print"><a href="'.$url.'">Print Version</a></div>';
+	echo '<div class="sendasemail-print"><a href="'.$url.'" targe="_blank">Print this page</a></div>';
 	echo '<div class="sendasemail-sendasemail">'
 		.'<a href="javascript:;" onclick="sendasemail_send(\''.$template.'\')">Send as Email</a></div>';
 	WW_addScript('/ww.plugins/send-as-email/frontend/widget.js');

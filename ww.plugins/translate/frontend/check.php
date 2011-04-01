@@ -36,8 +36,8 @@ else {
 			$text=$fp->body;
 			$c = Google_Translate_API::translate(
 				$text,
-				$PAGEDATA->vars['translate_language_from'],
-				$PAGEDATA->vars['translate_language']
+				@$PAGEDATA->vars['translate_language_from'],
+				@$PAGEDATA->vars['translate_language']
 			);
 			if ($c === false) {
 				$PAGEDATA->body='<em>translation failed! Original document is <a href="'

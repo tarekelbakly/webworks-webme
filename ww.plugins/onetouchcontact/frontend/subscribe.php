@@ -5,8 +5,12 @@ $errors=array();
 $cid=(int)$_REQUEST['cid'];
 $mid=(int)$_REQUEST['mid'];
 $email=$_REQUEST['email'];
-$name=$_REQUEST['name'];
-$phone=isset($_REQUEST['phone'])?$_REQUEST['phone']:'';
+$name=isset($_REQUEST['name'])
+	?$_REQUEST['name']
+	:$email;
+$phone=isset($_REQUEST['phone'])
+	?$_REQUEST['phone']
+	:'';
 if($phone=='Your Phone Here')$phone='';
 
 if(!$cid)$errors[]='no client id provided. please contact the webmaster.';

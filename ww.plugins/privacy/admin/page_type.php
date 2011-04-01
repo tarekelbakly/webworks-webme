@@ -17,6 +17,9 @@ $html.='</div>';
 $html.='<div id="privacy-options"><table style="width:100%">';
 // { visibility, user groups
 $html.='<tr><th>'.__('Visibility').'</th><td>';
+if (!isset($page_vars['userlogin_visibility'])) {
+	$page_vars['userlogin_visibility']=3;
+}
 $html.= wInput(
 	'page_vars[userlogin_visibility]',
 	'select',
@@ -60,7 +63,9 @@ $html.='</select></td></tr>';
 // { redirect on login
 $html.='<tr><th>'.__('redirect on login:').'</th><td>';
 $html.='<select id="page_vars_userlogin_redirect_to" name="page_vars[userlogin_redirect_to]">';
-if($page_vars['userlogin_redirect_to']){
+if (isset($page_vars['userlogin_redirect_to'])
+	&& $page_vars['userlogin_redirect_to']
+) {
 	$parent=Page::getInstance($page_vars['userlogin_redirect_to']);
 	$html.='<option value="'.$parent->id.'">'.htmlspecialchars($parent->name).'</option>';
 }
@@ -78,7 +83,7 @@ $html.='<ul>';
 $html.='<li><a href="#privacy-messages-login">Login</a></li>';
 $html.='<li><a href="#privacy-messages-reminder">Reminder</a></li>';
 $html.='<li><a href="#privacy-messages-registeration">Registeration</a></li>';
-$html.='<ul>';
+$html.='</ul>';
 // { Login header
 $html.='<div id="privacy-messages-login"><br />';
 $html.='<p>This message appears above the login form.</p>';
@@ -115,11 +120,14 @@ $html.='</div>';
 $html.='</div></div>';
 // }
 // { terms and conditions
-$html.='<div id="privacy-conditions">';
-$html.='<p>Leave blank if no terms and conditions agreement is needed</p>';
+if (!isset($page_vars['userlogin_terms_and_conditions'])) {
+	$page_vars['userlogin_terms_and_conditions']='';
+}
 $contents = $page_vars['userlogin_terms_and_conditions'];
-$html.=ckeditor('page_vars[userlogin_terms_and_conditions]', $contents, false);
-$html.='</div>';
+$html.='<div id="privacy-conditions">'
+	.'<p>Leave blank if no terms and conditions agreement is needed</p>'
+	.ckeditor('page_vars[userlogin_terms_and_conditions]', $contents, false)
+	.'</div>';
 // }
 // { addition privacy fields
 $html.= '<div id="privacy-data">';
