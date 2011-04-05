@@ -28,9 +28,15 @@ require '../libs.php';
 $total=OnlineStore_calculateTotal();
 $item_total=$amt?$_SESSION['online-store']['items'][$md5]['cost']*$amt:0;
 
-echo '{'.
-	'"md5": "'.$md5.'",'.
-	'"amt":'.$amt.','
-	.'"item_total":'.$item_total.','
-	.'"total":'.$total
-.'}';
+if (isset($_REQUEST['r'])) {
+	$url=preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER']);
+	header('Location: '.$url);
+}
+else {
+	echo '{'.
+		'"md5": "'.$md5.'",'.
+		'"amt":'.$amt.','
+		.'"item_total":'.$item_total.','
+		.'"total":'.$total
+		.'}';
+}
