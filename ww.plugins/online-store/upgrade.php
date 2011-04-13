@@ -70,6 +70,13 @@ if ($version==6) { // change _apply_vat to _vatfree
 	}
 	$version=7;
 }
+if ($version==7) { // add _vatfree user group
+	$r=dbRow('select * from groups where name="_vatfree"');
+	if (!$r) {
+		dbQuery('insert into groups set name="_vatfree",meta="{}",parent=0');
+	}
+	$version=8;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

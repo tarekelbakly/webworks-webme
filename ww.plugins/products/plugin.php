@@ -166,7 +166,8 @@ function products_add_to_cart($PAGEDATA){
 		$long_desc,
 		'products_'.$id.$md5,
 		$http_referer,
-		$vat
+		$vat,
+		$id
 	);
 }
 function Products_listCategories($params, &$smarty){

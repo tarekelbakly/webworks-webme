@@ -31,6 +31,9 @@ $plugin=array(
 			'ONLINESTORE_PAYMENT_TYPES' => array(
 				'function' => 'OnlineStore_payment_types'
 			),
+			'PRODUCTS_PRICE' => array(
+				'function' => 'OnlineStore_productPriceHTML'
+			),
 			'PRODUCTS_FULL_PRICE' => array(
 				'function' => 'OnlineStore_productPriceFull'
 			)
@@ -40,7 +43,7 @@ $plugin=array(
 		'displaying-pagedata'      => 'OnlineStore_pagedata',
 		'initialisation-completed' => 'OnlineStore_startup'
 	),
-	'version' => '7'
+	'version' => '8'
 );
 // }
 // { currency symbols
@@ -64,7 +67,7 @@ $online_store_currencies=array(
 	*/
 function OnlineStore_addToCart(
 	$cost=0, $amt=0, $short_desc='',
-	$long_desc='', $md5='', $url='', $vat=true
+	$long_desc='', $md5='', $url='', $vat=true, $id=0
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -79,6 +82,7 @@ function OnlineStore_addToCart(
 	$item['short_desc']=$short_desc;
 	$item['url']=$url;
 	$item['vat']=$vat;
+	$item['id']=$id;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';
@@ -211,6 +215,58 @@ function OnlineStore_payment_types() {
 	*
 	* @return string
 	*/
+function OnlineStore_productPriceHTML($params, &$smarty) {
+	$pid=$smarty->_tpl_vars['product']->id;
+	$product=Product::getInstance($pid);
+	if (!isset($product->vals['online-store'])) {
+		$product->vals['online-store']=array(
+			'_price'=>0,
+			'_trade_price'=>0,
+			'_sale_price'=>0,
+			'_bulk_price'=>0,
+			'_bulk_amount'=>0,
+			'_weight'=>0,
+			'_vatfree'=>0,
+			'_custom_vat_amount'=>0
+		);
+	}
+	$p=$product->vals['online-store'];
+	$user_is_vat_free=0;
+	if (@$_SESSION['userdata']['id']) {
+		$user=User::getInstance($_SESSION['userdata']['id']);
+		$user_is_vat_free=$user->isInGroup('_vatfree');
+	}
+	$vat=$p['_vatfree']||$user_is_vat_free
+		?1
+		:($p['_custom_vat_amount']
+			?(100+$p['_custom_vat_amount'])/100
+			:(100+$_SESSION['onlinestore_vat_percent'])/100
+		);
+	foreach ($p as $k=>$v) {
+		$p[$k]=(float)$v;
+	}
+	if ($p['_sale_price']) {
+		$tmp='<strike class="os_price">'.OnlineStore_numToPrice($p['_price']*$vat)
+			.'</strike> <strong class="os_price">'
+			.OnlineStore_numToPrice($p['_sale_price']*$vat).'</strong>';
+	}
+	else {
+		$tmp='<strong class="os_price">'
+			.OnlineStore_numToPrice($p['_price']*$vat).'</strong>';
+	}
+	if ($p['_bulk_price'] && $p['_bulk_amount']) {
+		$tmp.='<br />'.OnlineStore_numToPrice($p['_bulk_price']*$vat).' for '
+			.$p['_bulk_amount'].' or more';
+	}
+	$tmp='<span class="os_full_price">'.$tmp.'</span>';
+	return $tmp;
+}
+
+/**
+	* Smarty function for returning a product's price, including currency symbol
+	*
+	* @return string
+	*/
 function OnlineStore_productPriceFull($params, &$smarty) {
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
@@ -250,7 +306,6 @@ function OnlineStore_productPriceFull($params, &$smarty) {
 	return $tmp;
 }
 
-
 /**
 	* when given a number, it returns that number formatted to a currency
 	*
@@ -270,6 +325,11 @@ function OnlineStore_numToPrice($val, $sym=true, $rounded=false) {
 	* @return string
 	*/
 function OnlineStore_showBasketWidget($vars=null) {
+	$user_is_vat_free=0;
+	if (@$_SESSION['userdata']['id']) {
+		$user=User::getInstance($_SESSION['userdata']['id']);
+		$user_is_vat_free=$user->isInGroup('_vatfree');
+	}
 	global $DBVARS;
 	$html='<div class="online-store-basket-widget">';
 	if (!isset($_SESSION['online-store'])) {
@@ -284,11 +344,15 @@ function OnlineStore_showBasketWidget($vars=null) {
 	}
 	else {
 		if (count($_SESSION['online-store']['items'])) {
+			$total=0;
 			$html.='<table class="os_basket">';
 			$html.='<tr class="os_basket_titles"><th>Price</th><th>Amount</th>'
 				.'<th>Total</th></tr>';
 			foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 				// { name
+				$vat=$user_is_vat_free || !$item['vat']
+					?1
+					:(100+$_SESSION['onlinestore_vat_percent'])/100;
 				$html.='<tr class="os_basket_itemTitle" product="'.$md5.'">'
 					.'<th colspan="3">';
 				if ($item['url']) {
@@ -301,7 +365,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 				$html.='</th></tr>';
 				// }
 				$html.='<tr class="os_basket_itemDetails '.$md5.'" product="'.$md5.'">'
-					.'<td>'.OnlineStore_numToPrice($item['cost']).'</td>';
+					.'<td>'.OnlineStore_numToPrice($item['cost']*$vat).'</td>';
 				// { amount
 				$html.='<td class="amt">'
 					.'<span class="'.$md5.'-amt">'.$item['amt'].'</span>'
@@ -309,12 +373,13 @@ function OnlineStore_showBasketWidget($vars=null) {
 					.'</td>';
 				// }
 				$html.='<td class="'.$md5.'-item-total">'
-					.OnlineStore_numToPrice($item['cost']*$item['amt'])
+					.OnlineStore_numToPrice($item['cost']*$item['amt']*$vat)
 					.'</td></tr>';
+				$total+=$item['cost']*$item['amt']*$vat;
 			}
 			$html.='<tr class="os_basket_totals"><th colspan="2">Total</th>'
 				.'<td class="total">'
-				.OnlineStore_numToPrice($_SESSION['online-store']['total']).'</td></tr>';
+				.OnlineStore_numToPrice($total).'</td></tr>';
 			$html.='</table>';
 			$html.='<a class="checkout" href="/?pageid='.$_SESSION['onlinestore_checkout_page'].'">'
 				.'Proceed to Checkout</a>';
@@ -386,13 +451,18 @@ function OnlineStore_getPostageAndPackagingSubtotal($cstrs,$total,$country,$weig
 	return (float)$val;
 }
 function OnlineStore_getFinalTotal() {
+	$user_is_vat_free=0;
+	if (@$_SESSION['userdata']['id']) {
+		$user=User::getInstance($_SESSION['userdata']['id']);
+		$user_is_vat_free=$user->isInGroup('_vatfree');
+	}
 	$grandTotal = 0;
 	$vattable=0;
 	$has_vatfree=false;
 	foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 		$totalItemCost=$item['cost']*$item['amt'];
 		$grandTotal+=$totalItemCost;
-		if ($item['vat']) {
+		if ($item['vat'] && !$user_is_vat_free) {
 			$vattable+=$totalItemCost;
 		}
 	}
