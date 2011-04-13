@@ -27,7 +27,7 @@ $(function(){
 	var editor = CodeMirror.fromTextArea("theme-body", {
 	  parserfile: ["parsecss.js"],
 		reindentOnLoad:true,
-		height:450,
+		height:"450px",
 	  path: "/j/CodeMirror-0.93/js/",
 		stylesheet: ["/j/CodeMirror-0.93/css/csscolors.css"]
 	});
