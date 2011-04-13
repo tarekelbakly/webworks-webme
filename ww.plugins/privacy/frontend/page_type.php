@@ -12,7 +12,10 @@ function userloginandregistrationDisplay(){
 			$password=Password::getNew();
 			$password='password=md5(\''.$password.'\'),';
 		}
-		dbQuery("update user_accounts set $np verification_hash='',active=1 where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
+		else {
+			$password='';
+		}
+		dbQuery("update user_accounts set $password verification_hash='',active=1 where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
 		if (isset($_REQUEST['np'])) {
 			mail(
 				$_GET['email'],
@@ -356,7 +359,7 @@ function userregistration_register(){
 			foreach($admins as $admin){
 				mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user ($email) has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 			}
-			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Our admins will moderate your registration, and you will receive an email with your new password when it is activated.</p>');
+			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Our admins will moderate your registration, and you will receive an email when it is activated.</p>');
 		}
 	// }
 }
