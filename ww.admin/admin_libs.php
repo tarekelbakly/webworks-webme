@@ -37,8 +37,8 @@ function html_fixImageResizes($src){
 			$height=preg_replace('#.*height="([0-9]*)".*#i','\1',$match);
 		}
 		else if(preg_match('/style="[^"]*width: *[0-9]*px/i',$match) && preg_match('/style="[^"]*height: *[0-9]*px/i',$match)){
-			$width=preg_replace('#.*style="[^"]*width: *([0-9]*)px.*#i','\1',$match);
-			$height=preg_replace('#.*style="[^"]*height: *([0-9]*)px.*#i','\1',$match);
+			$width= preg_replace('#.*style="([^"]*[^-]width|width): *([0-9]*)px.*#i','\2',$match);
+			$height=preg_replace('#.*style="([^"]*[^-]height|height): *([0-9]*)px.*#i','\2',$match);
 		}
 		if(!$width || !$height)continue;
 		$imgsrc=preg_replace('#.*src="([^"]*)".*#i','\1',$match);
@@ -58,7 +58,8 @@ function html_fixImageResizes($src){
 		}
 
 		// create address of resized image and update HTML
-		$newURL=WORKURL_IMAGERESIZES.$dir.'/'.$width.'x'.$height.'.jpg';
+		$ext=strtolower(preg_replace('/.*\./', '', $imgsrc));
+		$newURL=WORKURL_IMAGERESIZES.$dir.'/'.$width.'x'.$height.($ext=='png'||$ext=='gif'?'.png':'.jpg');
 		$newImgHTML=preg_replace('/(.*src=")[^"]*(".*)/i',"$1$newURL$2",$match);
 		$src=str_replace($match,$newImgHTML,$src);
 
@@ -70,7 +71,7 @@ function html_fixImageResizes($src){
 		if (!file_exists($imgdir)) {
 			mkdir($imgdir);
 		}
-		$imgfile=$imgdir.'/'.$width.'x'.$height.'.jpg';
+		$imgfile=$imgdir.'/'.$width.'x'.$height.($ext=='png'||$ext=='gif'?'.png':'.jpg');
 		if(file_exists($imgfile))continue;
 		$str='convert "'.addslashes($imgsrc).'" -geometry '.$width.'x'.$height.' "'.$imgfile.'"';
 		exec($str);
@@ -155,7 +156,7 @@ function WW_getCSS(){
 	}
 	$url='/css/';
 	foreach($css_urls as $s)$url.='|'.$s;
-	return '<link rel="stylesheet" type="text/css" href="'.htmlspecialchars($url).'" />';
+	return '<link rel="stylesheet" href="'.htmlspecialchars($url).'" />';
 }
 function WW_getScripts() {
 	global $scripts,$scripts_inline;
