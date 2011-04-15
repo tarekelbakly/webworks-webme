@@ -1,6 +1,8 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
-if(!is_admin())die('access denied');
+require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/basics.php';
+if (!is_admin()) {
+	die('access denied');
+}
 
 $fields=array();
 $filter='';
@@ -34,9 +36,5 @@ foreach($rs as $r){
 $fields=array_unique($fields);
 asort($fields);
 foreach ($fields as $field) {
-	echo '<option';
-	if ($field==$vars['products_order_by']) {
-		echo ' selected="selected"';
-	}
-	echo '>', htmlspecialchars($field), '</option>';
+	echo '<option>', htmlspecialchars($field), '</option>';
 }

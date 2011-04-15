@@ -306,7 +306,8 @@ function userregistration_register(){
 		$missing[]='your email address';
 	}
 	foreach ($rs as $r) {
-		if (isset($r->is_required) && $r->is_required && (!isset($_REQUEST['privacy_extras_'.$r->name]) || !$_REQUEST['privacy_extras_'.$r->name])) {
+		$ename=preg_replace('/[^a-zA-Z0-9_]/','',$r->name);
+		if (isset($r->is_required) && $r->is_required && (!isset($_REQUEST['privacy_extras_'.$ename]) || !$_REQUEST['privacy_extras_'.$ename])) {
 			$missing[]=$r->name;
 		}
 	}

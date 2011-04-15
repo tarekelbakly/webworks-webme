@@ -104,6 +104,10 @@ function messaging_notifier_get_rss($r){
 		return array();
 	}
 	$dom=@DOMDocument::loadXML($f);
+	if ($dom === false) {
+		echo '<em>error parsing RSS feed '.htmlspecialchars($r->url).'</em>';
+		return false;
+	}
 	$items=$dom->getElementsByTagName('item');
 	$arr=array();
 	foreach($items as $item){
