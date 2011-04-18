@@ -459,11 +459,13 @@ function OnlineStore_getFinalTotal() {
 	$grandTotal = 0;
 	$vattable=0;
 	$has_vatfree=false;
-	foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
-		$totalItemCost=$item['cost']*$item['amt'];
-		$grandTotal+=$totalItemCost;
-		if ($item['vat'] && !$user_is_vat_free) {
-			$vattable+=$totalItemCost;
+	if (isset($_SESSION['online-store']['items'])) {
+		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
+			$totalItemCost=$item['cost']*$item['amt'];
+			$grandTotal+=$totalItemCost;
+			if ($item['vat'] && !$user_is_vat_free) {
+				$vattable+=$totalItemCost;
+			}
 		}
 	}
 	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
@@ -484,9 +486,10 @@ function OnlineStore_getFinalTotal() {
 	*/
 function OnlineStore_getNumItems(){
 	$num=0;
-	$cart=&$_SESSION['online-store']['items'];
-	foreach ($cart as $item) {
-		$num+=$item['amt'];
+	if (isset($_SESSION['online-store']['items'])) {
+		foreach ($_SESSION['online-store']['items'] as $item) {
+			$num+=$item['amt'];
+		}
 	}
 	return $num;
 }
