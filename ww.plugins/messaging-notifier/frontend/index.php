@@ -75,7 +75,7 @@ function parse_messaging_notifier($data, $vars){
 		}
 		$target=$vars->load_in_other_tab?' target="_blank"':'';
 		$title=$vars->hide_story_title?'':'<strong>'.htmlspecialchars($r['title']).'</strong><br />';
-		$html.='<li class="messaging-notifier-'.$r['type'].'"><a'.$target.' href="'.$r['link'].'">'.$title.$description.'</a><br /><i>'.date('Y M jS H:i',$r['unixtime']).'</i></li>';
+		$html.='<li class="messaging-notifier-'.$r['type'].'"><a'.$target.' href="'.$r['link'].'">'.$title.$description.'</a><br /><i class="date">'.date('Y M jS <\s\p\a\n \c\l\a\s\s="\t\i\m\e">H:i</\s\p\a\n>',$r['unixtime']).'</i></li>';
 	}
 	$html.='</ul></div>';
 	WW_addCSS('/ww.plugins/messaging-notifier/c/styles.css');
