@@ -80,20 +80,20 @@ function PageSummaries_getHtml($id) {
 			// { build body
 			if ($r['amount_to_show']==0 || $r['amount_to_show']==1) {
 				$length=$r['amount_to_show']==0?300:600;
-				$body=substr(
+				$body=str_replace(
+					'  ',
+					' ',
 					preg_replace(
 						'/<[^>]*>/',
-						'',
+						' ',
 						str_replace(
 							array('&amp;', '&nbsp;', '&lsquo;'),
 							array('&',' ','&apos;'),
 							$r2['body']
 						)
-					),
-					0,
-					$length
-				)
-				.'...';
+					)
+				);
+				$body=substr($body, 0, $length).'...';
 			}
 			else {
 				$body=$r2['body'];
