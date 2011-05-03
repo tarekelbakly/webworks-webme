@@ -77,6 +77,22 @@ if ($version==7) { // add _vatfree user group
 	}
 	$version=8;
 }
+if ($version==8) { // add online_store_vouchers
+	dbQuery('create table online_store_vouchers(
+		id int auto_increment not null primary key,
+		name text,
+		code text,
+		user_constraints enum("public", "userlist"),
+		users_list text,
+		value float default 0,
+		value_type enum("percentage", "value"),
+		usages_per_user int,
+		usages_in_total int,
+		start_date date,
+		end_date date
+		) default charset=utf8');
+	$version=9;
+}
 
 $DBVARS[$pname.'|version']=$version;
 config_rewrite();

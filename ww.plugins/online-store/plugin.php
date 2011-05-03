@@ -6,7 +6,7 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae@webworks.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
 	* @link     None
 	*/
@@ -17,7 +17,9 @@ $plugin=array(
 	'admin' => array(
 		'page_type' => 'OnlineStore_adminPageForm',
 		'menu' => array(
-			'Site Options>Online Store' => 'site-options',
+			'Online Store>Orders'   => 'list-pages',
+			'Online Store>Vouchers' => 'vouchers',
+			'Online Store>Options'  => 'site-options'
 		),
 		'widget' => array(
 			'form_url' => '/ww.plugins/online-store/admin/widget-form.php'
@@ -31,6 +33,9 @@ $plugin=array(
 			'ONLINESTORE_PAYMENT_TYPES' => array(
 				'function' => 'OnlineStore_payment_types'
 			),
+			'ONLINESTORE_VOUCHER' => array(
+				'function' => 'OnlineStore_showVoucherInput'
+			),
 			'PRODUCTS_PRICE' => array(
 				'function' => 'OnlineStore_productPriceHTML'
 			),
@@ -43,7 +48,7 @@ $plugin=array(
 		'displaying-pagedata'      => 'OnlineStore_pagedata',
 		'initialisation-completed' => 'OnlineStore_startup'
 	),
-	'version' => '8'
+	'version' => '9'
 );
 // }
 // { currency symbols
@@ -471,6 +476,15 @@ function OnlineStore_getFinalTotal() {
 	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
 	if ($postage['total']) {
 		$grandTotal+=$postage['total'];
+	}
+	if (@$_REQUEST['os_voucher']) {
+		require_once dirname(__FILE__).'/frontend/voucher-libs.php';
+		$email=@$_REQUEST['Email'];
+		$code=$_REQUEST['os_voucher'];
+		$voucher_amount=OnlineStore_voucherAmount($code, $email, $grandTotal);
+		if ($voucher_amount) {
+			$grandTotal-=$voucher_amount;
+		}
 	}
 	if ($vattable) {
 		$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
