@@ -124,7 +124,7 @@ if (isset($DBVARS['canonical_name'])
 		.$_SERVER['REQUEST_URI'];
 	redirect($url);
 }
-if (!isset($DBVARS['version']) || $DBVARS['version']<32) {
+if (!isset($DBVARS['version']) || $DBVARS['version']<35) {
 	redirect('/ww.incs/upgrade.php');
 }
 $id=getVar('pageid', 0);
@@ -146,6 +146,9 @@ if (!$id) {
 		$r=Page::getInstanceByName($page);
 		if ($r && isset($r->id)) {
 			$id=$r->id;
+		}
+		if (!$id) {
+			$id=(int)dbOne('select page_id from short_urls where short_url="'.addslashes($page).'"', 'page_id');
 		}
 	}
 	if (!$id) {
@@ -326,7 +329,7 @@ if (is_admin()) {
 	WW_addScript('/ww.admin/j/common.js');
 }
 // { generate inline javascript
-$tmp='var pagedata={id:'.$PAGEDATA->id.''
+$tmp='var pagedata={sessionID:"'.session_id().'",id:'.$PAGEDATA->id.''
 	.plugin_trigger('displaying-pagedata')
 	.'},';
 if (isset($_SESSION['userdata'])) {

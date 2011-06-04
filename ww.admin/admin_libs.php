@@ -254,7 +254,7 @@ function sanitise_html($original_html) {
 		$html = str_replace('{{LINERETURN}}{{CARRIAGERETURN}}', "{{CARRIAGERETURN}}", $html);
 		$html = str_replace('>{{CARRIAGERETURN}}','>',$html);
 		$html = str_replace('{{CARRIAGERETURN}}{{CARRIAGERETURN}}', '{{CARRIAGERETURN}}', $html);
-		$html = preg_replace('/\s+/',' ',$html);
+	//	$html = preg_replace('/\s+/',' ',$html);
 		$html = preg_replace("/<p>\s*/",'<p>',$html);
 		$html = preg_replace("#\s*<br( ?/)?>\s*#",'<br />',$html);
 		$html = preg_replace("#\s*<li>\s*#",'<li>',$html);
@@ -317,4 +317,47 @@ function sanitise_html($original_html) {
 	$html = str_replace('{{CARRIAGERETURN}}', "\n", $html);
 	$html = str_replace('{{LINERETURN}}', "\r", $html);
 	return $html;
+}
+
+/**
+ * curl
+ * 
+ * gets the contents of a url
+ */
+function curl( $url ){
+        $ch = curl_init( );
+        curl_setopt( $ch, CURLOPT_URL, $url );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        $response = curl_exec( $ch );
+        curl_close( $ch );
+        return $response;
+}
+
+/** 
+ * get_template_names
+ *
+ * returns an array of the templates in the
+ * themes-personal directory
+ */
+function get_template_names( ){
+
+	$themes = array( );
+	$dir = USERBASE . 'themes-personal/';
+
+        /**
+         * loop through theme dir
+         */
+        $handler = opendir( $dir );
+        while( $file = readdir( $handler ) ){
+
+		if( $file == '.' || $file == '..' )
+			continue;
+
+		if( is_dir( $dir . $file ) )
+			array_push( $themes, $file );
+
+        }
+        closedir( $handler );
+
+	return $themes;
 }

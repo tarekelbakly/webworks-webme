@@ -6,9 +6,9 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae@webworks.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
-	* @link     http://webworks.ie/
+	* @link     http://kvsites.ie/
 	*/
 
 /**
@@ -354,8 +354,22 @@ if ($version==31) { // add "date_created" to user_account
 	dbQuery('alter table user_accounts add date_created datetime');
 	$version=32;
 }
+if ( $version == 32 ) { // add "alias" field to pages table
+	dbQuery( 'alter table pages add alias text after associated_date' );
+	dbQuery( 'update pages set alias=name' );
+	$version = 33;
+}
+if ( $version == 33 ) { // clear cache...
+	cache_clear('pages');
+	$version = 34;
+}
+if ($version==34) { // add page id to short_url
+	dbQuery('alter table short_urls add page_id int default 0');
+	$version=35;
+}
 
 $DBVARS['version']=$version;
+cache_clear();
 config_rewrite();
 
 echo '<p>Site upgraded. Please <a href="/">click here</a> to return to the '

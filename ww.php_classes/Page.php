@@ -8,7 +8,6 @@ class Page{
 	static $instancesByType		= array();
 	public $vals;
 	function __construct($v,$byField=0,$fromRow=0,$pvq=0){
-#echo "start Page constructor ".(microtime(true)-START_TIME).'<br />';
 		# byField: 0=ID; 1=Name
 		if (!$byField && is_numeric($v)) {
 			if ($fromRow) {
@@ -78,7 +77,6 @@ class Page{
 		$this->__valuesLoaded=false;
 		if($pvq)$this->initValues($pvq);
 		// }
-#echo "finish Page constructor ".(microtime(true)-START_TIME).'<br />';
 	}
 	static function getInstance($id=0,$fromRow=false,$pvq=false){
 		if (!is_numeric($id)) return false;
@@ -134,13 +132,20 @@ class Page{
 		return self::$instancesByNAndP[$name.'/'.$parent];
 	}
 	function getRelativeURL(){
-		if(isset($this->relativeURL))return $this->relativeURL;
-		$this->relativeURL='';
-		if($this->parent){
-			$p=Page::getInstance($this->parent);
-			if($p)$this->relativeURL.=$p->getRelativeURL();
+		if (isset($this->relativeURL)) {
+			return $this->relativeURL;
 		}
-		$this->relativeURL.='/'.$this->getURLSafeName();
+		if (isset($this->vars['_short_url'])) {
+			$this->relativeURL='/'.dbOne('select short_url from short_urls where page_id='.$this->id, 'short_url');
+		}
+		else {
+			$this->relativeURL='';
+			if($this->parent){
+				$p=Page::getInstance($this->parent);
+				if($p)$this->relativeURL.=$p->getRelativeURL();
+			}
+			$this->relativeURL.='/'.$this->getURLSafeName();
+		}
 		return $this->relativeURL;
 	}
 	function getTopParentId(){
