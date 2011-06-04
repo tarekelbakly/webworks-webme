@@ -51,6 +51,14 @@ dbQuery($q);
 // { page_vars
 dbQuery('delete from page_vars where page_id="'.$id.'"');
 $pagevars=isset($_REQUEST['page_vars'])?$_REQUEST['page_vars']:array();
+if (@$_REQUEST['short_url']) {
+	dbQuery('insert into short_urls set cdate=now(),page_id='.$id.',short_url="'.addslashes($_REQUEST['short_url']).'"');
+	$pagevars['_short_url']=1;
+}
+else {
+	dbQuery('delete from short_urls where page_id='.$id);
+	unset($pagevars['_short_url']);
+}
 if(is_array($pagevars))foreach($pagevars as $k=>$v){
 	if(is_array($v))$v=json_encode($v);
 	dbQuery('insert into page_vars (name,value,page_id) values("'.addslashes($k).'","'.addslashes($v).'",'.$id.')');

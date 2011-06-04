@@ -6,9 +6,9 @@
 	*
 	* @category None
 	* @package  None
-	* @author   Kae Verens <kae@webworks.ie>
+	* @author   Kae Verens <kae@kvsites.ie>
 	* @license  GPL 2.0
-	* @link     http://webworks.ie/
+	* @link     http://kvsites.ie/
 	*/
 
 require_once SCRIPTBASE . 'ww.incs/menus.php';
@@ -19,6 +19,9 @@ require_once SCRIPTBASE . 'ww.incs/menus.php';
   * @return string HTML sitemap
   */
 function Sitemap_get() {
+	if (@$GLOBALS['DBVARS']['disable-hidden-sitemap']) {
+		return '';
+	}
 	global $PAGEDATA;
 	$rs=Menu_getChildren(0, $PAGEDATA->id);
 	return '<ul>'.Sitemap_getLinks($rs).'</ul>';
