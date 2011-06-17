@@ -172,6 +172,19 @@ function plugin_trigger($trigger_name){
 	}
 	return $c;
 }
+function plugin_trigger_arr($trigger_name, $params=null) {
+	global $PLUGIN_TRIGGERS;
+	if (!isset($PLUGIN_TRIGGERS[$trigger_name])) {
+		return;
+	}
+	foreach($PLUGIN_TRIGGERS[$trigger_name] as $fn) {
+		$c=$fn($params);
+		if ($c && is_array($c)) {
+			return $c;
+		}
+	}
+	return false;
+}
 define('SCRIPTBASE', $_SERVER['DOCUMENT_ROOT'] . '/');
 if (!file_exists(SCRIPTBASE . '.private/config.php')) {
 	echo '<html><body><p>No configuration file found</p>';
