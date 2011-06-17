@@ -146,6 +146,13 @@ if (!$id) {
 		$r=Page::getInstanceByName($page);
 		if ($r && isset($r->id)) {
 			$id=$r->id;
+			$PAGEDATA=Page::getInstance($id)->initValues();
+			if (@$PAGEDATA->vars['_short_url']) {
+				$s=dbOne('select short_url from short_urls where page_id='.$id, 'short_url');
+				if ($s!=$page) {
+					redirect('/'.$s, 301);
+				}
+			}
 		}
 		if (!$id) {
 			$id=(int)dbOne('select page_id from short_urls where short_url="'.addslashes($page).'"', 'page_id');
@@ -216,8 +223,11 @@ if (!$access_allowed) {
 		.'<input type="submit" /></form>';
 }
 else if (getVar('webmespecial')=='sitemap') {
+	if (@$DBVARS['disable-hidden-sitemap']) {
+		echo 'no sitemap';
+		exit;
+	}
 	require_once 'ww.incs/sitemap-funcs.php';
-	$c.=Sitemap_get();
 }
 else {
 	switch($PAGEDATA->type) {
