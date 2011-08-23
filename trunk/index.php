@@ -166,6 +166,9 @@ if (!$id) {
 		if (!$page) {
 			$r=Page::getInstanceBySpecial($special);
 			if ($r && isset($r->id)) {
+				if ($special==1) {
+					redirect($r->getRelativeUrl());
+				}
 				$id=$r->id;
 			}
 		}
@@ -224,6 +227,7 @@ if (!$access_allowed) {
 }
 else if (getVar('webmespecial')=='sitemap') {
 	if (@$DBVARS['disable-hidden-sitemap']) {
+		header("HTTP/1.0 404 Not Found");
 		echo 'no sitemap';
 		exit;
 	}

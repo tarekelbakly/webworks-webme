@@ -233,6 +233,9 @@ function sanitise_html_essential($original_html) {
 		// }
 		$html=str_replace('&quot;','"',$html);
 		$html=str_replace('&#39;',"'",$html);
+		// { convert <font> into <span>
+		$html=str_replace(array('<font', '</font'), array('<span', '</span'), $html);
+		// }
 		$has_changed=$html!=$original_html;
 		$original_html=$html;
 	}while($has_changed);
