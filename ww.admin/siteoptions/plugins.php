@@ -31,9 +31,9 @@ foreach($PLUGINS as $name=>$plugin){
 		'</tr>';
 }
 $dir=new DirectoryIterator(SCRIPTBASE . 'ww.plugins');
-foreach($dir as $plugin){
-	if(strpos($plugin,'.')===0)continue;
-	$name=$plugin->getFilename();
+foreach($dir as $plugind){
+	if(strpos($plugind,'.')===0)continue;
+	$name=$plugind->getFilename();
 	if (!is_dir(SCRIPTBASE . 'ww.plugins/' . $name)
 		|| isset($PLUGINS[$name])
 	) {
