@@ -1,4 +1,5 @@
 <?php
+apache_setenv('PATH', '/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin');
 session_start();
 require 'Log.php';
 if(!defined('START_TIME'))define('START_TIME',microtime(true));
