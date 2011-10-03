@@ -5,12 +5,13 @@ echo '<h1>Site Options</h1>';
 echo admin_menu(array(
 	'General'=>'siteoptions.php?page=general',
 	'Users'=>'siteoptions.php?page=users',
+	'Groups'=>'siteoptions.php?page=groups',
 	'Themes'=>'siteoptions.php?page=themes',
 	'Plugins'=>'siteoptions.php?page=plugins'
 ));
 
 $page=admin_verifypage(
-	array('general','users','themes','plugins'),
+	array('general','users','groups', 'themes','plugins'),
 	'general',
 	isset($_REQUEST['page'])?$_REQUEST['page']:''
 );

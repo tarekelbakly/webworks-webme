@@ -36,7 +36,6 @@ if(isset($_REQUEST['action'])){
 		else{
 			dbQuery('update user_accounts '.$sql.' where id='.$id);
 		}
-		dbQuery("delete from users_groups where user_accounts_id=$id");
 		// { first, create new groups if required
 		if(isset($_REQUEST['new_groups'])){
 			foreach($_REQUEST['new_groups'] as $ng){
@@ -48,13 +47,16 @@ if(isset($_REQUEST['action'])){
 		// }
 		if (isset($_REQUEST['groups'])) {
 			foreach ($_REQUEST['groups'] as $k=>$n) {
-				dbQuery("insert into users_groups set user_accounts_id=$id,groups_id=".(int)$k);
+				if (dbOne('select user_accounts_id from users_groups where user_accounts_id='.$id.' and groups_id='.(int)$k, 'user_accounts_id')) {
+					continue;
+				}
+				Core_addUserToGroup($id, (int)$k);
 			}
+			dbQuery('delete from users_groups where user_accounts_id='.$id.' and groups_id not in ('.join(',', array_keys($_REQUEST['groups'])).')');
 		}
-		// { now remove any groups other than Administrator that are not used at all
-		$rs=dbAll('select id from (select groups.id,groups_id from groups left join users_groups on groups.id=groups_id) as derived where groups_id is null');
-		foreach($rs as $r)if($r['id']!='1')dbRow('delete from groups where id='.$r['id']);
-		// }
+		else {
+			dbQuery("delete from users_groups where user_accounts_id=$id");
+		}
 		echo '<em>users updated</em>';
 		if (isset($_REQUEST['email-to-send'])) {
 			$site=preg_replace('/www\./','',$_SERVER['HTTP_HOST']);

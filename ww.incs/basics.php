@@ -55,6 +55,51 @@ function config_rewrite(){
 	$config="<?php\n\$DBVARS=array(\n	".join(",\n	",$tmparr2)."\n);";
 	file_put_contents(CONFIG_FILE,$config);
 }
+function Core_addUserToGroup($uid, $gid) {
+	$meta=json_decode(dbOne('select meta from groups where id='.$gid, 'meta'), true);
+	$expires=(@$meta['paid-membership']=='yes')
+		?'expires=date_add(now(), interval '.$meta['paid-membership-subscription-period-num'].' '.$meta['paid-membership-subscription-period'].'),'
+		:'';
+	dbQuery('insert into users_groups set '.$expires.'user_accounts_id='.$uid.',groups_id='.$gid);
+	if (@$meta['mailinglist'] == 'Mailchimp' && @$meta['mailinglist_apikey']) {
+		$user=dbRow('select * from user_accounts where id='.$uid);
+		$email=$user['email'];
+		$first_name=preg_replace('/ .*/', '', $user['name']);
+		$last_name=preg_replace('/^[^ ]* /', '', $user['name']);
+		$apikey=$meta['mailinglist_apikey'];
+		$listId=$meta['mailinglist_listid'];
+		$merges = array(
+			'FNAME'=>$first_name,
+			'LNAME'=>$last_name
+		);
+		$double_optin=false;
+		$update_existing=false;
+		$replace_interests=true;
+		$send_welcome=false;
+		$email_type = 'html';
+		$data = array(
+			'email_address'=>$email,
+			'apikey'=>$apikey,
+			'merge_vars' => $merges,
+			'id' => $listId,
+			'double_optin' => $double_optin,
+			'update_existing' => $update_existing,
+			'replace_interests' => $replace_interests,
+			'send_welcome' => $send_welcome,
+			'email_type' => $email_type
+		);
+		$payload = json_encode($data);
+		$submit_url='http://'.preg_replace('/.*-/', '', $apikey).'.api.mailchimp.com/1.3/?method=listSubscribe';
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $submit_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($payload));
+		$result = curl_exec($ch);
+		curl_close ($ch);
+		$data=json_decode($result);
+	}
+}
 function dbAll($query, $key='') {
 	$q = dbQuery($query);
 	if ($q === false) {
