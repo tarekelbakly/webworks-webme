@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+		<script src="jquery.maskImage.js"></script>
+		<script>
+			$(function() {
+				// first, do a quick demo using black-to-red.png
+				$('#img1').maskImage({'src':'images/hello-world.png'});
+	
+				// now, let's set up the select to change things on the fly
+				$('select').change(function(){
+					var val=$(this).val();
+					$('#img1')
+						.attr('src', 'images/'+val)
+						.maskImage({'src':'images/hello-world.png'});
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<img id="img1" src="images/black-to-red.png"/>
+		<select>
+			<option>black-to-red.png</option>
+			<option>black-to-green.png</option>
+			<option>black-to-yellow.png</option>
+		</select>
+		<br />
+		<p>The following images were used in this demo:</p>
+		<ul>
+			<li><img src="images/hello-world.png"/></li>
+			<li><img src="images/black-to-red.png"/></li>
+			<li><img src="images/black-to-green.png"/></li>
+			<li><img src="images/black-to-yellow.png"/></li>
+		</ul>
+	</body>
+</html>

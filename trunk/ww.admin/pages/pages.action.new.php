@@ -37,7 +37,7 @@ $q='insert into pages set ord="'.$ord.'",importance="'.$importance.'",'
 	.'body="'.addslashes($body).'",type="'.$type.'",'
 	.'associated_date="'.addslashes($associated_date).'"';
 $q.=',parent='.$pid;
-if(has_page_permissions(128))$q.=',special='.$special;else $q.=',special=0';
+$q.=',special=0';
 dbQuery($q);
 $id=dbOne('select last_insert_id() as id','id');
 dbQuery('insert into permissions set id="'.$id.'", type=1, value="'.get_userid().'=7'."\n\n4".'"');

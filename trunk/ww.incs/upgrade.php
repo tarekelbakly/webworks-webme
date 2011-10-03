@@ -354,18 +354,28 @@ if ($version==31) { // add "date_created" to user_account
 	dbQuery('alter table user_accounts add date_created datetime');
 	$version=32;
 }
-if ( $version == 32 ) { // add "alias" field to pages table
+if ($version==32) { // add "alias" field to pages table
 	dbQuery( 'alter table pages add alias text after associated_date' );
 	dbQuery( 'update pages set alias=name' );
 	$version = 33;
 }
-if ( $version == 33 ) { // clear cache...
+if ($version==33) { // clear cache...
 	cache_clear('pages');
 	$version = 34;
 }
 if ($version==34) { // add page id to short_url
 	dbQuery('alter table short_urls add page_id int default 0');
 	$version=35;
+}
+if ($version==35) { // add credits to user accounts
+	dbQuery('alter table user_accounts add credits float default 0');
+	dbQuery('alter table user_accounts add group_subscriptions text');
+	$version=36;
+}
+if ($version==36) { // add expiry date to group subscriptions
+	dbQuery('alter table users_groups add expires date');
+	dbQuery('update users_groups set expires="0000-00-00"');
+	$version=37;
 }
 
 $DBVARS['version']=$version;
