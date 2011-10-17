@@ -352,6 +352,7 @@ if (isset($_SESSION['userdata'])) {
 	if (isset($_SESSION['userdata']['discount'])) {
 		$tmp.=',discount:'.(int)$_SESSION['userdata']['discount'];
 	}
+	$tmp.=',groups:'.json_encode($_SESSION['userdata']['groups']);
 	$tmp.='}';
 }
 else {
