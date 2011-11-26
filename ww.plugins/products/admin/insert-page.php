@@ -86,11 +86,13 @@ if ($product) {
 		);
 	if ($datafields) {
 		$data= json_decode($datafields);
-		$firstField= $data->n;
-		dbQuery(
-			"insert into page_vars(page_id, name, value)
-			values('$pageid', 'products_order_by', '".addslashes($firstField)."')"
-		);
+		if (isset($data->n)) {
+			$firstField= $data->n;
+			dbQuery(
+				"insert into page_vars(page_id, name, value)
+				values('$pageid', 'products_order_by', '".addslashes($firstField)."')"
+			);
+		}
 	}
 }
 

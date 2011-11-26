@@ -13,6 +13,7 @@
   * @link       www.webworks.ie
 **/
 
+header('Content-type: text/json');
 require_once $_SERVER['DOCUMENT_ROOT'].'/ww.incs/recaptcha.php';
 $result 
 	= recaptcha_check_answer(

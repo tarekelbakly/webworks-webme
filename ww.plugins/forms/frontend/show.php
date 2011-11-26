@@ -83,11 +83,13 @@ function Form_send($page, $vars) {
 			)
 			.'</em><br />';
 		}
-		if ($r2['type']=='email' && !filter_var($val, FILTER_VALIDATE_EMAIL)) {
-			$err.='<em>'.__(
-				'You must provide a valid email in the <strong>%1</strong> field.',
-				$r2['name']
-			).'</em><br />';
+		else {
+			if ($val!='' && $r2['type']=='email' && !filter_var($val, FILTER_VALIDATE_EMAIL)) {
+				$err.='<em>'.__(
+					'You must provide a valid email in the <strong>%1</strong> field.',
+					$r2['name']
+				).'</em><br />';
+			}
 		}
 	}
 	if ($vars['forms_captcha_required']) {
@@ -112,7 +114,8 @@ function Form_send($page, $vars) {
 	$from_field=preg_replace('/[^a-zA-Z]/', '', $vars['forms_replyto']);
 	$from=isset($_REQUEST[$from_field])?$_REQUEST[$from_field]:'';
 	if ($from == '') {
-		$err='please fill in the "'.$vars['forms_replyto'].'" field.';
+		$from='no-email-address-entered@'.str_replace('www.', '', $_SERVER['HTTP_HOST']);
+//		$err='please fill in the "'.$vars['forms_replyto'].'" field.';
 	}
 	if ($err!='') {
 		$c.=Form_showForm($page, $vars, $err);
@@ -139,7 +142,7 @@ function Form_send($page, $vars) {
 				$_FILES
 			);
 		}
-		if ($vars['forms_record_in_db']) {
+		if (@$vars['forms_record_in_db']) {
 			Form_saveValues($page['id']);
 		}
 		$c.='<div id="thankyoumessage">'.$vars['forms_successmsg'].'</div>';

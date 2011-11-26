@@ -132,24 +132,32 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.'<th class="unitamountheader">'
 			.'Unit Price</th><th class="amountheader">Amount</th></tr>';
 		$grandTotal=0;
+		$deliverytotal=0;
 		$vattable=0;
 		$has_vatfree=false;
-		foreach ($_SESSION['online-store']['items'] as $key=>$item) {
-			$totalItemCost=$item['cost']*$item['amt'];
-			$table.='<tr><td class="quantitycell">'.$item['amt']
-				.'</td><td class="descriptioncell"><a href="'.$item['url'].'">'
-				.preg_replace('/<[^>]*>/', '', $item['short_desc'])
-				.'</td><td class="unitamountcell">'
-				.OnlineStore_numToPrice($item['cost'])
-				.'</td><td class="amountcell">'
-				.OnlineStore_numToPrice($totalItemCost)
-				.'</td></tr>';
-			if ($item['long_desc']) {
-				$table.='<tr><td colspan="3">'.$item['long_desc'].'</td><td></td></tr>';
-			}
-			$grandTotal+=$totalItemCost;
-			if ($item['vat']) {
-				$vattable+=$totalItemCost;
+		$weight=0;
+		if (isset($_SESSION['online-store']['items'])) {
+			foreach ($_SESSION['online-store']['items'] as $key=>$item) {
+				$totalItemCost=$item['cost']*$item['amt'];
+				$weight+=$item['amt']*$item['weight'];
+				$table.='<tr><td class="quantitycell">'.$item['amt']
+					.'</td><td class="descriptioncell"><a href="'.$item['url'].'">'
+					.preg_replace('/<[^>]*>/', '', $item['short_desc'])
+					.'</td><td class="unitamountcell">'
+					.OnlineStore_numToPrice($item['cost'])
+					.'</td><td class="amountcell">'
+					.OnlineStore_numToPrice($totalItemCost)
+					.'</td></tr>';
+				if ($item['long_desc']) {
+					$table.='<tr><td colspan="3">'.$item['long_desc'].'</td><td></td></tr>';
+				}
+				$grandTotal+=$totalItemCost;
+				if (!$item['delivery_free']) {
+					$deliverytotal+=$totalItemCost;
+				}
+				if ($item['vat']) {
+					$vattable+=$totalItemCost;
+				}
 			}
 		}
 		$table.='<tr class="os_basket_totals">'
@@ -157,7 +165,7 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 			.'Subtotal</td><td class="totals amountcell">'
 			.OnlineStore_numToPrice($total)
 			.'</td></tr>';
-		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		$postage=OnlineStore_getPostageAndPackaging($deliverytotal, '', $weight);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
 			$table.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
@@ -176,9 +184,9 @@ if (@$_REQUEST['action'] && !(@$_REQUEST['os_no_submit']==1)) {
 				OnlineStore_voucherRecordUsage($id, $voucher_amount);
 			}
 		}
-		if ($vattable) {
-			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
-				.OnlineStore_numToPrice($vattable).')</td><td class="amountcell">';
+		if ($vattable && $_SESSION['onlinestore_vat_percent']) {
+			$table.='<tr><td style="text-align:right" class="vat" colspan="3">VAT on '
+				.OnlineStore_numToPrice($vattable).'</td><td class="amountcell">';
 			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
 			$table.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
@@ -238,7 +246,10 @@ if (!$submitted) {
 		$c.='</tr>';
 		$grandTotal = 0;
 		$vattable=0;
+		$deliverytotal=0;
 		$has_vatfree=false;
+		$weight=0;
+		$vattotal=0;
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 			$c.='<tr product="'.$md5.'" class="os_item_numbers '.$md5.'"><td>';
 			if (isset($item['url'])&&!empty($item['url'])) {
@@ -257,8 +268,14 @@ if (!$submitted) {
 				.$item['amt']
 				.'</span></td>';
 			$totalItemCost=$item['cost']*$item['amt'];
+			$weight+=$item['amt']*$item['weight'];
 			$grandTotal+=$totalItemCost;
+			if (!$item['delivery_free']) {
+				$deliverytotal+=$totalItemCost;
+			}
 			if ($item['vat'] && !$user_is_vat_free) {
+				$vat_amount=$item['custom_vat_amount']?$item['custom_vat_amount']:$_SESSION['onlinestore_vat_percent'];
+				$vattotal+=$totalItemCost*($vat_amount/100);
 				$vattable+=$totalItemCost;
 			}
 			$c.='<td class="'.$md5.'-item-total totals">'
@@ -269,12 +286,14 @@ if (!$submitted) {
 		}
 		$c.='<tr class="os_basket_totals"><td style="text-align: right;" colspan="3">Subtotal</td>'
 			.'<td class="totals">'.OnlineStore_numToPrice($grandTotal).'</td></tr>';
-		$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+		$postage=OnlineStore_getPostageAndPackaging($deliverytotal, '', $weight);
 		if ($postage['total']) {
 			$grandTotal+=$postage['total'];
 			$c.='<tr><td class="p_and_p" style="text-align: right;" colspan="3">'
 				.'Postage and Packaging (P&amp;P)</td><td class="totals">'
 				.OnlineStore_numToPrice($postage['total']).'</td></tr>';
+			$vattable+=$postage['total'];
+			$vattotal+=($_SESSION['onlinestore_vat_percent']/100)*$postage['total'];
 		}
 		if (@$_REQUEST['os_voucher']) {
 			require_once dirname(__FILE__).'/voucher-libs.php';
@@ -288,10 +307,10 @@ if (!$submitted) {
 				$grandTotal-=$voucher_amount;
 			}
 		}
-		if ($vattable) {
-			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT ('.$_SESSION['onlinestore_vat_percent'].'% on '
-				.OnlineStore_numToPrice($vattable).')</td><td class="totals">';
-			$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
+		if ($vattable && $vattotal) {
+			$c.='<tr><td style="text-align:right" class="vat" colspan="3">VAT on '
+				.OnlineStore_numToPrice($vattable).'</td><td class="totals">';
+			$vat=$vattotal;
 			$c.=OnlineStore_numToPrice($vat).'</td></tr>';
 			$grandTotal+=$vat;
 		}

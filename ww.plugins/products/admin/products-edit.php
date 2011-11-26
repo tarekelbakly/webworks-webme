@@ -12,21 +12,21 @@ $relations=dbAll(
 );
 // }
 require_once $_SERVER['DOCUMENT_ROOT'].'/j/kfm/includes/directories.php';
-if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
+if(isset($_REQUEST['action']) && $_REQUEST['action']='save') {
 	cache_clear('products');
 	cache_clear('pages');
 	$errors=array();
 	if(!isset($_REQUEST['name']) || $_REQUEST['name']=='') {
 		$errors[]='You must fill in the <strong>Name</strong>.';
 	}
-	if(count($errors)){
+	if(count($errors)) {
 		echo '<em>'.join('<br />',$errors).'</em>';
 	}
 	else{
 		// { Recreate the directory because for some reason it was looking
 		//   in the old directory for the image files
 		if (!is_dir(USERBASE.'f'.$_REQUEST['images_directory'])) {    
-			if(!is_dir(USERBASE.'f/products/product-images')){
+			if(!is_dir(USERBASE.'f/products/product-images')) {
 		    	if(!is_dir(USERBASE.'f/products')) {
 					echo 'Creating products directory ';
 					$parent_id = kfm_api_getDirectoryId('f');
@@ -59,7 +59,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		// { add data fields to SQL
 		$dfs=array();
 		if(!isset($_REQUEST['data_fields']))$_REQUEST['data_fields']=array();
-		foreach($_REQUEST['data_fields'] as $n=>$v){
+		foreach($_REQUEST['data_fields'] as $n=>$v) {
 			$dfs[]=array(
 				'n'=>$n,
 				'v'=>$v
@@ -77,7 +77,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 			$sql.=',online_store_fields="'.addslashes($online_store_data).'"';
 		}
 		// }
-		if($id){
+		if($id) {
 			dbQuery("update products $sql where id=$id");
 		}
 		else{
@@ -131,7 +131,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 		}
 		// }
 		echo '<em>Product saved</em>';
-		if(isset($_REQUEST['frontend-admin'])){
+		if(isset($_REQUEST['frontend-admin'])) {
 			echo '<script type="text/javascript">'
 				.'parent.location=parent.location;'
 			.'</script>';
@@ -139,7 +139,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']='save'){
 	}
 }
 
-if($id){
+if($id) {
 	$pdata=dbRow("select * from products where id=$id");
 	if(!$pdata)die('<em>No product with that ID exists.</em>');
 }
@@ -179,7 +179,7 @@ echo '<div id="tabs"><ul>'
 		echo '><a href="#online-store-fields">Online Store</a></li>';
 	}
 echo '<li><a href="#categories">Categories</a></li>';
-if(count($relations)){
+if(count($relations)) {
 	echo '<li><a href="#relations">Related Items</a></li>';
 }
 echo '</ul>';
@@ -194,7 +194,7 @@ echo '<input class="not-empty" name="name" value="'
 // { type
 echo '<th><div class="help products/type"></div>Type</th><td>';
 $ptypes=dbAll('select id,name from products_types order by name');
-if($ptypes===false){
+if($ptypes===false) {
 	echo '<em>No product types created yet. '
 		.'Please <a href="plugin.php?_plugin=products&amp;_page=types-edit">'
 		.'create one</a> before you go any further!</em>';
@@ -203,7 +203,7 @@ else{
 	if(!$pdata['product_type_id'])$pdata['product_type_id']=$ptypes[0]['id'];
 	echo '<select id="product_type_id" name="product_type_id" 
 		product="'.$pdata['id'].'">';
-	foreach($ptypes as $ptype){
+	foreach($ptypes as $ptype) {
 		echo '<option value="'.$ptype['id'].'"';
 		if($ptype['id']==$pdata['product_type_id'])echo ' selected="selected"';
 		echo '>'.htmlspecialchars($ptype['name']).'</option>';
@@ -261,8 +261,8 @@ if(!isset($pdata['images_directory'])
 	|| !$pdata['images_directory'] 
 	|| $pdata['images_directory']=='/'
 	|| !is_dir(USERBASE.'f/'.$pdata['images_directory'])
-){
-	if(!is_dir(USERBASE.'f/products/product-images')){
+) {
+	if(!is_dir(USERBASE.'f/products/product-images')) {
 		mkdir(USERBASE.'f/products/product-images',0777,true);
 	}
 	$pdata['images_directory']='/products/product-images/'.md5(rand().microtime());
@@ -292,11 +292,11 @@ $n=count($images);
 echo '<iframe src="/ww.plugins/products/admin/uploader.php?images_directory='
 	.urlencode($pdata['images_directory'])
 	.'" style="width:400px;height:50px;border:0;overflow:hidden"></iframe>';
-echo '<script>window.kfm={alert:function(){}};window.kfm_vars={};'
-	.'function x_kfm_loadFiles(){}'
-	.'function kfm_dir_openNode(){$("#products-form").submit();}'
+echo '<script>window.kfm={alert:function() {}};window.kfm_vars={};'
+	.'function x_kfm_loadFiles() {}'
+	.'function kfm_dir_openNode() {$("#products-form").submit();}'
 	.'var product_id='.$id.';</script>';
-if($n){
+if($n) {
 	echo '<div id="product-images-wrapper">';
 	for ($i=0;$i<$n;$i++) {
 		if (!isset($images[$i]['caption'])) {
@@ -340,9 +340,9 @@ $dfjson=str_replace(array("\n","\r"),array('\n',''),$dfjson);
 $dfjson=json_decode($dfjson,true);
 $dfdefs=array();
 foreach($dfjson as $d)$dfdefs[$d['n']]=$d;
-function product_dfs_show($df,$def){
+function product_dfs_show($df,$def) {
 	echo '<tr><th>'.htmlspecialchars($def['n']).'</th><td>';
-	switch($def['t']){
+	switch($def['t']) {
 		case 'checkbox': // {
 			echo '<input name="data_fields['.htmlspecialchars($def['n']).']" '
 				.'type="checkbox"';
@@ -361,7 +361,7 @@ function product_dfs_show($df,$def){
 		case 'selectbox': // {
 			$opts=explode("\n",$def['e']);
 			echo '<select name="data_fields['.htmlspecialchars($def['n']).']">';
-			foreach($opts as $opt){
+			foreach($opts as $opt) {
 				echo '<option';
 				if($opt==$df['v'])echo ' selected="selected"';
 				echo '>'.htmlspecialchars($opt).'</option>';
@@ -381,14 +381,14 @@ function product_dfs_show($df,$def){
 	}
 	echo '</td></tr>';
 }
-foreach($dfs as $df){
-	if(isset($dfdefs[$df['n']])){
+foreach($dfs as $df) {
+	if(isset($dfdefs[$df['n']])) {
 		$def=$dfdefs[$df['n']];
 		unset($dfdefs[$df['n']]);
 		product_dfs_show($df,$def);
 	}
 }
-foreach($dfdefs as $def){
+foreach($dfdefs as $def) {
 	product_dfs_show(array('v'=>''),$def);
 }
 echo '</table></div>';
@@ -412,7 +412,10 @@ if (isset($PLUGINS['online-store'])) {
 							'Yes'
 						)
 				),
-			'_custom_vat_amount' => 'Custom VAT Amount'
+			'_custom_vat_amount' => 'Custom VAT Amount',
+			'_deliver_free' => array(
+				'Free Delivery', 'Options'=>array('No', 'Yes')
+			)
 		);
 	$online_store_data = json_decode($pdata['online_store_fields']);
 	echo '<div id="online-store-fields" class="products-online-store"';
@@ -468,11 +471,11 @@ foreach($rs as $r)$cats[$r['id']]=$r;
 $rs=dbAll('select * from products_categories_products where product_id='.$id);
 foreach($rs as $r)$cats[$r['category_id']]['selected']=true;
 // }
-function show_sub_cats($parent){
+function show_sub_cats($parent) {
 	global $cats;
 	$found=array();
-	foreach($cats as $id=>$cat){
-		if(isset($cat['parent_id']) && $cat['parent_id']==$parent && isset($cat['name'])){
+	foreach($cats as $id=>$cat) {
+		if(isset($cat['parent_id']) && $cat['parent_id']==$parent && isset($cat['name'])) {
 			$l='<li><input type="checkbox" name="product_categories['.$id.']"';
 			if(isset($cat['selected']))$l.=' checked="checked"';
 			$l.='>'.htmlspecialchars($cat['name']);
@@ -495,7 +498,7 @@ if (count($relations)) {
 			.' and from_id='.$id
 		);
 		$options='<option value=""> -- please choose -- </option>';
-		foreach ($relations as $r){
+		foreach ($relations as $r) {
 			$options.='<option value="'.$r['id'].'"';
 			if ($r['id']==$relation['id']) {
 				$options.=' selected="selected"';
@@ -518,7 +521,7 @@ if (count($relations)) {
 	}
 	echo '<tr><td><select name="product-relations-type[]">'
 		.'<option value=""> -- please choose -- </option>';
-	foreach ($relations as $relation){
+	foreach ($relations as $relation) {
 		echo '<option value="'.$relation['id'].'">'
 			.htmlspecialchars($relation['name'])
 			.'</option>';
@@ -531,7 +534,7 @@ if (count($relations)) {
 	echo '</td></tr></table></div>';
 }
 // }
-if(isset($_REQUEST['frontend-admin'])){
+if(isset($_REQUEST['frontend-admin'])) {
 	echo '<input type="hidden" name="frontend-admin" value="1" />';
 }
 echo '</div><input type="submit" value="Save" /></form>';

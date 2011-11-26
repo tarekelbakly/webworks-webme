@@ -123,8 +123,8 @@ function Comments_displayComments($page) {
 	);
 	$cbhtml=$allowComments=='on'?Comments_showCommentForm($page->id):'';
 	// }
-	return '<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.5.5/'
-		.'jquery.validate.min.js"></script>'
+	return '<script src="/j/'
+		.'validate.jquery.min.js"></script>'
 		.($commentboxfirst?$cbhtml.$clist:$clist.$cbhtml);
 }
 

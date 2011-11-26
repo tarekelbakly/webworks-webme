@@ -862,6 +862,9 @@ class Product{
 		return false;
 	}
 	function getString($name) {
+		if ($name=='_name') {
+			return $this->name;
+		}
 		$type= ProductType::getInstance($this->vals['product_type_id']);
 		$datafields= $type->data_fields;
 		foreach ($datafields as $data) {
@@ -1152,9 +1155,12 @@ class Products{
 					$typeID=$product->get('product_type_id');
 					$type=ProductType::getInstance($typeID);
 					$smarty=products_setup_smarty();
-					$c.=$smarty->fetch(
-						USERBASE.'/ww.cache/products/templates/types_multiview_'.$typeID.'_header'
-					);
+					$template=USERBASE.'/ww.cache/products/templates/types_multiview_'.$typeID.'_header';
+					if (file_exists($template)) {
+						$c.=$smarty->fetch(
+							$template
+						);
+					}
 				}
 				foreach ($prods as $pid) {
 					$product=Product::getInstance($pid);
@@ -1174,9 +1180,12 @@ class Products{
 				}
 				if (count($prods)) { // display the last item's footer
 					$smarty=products_setup_smarty();
-					$c.=$smarty->fetch(
-						USERBASE.'/ww.cache/products/templates/types_multiview_'.$typeID.'_footer'
-					);
+					$template=USERBASE.'/ww.cache/products/templates/types_multiview_'.$typeID.'_footer';
+					if (file_exists($template)) {
+						$c.=$smarty->fetch(
+							$template
+						);
+					}
 				}
 			// }
 		}
@@ -1282,9 +1291,11 @@ class ProductType{
 								$bits=explode('|', $e);
 								$p=(float)$bits[1];
 								if ($p) {
-									$e=$bits[0].' ('
-										.($bits[1]>0?'+'.$bits[1]:$bits[1])
-										.')';
+									$e=$bits[0].' '
+										.($bits[1]>0
+											?'+'.$GLOBALS['online_store_currencies'][$DBVARS['online_store_currency']][2].$bits[1]
+											:$bits[1]
+										);
 								}
 							}
 							$h.='<option value="'.htmlspecialchars($o).'">'
@@ -1297,11 +1308,22 @@ class ProductType{
 					}
 					$smarty->assign($f->n, $h);
 				break; // }
+				case 'textarea': // {
+					if (@$f->u) {
+						$smarty->assign(
+							$f->n, '<textarea name="products_values_'.$f->n.'"></textarea>'
+						);
+					}
+					else {
+						$smarty->assign($f->n, $val);
+					}
+				break;
 				default: // { everything else
 					if (isset($f->u) && $f->u) {
+						$req=@$f->r?' required="required"':'';
 						$smarty->assign(
 							$f->n,
-							'<input name="products_values_'.$f->n.'" />'
+							'<input name="products_values_'.$f->n.'"'.$req.' />'
 						);
 					}
 					else {

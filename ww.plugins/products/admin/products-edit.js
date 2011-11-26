@@ -1,4 +1,5 @@
 function products_form_validate(){
+	return true;
 	var errors=[];
 	var req=$('#products-form .required');
 	req.each(function(){
@@ -169,7 +170,7 @@ function update_data_fields(data) {
 				html+= '<input name='+name+'" ';
 				html+= 'type="checkbox"';
 				if (data.type[i].r) {
-					html+= ' class="required"';
+//					html+= ' class="required"';
 				}
 				if (value!='') {
 					html+= ' checked="checked"';
@@ -180,7 +181,7 @@ function update_data_fields(data) {
 				html+= '<input name="'+name+'" ';
 				html+= 'class="date-human';
 				if (data.type[i].r) {
-					html+= ' required';
+//					html+= ' required';
 				}
 				html+= '" value="'+value+'"';
 				html+= ' />';
@@ -210,7 +211,7 @@ function update_data_fields(data) {
 				html+= 'name="'+name+'" ';
 				html+= 'type="text"';
 				if (data.type[i].r) {
-					html+= ' class="required"';
+//					html+= ' class="required"';
 				}
 				if (value!='') {
 					html+= ' value="'+value+'"';

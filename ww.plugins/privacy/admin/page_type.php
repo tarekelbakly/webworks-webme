@@ -31,7 +31,7 @@ $html.= wInput(
 	$page_vars['userlogin_visibility']
 );
 $html.='</td>';
-$html.='<th rowspan="3">Add New Users To</th><td rowspan="3">';
+$html.='<th rowspan="2">Add New Users To</th><td rowspan="2">';
 $groups=array();
 $grs=dbAll('select id,name from groups');
 $gms=array();
@@ -73,8 +73,9 @@ else{
 	$page_vars['userlogin_redirect_to']=0;
 	$html.='<option value="0"> -- '.__('none').' -- </option>';
 }
-$html.='</select></td></tr>';
+$html.='</select></td>';
 // }
+
 $html.='</table></div>';
 // }
 // { messages

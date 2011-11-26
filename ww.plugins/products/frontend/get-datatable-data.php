@@ -1,8 +1,8 @@
 <?php
 require 'datatable-libs.php';
 
-$i=$_REQUEST['iDisplayStart'];
-$finish=$_REQUEST['iDisplayStart']+$_REQUEST['iDisplayLength'];
+$i=(int)$_REQUEST['iDisplayStart'];
+$finish=$i+(int)$_REQUEST['iDisplayLength'];
 
 for (; $i<$finish && $i<$total_records; ++$i) {
 	$arr=array();

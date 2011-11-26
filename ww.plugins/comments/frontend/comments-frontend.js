@@ -74,8 +74,7 @@ function comments_check_captcha() {
 			"challenge":correct,
 			"response":response
 		},
-		comments_check_success,
-		"json"
+		comments_check_success
 	);
 }
 function comments_check_success(data) {

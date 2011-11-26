@@ -28,15 +28,15 @@ foreach ($files as $file) {
 	}
 	// }
 	// { get list of image files
-	preg_match_all('/"([^\("]*\.(jpg|gif|jpeg|png))"/', $f, $matches);
+	preg_match_all('/"([^\("]*\.(jpg|gif|jpeg|png|swf))"/', $f, $matches);
 	foreach ($matches[1] as $m) {
 		$images[]=array($m, str_replace('/', '@', $m));
 	}
-	preg_match_all("/\(([^'\"\)]*\.(jpg|gif|jpeg|png))\)/", $f, $matches);
+	preg_match_all("/\(([^'\"\)]*\.(jpg|gif|jpeg|png|swf))\)/", $f, $matches);
 	foreach ($matches[1] as $m) {
 		$images[]=array($m, str_replace('/', '@', $m));
 	}
-	preg_match_all("/'([^\(']*\.(jpg|gif|jpeg|png))'/", $f, $matches);
+	preg_match_all("/'([^\(']*\.(jpg|gif|jpeg|png|swf))'/", $f, $matches);
 	foreach ($matches[1] as $m) {
 		$images[]=array($m, str_replace('/', '@', $m));
 	}

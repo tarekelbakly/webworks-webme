@@ -12,7 +12,7 @@ if($rs===false){
 		cache_save('pages', 'news'.$vars->id, $rs);
 	}
 }
-if(!count($rs)){
+if(!is_array($rs) || !count($rs)){
 	$html='<em>No news items to display.</em>';
 	return;
 }
@@ -33,11 +33,10 @@ $html.='<div id="news-wrapper-'.$vars->id.'" class="news_excerpts_wrapper"><ul c
 if(isset($vars->scrolling) && $vars->scrolling){
 	$n_items=isset($vars->stories_to_show) && is_numeric($vars->stories_to_show)?$vars->stories_to_show:2;
 	if(isset($vars->scrolling) && $vars->scrolling){
-		WW_addScript('/j/jquery.vticker-min.js');
+		WW_addScript('/j/jquery.vticker.1.4.js');
 		WW_addCSS('/ww.plugins/news/c/scroller.css');
 		$html.='<script>$(function(){
 			$("#news-wrapper-'.$vars->id.'").vTicker({
-				speed: 15000,
 				pause: 5000,
 				showItems: '.$n_items.',
 				animation: "",

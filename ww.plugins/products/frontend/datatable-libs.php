@@ -45,20 +45,3 @@ switch($PAGEDATA->vars['products_what_to_show']) {
 
 $total_records=count($products->product_ids);
 $returned_products=array();
-#$i=$_REQUEST['iDisplayStart'];
-#$finish=$_REQUEST['iDisplayStart']+$_REQUEST['iDisplayLength'];
-#
-#for (; $i<$finish && $i<$total_records; ++$i) {
-#	$arr=array();
-#	$p=Product::getInstance($products->product_ids[$i]);
-#	foreach ($columns as $name) {
-#		$arr[]=$p->getString($name);
-#	}
-#	$returned_products[]=$arr;
-#}
-#
-#echo json_encode(array(
-#	'iTotalRecords'=>$total_records,
-#	'iTotalDisplayRecords'=>$total_records,
-#	'aaData'=>$returned_products
-#));

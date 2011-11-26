@@ -1,13 +1,16 @@
 <?php
 function userloginandregistrationDisplay(){
 	// { variables
-		$action=getVar('action');
-		$c='';
-		global $loggedin,$sitedomain,$DBVARS,$PAGEDATA;
+	$action=getVar('action');
+	$c='';
+	global $sitedomain,$DBVARS,$PAGEDATA;
+	$loggedin=is_logged_in();
+	$forcelogin=0;
 	// }
-	if (isset($_GET['hash']) && $_GET['hash'] && $_GET['email']) {
+	if (@$_GET['hash'] && @$_GET['email']) {
 		$r=dbRow("select * from user_accounts where email='".addslashes($_GET['email'])."' and verification_hash='".addslashes($_GET['hash'])."'");
 		if(!count($r))die('that hash and email combination does not exist');
+		$forcelogin=$r['id'];
 		if (!isset($_REQUEST['np'])) {
 			$password=Password::getNew();
 			$password='password=md5(\''.$password.'\'),';
@@ -23,27 +26,25 @@ function userloginandregistrationDisplay(){
 				"Thank you,\n\nyour user account with us has now been verified. You can login now using your email address and password.",
 				"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain"
 			);
-			return '<p>Thank you for registering.</p><p>Your account has now been verified.</p><p>Please <a href="/_r?type=privacy">click here</a> to login.</p>';
+			$c.='<script>$(function(){$("<div><p>Thank you for registering.</p><p>Your account has now been verified.</p></div>").dialog();});</script>';
 		}
 		else {
 			mail($_GET['email'],'['.$sitedomain.'] user password created',"Your new password:\n\n".$password,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 		}
-		$action='Login';
-		$_REQUEST['email']=$_GET['email'];
-		$_REQUEST['password']=$password;
 	}
-	if($action=='Login' || $loggedin){
+	if($forcelogin || $action=='Login' || $loggedin){
 		// { variables
-			if($loggedin){
-				$email=$_SESSION['userdata']['email'];
-				$password=$_SESSION['userdata']['password'];
-			}
-			else{
-				$email=$_REQUEST['email'];
-				$password=$_REQUEST['password'];
-			}
+		if($loggedin){
+			$sql='select * from user_accounts where id='.$_SESSION['userdata']['id'].' limit 1';
+		}
+		else if ($forcelogin) {
+			$sql='select * from user_accounts where id='.$forcelogin.' limit 1';
+		}
+		else{
+			$password=$_REQUEST['password'];
+			$sql='select * from user_accounts where email="'.addslashes($_REQUEST['email']).'" and password=md5("'.$password.'") limit 1';
+		}
 		// }
-		$sql='select * from user_accounts where email="'.$email.'" and password=md5("'.$password.'") limit 1';
 		$r=dbRow($sql);
 		if($r){
 			// { update session variables
@@ -54,6 +55,16 @@ function userloginandregistrationDisplay(){
 			$n=$_SESSION['userdata']['name'];
 			dbQuery('update user_accounts set last_view=now() where id='.$r['id']);
 			if($action=='Login'){
+				if (!isset($_SESSION['userdata']['groups'])) {
+					$USERGROUPS = array();
+					$rs = dbAll("select id,name from users_groups,groups where id=groups_id and user_accounts_id=" . $_SESSION['userdata']['id']);
+					if ($rs) {
+						foreach ($rs as $r) {
+							$USERGROUPS[$r['name']] = $r['id'];
+						}
+					}
+					$_SESSION['userdata']['groups']=$USERGROUPS;
+				}
 				$redirect_url='';
 				if(isset($_REQUEST['login_referer']) && strpos($_REQUEST['login_referer'],'/')===0){
 					$redirect_url=$_REQUEST['login_referer'];
@@ -67,11 +78,12 @@ function userloginandregistrationDisplay(){
 				dbQuery('update user_accounts set last_login=now() where id='.$r['id']);
 				if($redirect_url!='')redirect($redirect_url);
 			}
-			return userregistration_showProfile();
+			return $PAGEDATA->render().userregistration_showProfile($PAGEDATA);
 		}
 		else unset($_SESSION['userdata']);
 	}
-	if($c=='')$c=$PAGEDATA->render();
+#	if ($c=='') $c=$PAGEDATA->render();
+	$c.=$PAGEDATA->render();
 	if($action=='Remind'){
 		// { variables
 			$email=getVar('email');
@@ -336,15 +348,27 @@ function userregistration_register(){
 		if(isset($page->vars['userlogin_groups'])){
 			$gs=json_decode($page->vars['userlogin_groups'],true);
 			foreach($gs as $k=>$v){
-				dbQuery("insert into users_groups set user_accounts_id=$id,groups_id=".(int)$k);
+				$gid=(int)$k;
+				$gdata=dbRow('select * from groups where id='.$gid);
+				if (!$gdata || !count($gdata)) {
+					continue;
+				}
+				if ($gdata['meta']=='') {
+					$gdata['meta']='{}';
+				}
+				$meta=json_decode($gdata['meta'], true);
+				if (@$meta['paid-membership']!='yes') {
+					Core_addUserToGroup($id, $gid);
+//					dbQuery("insert into users_groups set user_accounts_id=$id,groups_id=".$gid);
+				}
 			}
 		}
 		$sitedomain=$_SERVER['HTTP_HOST'];
-		$long_url="http://$sitedomain".$page->getRelativeUrl()."?hash=".urlencode($hash)."&email=".urlencode($email).'#Login';
+		$long_url="http://$sitedomain".$page->getRelativeUrl()."?hash=".urlencode($hash)."&email=".urlencode($email).'&np=1#Login';
 		$short_url=md5($long_url);
 		$lesc=addslashes($long_url);
 		$sesc=urlencode($short_url);
-		dbQuery("insert into short_urls values(0,now(),'$lesc','$short_url')");
+		dbQuery("insert into short_urls set cdate=now(),long_url='$lesc',short_url='$short_url'");
 		if($page->vars['userlogin_registration_type']=='Email-verified'){
     	mail($email,'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to verify your email address, which has been used to register a user-account on the $sitedomain website.\n\nAfter clicking the link below, you will be logged into the server.\n\nIf you did not register this account, then please delete this email. Otherwise, please click the following URL to verify your email address with us. Thank you.\n\nhttp://$sitedomain/_s/".$sesc,"From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 			if(1 || $page->vars['userlogin_send_admin_emails']){
@@ -353,7 +377,7 @@ function userregistration_register(){
 					mail($admin['email'],'['.$sitedomain.'] user registration',"Hello!\n\nThis message is to alert you that a user ($email) has been created on your site, http://$sitedomain/ - the user has not yet been activated, so please log into the admin area of the site (http://$sitedomain/ww.admin/ - under Site Options then Users) and verify that the user details are correct.","From: noreply@$sitedomain\nReply-to: noreply@$sitedomain");
 				}
 			}
-			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Please check your email for a verification URL. Once that\'s been followed, your account will be activated and a password supplied to you.</p>');
+			return userregistration_form(false,'<p><strong>Thank you for registering</strong>. Please check your email for a verification URL. Once that\'s been followed, your account will be activated.</p>');
 		}
 		else{
 			$admins=dbAll('select email from user_accounts,users_groups where groups_id=1 && user_accounts_id=user_accounts.id');
@@ -364,12 +388,40 @@ function userregistration_register(){
 		}
 	// }
 }
-function userregistration_showProfile(){
+function userregistration_showProfile($page){
 	$ud=$_SESSION['userdata'];
 	$name=$ud['name']?$ud['name']:'';
+	$paid_groups=array();
+	$groups_html='';
+	if(isset($page->vars['userlogin_groups'])){
+		$gs=json_decode($page->vars['userlogin_groups'],true);
+		foreach($gs as $k=>$v){
+			$gid=(int)$k;
+			$gdata=dbRow('select * from groups where id='.$gid);
+			if (!$gdata || !count($gdata)) {
+				continue;
+			}
+			$is_member=dbOne('select user_accounts_id from users_groups where user_accounts_id='.$ud['id'].' and groups_id='.$k, 'user_accounts_id');
+			if ($gdata['meta']=='') {
+				$gdata['meta']='{}';
+			}
+			$meta=json_decode($gdata['meta'], true);
+			if (@$meta['paid-membership']=='yes' && !$is_member) {
+				$groups_html.='<p>Please click the PayPal button to pay for membership of the group "'.$gdata['name'].'".</p>'
+					.str_replace(
+						'</form>',
+						'<input type="hidden" name="custom" value="'.$ud['id'].'"/></form>',
+						$meta['paid-membership-paypal-recurring-payments']
+					);
+			}
+			else {
+				$groups_html.=@$meta['user-profile-message'];
+			}
+		}
+	}
 	$c='<a class="logout" href="/?logout=1">log out</a><h2>User Profile: '.htmlspecialchars($name).'</h2><table>';
 	$c.='</table>';
-	return $c;
+	return $c.$groups_html;
 }
 function loginBox(){
 	$page=Page::getInstanceByType(3);

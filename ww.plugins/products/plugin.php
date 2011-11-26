@@ -67,7 +67,7 @@ $plugin=array(
 	'triggers' => array(
 		'initialisation-completed' => 'products_add_to_cart'
 	),
-	'version' => '17'
+	'version' => '19'
 );
 // }
 
@@ -106,12 +106,18 @@ function products_add_to_cart($PAGEDATA){
 	if (isset($_REQUEST['products-howmany'])) {
 		$amount=(int)$_REQUEST['products-howmany'];
 	}
+	$weight=0;
 	if (isset($product->vals['online-store'])) {
+		$plugin_prices=plugin_trigger_arr('products-pricing', array('product'=>$product));
+		if ($plugin_prices && is_array($plugin_prices)) {
+			$product->vals['online-store']=$plugin_prices;
+		}
 		$p=$product->vals['online-store'];
 		$price=(float)$p['_price'];
 		if(isset($p['_sale_price']) && $p['_sale_price']>0)$price=$p['_sale_price'];
 	  if(isset($p['_bulk_price']) && $p['_bulk_price']>0 && $p['_bulk_price']<$price && $amount>=$p['_bulk_amount'])$price=$p['_bulk_price'];
 		$vat=(isset($p['_vatfree']) && $p['_vatfree']=='1')?false:true;
+		$weight=(float)@$p['_weight(kg)'];
 	}
 	else {
 		$price=(float)$product->get('price');
@@ -167,8 +173,17 @@ function products_add_to_cart($PAGEDATA){
 		'products_'.$id.$md5,
 		$http_referer,
 		$vat,
-		$id
+		$id,
+		$weight,
+		(int)@$p['_custom_vat_amount'],
+		(int)@$p['_deliver_free']
 	);
+	if ($http_referer) {
+		redirect($http_referer);
+	}
+	else {
+		unset($_REQUEST['product_id']);
+	}
 }
 function Products_listCategories($params, &$smarty){
 	require_once dirname(__FILE__).'/frontend/show.php';

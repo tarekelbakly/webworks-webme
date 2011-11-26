@@ -54,12 +54,28 @@ $(function(){
 				$(this).remove();
 			}
 		});
-		$(this).closest('div.products-product').find('select,input').each(function(){
+		var emptyreq=false;
+		$(this).closest('div.products-product').find('select,input,textarea').each(function(){
+			var $this=$(this);
+			if ($this.attr('required') && !$this.val()) {
+				emptyreq=true;
+			}
 			if (!/products_values_/.test(this.name)) {
 				return;
 			}
 			inps.push([this.name, $(this).val()]);
 		});
+		if (emptyreq) {
+			var $form=$(this).closest('form');
+			var action=$form.attr('action');
+			$form.attr('action', 'javascript:;');
+			alert('please fill in all required fields');
+			setTimeout(function(){
+				$form.attr('action', action);
+			}, 1);
+			return false;
+		}
+		var emptyreq=false;
 		for (var i=0;i<inps.length;++i) {
 			$('<input type="hidden" name="'+inps[i][0]+'" />')
 				.val(inps[i][1])

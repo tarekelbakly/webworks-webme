@@ -53,8 +53,8 @@ $plugin=array(
 // }
 // { currency symbols
 $online_store_currencies=array(
-	'EUR'=>array('&euro;','Euro'),
-	'GBP'=>array('&pound;','Pound Sterling')
+	'EUR'=>array('&euro;','Euro','€'),
+	'GBP'=>array('&pound;','Pound Sterling','£')
 );
 // }
 
@@ -71,8 +71,8 @@ $online_store_currencies=array(
 	* @return null
 	*/
 function OnlineStore_addToCart(
-	$cost=0, $amt=0, $short_desc='',
-	$long_desc='', $md5='', $url='', $vat=true, $id=0
+	$cost=0, $amt=0, $short_desc='', $long_desc='', $md5='', $url='', $vat=true, $id=0,
+	$weight=0, $custom_vat_amount=0, $delivery_free=0
 ) {
 	// { add item to session
 	if (!isset($_SESSION['online-store'])) {
@@ -88,6 +88,9 @@ function OnlineStore_addToCart(
 	$item['url']=$url;
 	$item['vat']=$vat;
 	$item['id']=$id;
+	$item['weight']=$weight;
+	$item['custom_vat_amount']=$custom_vat_amount;
+	$item['delivery_free']=(int)@$delivery_free;
 	$_SESSION['online-store']['items'][$md5]=$item;
 	// }
 	require dirname(__FILE__).'/libs.php';
@@ -223,6 +226,7 @@ function OnlineStore_payment_types() {
 function OnlineStore_productPriceHTML($params, &$smarty) {
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
+	// { get product prices
 	if (!isset($product->vals['online-store'])) {
 		$product->vals['online-store']=array(
 			'_price'=>0,
@@ -235,7 +239,15 @@ function OnlineStore_productPriceHTML($params, &$smarty) {
 			'_custom_vat_amount'=>0
 		);
 	}
+	$plugin_prices=plugin_trigger_arr('products-pricing', array('product'=>$product));
+	if ($plugin_prices && is_array($plugin_prices)) {
+		$product->vals['online-store']=$plugin_prices;
+	}
 	$p=$product->vals['online-store'];
+	if (@$p['_price_ajax']) {
+		ww_addScript($p['_price_ajax']);
+	}
+	// }
 	$user_is_vat_free=0;
 	if (@$_SESSION['userdata']['id']) {
 		$user=User::getInstance($_SESSION['userdata']['id']);
@@ -275,6 +287,7 @@ function OnlineStore_productPriceHTML($params, &$smarty) {
 function OnlineStore_productPriceFull($params, &$smarty) {
 	$pid=$smarty->_tpl_vars['product']->id;
 	$product=Product::getInstance($pid);
+	// { get product prices
 	if (!isset($product->vals['online-store'])) {
 		$product->vals['online-store']=array(
 			'_price'=>0,
@@ -287,7 +300,15 @@ function OnlineStore_productPriceFull($params, &$smarty) {
 			'_custom_vat_amount'=>0
 		);
 	}
+	$plugin_prices=plugin_trigger_arr('products-pricing', array('product'=>$product));
+	if ($plugin_prices && is_array($plugin_prices)) {
+		$product->vals['online-store']=$plugin_prices;
+	}
 	$p=$product->vals['online-store'];
+	if (@$p['_price_ajax']) {
+		ww_addScript($p['_price_ajax']);
+	}
+	// }
 	$vat=isset($params['vat']) && $params['vat']
 		?(100+$_SESSION['onlinestore_vat_percent'])/100
 		:1;
@@ -333,7 +354,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 	$user_is_vat_free=0;
 	if (@$_SESSION['userdata']['id']) {
 		$user=User::getInstance($_SESSION['userdata']['id']);
-		$user_is_vat_free=$user->isInGroup('_vatfree');
+		$user_is_vat_free=$user && $user->isInGroup('_vatfree');
 	}
 	global $DBVARS;
 	$html='<div class="online-store-basket-widget">';
@@ -355,9 +376,10 @@ function OnlineStore_showBasketWidget($vars=null) {
 				.'<th>Total</th></tr>';
 			foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 				// { name
+				$vat_amount=$item['custom_vat_amount']?$item['custom_vat_amount']:$_SESSION['onlinestore_vat_percent'];
 				$vat=$user_is_vat_free || !$item['vat']
 					?1
-					:(100+$_SESSION['onlinestore_vat_percent'])/100;
+					:(100+$vat_amount)/100;
 				$html.='<tr class="os_basket_itemTitle" product="'.$md5.'">'
 					.'<th colspan="3">';
 				if ($item['url']) {
@@ -407,7 +429,7 @@ function OnlineStore_showBasketWidget($vars=null) {
 	*
 	* @return array
 	*/
-function OnlineStore_getPostageAndPackaging($total,$country,$weight){
+function OnlineStore_getPostageAndPackaging($total, $country, $weight){
 	if (!OnlineStore_getNumItems()) {
 		return array('name'=>'none', 'total'=>0);
 	}
@@ -463,19 +485,29 @@ function OnlineStore_getFinalTotal() {
 	}
 	$grandTotal = 0;
 	$vattable=0;
+	$deliverytotal=0;
 	$has_vatfree=false;
+	$weight=0;
+	$vattotal=0;
 	if (isset($_SESSION['online-store']['items'])) {
 		foreach ($_SESSION['online-store']['items'] as $md5=>$item) {
 			$totalItemCost=$item['cost']*$item['amt'];
 			$grandTotal+=$totalItemCost;
+			$weight+=$item['amt']*$item['weight'];
+			if (!$item['delivery_free']) {
+				$deliverytotal+=$totalItemCost;
+			}
 			if ($item['vat'] && !$user_is_vat_free) {
+				$vat_amount=$item['custom_vat_amount']?$item['custom_vat_amount']:$_SESSION['onlinestore_vat_percent'];
+				$vattotal+=$totalItemCost*($vat_amount/100);
 				$vattable+=$totalItemCost;
 			}
 		}
 	}
-	$postage=OnlineStore_getPostageAndPackaging($grandTotal, '', 0);
+	$postage=OnlineStore_getPostageAndPackaging($deliverytotal, '', $weight);
 	if ($postage['total']) {
 		$grandTotal+=$postage['total'];
+		$vattotal+=($_SESSION['onlinestore_vat_percent']/100)*$postage['total'];
 	}
 	if (@$_REQUEST['os_voucher']) {
 		require_once dirname(__FILE__).'/frontend/voucher-libs.php';
@@ -487,7 +519,8 @@ function OnlineStore_getFinalTotal() {
 		}
 	}
 	if ($vattable) {
-		$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
+//		$vat=$vattable*($_SESSION['onlinestore_vat_percent']/100);
+		$vat=$vattotal;
 		$grandTotal+=$vat;
 	}
 	return $grandTotal;

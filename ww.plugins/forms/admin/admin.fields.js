@@ -39,7 +39,7 @@ $(function(){
 			.val(old);
 	}
 	formfieldsAddRow();
-	$('.date').datepicker({dateFormat:'yy-m-d'});
+	$('.date').datepicker({dateFormat:'yy-mm-dd'});
 	$('#tabs').tabs();
 	$('#pages_form').submit(function(){
 		form_updateReplyto();
